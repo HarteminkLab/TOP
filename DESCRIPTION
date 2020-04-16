@@ -8,6 +8,8 @@ Authors@R: c(
 Description: Predict transcription factor (TF) occupancy using DNase-seq data.
   TOP is a Bayesian hierarchical model trained using DNase-seq and ChIP-seq data 
   for multiple TFs across multiple cell types.
+URL: https://github.com/kevinlkx/TOP
+BugReports: https://github.com/kevinlkx/TOP/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
