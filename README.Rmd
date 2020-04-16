@@ -24,6 +24,8 @@ TOP is a Bayesian hierarchical model trained using DNase-seq and ChIP-seq data t
 ## Installation
 
 ```{r installation, eval = FALSE}
+install.packages("devtools")
+library(devtools)
 devtools::install_github("kevinlkx/TOP")
 ```
 
