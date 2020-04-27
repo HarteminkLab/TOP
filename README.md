@@ -21,10 +21,6 @@ devtools::install_github("kevinlkx/TOP")
 Example
 -------
 
-This is a basic example which shows you how to solve a common problem:
-
 ``` r
 library(TOP)
-add_numbers(10, 3)
-#> [1] 13
 ```
