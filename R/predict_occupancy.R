@@ -3,19 +3,19 @@
 #' @description Predict TF occupancy using posterior samples of regression
 #' coefficients trained from the TOP model
 #'
-#' @param data: A data frame or matrix. Columns are motif score and DNase features.
+#' @param data A data frame or matrix. Columns are motif score and DNase features.
 #' Rows are candidate sites.
-#' @param alpha_samples: posterior samples of alpha
-#' @param beta_samples: posterior samples of beta
-#' @param tau_samples: posterior samples of tau
-#' @param sample: logicals. If TRUE, samples from posterior predictions and then
+#' @param alpha_samples posterior samples of alpha
+#' @param beta_samples posterior samples of beta
+#' @param tau_samples posterior samples of tau
+#' @param sample logicals. If TRUE, samples from posterior predictions and then
 #' take the mean of posterior prediction samples.
-#' @param average_parameters: logicals. If TRUE, uses the posterior mean of
+#' @param average_parameters logicals. If TRUE, uses the posterior mean of
 #' regression coefficients to make predictions.
 #' @param transform Method used to transform ChIP-seq counts when training
 #' the TOP model. Default: transform = "asinh".
 #'
-#' @return
+#' @return The function returns a vector of predicted TF occupancy.
 #' @export
 #'
 #' @examples
