@@ -15,16 +15,15 @@ coefficients, including the intercept and coefficients for motif score and
 DNase features.
 length(coef_mean) should be equal to 1+ncol(data).}
 
-\item{transform}{Method used to transform ChIP-seq occupancy when training
-the TOP model.
-Default: transform = "asinh".}
+\item{transform}{Method used to transform ChIP-seq counts when training
+the TOP model. Default: transform = "asinh".}
 }
 \value{
 The function returns a vector of predicted TF occupancy.
 }
 \description{
 Predict TF occupancy using posterior mean of regression
-coefficients trained using the TOP model
+coefficients trained from the TOP model
 }
 \examples{
 predicted <- predict_coef_BH_mean(data, coef_mean, transform = 'asinh')
