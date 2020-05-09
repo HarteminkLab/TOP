@@ -15,26 +15,26 @@ predict_norm(
 )
 }
 \arguments{
-\item{transform}{Method used to transform ChIP-seq counts when training
-the TOP model. Default: transform = "asinh".}
-
-\item{data:}{A data frame or matrix. Columns are motif score and DNase features.
+\item{data}{A data frame or matrix. Columns are motif score and DNase features.
 Rows are candidate sites.}
 
-\item{alpha_samples:}{posterior samples of alpha}
+\item{alpha_samples}{posterior samples of alpha}
 
-\item{beta_samples:}{posterior samples of beta}
+\item{beta_samples}{posterior samples of beta}
 
-\item{tau_samples:}{posterior samples of tau}
+\item{tau_samples}{posterior samples of tau}
 
-\item{sample:}{logicals. If TRUE, samples from posterior predictions and then
+\item{sample}{logicals. If TRUE, samples from posterior predictions and then
 take the mean of posterior prediction samples.}
 
-\item{average_parameters:}{logicals. If TRUE, uses the posterior mean of
+\item{average_parameters}{logicals. If TRUE, uses the posterior mean of
 regression coefficients to make predictions.}
+
+\item{transform}{Method used to transform ChIP-seq counts when training
+the TOP model. Default: transform = "asinh".}
 }
 \value{
-
+The function returns a vector of predicted TF occupancy.
 }
 \description{
 Predict TF occupancy using posterior samples of regression
