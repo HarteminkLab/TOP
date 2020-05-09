@@ -1,8 +1,8 @@
 ---
-title: "Process DNase-seq (or ATAC-seq) bam files to data matrices"
+title: "Process DNase-seq bam files to data matrices"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{Process DNase-seq bam files to data matrices}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
