@@ -1,8 +1,8 @@
 ---
-title: "Process DNase-seq bam files to data matrices"
+title: "Pipeline to obtain DNase data matrices using DNase-seq bam files"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Process DNase-seq bam files to data matrices}
+  %\VignetteIndexEntry{Pipeline to obtain DNase data matrices using DNase-seq bam files}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 
 ## Step 0: Download JASPAR motif database and install required software tools
 
-Download [JASPAR](http://jaspar.genereg.net) motif database
+* Download [JASPAR](http://jaspar.genereg.net) motif database
 
-Required softwares:
+* Required softwares:
 
 - [FIMO](http://meme-suite.org/doc/fimo.html?man_type=web) from MEME suite.
 - [samtools](http://www.htslib.org)
@@ -26,26 +26,72 @@ Required softwares:
 - [bwtools](https://github.com/CRG-Barcelona/bwtool/wiki)
 - [UCSC command-line tools](http://hgdownload.cse.ucsc.edu/admin/exe/): `bedGraphToBigWig`, `bigWigAverageOverBed` 
 
+### Install `TOP` package
+```{r installation, eval = FALSE}
+install.packages("devtools")
+library(devtools)
+devtools::install_github("kevinlkx/TOP")
+```
+
+### Load `TOP` package
+```{r setup, eval = FALSE}
+library(TOP)
+```
+
 ## Step 1: find TF motif matches using [FIMO](http://meme-suite.org/doc/fimo.html?man_type=web)
 
-* [fimo_jaspar_motif.sh](../script/sites_jaspar_motif.sh)
+* [fimo_jaspar_motif.sh](sites_jaspar_motif.sh)
 
 ## Step 2: get TF candidate binding sites
 
-* [sites_jaspar_motif.sh](../script/sites_jaspar_motif.sh)
-* [process_pwm_sites.R](../script/process_pwm_sites.R)
+* [sites_jaspar_motif.sh](sites_jaspar_motif.sh)
+* [process_pwm_sites.R](process_pwm_sites.R)
 
-## Step 3: count DNase-seq genome-wide cleavage, and build tagcount bigwig file
+```{r process_candidate_sites, eval = FALSE}
 
-* [genome_coverage_bamToBigwig.sh](../script/genome_coverage_bamToBigwig.sh)
+process_candidate_sites(file_fimo, file_sites, flank=100, thresh_pValue=1e-5, 
+                        compute_mapability=TRUE, file_mapability="wgEncodeDukeMapabilityUniqueness20bp.bigWig")
+```
+
+
+## Step 3: count DNase-seq genome-wide cleavage, and output tagcount at each genome position in `Bigwig` format
+
+* [genome_coverage_bamToBigwig.sh](genome_coverage_bamToBigwig.sh)
+
+### Sort and index the BAM file, and then retrieve and print stats in the index file.
+```{r bam_sort_index_stats, eval = FALSE}
+bam_sort_index_stats(bam_file, dir_output, sort=TRUE, stats=TRUE)
+```
+
+### Count the coverage of DNase-seq cuts along the genome, output in `Bigwig` format
+```{r count_genome_coverage, eval = FALSE}
+count_genome_coverage(bam_file, file_out, strand='+', file_genome_sizes, output_format='Bigwig')
+
+count_genome_coverage(bam_file, file_out, strand='-', file_genome_sizes, output_format='Bigwig')
+```
 
 ## Step 4: match DNase-seq tagcount matrices for each motif
 
-* [get_motif_count_matrices.sh](../script/get_motif_count_matrices.sh)
+* [get_motif_count_matrices.sh](get_motif_count_matrices.sh)
 
-* [rev_tagcount_bwtool.R](../script/rev_tagcount_bwtool.R)
-
-
-```{r setup}
-library(TOP)
+### Match DNase tagcount matrices for candidate sites
+```{r match_tagcount_sites, eval = FALSE}
+match_tagcount_sites(file_sites, file_dnase_tagcount_fwd, file_dnase_tagcount_rev, 
+                     file_dnase_matrix_fwd, file_dnase_matrix_rev)
 ```
+
+### Combine DNase tagcount matrices in both forward and reverse strands
+```{r combine_dnase_counts, eval=FALSE}
+DNaseData <- combine_dnase_counts(file_dnase_matrix_fwd, file_dnase_matrix_rev)
+```
+
+## Step 5: Normalize, binning (with `MILLIPEDE` binning scheme) and tranform DNase counts
+```{r normalize_bin_dnase, eval=FALSE}
+dnase_bins <- normalize_bin_dnase(DNaseData, 
+                                  file_idxstats, 
+                                  type_bin='M5',
+                                  library_reference=1e8, 
+                                  transform='log2') 
+```
+
+
