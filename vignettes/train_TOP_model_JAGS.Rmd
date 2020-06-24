@@ -1,0 +1,50 @@
+---
+title: "Train TOP model using JAGS"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Train TOP model using JAGS}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Install `TOP` R package
+```{r install_TOP, eval = FALSE}
+install.packages("devtools")
+library(devtools)
+devtools::install_github("kevinlkx/TOP")
+library(TOP)
+```
+
+## Prepare training data
+### Prepare training data for each TF in each cell type
+
+For each TF in each cell type, prepare training data for candidate binding sites, including: PWM scores, DNase bins (using MILLIPEDE binning), and ChIP read counts.
+
+You can follow this [pipeline](./doc/preprocessing.html) to obtain candidate binding sites and get DNase bins using DNase-seq bam files. 
+
+You can also use your own pipelines to obtain matrices of DNase cuts (and normalize by library size, etc.), and use our function `millipede_bin_dnase` or `MILLIPEDE` software to bin DNase data with `MILLIPEDE` binning scheme.
+
+You will also need to normalize ChIP-seq reads across ChIP experiments (by library size or other methods). 
+
+### Combine training data across TFs and cell types
+You will then combine training datasets for all training TF-cell type combinations to get combined training data.
+
+## Fit `TOP` model using combined training data across TFs and cell types
+Train `TOP` model using combined training data for all TF-cell type combinations.
+
+The current version of [TOP model](../R/TOP_model.R) was implemented using JAGS, and you will need `rjags` R package to fit the model. 
+
+```{r fit_TOP, eval = FALSE}
+library(rjags)
+library(TOP)
+
+fit_TOP_jags(data.train, TOP.model, parameters.to.save, n.iter, n.burnin, n.thin, n.chains)
+```
+
