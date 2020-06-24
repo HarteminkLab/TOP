@@ -5,7 +5,7 @@ TOP: Transcription factor Occupancy Prediction
 
 <!-- badges: start -->
 <!-- badges: end -->
-`TOP` is a Bayesian hierarchical model trained using DNase-seq and ChIP-seq data to Predict transcription factor (TF) occupancy for multiple TFs across multiple cell types.
+`TOP` fits a Bayesian hierarchical model using motif information, DNase-seq and ChIP-seq data from multiple TFs in multiple cell types. Then, it can predict the quantitative occupancy of multiple transcription factors (TFs) using data from a single DNase-seq experiment.
 
 Install `TOP` R package
 -----------------------
