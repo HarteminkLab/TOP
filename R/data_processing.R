@@ -241,7 +241,7 @@ readstats_total <- function(file_idxstats, select_chr = TRUE, chr_list = paste0(
 #'
 #' @return
 #' @export
-sum_cuts_strand <- function(DNaseData, combine_strands='vertical') {
+millipede_bin_dnase <- function(DNaseData, combine_strands='vertical') {
 
   flank_LF1 = 81:100
   flank_LF2 = flank_LF1 - 20
@@ -376,7 +376,7 @@ normalize_bin_dnase <- function(dnase_tagcounts, file_idxstats, type_bin='M5',
 
   ## Bin DNase counts
   cat('Bin DNase data with', type_bin, 'binning \n')
-  dnase_bins_normalized.df <- as.data.frame(sum_cuts_strand(dnase_tagcounts_normalized)[[type_bin]])
+  dnase_bins_normalized.df <- as.data.frame(millipede_bin_dnase(dnase_tagcounts_normalized)[[type_bin]])
 
   if (transform == 'asinh') {
     cat(transform, 'transform \n')
