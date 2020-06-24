@@ -54,7 +54,7 @@ bam_sort_index_stats <- function(bam_file, dir_output=NA, sort=TRUE, stats=TRUE,
 #' @title Count the coverage of DNase-seq cuts for a given genome.
 #'
 #' @param bam_file Input BAM file.
-#' @param file_out Output file name.
+#' @param file_dnase_tagcount Output filename of DNase tagcount.
 #' @param strand strand: '+' or '-'.
 #' @param file_genome_sizes File name of genome sizes by chromosomes.
 #' @param path_samtools Path to samtools executable.
@@ -64,7 +64,7 @@ bam_sort_index_stats <- function(bam_file, dir_output=NA, sort=TRUE, stats=TRUE,
 #'
 #' @export
 count_genome_coverage <- function(bam_file,
-                                  file_out=NA,
+                                  file_dnase_tagcount=NA,
                                   strand='+',
                                   file_genome_sizes=NA,
                                   path_samtools='samtools',
@@ -86,8 +86,8 @@ count_genome_coverage <- function(bam_file,
 
   bam_prefix <- gsub('.bam$', '', basename(bam_file))
 
-  if( is.na(file_out) ) {
-    file_out <- paste0(dirname(bam_file), '/', bam_prefix, '.5p.tagcount')
+  if( is.na(file_dnase_tagcount) ) {
+    file_dnase_tagcount <- paste0(dirname(bam_file), '/', bam_prefix, '.5p.tagcount')
   }
 
   if( sort == TRUE ) {
@@ -97,9 +97,9 @@ count_genome_coverage <- function(bam_file,
   cat('Compute genome coverage for', bam_file, 'of', strand, 'strand and output in bedGraph format...\n', sep='')
 
   if( output_format != 'bedGraph' ) {
-    file_bg <- paste0(tools::file_path_sans_ext(file_out), '.bedGraph')
+    file_bg <- paste0(tools::file_path_sans_ext(file_dnase_tagcount), '.bedGraph')
   }else{
-    file_bg <- file_out
+    file_bg <- file_dnase_tagcount
   }
 
   cmd <- paste(path_bedtools, 'genomecov -bg -5',
@@ -116,7 +116,7 @@ count_genome_coverage <- function(bam_file,
       q()
     }
 
-    cmd <- paste(path_bedGraphToBigWig, file_bg, file_genome_sizes, file_out)
+    cmd <- paste(path_bedGraphToBigWig, file_bg, file_genome_sizes, file_dnase_tagcount)
     system( cmd, ignore.stdout=SYS_PRINT, ignore.stderr=SYS_PRINT )
 
     file.remove(file_bg)
@@ -127,8 +127,8 @@ count_genome_coverage <- function(bam_file,
 #' @title Match DNase tagcount matrices for candidate sites.
 #'
 #' @param file_sites filename for candidate sites
-#' @param file_dnase_tagcount_fwd filename for DNase tagcount in forward strand
-#' @param file_dnase_tagcount_rev filename for DNase tagcount in reverse strand
+#' @param file_dnase_tagcount_fwd filename for DNase tagcount in forward strand (Bigwig format)
+#' @param file_dnase_tagcount_rev filename for DNase tagcount in reverse strand (Bigwig format)
 #' @param file_dnase_matrix_fwd filename for DNase tagcount matrix in forward strand
 #' @param file_dnase_matrix_rev filename for DNase tagcount matrix in reverse strand
 #' @param path_bwtool Path to bwtool executable.
@@ -563,7 +563,7 @@ filter_blacklist <- function(sites,
 #' @title Process candidate sites from FIMO result
 #'
 #' @param file_fimo Filename of FIMO result.
-#' @param file_sites Filenmae of candidate sites.
+#' @param file_sites Filename of candidate sites.
 #' @param flank Size (bp) of flanking region on each side of motif. Default: 100.
 #' @param thresh_pValue FIMO p-value threshold.
 #' @param compute_mapability If TRUE, compute mapability for candidate sites.
