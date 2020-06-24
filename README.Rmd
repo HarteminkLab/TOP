@@ -22,14 +22,12 @@ Transcription factor Occupancy Prediction (TOP)
 TOP is a Bayesian hierarchical model trained using DNase-seq and ChIP-seq data to Predict transcription factor (TF) occupancy for multiple TFs across multiple cell types.
   
 ## Installation
-
 ```{r installation, eval = FALSE}
 install.packages("devtools")
 library(devtools)
 devtools::install_github("kevinlkx/TOP")
-```
-
-## Example
-```{r example}
 library(TOP)
 ```
+
+## Examples
+Please see example usages in the [vignettes](../vignettes)

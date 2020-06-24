@@ -16,11 +16,10 @@ Installation
 install.packages("devtools")
 library(devtools)
 devtools::install_github("kevinlkx/TOP")
-```
-
-Example
--------
-
-``` r
 library(TOP)
 ```
+
+Examples
+--------
+
+Please see example usages in the [vignettes](../vignettes)
