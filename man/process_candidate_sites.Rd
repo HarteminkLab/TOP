@@ -20,7 +20,7 @@ process_candidate_sites(
 \arguments{
 \item{file_fimo}{Filename of FIMO result.}
 
-\item{file_sites}{Filenmae of candidate sites.}
+\item{file_sites}{Filename of candidate sites.}
 
 \item{flank}{Size (bp) of flanking region on each side of motif. Default: 100.}
 

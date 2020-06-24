@@ -16,9 +16,9 @@ match_tagcount_sites(
 \arguments{
 \item{file_sites}{filename for candidate sites}
 
-\item{file_dnase_tagcount_fwd}{filename for DNase tagcount in forward strand}
+\item{file_dnase_tagcount_fwd}{filename for DNase tagcount in forward strand (Bigwig format)}
 
-\item{file_dnase_tagcount_rev}{filename for DNase tagcount in reverse strand}
+\item{file_dnase_tagcount_rev}{filename for DNase tagcount in reverse strand (Bigwig format)}
 
 \item{file_dnase_matrix_fwd}{filename for DNase tagcount matrix in forward strand}
 

@@ -6,7 +6,7 @@
 \usage{
 count_genome_coverage(
   bam_file,
-  file_out = NA,
+  file_dnase_tagcount = NA,
   strand = "+",
   file_genome_sizes = NA,
   path_samtools = "samtools",
@@ -18,7 +18,7 @@ count_genome_coverage(
 \arguments{
 \item{bam_file}{Input BAM file.}
 
-\item{file_out}{Output file name.}
+\item{file_dnase_tagcount}{Output filename of DNase tagcount.}
 
 \item{strand}{strand: '+' or '-'.}
 
