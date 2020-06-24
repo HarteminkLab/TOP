@@ -43,7 +43,13 @@ Option1: Predict TF occupancy using posterior samples of regression coefficients
 predict_TOP(data, alpha_samples, beta_samples, tau_samples, sample = TRUE, average_parameters = FALSE, transform = 'asinh')
 ```
 
+<<<<<<< HEAD
 Option 2: Predict TF occupancy using posterior mean of regression coefficients trained from the `TOP` model.
+||||||| 8190730
+Option 2: Predict TF occupancy using posterior mean of regression coefficients trained from the TOP model (faster).
+=======
+Option 2: Predict TF occupancy using posterior mean of regression coefficients trained from the TOP model.
+>>>>>>> e0c08fc6580871f6e0c9e8981e75b5947b161755
 
 ``` r
 # data: data frame or matrix. Columns are motif score and DNase features. Rows are candidate sites.
@@ -57,7 +63,13 @@ Train `TOP` model using motif, DNase and ChIP data from all TF-cell type combina
 
 ### Prepare motif, DNase and ChIP training data
 
+<<<<<<< HEAD
 You will need to prepare training data for each TF in each cell type, including: PWM scores, normalized DNase data (with `MILLIPEDE` binning), and normalized ChIP read counts, and then combine training datasets for all training TF-cell type combinations.
+||||||| 8190730
+Then, train `TOP` model using combined training data for all TF-cell type combinations.
+=======
+You will need to prepare training data for each TF in each cell type, including: PWM scores, normalized DNase data (with MILLIPEDE binning), and normalized ChIP read counts, and then combine training datasets for all training TF-cell type combinations.
+>>>>>>> e0c08fc6580871f6e0c9e8981e75b5947b161755
 
 ### Train `TOP` model using combined training data from all TF-cell type combinations
 
