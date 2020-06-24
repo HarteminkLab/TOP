@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Step 0: Download JASPAR motif database and install required software tools
+## Download JASPAR motif database and install required softwares
 
 * Download [JASPAR](http://jaspar.genereg.net) motif database
 
@@ -38,11 +38,14 @@ devtools::install_github("kevinlkx/TOP")
 library(TOP)
 ```
 
-## Step 1: find TF motif matches using [FIMO](http://meme-suite.org/doc/fimo.html?man_type=web)
-This requires FIMO from MEME suite:
+## Step 1: find TF motif matches using `FIMO`
+To scan for TF motif matches, we recommend the FIMO software from the MEME suite:
+
 * FIMO instructions: http://meme-suite.org/doc/fimo.html?man_type=web
+
 * MEME Suite installation: http://meme-suite.org/doc/install.html?man_type=web
-You will need the FIMO output (fimo.txt) to get candidate TF binding sites. 
+
+You will need the FIMO output (fimo.txt) in the following step. 
 
 <!-- You can follow the instructions from [FIMO](http://meme-suite.org/doc/fimo.html?man_type=web), -->
 <!-- or use this script: [fimo_jaspar_motif.sh](../inst/scripts/fimo_jaspar_motif.sh) -->
@@ -52,10 +55,10 @@ You will need the FIMO output (fimo.txt) to get candidate TF binding sites.
 <!-- * [process_pwm_sites.R](process_pwm_sites.R) -->
 
 ```{r process_candidate_sites, eval = FALSE}
-# file_fimo: the filename of FIMO result (fimo.txt)
-# file_sites: the output filename of candidate sites.
+# file_fimo: FIMO result filename. (fimo.txt)
+# file_sites: output filename for candidate sites.
 # flank: size (bp) of flanking region on each side of motif. Default: 100.
-# thresh_pValue: FIMO p-value threshold.
+# thresh_pValue: FIMO p-value threshold. Default: 1e-5.
 # Set "compute_mapability" to compute mapability for each window
 # Set "filter_blacklist" to filter ENCODE blacklist regions
 process_candidate_sites(file_fimo, file_sites, flank=100, thresh_pValue=1e-5)
@@ -67,7 +70,7 @@ process_candidate_sites(file_fimo, file_sites, flank=100, thresh_pValue=1e-5)
 
 ### Sort and index the BAM file, and then retrieve and print stats in the index file.
 ```{r bam_sort_index_stats, eval = FALSE}
-# bam_file: input BAM file.
+# bam_file: input BAM filename.
 # dir_output: output directory.
 # sort logical. If TRUE, sort (and index) the BAM file.
 # stats logical. If TRUE, retrieve and print stats in the index file.
@@ -76,7 +79,7 @@ bam_sort_index_stats(bam_file, dir_output, sort=TRUE, stats=TRUE)
 
 ### Count the coverage of DNase-seq cuts along the genome, output in `Bigwig` format
 ```{r count_genome_coverage, eval = FALSE}
-# bam_file: input BAM file.
+# bam_file: input BAM filename.
 # file_dnase_tagcount: output filename of DNase tagcount.
 # strand: strand ('+' or '-').
 # file_genome_sizes: filename of genome sizes by chromosomes.
@@ -94,8 +97,8 @@ count_genome_coverage(bam_file, file_dnase_tagcount_rev, strand='-', file_genome
 ### Match DNase tagcount matrices for candidate sites
 ```{r match_tagcount_sites, eval = FALSE}
 # file_sites: filename for candidate sites
-# file_dnase_tagcount_fwd: input filename for DNase tagcount in forward strand
-# file_dnase_tagcount_rev: input filename for DNase tagcount in reverse strand
+# file_dnase_tagcount_fwd: filename for DNase tagcount in forward strand
+# file_dnase_tagcount_rev: filename for DNase tagcount in reverse strand
 # file_dnase_matrix_fwd: output filename for DNase tagcount matrix in forward strand
 # file_dnase_matrix_rev: output filename for DNase tagcount matrix in reverse strand
 match_tagcount_sites(file_sites, file_dnase_tagcount_fwd, file_dnase_tagcount_rev, file_dnase_matrix_fwd, file_dnase_matrix_rev)
