@@ -17,13 +17,8 @@
 #'
 #' @return The function returns a vector of predicted TF occupancy.
 #' @export
-#'
-#' @examples
-#' predicted <- predict_norm(data, alpha_samples, beta_samples, tau_samples,
-#' sample = TRUE, average_parameters = FALSE, transform = 'asinh')
-#'
-predict_norm <- function(data, alpha_samples, beta_samples, tau_samples,
-                         sample = TRUE, average_parameters = FALSE, transform = 'asinh'){
+predict_TOP <- function(data, alpha_samples, beta_samples, tau_samples,
+                        sample = TRUE, average_parameters = FALSE, transform = 'asinh'){
 
   # the mean of the posterior norm is x %*% beta + alpha
 
@@ -59,7 +54,7 @@ predict_norm <- function(data, alpha_samples, beta_samples, tau_samples,
   }else if (transform == 'log'){ # log(y+1)
     predictions <- exp(predictions) - 1
   }else if (transform == ''){ # no transform
-    cat('Do not transform predictions. \n')
+    cat('No transform done. \n')
   }else{
     warning('No transform done. Please check the transform method! \n')
   }
@@ -83,11 +78,7 @@ predict_norm <- function(data, alpha_samples, beta_samples, tau_samples,
 #'
 #' @return The function returns a vector of predicted TF occupancy.
 #' @export
-#'
-#' @examples
-#' predicted <- predict_coef_BH_mean(data, coef_mean, transform = 'asinh')
-#'
-predict_coef_BH_mean <- function(data, coef_mean, transform = 'asinh'){
+predict_TOP_coef_mean <- function(data, coef_mean, transform = 'asinh'){
 
   if((ncol(data)+1) != length(coef_mean)){
     stop('The number of coefficients is not equal to the number of data columns + 1!')
