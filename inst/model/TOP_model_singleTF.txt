@@ -1,6 +1,8 @@
 model {
   for(i in 1:N) {
 
+    chip[i] ~ dnorm(  mu[i],  tau[cell_type[i]] )
+
     mu[i] <- alpha[cell_type[i]] +
       pwm[i] * beta1[cell_type[i]] +
       dnase.left2_sum[i] * beta2[cell_type[i]] +
@@ -9,9 +11,6 @@ model {
       dnase.right1_sum[i] * beta5[cell_type[i]] +
       dnase.right2_sum[i] * beta6[cell_type[i]]
 
-    # variance should be cell type and tf specific
-
-    chip[i] ~ dnorm(  mu[i],  tau[cell_type[i]] )
   }
 
     for(k in 1:n_cell_types) {
