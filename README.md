@@ -61,18 +61,18 @@ You will need to prepare training data for each TF in each cell type, including:
 
 ### Train `TOP` model using combined training data from all TF-cell type combinations
 
-`TOP` uses MCMC to fit the Bayesian hierarchical model. The current version was implemented using [JAGS](http://mcmc-jags.sourceforge.net). You will need `rjags` R package to fit the model.
+`TOP` uses MCMC to fit the Bayesian hierarchical model. The current version was implemented using [JAGS](http://mcmc-jags.sourceforge.net). You may need the `R2jags` or `rjags` R package.
 
 ``` r
-library(rjags)
+library(R2jags)
 library(TOP)
 
 # data.train: combined training data.
 # TOP.model: TOP model written in BUGS code.
 # parameters.to.save: character vector of the names of the parameters to save which should be monitored.
-# n.iter number of total iterations per chain (including burn in).
-# n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
-# n.thin thinning rate, must be a positive integer (default=2).
-# n.chains number of Markov chains (default: 1).
-fit_TOP_jags(data.train, TOP.model, parameters.to.save, n.iter, n.burnin, n.thin, n.chains)
+# n.iter: number of total iterations per chain.
+# n.burnin: length of burn in, i.e. number of iterations to discard at the beginning.
+# n.thin: thinning rate, must be a positive integer.
+# n.chains: number of Markov chains.
+jags_fit <- fit_TOP_jags(data.train, TOP.model, parameters.to.save, n.iter, n.burnin, n.thin, n.chains)
 ```

@@ -2,6 +2,7 @@
 ## It can be extended to model the heterogeneity across replicates
 TOP.model <- function() {
   for(i in 1:N) {
+    chip[i] ~ dnorm(mu[i],  tau[tf[i], cell_type[i]])
 
     mu[i] <- alpha[tf[i], cell_type[i]] +
       pwm[i] * beta1[tf[i], cell_type[i]] +
@@ -10,10 +11,6 @@ TOP.model <- function() {
       dnase.motif_sum[i] * beta4[tf[i], cell_type[i]] +
       dnase.right1_sum[i] * beta5[tf[i], cell_type[i]] +
       dnase.right2_sum[i] * beta6[tf[i], cell_type[i]]
-
-    # variance should be cell type and tf specific
-
-    chip[i] ~ dnorm(mu[i],  tau[tf[i], cell_type[i]])
   }
 
   for(j in 1:n_tfs) {
@@ -26,7 +23,6 @@ TOP.model <- function() {
       beta4[j, k] ~ dnorm(Beta4[j], 1)
       beta5[j, k] ~ dnorm(Beta5[j], 1)
       beta6[j, k] ~ dnorm(Beta6[j], 1)
-
       tau[j, k] ~ dgamma(T[j]^2, T[j])
 
     }
@@ -54,7 +50,7 @@ TOP.model <- function() {
 }
 
 
-#' @title Fit TOP model using JAGS
+#' @title Fit TOP model using JAGS with R2jags package
 #'
 #' @param data.train combined training data.
 #' @param TOP.model TOP model written in BUGS code.
@@ -62,14 +58,14 @@ TOP.model <- function() {
 #' save which should be monitored.
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
-#' @param n.thin thinning rate, must be a positive integer (default=2).
-#' @param n.chains number of Markov chains (default: 1).
+#' @param n.thin thinning rate, must be a positive integer.
+#' @param n.chains number of Markov chains.
 #' @param DIC logical; if TRUE (default), compute deviance, pD, and DIC.
 #'
 #' @return
 #' @export
 fit_TOP_jags <- function(data.train, TOP.model, parameters.to.save,
-                         n.iter=1000, n.burnin=100, n.thin=2, n.chains=1, DIC=TRUE) {
+                         n.iter=1e5, n.burnin=5000, n.thin=2, n.chains=1, DIC=TRUE) {
 
   attach(data.train)
 
@@ -83,6 +79,7 @@ fit_TOP_jags <- function(data.train, TOP.model, parameters.to.save,
                     'cell_type_id', 'tf_id',
                     'N', 'n_tfs', 'n_cell_types')
 
+  ## using R2jags
   jags_fit <- jags(data = jags.data, parameters.to.save, TOP.model,
                   n.iter, n.burnin, n.thin, n.chains, DIC)
 
