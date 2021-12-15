@@ -3,7 +3,7 @@
 #' @description Predict TF occupancy using posterior samples of regression
 #' coefficients trained from the TOP model
 #'
-#' @param data A data frame or matrix. Columns are motif score and DNase features.
+#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
 #' Rows are candidate sites.
 #' @param alpha_samples posterior samples of alpha
 #' @param beta_samples posterior samples of beta
@@ -13,14 +13,15 @@
 #' @param average_parameters logicals. If TRUE, uses the posterior mean of
 #' regression coefficients to make predictions.
 #' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Default: transform = "asinh".
+#' the TOP model. Options: asinh, log2, log, none.
 #'
 #' @return The function returns a vector of predicted TF occupancy.
 #' @export
-predict_TOP <- function(data, alpha_samples, beta_samples, tau_samples,
-                        sample = TRUE, average_parameters = FALSE, transform = 'asinh'){
+predict_TOP_samples <- function(data, alpha_samples, beta_samples, tau_samples,
+                                sample = TRUE, average_parameters = FALSE,
+                                transform = c('asinh', 'log2', 'log', 'none')){
 
-  # the mean of the posterior norm is x %*% beta + alpha
+  transform <- match.arg(transform)
 
   coefficients <- t(cbind(alpha_samples, beta_samples))
 
@@ -49,17 +50,19 @@ predict_TOP <- function(data, alpha_samples, beta_samples, tau_samples,
 
   if(transform == 'asinh'){
     predictions <- sinh(predictions)
-  }else if (transform == 'log2'){ # log2(y+1)
+  }else if (transform == 'log2'){
+    # log2(y+1)
     predictions <- 2^predictions - 1
-  }else if (transform == 'log'){ # log(y+1)
+  }else if (transform == 'log'){
+    # log(y+1)
     predictions <- exp(predictions) - 1
-  }else if (transform == ''){ # no transform
-    cat('No transform done. \n')
-  }else{
-    warning('No transform done. Please check the transform method! \n')
+  }else if (transform == 'none'){
+    # no transform
+    # cat('No transform done. \n')
   }
 
   return(predictions)
+
 }
 
 
@@ -67,25 +70,28 @@ predict_TOP <- function(data, alpha_samples, beta_samples, tau_samples,
 #' @description Predict TF occupancy using posterior mean of regression
 #' coefficients trained from the TOP model
 #'
-#' @param data A data frame or matrix. Columns are motif score and DNase features.
+#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
 #' Rows are candidate sites.
-#' @param coef_mean A numeric vector. The posterior mean of trained regression
+#' @param mean_coef A numeric vector. The posterior mean of trained regression
 #' coefficients, including the intercept and coefficients for motif score and
 #' DNase features.
-#' length(coef_mean) should be equal to 1+ncol(data).
+#' length(mean_coef) should be equal to 1+ncol(data).
 #' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Default: transform = "asinh".
+#' the TOP model. Options: asinh, log2, log, none.
 #'
 #' @return The function returns a vector of predicted TF occupancy.
+#'
 #' @export
-predict_TOP_coef_mean <- function(data, coef_mean, transform = 'asinh'){
+predict_TOP_mean_coef <- function(data, mean_coef, transform = c('asinh', 'log2', 'log', 'none')){
 
-  if((ncol(data)+1) != length(coef_mean)){
-    stop('The number of coefficients is not equal to the number of data columns + 1!')
+  transform <- match.arg(transform)
+
+  if((ncol(data)+1) != length(mean_coef)){
+    stop('The number of coefficients should be equal to
+         the number of data columns + 1 (intercept)!')
   }
 
-  # the mean of the posterior norm is alpha + X %*% beta
-  coefficients <- as.matrix(coef_mean, ncol = 1)
+  coefficients <- as.matrix(mean_coef, ncol = 1)
 
   data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
 
@@ -97,13 +103,46 @@ predict_TOP_coef_mean <- function(data, coef_mean, transform = 'asinh'){
     predictions <- 2^predictions - 1
   }else if (transform == 'log'){ # log(y+1)
     predictions <- exp(predictions) - 1
-  }else if (transform == ''){ # no transform
-    cat('Do not transform predictions. \n')
-  }else{
-    warning('No transform done. Please check the transform method! \n')
+  }else if (transform == 'none'){ # no transform
+    # cat('Do not transform predictions. \n')
   }
 
   return(predictions)
+
+}
+
+
+#' @title Predict TF binding by TOP logistic model
+#' with posterior mean of regression coefficients
+#' @description Predict TF binding using posterior mean of the regression
+#' coefficients trained from TOP logistic model
+#'
+#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
+#' Rows are candidate sites.
+#' @param mean_coef A numeric vector. The posterior mean of trained regression
+#' coefficients, including the intercept and coefficients for motif score and
+#' DNase features.
+#' length(mean_coef) should be equal to 1+ncol(data).
+#'
+#' @return The function returns a vector of predicted TF binding probabilities
+#'
+#' @export
+predict_TOP_logistic_mean_coef <- function(data, mean_coef){
+
+  if((ncol(data)+1) != length(mean_coef)){
+    stop('The number of coefficients should be equal to
+         the number of data columns + 1 (intercept)!')
+  }
+
+  coefficients <- as.matrix(mean_coef, ncol = 1)
+
+  data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
+
+  mu <- as.numeric(data %*% coefficients)
+
+  p <- 1 / (1 + exp(-mu)) # inverse logit
+
+  return(p)
 
 }
 
