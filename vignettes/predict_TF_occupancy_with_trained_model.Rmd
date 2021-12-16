@@ -1,5 +1,5 @@
 ---
-title: "Predict TF occupancy using trained TOP model"
+title: 'Predict TF occupancy using trained TOP model'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Predict TF occupancy using trained TOP model}
@@ -10,54 +10,61 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = '#>'
 )
 ```
 
-## Install `TOP` R package
-```{r install_TOP, eval = FALSE}
+Install TOP R package
+---------------------
+```{r install-TOP-package, eval = FALSE}
 install.packages("devtools")
 library(devtools)
 devtools::install_github("kevinlkx/TOP")
+```
+
+Load TOP R package
+---------------------
+```{r load-TOP-package, eval = FALSE}
 library(TOP)
 ```
 
-## Prepare data
-For each TF in each cell type, prepare data for candidate binding sites, including: PWM scores and DNase bins (using MILLIPEDE binning).
+Input data
+-----------
+The input data should be a data frame, including six columns.
 
-You can follow this [pipeline](./doc/preprocessing.html) to obtain candidate binding sites and get DNase bins using DNase-seq bam files. 
+Columns from left to right should be PWM scores and 5 DNase (or ATAC) bins. 
 
-You can also use your own pipelines to obtain matrices of DNase cuts (and normalize by library size, etc.), and use our function `millipede_bin_dnase` or `MILLIPEDE` software to bin DNase data with `MILLIPEDE` binning scheme.
+You can follow this [page](./doc/preprocessing.html) to prepare the input data. 
 
-## Get pre-trained `TOP` model
+Download pre-trained TOP models
+--------------------------------
+We will provide pre-trained models using ENCODE data 
+[here](https://users.cs.duke.edu/~amink/software/).
 
-You can download pre-trained `TOP` model from the `data` directory.
+Predict TF occupancy using trained TOP model
+------------------------------------------------
 
-## Predict TF occupancy using trained `TOP` model
+Predict TF occupancy using trained TOP regression coefficients
 
-Option 1: Predict TF occupancy using posterior samples of regression coefficients trained from the TOP model
-
-* Pre-trained TOP model are in the directory: ../data/samples/
-
-```{r predict, eval = FALSE}
-# data: data frame or matrix. Columns are motif score and DNase features. Rows are candidate sites.
-# alpha_samples: posterior samples of alpha
-# beta_samples: posterior samples of beta
-# tau_samples: posterior samples of tau
-# sample: logicals. If TRUE, samples from posterior predictions and then take the mean of posterior prediction samples.
-# average_parameters: logicals. If TRUE, uses the posterior mean of regression coefficients to make predictions.
-# transform: method used to transform ChIP-seq counts when training the TOP model. Default: transform = "asinh".
-predict_TOP(data, alpha_samples, beta_samples, tau_samples, sample = TRUE, average_parameters = FALSE, transform = 'asinh')
+```{r predict-TOP-mean-coef, eval = FALSE}
+predictions <- predict_TOP(data, TOP_mean_coef, logistic.model = FALSE,
+                           posterior.option = 'mean', transform = 'asinh')
 ```
 
-Option 2: Predict TF occupancy using posterior mean of regression coefficients trained from the TOP model
+<!-- Option 2: Predict TF occupancy using the posterior samples of  -->
+<!-- regression coefficients trained from the TOP model -->
 
-* Pre-trained TOP model are in the directory: ../data/coefficients/
+<!-- ```{r predict-TOP-samples, eval = FALSE} -->
+<!-- predictions <- predict_TOP(data, TOP_samples, logistic.model = FALSE, -->
+<!--                            posterior.option = 'samples', transform = 'asinh') -->
+<!-- ``` -->
 
-```{r predict_, eval = FALSE}
-# data: data frame or matrix. Columns are motif score and DNase features. Rows are candidate sites.
-# coef_mean: numeric vector. The posterior mean of trained regression coefficients, including the intercept and coefficients for motif score and DNase features. length(coef_mean) should be equal to 1+ncol(data).
-# transform: method used to transform ChIP-seq counts when training the TOP model. Default: transform = "asinh".
-predict_TOP_coef_mean(data, top_coef_mean, transform = 'asinh')
+Predict TF binding probability using trained TOP logistic model
+------------------------------------------------------------------
+
+Predict TF binding probability using trained TOP logistic regression coefficients
+
+```{r predict-TOP-logistic-mean-coef, eval = FALSE}
+predictions <- predict_TOP(data, TOP_logistic_mean_coef, 
+                           logistic.model = TRUE, posterior.option = 'mean')
 ```
-
