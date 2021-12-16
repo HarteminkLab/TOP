@@ -1,52 +1,4 @@
 
-#' @title Combine training data from TF x cell type combos
-#'
-#' @param tf_cell_table a data frame with TF name, PWM name, cell type, and link to the training data with PWM, DNase and ChIP data.
-#' @param total_partition split the data into partitions (default = 10) and run Gibbs sampling in parallel.
-#' @param n_part which partition to use for training the model
-#'
-#' @return The function returns a data frame of training data with all TFs and cell type combos.
-#' @export
-combine_training_data <- function(tf_cell_table, total_partition = 10, n_part = 1) {
-
-  n_data_read = 0
-
-  combined_data <- list()
-  for(i in 1:nrow(tf_cell_table)) {
-
-    tf_name <- as.character(tf_cell_table$tf_name[i])
-    pwm_name <- as.character(tf_cell_table$pwm_name[i])
-    cell_type <- as.character(tf_cell_table$cell_type[i])
-    data_file <- as.character(tf_cell_table$data_file[i])
-
-    if(!file.exists(data_file)){
-      stop(data_file, 'not exist!')
-    }
-
-    data <- read.table(data_file, header = TRUE, stringsAsFactors = FALSE)
-
-    part_length <- as.integer(nrow(data) / total_partition) + 1
-    selection <- (1 + (n_part - 1) * part_length):min(nrow(data), n_part*part_length)
-
-    data <- data[selection, ]
-    cat(tf_name, cell_type, ':', nrow(data), 'sites \n')
-    data$tf <- tf_name
-    data$cell_type <- cell_type
-    combined_data[[ paste(tf_name, cell_type, sep = '|') ]] <- data
-    n_data_read = n_data_read + 1
-
-  }
-
-  cat('Loaded', n_data_read, 'datasets.\n')
-
-  ## row combine all data
-  combined_data <- do.call(rbind, combined_data)
-  row.names(combined_data) <- NULL
-
-  return(combined_data)
-
-}
-
 #' @title Fit TOP model
 #'
 #' @param data combined training data.
@@ -55,23 +7,20 @@ combine_training_data <- function(tf_cell_table, total_partition = 10, n_part = 
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' @param n.thin thinning rate, must be a positive integer.
 #' @param n.chains number of Markov chains.
-#' @param DIC logical; if TRUE (default), compute deviance, pD, and DIC.
 #'
 #' @importFrom R2jags jags
 #'
 #' @export
-#'
-fit_TOP_M5_model <- function(data, model,
-                             n.iter=10000, n.burnin=5000, n.thin=10, n.chains=1,
-                             DIC=TRUE) {
+fit_TOP_M5_model <- function(data,
+                             model.file,
+                             n.iter=10000,
+                             n.burnin=5000,
+                             n.chains=3,
+                             n.thin=10) {
 
   if(!all(c('pmw',paste0('bin', 1:5),'chip','tf_id','cell_id') %in% colnames(data))){
     stop('Check colnames of the data! \n')
   }
-  # Check column names
-  # colnames(data)[grep('pwm', colnames(data), ignore.case = T)] <- 'pwm'
-  # colnames(data)[grep('dnase|atac', colnames(data), ignore.case = T)] <- paste0('bin', 1:5)
-  # colnames(data)[grep('chip', colnames(data), ignore.case = T)] <- 'chip'
 
   # Training data
   training_data <- list(pwm = data$pwm,
@@ -97,8 +46,13 @@ fit_TOP_M5_model <- function(data, model,
   ## Fit Top M5 model using R2jags
   cat('Fit TOP M5 model... \n')
 
-  jags_fit <- jags(data = training_data, model_params, model,
-                  n.iter, n.burnin, n.thin, n.chains, DIC)
+  jags_fit <- jags(data = training_data,
+                   parameters.to.save = model_params,
+                   model.file = model.file,
+                   n.iter = n.iter,
+                   n.burnin = n.burnin,
+                   n.thin = n.thin,
+                   n.chains = n.chains)
 
   return(jags_fit)
 
@@ -111,25 +65,23 @@ fit_TOP_M5_model <- function(data, model,
 #' @param model TOP logistic model (written in BUGS code).
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
-#' @param n.thin thinning rate, must be a positive integer.
 #' @param n.chains number of Markov chains.
-#' @param DIC logical; if TRUE (default), compute deviance, pD, and DIC.
+#' @param n.thin thinning rate, must be a positive integer.
 #'
 #' @importFrom R2jags jags
 #'
 #' @export
 #'
-fit_TOP_logistic_M5_model <- function(data, model,
-                                      n.iter=10000, n.burnin=5000, n.thin=10, n.chains=1,
-                                      DIC=TRUE) {
+fit_TOP_logistic_M5_model <- function(data,
+                                      model.file,
+                                      n.iter=10000,
+                                      n.burnin=5000,
+                                      n.chains=3,
+                                      n.thin=10) {
 
-  if(!all(c('pmw',paste0('bin', 1:5),'chip','tf_id','cell_id') %in% colnames(data))){
+  if(!all(c('pmw',paste0('bin', 1:5),'chip_label','tf_id','cell_id') %in% colnames(data))){
     stop('Check colnames of the data! \n')
   }
-  # Check column names
-  # colnames(data)[grep('pwm', colnames(data), ignore.case = T)] <- 'pwm'
-  # colnames(data)[grep('dnase|atac', colnames(data), ignore.case = T)] <- paste0('bin', 1:5)
-  # colnames(data)[grep('chip', colnames(data), ignore.case = T)] <- 'chip'
 
   # Training data
   training_data <- list(pwm = data$pwm,
@@ -154,8 +106,13 @@ fit_TOP_logistic_M5_model <- function(data, model,
   ## Fit Top M5 model using R2jags
   cat('Fit TOP logistic M5 model... \n')
 
-  jags_fit <- jags(data = training_data, model_params, model,
-                   n.iter, n.burnin, n.thin, n.chains, DIC)
+  jags_fit <- jags(data = training_data,
+                   parameters.to.save = model_params,
+                   model.file = model.file,
+                   n.iter = n.iter,
+                   n.burnin = n.burnin,
+                   n.thin = n.thin,
+                   n.chains = n.chains)
 
   return(jags_fit)
 
