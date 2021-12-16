@@ -1,40 +1,94 @@
 
+#' @title Predict quantitative TF occupancy or TF binding probability
+#' @description Predict quantitative TF occupancy or TF binding probability
+#' using TOP model trained from ChIP-seq read counts or binary labels.
+#'
+#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
+#' Rows are candidate sites.
+#' @param TOP_model TOP posterior samples or posterior mean of regression
+#' coefficients.
+#' @logistic.model If TRUE, use logistic version of the model
+#' to predict TF binding probability.
+#' @param posterior.option "samples": uses posterior samples, "mean": uses posterior mean of
+#' trained regression coefficients
+#' @param transform Method used to transform ChIP-seq counts when training
+#' the TOP quantitative model. Options: asinh, log2, log, none.
+#' This does not apply to the logistic version.
+#'
+#' @return The function returns a vector of predicted TF occupancy.
+#' @export
+predict_TOP <- function(data,
+                        TOP_model,
+                        logistic.model = FALSE,
+                        posterior.option = c("samples", "mean"),
+                        transform = c('asinh', 'log2', 'log', 'none')){
+
+  posterior.option <- match.arg(posterior.option)
+
+  if(logistic.model == FALSE) {
+    transform <- match.arg(transform)
+    if ( posterior.option == 'samples' ) {
+      predictions <- predict_TOP_samples(data, TOP_model, transform = transform)
+    } else if ( posterior.option == 'mean' ) {
+      predictions <- predict_TOP_mean_coef(data, TOP_model, transform = transform)
+    } else{
+      stop('posterior.option needs to be samples or mean!')
+    }
+  }else if (logistic.model == TRUE){
+    if ( posterior.option == 'mean' ) {
+      predictions <- predict_TOP_logistic_samples(data, TOP_model)
+    } else if ( posterior.option == 'mean' ) {
+      predictions <- predict_TOP_logistic_mean_coef(data, TOP_model)
+    }else{
+      stop('posterior.option needs to be samples or mean!')
+    }
+  }
+
+  return(predictions)
+
+}
+
+
 #' @title Predict TF occupancy using posterior samples of regression coefficients
 #' @description Predict TF occupancy using posterior samples of regression
 #' coefficients trained from the TOP model
 #'
 #' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
 #' Rows are candidate sites.
-#' @param alpha_samples posterior samples of alpha
-#' @param beta_samples posterior samples of beta
-#' @param tau_samples posterior samples of tau
-#' @param sample logicals. If TRUE, samples from posterior predictions and then
+#' @param TOP_samples TOP posterior samples
+#' @param sample If TRUE, sample from posterior predictions and then
 #' take the mean of posterior prediction samples.
-#' @param average_parameters logicals. If TRUE, uses the posterior mean of
+#' @param average_parameters If TRUE, uses the posterior mean of
 #' regression coefficients to make predictions.
 #' @param transform Method used to transform ChIP-seq counts when training
 #' the TOP model. Options: asinh, log2, log, none.
 #'
 #' @return The function returns a vector of predicted TF occupancy.
 #' @export
-predict_TOP_samples <- function(data, alpha_samples, beta_samples, tau_samples,
-                                sample = TRUE, average_parameters = FALSE,
+predict_TOP_samples <- function(data,
+                                TOP_samples,
+                                use_posterior_mean = FALSE,
+                                sample_predictions = TRUE,
                                 transform = c('asinh', 'log2', 'log', 'none')){
 
   transform <- match.arg(transform)
 
-  coefficients <- t(cbind(alpha_samples, beta_samples))
+  alpha_samples <- TOP_samples$alpha_samples
+  beta_samples  <- TOP_samples$beta_samples
+  tau_samples   <- TOP_samples$tau_samples
+
+  coefficients  <- t(cbind(alpha_samples, beta_samples))
 
   data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
 
-  if(average_parameters){
+  if(use_posterior_mean){
     coefficients <- apply(coefficients, 1, mean)
     means <- data %*% coefficients
     predictions <- as.numeric(means)
   }else{
     means <- data %*% coefficients
 
-    if(sample){
+    if(sample_predictions){
       sds <- 1 / sqrt(tau_samples)
 
       n_data <- nrow(data)
@@ -82,7 +136,9 @@ predict_TOP_samples <- function(data, alpha_samples, beta_samples, tau_samples,
 #' @return The function returns a vector of predicted TF occupancy.
 #'
 #' @export
-predict_TOP_mean_coef <- function(data, mean_coef, transform = c('asinh', 'log2', 'log', 'none')){
+predict_TOP_mean_coef <- function(data,
+                                  mean_coef,
+                                  transform = c('asinh', 'log2', 'log', 'none')){
 
   transform <- match.arg(transform)
 
@@ -110,7 +166,6 @@ predict_TOP_mean_coef <- function(data, mean_coef, transform = c('asinh', 'log2'
   return(predictions)
 
 }
-
 
 #' @title Predict TF binding by TOP logistic model
 #' with posterior mean of regression coefficients
