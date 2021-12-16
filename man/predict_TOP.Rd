@@ -2,41 +2,34 @@
 % Please edit documentation in R/predict_occupancy.R
 \name{predict_TOP}
 \alias{predict_TOP}
-\title{Predict TF occupancy using posterior samples of regression coefficients}
+\title{Predict quantitative TF occupancy or TF binding probability}
 \usage{
 predict_TOP(
   data,
-  alpha_samples,
-  beta_samples,
-  tau_samples,
-  sample = TRUE,
-  average_parameters = FALSE,
-  transform = "asinh"
+  TOP_model,
+  logistic.model = FALSE,
+  posterior.option = c("samples", "mean"),
+  transform = c("asinh", "log2", "log", "none")
 )
 }
 \arguments{
-\item{data}{A data frame or matrix. Columns are motif score and DNase features.
+\item{data}{A data frame. Columns are motif score and DNase (or ATAC) bins.
 Rows are candidate sites.}
 
-\item{alpha_samples}{posterior samples of alpha}
+\item{TOP_model}{TOP posterior samples or posterior mean of regression
+coefficients.}
 
-\item{beta_samples}{posterior samples of beta}
-
-\item{tau_samples}{posterior samples of tau}
-
-\item{sample}{logicals. If TRUE, samples from posterior predictions and then
-take the mean of posterior prediction samples.}
-
-\item{average_parameters}{logicals. If TRUE, uses the posterior mean of
-regression coefficients to make predictions.}
+\item{posterior.option}{"samples": uses posterior samples, "mean": uses posterior mean of
+trained regression coefficients}
 
 \item{transform}{Method used to transform ChIP-seq counts when training
-the TOP model. Default: transform = "asinh".}
+the TOP quantitative model. Options: asinh, log2, log, none.
+This does not apply to the logistic version.}
 }
 \value{
 The function returns a vector of predicted TF occupancy.
 }
 \description{
-Predict TF occupancy using posterior samples of regression
-coefficients trained from the TOP model
+Predict quantitative TF occupancy or TF binding probability
+using TOP model trained from ChIP-seq read counts or binary labels.
 }
