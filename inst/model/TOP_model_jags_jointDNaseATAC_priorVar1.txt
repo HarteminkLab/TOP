@@ -1,0 +1,74 @@
+
+## TOP joint DNase & ATAC model
+
+model {
+  for (i in 1:N) {
+
+    chip[i] ~ dnorm(  mu[i],  tau[tf[i], cell_type[i]] )
+
+    mu[i] <- alpha[tf[i], cell_type[i]] +
+             beta1[tf[i], cell_type[i]] * pwm[i] +
+             beta2[tf[i], cell_type[i]] * dnase.bin1[i] +
+             beta3[tf[i], cell_type[i]] * dnase.bin2[i] +
+             beta4[tf[i], cell_type[i]] * dnase.bin3[i] +
+             beta5[tf[i], cell_type[i]] * dnase.bin4[i] +
+             beta6[tf[i], cell_type[i]] * dnase.bin5[i] +
+             beta7[tf[i], cell_type[i]] * atac.bin1[i] +
+             beta8[tf[i], cell_type[i]] * atac.bin2[i] +
+             beta9[tf[i], cell_type[i]] * atac.bin3[i] +
+             beta10[tf[i], cell_type[i]] * atac.bin4[i] +
+             beta11[tf[i], cell_type[i]] * atac.bin5[i]
+
+  }
+
+  for (j in 1:n_tfs) {
+    for(k in 1:n_cell_types) {
+
+      alpha[j, k] ~ dnorm(Alpha[j], 1)
+      beta1[j, k] ~ dnorm(Beta1[j], 1)
+      beta2[j, k] ~ dnorm(Beta2[j], 1)
+      beta3[j, k] ~ dnorm(Beta3[j], 1)
+      beta4[j, k] ~ dnorm(Beta4[j], 1)
+      beta5[j, k] ~ dnorm(Beta5[j], 1)
+      beta6[j, k] ~ dnorm(Beta6[j], 1)
+      beta7[j, k] ~ dnorm(Beta7[j], 1)
+      beta8[j, k] ~ dnorm(Beta8[j], 1)
+      beta9[j, k] ~ dnorm(Beta9[j], 1)
+      beta10[j, k] ~ dnorm(Beta10[j], 1)
+      beta11[j, k] ~ dnorm(Beta11[j], 1)
+      tau[j, k] ~ dgamma(T[j]^2, T[j])
+
+    }
+  }
+
+  for (l in 1:n_tfs) {
+    Alpha[l] ~ dnorm(A, 1)
+    Beta1[l] ~ dnorm(B1, 1)
+    Beta2[l] ~ dnorm(B2, 1)
+    Beta3[l] ~ dnorm(B3, 1)
+    Beta4[l] ~ dnorm(B4, 1)
+    Beta5[l] ~ dnorm(B5, 1)
+    Beta6[l] ~ dnorm(B6, 1)
+    Beta7[l] ~ dnorm(B7, 1)
+    Beta8[l] ~ dnorm(B8, 1)
+    Beta9[l] ~ dnorm(B9, 1)
+    Beta10[l] ~ dnorm(B10, 1)
+    Beta11[l] ~ dnorm(B11, 1)
+    T[l] ~ dgamma(TAU^2, TAU)
+  }
+
+  A ~ dnorm(0, 1)
+  B1 ~ dnorm(0, 1)
+  B2 ~ dnorm(0, 1)
+  B3 ~ dnorm(0, 1)
+  B4 ~ dnorm(0, 1)
+  B5 ~ dnorm(0, 1)
+  B6 ~ dnorm(0, 1)
+  B7 ~ dnorm(0, 1)
+  B8 ~ dnorm(0, 1)
+  B9 ~ dnorm(0, 1)
+  B10 ~ dnorm(0, 1)
+  B11 ~ dnorm(0, 1)
+  TAU ~ dgamma(1, 1)
+
+}

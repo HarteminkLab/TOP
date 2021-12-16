@@ -1,0 +1,126 @@
+
+## TOP joint DNase & ATAC model
+
+model {
+  for (i in 1:N) {
+
+    chip[i] ~ dnorm(  mu[i],  tau[tf[i], cell_type[i]] )
+
+    mu[i] <- alpha[tf[i], cell_type[i]] +
+             beta1[tf[i], cell_type[i]] * pwm[i] +
+             beta2[tf[i], cell_type[i]] * dnase.bin1[i] +
+             beta3[tf[i], cell_type[i]] * dnase.bin2[i] +
+             beta4[tf[i], cell_type[i]] * dnase.bin3[i] +
+             beta5[tf[i], cell_type[i]] * dnase.bin4[i] +
+             beta6[tf[i], cell_type[i]] * dnase.bin5[i] +
+             beta7[tf[i], cell_type[i]] * atac.bin1[i] +
+             beta8[tf[i], cell_type[i]] * atac.bin2[i] +
+             beta9[tf[i], cell_type[i]] * atac.bin3[i] +
+             beta10[tf[i], cell_type[i]] * atac.bin4[i] +
+             beta11[tf[i], cell_type[i]] * atac.bin5[i]
+
+  }
+
+  for (j in 1:n_tfs) {
+    for(k in 1:n_cell_types) {
+
+      alpha[j, k] ~ dnorm(Alpha[j], tau_alpha)
+      beta1[j, k] ~ dnorm(Beta1[j], tau_beta1)
+      beta2[j, k] ~ dnorm(Beta2[j], tau_beta2)
+      beta3[j, k] ~ dnorm(Beta3[j], tau_beta3)
+      beta4[j, k] ~ dnorm(Beta4[j], tau_beta4)
+      beta5[j, k] ~ dnorm(Beta5[j], tau_beta5)
+      beta6[j, k] ~ dnorm(Beta6[j], tau_beta6)
+      beta7[j, k] ~ dnorm(Beta7[j], tau_beta7)
+      beta8[j, k] ~ dnorm(Beta8[j], tau_beta8)
+      beta9[j, k] ~ dnorm(Beta9[j], tau_beta9)
+      beta10[j, k] ~ dnorm(Beta10[j], tau_beta10)
+      beta11[j, k] ~ dnorm(Beta11[j], tau_beta11)
+      tau[j, k] ~ dgamma(T[j]^2, T[j])
+
+    }
+  }
+
+  for (l in 1:n_tfs) {
+    Alpha[l] ~ dnorm(A, tau_Alpha)
+    Beta1[l] ~ dnorm(B1, tau_Beta1)
+    Beta2[l] ~ dnorm(B2, tau_Beta2)
+    Beta3[l] ~ dnorm(B3, tau_Beta3)
+    Beta4[l] ~ dnorm(B4, tau_Beta4)
+    Beta5[l] ~ dnorm(B5, tau_Beta5)
+    Beta6[l] ~ dnorm(B6, tau_Beta6)
+    Beta7[l] ~ dnorm(B7, tau_Beta7)
+    Beta8[l] ~ dnorm(B8, tau_Beta8)
+    Beta9[l] ~ dnorm(B9, tau_Beta9)
+    Beta10[l] ~ dnorm(B10, tau_Beta10)
+    Beta11[l] ~ dnorm(B11, tau_Beta11)
+    T[l] ~ dgamma(TAU^2, TAU)
+  }
+
+  A ~ dnorm(0, 1)
+  B1 ~ dnorm(0, 1)
+  B2 ~ dnorm(0, 1)
+  B3 ~ dnorm(0, 1)
+  B4 ~ dnorm(0, 1)
+  B5 ~ dnorm(0, 1)
+  B6 ~ dnorm(0, 1)
+  B7 ~ dnorm(0, 1)
+  B8 ~ dnorm(0, 1)
+  B9 ~ dnorm(0, 1)
+  B10 ~ dnorm(0, 1)
+  B11 ~ dnorm(0, 1)
+  TAU ~ dgamma(1, 1)
+
+  tau_alpha ~ dgamma(1, 1)
+  tau_beta1 ~ dgamma(1, 1)
+  tau_beta2 ~ dgamma(1, 1)
+  tau_beta3 ~ dgamma(1, 1)
+  tau_beta4 ~ dgamma(1, 1)
+  tau_beta5 ~ dgamma(1, 1)
+  tau_beta6 ~ dgamma(1, 1)
+  tau_beta7 ~ dgamma(1, 1)
+  tau_beta8 ~ dgamma(1, 1)
+  tau_beta9 ~ dgamma(1, 1)
+  tau_beta10 ~ dgamma(1, 1)
+  tau_beta11 ~ dgamma(1, 1)
+
+  sig_alpha <- sqrt(1 / tau_alpha)
+  sig_beta1 <- sqrt(1 / tau_beta1)
+  sig_beta2 <- sqrt(1 / tau_beta2)
+  sig_beta3 <- sqrt(1 / tau_beta3)
+  sig_beta4 <- sqrt(1 / tau_beta4)
+  sig_beta5 <- sqrt(1 / tau_beta5)
+  sig_beta6 <- sqrt(1 / tau_beta6)
+  sig_beta7 <- sqrt(1 / tau_beta7)
+  sig_beta8 <- sqrt(1 / tau_beta8)
+  sig_beta9 <- sqrt(1 / tau_beta9)
+  sig_beta10 <- sqrt(1 / tau_beta10)
+  sig_beta11 <- sqrt(1 / tau_beta11)
+
+  tau_Alpha ~ dgamma(1, 1)
+  tau_Beta1 ~ dgamma(1, 1)
+  tau_Beta2 ~ dgamma(1, 1)
+  tau_Beta3 ~ dgamma(1, 1)
+  tau_Beta4 ~ dgamma(1, 1)
+  tau_Beta5 ~ dgamma(1, 1)
+  tau_Beta6 ~ dgamma(1, 1)
+  tau_Beta7 ~ dgamma(1, 1)
+  tau_Beta8 ~ dgamma(1, 1)
+  tau_Beta9 ~ dgamma(1, 1)
+  tau_Beta10 ~ dgamma(1, 1)
+  tau_Beta11 ~ dgamma(1, 1)
+
+  sig_Alpha <- sqrt(1 / tau_Alpha)
+  sig_Beta1 <- sqrt(1 / tau_Beta1)
+  sig_Beta2 <- sqrt(1 / tau_Beta2)
+  sig_Beta3 <- sqrt(1 / tau_Beta3)
+  sig_Beta4 <- sqrt(1 / tau_Beta4)
+  sig_Beta5 <- sqrt(1 / tau_Beta5)
+  sig_Beta6 <- sqrt(1 / tau_Beta6)
+  sig_Beta7 <- sqrt(1 / tau_Beta7)
+  sig_Beta8 <- sqrt(1 / tau_Beta8)
+  sig_Beta9 <- sqrt(1 / tau_Beta9)
+  sig_Beta10 <- sqrt(1 / tau_Beta10)
+  sig_Beta11 <- sqrt(1 / tau_Beta11)
+
+}
