@@ -1,4 +1,5 @@
-#' @title Remove the overlapping site with lower occupancy
+#' @title Sort and merge the overlapping sites,
+#' remove the overlapping sites with lower occupancy
 #'
 #' @param predicted_bedgraph.df predicted TF occupancy in bedgraph format
 #'
@@ -12,12 +13,9 @@ sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
   idx_overlap <- which(starts.df$start - ends.df$end <= 0 & starts.df$chr == ends.df$chr) + 1
 
   if(length(idx_overlap) == 0){
-    # cat('No overlapping sites \n')
     return(predicted_bedgraph_sorted.df)
   }else{
-    # cat(length(idx_overlap), 'overlapping sites \n')
-
-    ## remove the overlapping site with lower occupancy
+    # remove the overlapping sites with lower occupancy
     idx_min_occ <- c()
     for(i in idx_overlap){
       if(predicted_bedgraph_sorted.df[i-1, 4] < predicted_bedgraph_sorted.df[i, 4]){
@@ -26,7 +24,6 @@ sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
         idx_min_occ <- c(idx_min_occ, i)
       }
     }
-    # cat('Remove site:', idx_min_occ, '\n')
     return(sort_merge_overlap_bedgraph(predicted_bedgraph_sorted.df[-idx_min_occ, ]))
 
   }
@@ -45,7 +42,8 @@ sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
 #'
 #' @return
 #'
-track_def_line <- function(tf_name, pwm_id, cell_type, rep_name, type_model, viewMax = 100, mycolor = '0,0,0'){
+track_def_line <- function(tf_name, pwm_id, cell_type, rep_name, type_model,
+                           viewMax = 100, mycolor = '0,0,0'){
   track_name <- paste(tf_name, cell_type, rep_name, 'predicted occupancy')
   track_description <- paste(tf_name, pwm_id, cell_type, rep_name, type_model, 'predicted occupancy')
   track_options <- paste0(' visibility=full color=', mycolor,
