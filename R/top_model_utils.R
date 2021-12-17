@@ -96,7 +96,7 @@ extract_TOP_coef_samples <- function(TOP_samples,
     # specific for each TF and cell type combination
     data_id <- sprintf('[%s,%s]', tf_id, cell_id)
     coef_names <- c(paste0('alpha', data_id), paste0('beta', 1:(1+n.bins), data_id))
-    coef_samples <- TOP_samples[, coef_names]
+    TOP_coef_samples <- TOP_samples[, coef_names]
 
   }else if( level == 'middle' && !missing(tf_name) ){
     tf_id <- tf_cell_combos$tf_id[tf_cell_combos$tf_name == tf_name][1]
@@ -104,16 +104,16 @@ extract_TOP_coef_samples <- function(TOP_samples,
     # Alpha and Beta's are TF specific, cell-type-generic model coefficients
     data_id <- sprintf('[%s]', tf_id)
     coef_names <- c(paste0('Alpha', data_id), paste0('Beta', 1:(1+n.bins), data_id))
-    coef_samples <- TOP_samples[, coef_names]
+    TOP_coef_samples <- TOP_samples[, coef_names]
 
   }else if(level == 'top'){
     # A and B's are TF-generic model coefficients
     coef_names <- c('A', paste0('B', 1:(1+n.bins)))
-    coef_samples <- TOP_samples[, coef_names]
+    TOP_coef_samples <- TOP_samples[, coef_names]
 
   }
 
-  return(coef_samples)
+  return(TOP_coef_samples)
 
 }
 
