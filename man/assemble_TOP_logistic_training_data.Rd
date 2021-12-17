@@ -12,21 +12,23 @@ assemble_TOP_logistic_training_data(
   training_chrs = paste0("chr", seq(1, 21, 2)),
   sites_limit = Inf,
   total_partitions = 10,
-  n_part = 1
+  k = 1
 )
 }
 \arguments{
-\item{tf_cell_table}{a data frame with TF name, PWM name, cell type, and link to the training data with PWM, DNase and ChIP data.}
+\item{tf_cell_table}{a data frame with TF name, cell type,
+and links to the training data files.}
 
 \item{chiplabel_colname}{The column name of ChIP peak label in the combined data.}
 
 \item{training_chrs}{Chromosomes used for training the model.}
 
-\item{sites_limit}{Max number of candidate sites in training data for each TF x cell type combo.}
+\item{sites_limit}{Max number of candidate sites in each partition.}
 
-\item{total_partitions}{split the data into partitions (default = 10) to run Gibbs sampling in parallel.}
+\item{total_partitions}{split the data into partitions (default = 10)
+to run Gibbs sampling in parallel.}
 
-\item{n_part}{which partition to use for training the model}
+\item{k}{which partition to use for training the model}
 }
 \value{
 Returns a data frame of training data with all TFs and cell type combos.
