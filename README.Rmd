@@ -28,6 +28,14 @@ for many TFs using data from a single DNase- or ATAC-seq experiment.
 
 [R package](https://kevinlkx.github.io/TOP/)
 
+```{r install-R-package, eval=FALSE}
+install.packages("devtools")
+library(devtools)
+
+devtools::install_github("kevinlkx/TOP")
+
+library(TOP)
+```
 
 **Reference**
 

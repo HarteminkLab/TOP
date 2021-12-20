@@ -17,6 +17,15 @@ experiment.
 
 [R package](https://kevinlkx.github.io/TOP/)
 
+``` r
+install.packages("devtools")
+library(devtools)
+
+devtools::install_github("kevinlkx/TOP")
+
+library(TOP)
+```
+
 **Reference**
 
 -   Luo, K., Zhong, J., Safi, A., Hong, L., Tewari, A., Song, L., Reddy,
