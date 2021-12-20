@@ -6,5 +6,8 @@ articles:
   installation: installation.html
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_model_JAGS: train_TOP_model_JAGS.html
-last_built: 2021-12-20T05:15Z
+last_built: 2021-12-20T05:29Z
+urls:
+  reference: https://kevinlkx.github.io/TOP_R_package/reference
+  article: https://kevinlkx.github.io/TOP_R_package/articles
 
