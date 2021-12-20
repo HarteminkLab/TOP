@@ -3,6 +3,8 @@
 #'
 #' @param fimo_file FIMO result .txt file
 #' @param flank Flanking region (bp) around motif matches (default: 100)
+#' @export
+#'
 flank_fimo_sites <- function(fimo_file, flank=100) {
 
   if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
@@ -49,6 +51,8 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
 #'
 #' @importFrom data.table fread
 #' @import GenomicRanges
+#' @export
+#'
 filter_blacklist <- function(sites.df, blacklist_file) {
 
   if( !file.exists(blacklist_file) ){
@@ -77,6 +81,8 @@ filter_blacklist <- function(sites.df, blacklist_file) {
 #' @param mapability_file ENCODE mapability bigWig file
 #' @param bigWigAverageOverBed_path path of bigWigAverageOverBed executable
 #' @importFrom data.table fread fwrite
+#'
+#' @export
 #'
 compute_mapability <- function(sites,
                                mapability_file,
@@ -124,6 +130,8 @@ compute_mapability <- function(sites,
 #' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable.
 #' This is only needed for computing mapability.
 #' @importFrom data.table fread fwrite
+#'
+#' @export
 #'
 process_candidate_sites <- function(fimo_file,
                                     flank=100,
