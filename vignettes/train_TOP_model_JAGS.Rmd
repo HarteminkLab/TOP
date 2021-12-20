@@ -30,7 +30,7 @@ For each TF in each cell type, prepare training data for candidate binding sites
 including: PWM scores, DNase (or ATAC) bins, 
 and measured TF occupancy (from ChIP-seq data).
 
-You can follow this [pipeline](./doc/preprocessing.html) to prepare training data.
+You can follow this [pipeline](data_preparation.html) to prepare training data.
 
 <!-- # obtain candidate binding sites and get DNase (or ATAC) bins. Feel free to use your own pipelines -->
 <!-- to obtain matrices of DNase (or ATAC) cleavage  -->
@@ -124,7 +124,7 @@ After the training is done, we can combine the posterior samples
 from the 10 partitions, and obtain the posterior mean of the regression coefficients.
 
 We will use them to make predictions for TF occupancy using new DNase- or ATAC-seq data,
-see [page](./doc/predict_TF_occupancy_with_trained_model.html)
+see [page](predict_TF_occupancy_with_trained_model.html)
 ```{r combine-TOP-coef, eval = FALSE}
 # Combine TOP posterior samples from the 10 partitions and save the combined posterior samples
 TOP_samples_files <- file.path(top_model_dir, paste0('TOP_M5_fit_partition', 1:10, '.posterior_samples.rds'))

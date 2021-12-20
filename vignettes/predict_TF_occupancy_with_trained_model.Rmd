@@ -26,7 +26,7 @@ The input data should be a data frame, including six columns.
 
 Columns from left to right should be PWM scores and 5 DNase (or ATAC) bins. 
 
-You can follow this [page](./doc/preprocessing.html) to prepare the input data. 
+You can follow this [page](data_preparation.html) to prepare the input data. 
 
 Download pre-trained TOP models
 --------------------------------
