@@ -17,10 +17,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports:
     GenomicRanges,
-    data.table,
-    R2jags
+    data.table
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    R2jags
 VignetteBuilder: knitr
