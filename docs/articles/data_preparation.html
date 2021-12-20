@@ -53,9 +53,6 @@
       <a href="../articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
-      <a href="../articles/installation.html">Install TOP R package</a>
-    </li>
-    <li>
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -108,6 +105,12 @@
 <p>We provided functions and scripts to generate the input data frame. You are also welcome to use your own scripts.</p>
 </div>
 <div class="section level2">
+<h2 id="load-top-r-package">Load TOP R package<a class="anchor" aria-label="anchor" href="#load-top-r-package"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="major-steps">Major steps<a class="anchor" aria-label="anchor" href="#major-steps"></a>
 </h2>
 <p><strong>Step 1: Find TF motif matches using FIMO software</strong></p>
@@ -117,19 +120,19 @@
 <p>We use the command line version of FIMO. By default, we used with the threshold <span class="math inline">\(p &lt; 1e-5\)</span> and uniform background when training the model.</p>
 <p>You can choose your own background or use FIMO’s default threshold <span class="math inline">\(p &lt; 1e-4\)</span> (which will result in more motif matches).</p>
 <p>Example FIMO command and settings:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># outdir: the output directory</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pwm: motif PWM file</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ref_genome: reference genome file</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fimo <span class="sc">--</span>text <span class="sc">--</span>skip<span class="sc">-</span>matched<span class="sc">-</span>sequence <span class="sc">--</span>verbosity <span class="dv">2</span> \</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">--</span>bgfile <span class="sc">--</span>uniform<span class="sc">--</span> \</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">--</span>thresh <span class="fl">1e-5</span> <span class="sc">--</span>max<span class="sc">-</span>stored<span class="sc">-</span>scores <span class="dv">1000000</span> \</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">--</span>oc outdir \</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  pwm ref_genome</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># outdir: the output directory</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pwm: motif PWM file</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ref_genome: reference genome file</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fimo <span class="sc">--</span>text <span class="sc">--</span>skip<span class="sc">-</span>matched<span class="sc">-</span>sequence <span class="sc">--</span>verbosity <span class="dv">2</span> \</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">--</span>bgfile <span class="sc">--</span>uniform<span class="sc">--</span> \</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">--</span>thresh <span class="fl">1e-5</span> <span class="sc">--</span>max<span class="sc">-</span>stored<span class="sc">-</span>scores <span class="dv">1000000</span> \</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">--</span>oc outdir \</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  pwm ref_genome</span></code></pre></div>
 <p><strong>Step 2: Get candidate TF binding sites</strong></p>
 <p>We take motif matches obtained from FIMO as candidate binding sites, and add 100bp flanking regions on both sides of the motifs. Then filter the candidate sites by ENCODE blacklist regions and/or with mapability threshold.</p>
 <p>Example function to get candidate binding sites from FIMO result.</p>
 <p>Example R script: <code>../scripts/get_candidate_sites.R</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># fimo_file: Filename of FIMO result.</span>
 <span class="co"># sites_file: Filename of candidate sites.</span>
 <span class="co"># flank: Flanking region (bp) around motif matches (default: 100)</span>
@@ -141,17 +144,17 @@
 <p><strong>Step 3: Count DNase- or ATAC-seq genome-wide cleavage</strong></p>
 <p>We first sort and index the BAM file with DNase-seq or ATAC-seq reads, and then print the stats of the reads, which will be used later when normalizing read counts by library sizes.</p>
 <p>Run samtools commands:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> sort sample.bam <span class="at">-o</span> sample.sorted.bam</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> index sample.sorted.bam</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> idxstats sample.sorted.bam <span class="op">&gt;</span> sample.bam.idxstats.txt</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> sort sample.bam <span class="at">-o</span> sample.sorted.bam</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> index sample.sorted.bam</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> idxstats sample.sorted.bam <span class="op">&gt;</span> sample.bam.idxstats.txt</span></code></pre></div>
 <p>Or use this wrapper function:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># bam_file: input BAM filename.</span>
 <span class="co"># outdir: output directory.</span>
 <span class="fu"><a href="../reference/bam_sort_index_stats.html">bam_sort_index_stats</a></span><span class="op">(</span><span class="va">bam_file</span>, <span class="va">outdir</span><span class="op">)</span></code></pre></div>
 <p>Next, we count the DNase- or ATAC-seq counts along the genome, and save in Bigwig format. Having these reads counted allows us to efficiently extract the read counts around motif match positions for different motifs.</p>
 <p>Example R script: <code>../scripts/count_dnase_genome_cuts.R</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># bam_file: input BAM filename.</span>
 <span class="co"># chrom_size_file: File name of genome sizes by chromosomes.</span>
 <span class="co"># outdir: Output directory.</span>
@@ -159,7 +162,7 @@
 <span class="fu"><a href="../reference/count_dnase_genome_cuts.html">count_dnase_genome_cuts</a></span><span class="op">(</span><span class="va">bam_file</span>, <span class="va">chrom_size_file</span>, <span class="va">outdir</span>, <span class="va">outname</span><span class="op">)</span></code></pre></div>
 <p><strong>Step 4: Get DNase- or ATAC-seq count matrices for each motif, then normalize, bin and transform the counts</strong></p>
 <p>Get DNase or ATAC count matrices around candidate sites. Example R script:<code>../scripts/get_dnase_motif_counts.R</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># sites_file: Filename for candidate sites</span>
 <span class="co"># dnase_fwd_count_file: Filename for DNase or ATAC counts in forward strand (Bigwig format)</span>
 <span class="co"># dnase_rev_count_file: Filename for DNase or ATAC counts in reverse strand (Bigwig format)</span>
@@ -169,7 +172,7 @@
                        <span class="va">file_dnase_matrix_fwd</span>, <span class="va">file_dnase_matrix_rev</span><span class="op">)</span></code></pre></div>
 <p>Normalize, bin and transform DNase- or ATAC-seq counts.</p>
 <p>Example R script: <code>../scripts/normalize_bin_dnase.R</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># dnase_counts: DNase or ATAC count matrix</span>
 <span class="co"># idxstats_file: The idxstats file generated by samtools</span>
 <span class="co"># ref.size: Scale to reference library size </span>
@@ -181,7 +184,7 @@
 <p><strong>Step 5: Prepare ChIP-seq data if you want to train your own model (optional)</strong></p>
 <p>Add a column with ChIP counts (from ChIP-seq reads) to the input data frame if you want to train the logistic version of the model.</p>
 <p>Example R script: <code>../scripts/count_chipseq_coverage.R</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># pwm_id: Motif pwm ID</span>
 <span class="co"># cell_type: Cell type</span>
 <span class="co"># training_metadata: training metadata</span>
@@ -200,7 +203,7 @@
 <div class="section level2">
 <h2 id="snakemake-pipeline">Snakemake pipeline<a class="anchor" aria-label="anchor" href="#snakemake-pipeline"></a>
 </h2>
-<p>We provided <a href="https://github.com/HarteminkLab/TOP/tree/main/snakemake" class="external-link">Snakemake pipelines</a> to automate the whole process using the above mentioned R scripts. The Snakemake is especially helpful if you have many TFs (motifs) in many cell types.</p>
+<p>We provided <a href="https://github.com/kevinlkx/TOP/tree/main/inst/snakemake" class="external-link">Snakemake pipelines</a> to automate the whole process using the above mentioned R scripts. The Snakemake is especially helpful if you have many TFs (motifs) in many cell types.</p>
 <p>Run <code>Snakefile_training_ATAC</code> for ATAC-seq, or <code>Snakefile_training_DNase</code> for DNase-seq. For more details and instructions about running Snakemake pipelines, see <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html" class="external-link">Snakemake tutorial</a>.</p>
 </div>
   </div>

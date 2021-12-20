@@ -14,14 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-Install TOP R package
----------------------
-```{r install-TOP-package, eval = FALSE}
-install.packages("devtools")
-library(devtools)
-devtools::install_github("kevinlkx/TOP")
-```
-
 Load TOP R package
 ---------------------
 ```{r load-TOP-package, eval = FALSE}

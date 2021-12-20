@@ -55,9 +55,6 @@
       <a href="articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
-      <a href="articles/installation.html">Install TOP R package</a>
-    </li>
-    <li>
       <a href="articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -85,46 +82,19 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
 <div class="section level1">
-<div class="page-header"><h1 id="top-transcription-factor-occupancy-prediction">TOP: Transcription factor Occupancy Prediction<a class="anchor" aria-label="anchor" href="#top-transcription-factor-occupancy-prediction"></a>
+<div class="page-header"><h1 id="transcription-factor-occupancy-profiler-top">Transcription factor Occupancy Profiler (TOP)<a class="anchor" aria-label="anchor" href="#transcription-factor-occupancy-profiler-top"></a>
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>TOP fits a Bayesian hierarchical model using motif information, DNase-seq and ChIP-seq data from multiple TFs in multiple cell types. Then, it can predict the quantitative occupancy of multiple transcription factors (TFs) using data from a single DNase-seq experiment.</p>
-</div>
-<div class="section level1">
-<h1 id="install-top-r-package">Install TOP R package<a class="anchor" aria-label="anchor" href="#install-top-r-package"></a>
-</h1>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kevinlkx/TOP"</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
 <p>Transcription factor Occupancy Profiler (TOP) fits a Bayesian hierarchical model using transcription factor (TF) motif information, DNase or ATAC-seq and ChIP-seq data from multiple TFs across multiple cell types or conditions.</p>
 <p>It can be used to predict the quantitative occupancy (or TF binding probability) for many TFs using data from a single DNase- or ATAC-seq experiment.</p>
-</div>
-<div class="section level1">
-<h1 id="predict-tf-occupancy-using-top-model">Predict TF occupancy using TOP model<a class="anchor" aria-label="anchor" href="#predict-tf-occupancy-using-top-model"></a>
-</h1>
-<p>Here are some instructions on how to <a href="articles/predict_TF_occupancy_with_trained_model.html">predict TF occupancy using TOP model</a>.</p>
-<p>We will provide pre-trained models using ENCODE data <a href="https://users.cs.duke.edu/~amink/software/" class="external-link">here</a>..</p>
-</div>
-<div class="section level1">
-<h1 id="train-your-own-top-model">Train your own TOP model<a class="anchor" aria-label="anchor" href="#train-your-own-top-model"></a>
-</h1>
-<p>You can also train TOP models using your own data.</p>
-<p>Here are some instructions on how to <a href="articles/train_TOP_model_JAGS.html">train a TOP model</a>.</p>
-<p>It takes some time to train the model for many TFs and cell types, but the training only needs to be done once. Once trained, you can use the model to make predictions for new data sets.</p>
-<div class="section level3">
-<h3 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
-</h3>
+<p><a href="https://kevinlkx.github.io/TOP/">R package</a></p>
+<p><strong>Reference</strong></p>
 <ul>
 <li>Luo, K., Zhong, J., Safi, A., Hong, L., Tewari, A., Song, L., Reddy, T., Ma, L., Crawford, G., &amp; Hartemink, A. (2020) “Quantitative occupancy of myriad transcription factors from one DNase experiment enables efficient comparisons across conditions.” bioRxiv, bioRxiv:2020.06.28.171587.</li>
 </ul>
 </div>
-</div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

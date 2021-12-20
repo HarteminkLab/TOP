@@ -30,6 +30,12 @@ The format of the input data frame:
 We provided functions and scripts to generate the input data frame. 
 You are also welcome to use your own scripts.
 
+Load TOP R package
+---------------------
+```{r load-TOP-package, eval = FALSE}
+library(TOP)
+```
+
 Major steps
 --------------
 
@@ -172,7 +178,7 @@ Example R script: `../scripts/combine_dnase_chip_data.R`.
 Snakemake pipeline
 -------------------
 
-We provided [Snakemake pipelines](https://github.com/HarteminkLab/TOP/tree/main/snakemake) 
+We provided [Snakemake pipelines](https://github.com/kevinlkx/TOP/tree/main/inst/snakemake) 
 to automate the whole process using the above mentioned R scripts. 
 The Snakemake is especially helpful if you have many TFs (motifs) in many cell types.
 
