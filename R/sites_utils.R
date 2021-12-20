@@ -116,7 +116,6 @@ compute_mapability <- function(sites,
 #' @title Full process to get candidate sites from FIMO result
 #'
 #' @param fimo_file Filename of FIMO result.
-#' @param sites_file Filename of candidate sites.
 #' @param flank Flanking region (bp) around motif matches (default: 100)
 #' @param thresh_pValue FIMO p-value threshold.
 #' @param blacklist_file Filename of the blacklist regions
@@ -127,7 +126,6 @@ compute_mapability <- function(sites,
 #' @importFrom data.table fread fwrite
 #'
 process_candidate_sites <- function(fimo_file,
-                                    sites_file,
                                     flank=100,
                                     thresh_pValue=1e-5,
                                     blacklist_file,
