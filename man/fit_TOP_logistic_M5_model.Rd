@@ -6,7 +6,7 @@
 \usage{
 fit_TOP_logistic_M5_model(
   data,
-  model.file,
+  model,
   n.iter = 10000,
   n.burnin = 5000,
   n.chains = 3,
@@ -16,6 +16,8 @@ fit_TOP_logistic_M5_model(
 \arguments{
 \item{data}{combined training data.}
 
+\item{model}{TOP logistic model (written in BUGS code).}
+
 \item{n.iter}{number of total iterations per chain (including burn in).}
 
 \item{n.burnin}{length of burn in, i.e. number of iterations to discard at the beginning.}
@@ -23,8 +25,6 @@ fit_TOP_logistic_M5_model(
 \item{n.chains}{number of Markov chains.}
 
 \item{n.thin}{thinning rate, must be a positive integer.}
-
-\item{model}{TOP logistic model (written in BUGS code).}
 }
 \description{
 Fit TOP logistic model

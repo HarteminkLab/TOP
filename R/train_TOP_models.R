@@ -8,11 +8,11 @@
 #' @param n.thin thinning rate, must be a positive integer.
 #' @param n.chains number of Markov chains.
 #'
-#' @importFrom R2jags jags
+#' @import R2jags
 #'
 #' @export
 fit_TOP_M5_model <- function(data,
-                             model.file,
+                             model,
                              n.iter=10000,
                              n.burnin=5000,
                              n.chains=3,
@@ -48,7 +48,7 @@ fit_TOP_M5_model <- function(data,
 
   jags_fit <- jags(data = training_data,
                    parameters.to.save = model_params,
-                   model.file = model.file,
+                   model.file = model,
                    n.iter = n.iter,
                    n.burnin = n.burnin,
                    n.thin = n.thin,
@@ -68,12 +68,12 @@ fit_TOP_M5_model <- function(data,
 #' @param n.chains number of Markov chains.
 #' @param n.thin thinning rate, must be a positive integer.
 #'
-#' @importFrom R2jags jags
+#' @import R2jags
 #'
 #' @export
 #'
 fit_TOP_logistic_M5_model <- function(data,
-                                      model.file,
+                                      model,
                                       n.iter=10000,
                                       n.burnin=5000,
                                       n.chains=3,
@@ -108,7 +108,7 @@ fit_TOP_logistic_M5_model <- function(data,
 
   jags_fit <- jags(data = training_data,
                    parameters.to.save = model_params,
-                   model.file = model.file,
+                   model.file = model,
                    n.iter = n.iter,
                    n.burnin = n.burnin,
                    n.thin = n.thin,

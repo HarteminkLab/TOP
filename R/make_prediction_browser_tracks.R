@@ -3,7 +3,6 @@
 #'
 #' @param predicted_bedgraph.df predicted TF occupancy in bedgraph format
 #'
-#' @return
 sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
 
   predicted_bedgraph_sorted.df <- predicted_bedgraph.df[with(predicted_bedgraph.df, order(chr, start)), ]
@@ -39,8 +38,6 @@ sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
 #' @param type_model model type
 #' @param viewMax upper limit to view TF occupancy in genome browser
 #' @param mycolor color of the track
-#'
-#' @return
 #'
 track_def_line <- function(tf_name, pwm_id, cell_type, rep_name, type_model,
                            viewMax = 100, mycolor = '0,0,0'){

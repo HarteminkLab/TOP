@@ -24,7 +24,6 @@ dir_output=$7
 # ver_genome="hg19"
 #####################
 
-flank=100
 max_fimo_sites=1000000
 
 ## extract pwm meme file

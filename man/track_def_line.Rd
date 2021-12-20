@@ -29,9 +29,6 @@ track_def_line(
 
 \item{mycolor}{color of the track}
 }
-\value{
-
-}
 \description{
 Set genome browser track parameters for predictions in bedGraph format
 }

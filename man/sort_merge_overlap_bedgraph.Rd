@@ -10,9 +10,6 @@ sort_merge_overlap_bedgraph(predicted_bedgraph.df)
 \arguments{
 \item{predicted_bedgraph.df}{predicted TF occupancy in bedgraph format}
 }
-\value{
-
-}
 \description{
 Sort and merge the overlapping sites,
 remove the overlapping sites with lower occupancy

@@ -85,9 +85,6 @@ assemble_TOP_training_data <- function(tf_cell_table,
 
   cat('Assembled', data_count, 'datasets. \n')
 
-  write.table(summary_training_table, file.path(outdir, paste0(outname, '_part', k, '_summary.txt')),
-              col.names = TRUE, row.names = FALSE, quote = FALSE, sep = '\t')
-
   return(assembled_trainng_data)
 
 }
@@ -173,9 +170,6 @@ assemble_TOP_logistic_training_data <- function(tf_cell_table,
   row.names(assembled_trainng_data) <- NULL
 
   cat('Assembled', data_count, 'datasets. \n')
-
-  write.table(summary_training_table, file.path(outdir, paste0(outname, '_part', k, '_summary.txt')),
-              col.names = TRUE, row.names = FALSE, quote = FALSE, sep = '\t')
 
   return(assembled_trainng_data)
 

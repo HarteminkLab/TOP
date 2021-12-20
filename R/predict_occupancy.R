@@ -7,7 +7,7 @@
 #' Rows are candidate sites.
 #' @param TOP_model TOP posterior samples or posterior mean of regression
 #' coefficients.
-#' @logistic.model If TRUE, use logistic version of the model
+#' @param logistic.model If TRUE, use logistic version of the model
 #' to predict TF binding probability.
 #' @param posterior.option "samples": uses posterior samples, "mean": uses posterior mean of
 #' trained regression coefficients
@@ -20,28 +20,22 @@
 predict_TOP <- function(data,
                         TOP_model,
                         logistic.model = FALSE,
-                        posterior.option = c("samples", "mean"),
+                        posterior.option = c("mean", "samples"),
                         transform = c('asinh', 'log2', 'log', 'none')){
 
   posterior.option <- match.arg(posterior.option)
 
   if(logistic.model == FALSE) {
     transform <- match.arg(transform)
-    if ( posterior.option == 'samples' ) {
-      predictions <- predict_TOP_samples(data, TOP_model, transform = transform)
-    } else if ( posterior.option == 'mean' ) {
+    if ( posterior.option == 'mean' ) {
       predictions <- predict_TOP_mean_coef(data, TOP_model, transform = transform)
+    } else if ( posterior.option == 'samples' ) {
+      predictions <- predict_TOP_samples(data, TOP_model, transform = transform)
     } else{
       stop('posterior.option needs to be samples or mean!')
     }
   }else if (logistic.model == TRUE){
-    if ( posterior.option == 'mean' ) {
-      predictions <- predict_TOP_logistic_samples(data, TOP_model)
-    } else if ( posterior.option == 'mean' ) {
-      predictions <- predict_TOP_logistic_mean_coef(data, TOP_model)
-    }else{
-      stop('posterior.option needs to be samples or mean!')
-    }
+    predictions <- predict_TOP_logistic_mean_coef(data, TOP_model)
   }
 
   return(predictions)
@@ -55,11 +49,11 @@ predict_TOP <- function(data,
 #'
 #' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
 #' Rows are candidate sites.
-#' @param TOP_samples TOP posterior samples
-#' @param sample If TRUE, sample from posterior predictions and then
-#' take the mean of posterior prediction samples.
-#' @param average_parameters If TRUE, uses the posterior mean of
+#' @param TOP_samples TOP posterior samples.
+#' @param use.posterior.mean If TRUE, uses the posterior mean of
 #' regression coefficients to make predictions.
+#' @param sample.predictions If TRUE, sample from posterior predictions and then
+#' take the mean of posterior prediction samples.
 #' @param transform Method used to transform ChIP-seq counts when training
 #' the TOP model. Options: asinh, log2, log, none.
 #'
@@ -67,8 +61,8 @@ predict_TOP <- function(data,
 #' @export
 predict_TOP_samples <- function(data,
                                 TOP_samples,
-                                use_posterior_mean = FALSE,
-                                sample_predictions = TRUE,
+                                use.posterior.mean = FALSE,
+                                sample.predictions = TRUE,
                                 transform = c('asinh', 'log2', 'log', 'none')){
 
   transform <- match.arg(transform)
@@ -81,14 +75,14 @@ predict_TOP_samples <- function(data,
 
   data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
 
-  if(use_posterior_mean){
+  if(use.posterior.mean){
     coefficients <- apply(coefficients, 1, mean)
     means <- data %*% coefficients
     predictions <- as.numeric(means)
   }else{
     means <- data %*% coefficients
 
-    if(sample_predictions){
+    if(sample.predictions){
       sds <- 1 / sqrt(tau_samples)
 
       n_data <- nrow(data)

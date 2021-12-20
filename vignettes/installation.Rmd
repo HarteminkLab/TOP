@@ -1,0 +1,29 @@
+---
+title: "Install TOP R package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Install TOP R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Install TOP R package
+---------------------
+```{r installation, eval = FALSE}
+install.packages("devtools")
+library(devtools)
+devtools::install_github("kevinlkx/TOP")
+```
+
+Load TOP R package
+------------------
+```{r setup, eval = FALSE}
+library(TOP)
+```

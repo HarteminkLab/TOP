@@ -7,7 +7,6 @@
 #' @param n.samples Randomly choose n.samples posterior samples,
 #' if the number of posterior samples is greater than n.samples
 #'
-#' @return
 #' @export
 #'
 load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
@@ -40,7 +39,6 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 #' @param n.samples Randomly choose n.samples posterior samples,
 #' if the number of posterior samples is greater than n.samples
 #'
-#' @return
 #' @export
 #'
 combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
@@ -73,7 +71,6 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 #' 'middle' level: TF-specific, cell-type generic,
 #' 'top' level: TF-generic
 #'
-#' @return
 #' @export
 #'
 extract_TOP_coef_samples <- function(TOP_samples,
@@ -123,7 +120,6 @@ extract_TOP_coef_samples <- function(TOP_samples,
 #' @param tf_cell_combos a table of TF x cell type combinations
 #' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5)
 #'
-#' @return
 #' @export
 #'
 extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){

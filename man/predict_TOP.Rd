@@ -8,7 +8,7 @@ predict_TOP(
   data,
   TOP_model,
   logistic.model = FALSE,
-  posterior.option = c("samples", "mean"),
+  posterior.option = c("mean", "samples"),
   transform = c("asinh", "log2", "log", "none")
 )
 }
@@ -18,6 +18,9 @@ Rows are candidate sites.}
 
 \item{TOP_model}{TOP posterior samples or posterior mean of regression
 coefficients.}
+
+\item{logistic.model}{If TRUE, use logistic version of the model
+to predict TF binding probability.}
 
 \item{posterior.option}{"samples": uses posterior samples, "mean": uses posterior mean of
 trained regression coefficients}
