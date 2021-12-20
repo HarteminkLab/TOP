@@ -6,13 +6,13 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-`TOP` fits a Bayesian hierarchical model using motif information,
+TOP fits a Bayesian hierarchical model using motif information,
 DNase-seq and ChIP-seq data from multiple TFs in multiple cell types.
 Then, it can predict the quantitative occupancy of multiple
 transcription factors (TFs) using data from a single DNase-seq
 experiment.
 
-# Install `TOP` R package
+# Install TOP R package
 
 ``` r
 install.packages("devtools")
@@ -21,7 +21,7 @@ devtools::install_github("kevinlkx/TOP")
 library(TOP)
 ```
 
-Transcription factor Occupancy Profiler (`TOP`) fits a Bayesian
+Transcription factor Occupancy Profiler (TOP) fits a Bayesian
 hierarchical model using transcription factor (TF) motif information,
 DNase or ATAC-seq and ChIP-seq data from multiple TFs across multiple
 cell types or conditions.
