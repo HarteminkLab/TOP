@@ -5,24 +5,25 @@
 \title{Full process to get candidate sites from FIMO result}
 \usage{
 process_candidate_sites(
-  fimo_file,
-  sites_file,
+  fimo_file = NULL,
   flank = 100,
   thresh_pValue = 1e-05,
-  blacklist_file,
-  mapability_file,
-  out_file,
+  thresh_pwmscore = 0,
+  blacklist_file = NULL,
+  mapability_file = NULL,
+  thresh_mapability = 0.8,
+  out_file = NULL,
   bigWigAverageOverBed_path = "bigWigAverageOverBed"
 )
 }
 \arguments{
 \item{fimo_file}{Filename of FIMO result.}
 
-\item{sites_file}{Filename of candidate sites.}
-
 \item{flank}{Flanking region (bp) around motif matches (default: 100)}
 
 \item{thresh_pValue}{FIMO p-value threshold.}
+
+\item{thresh_pwmscore}{FIMO PWM score threshold.}
 
 \item{blacklist_file}{Filename of the blacklist regions}
 

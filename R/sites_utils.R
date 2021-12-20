@@ -7,11 +7,11 @@
 #'
 flank_fimo_sites <- function(fimo_file, flank=100) {
 
-  if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
-    stop(paste(fimo_file, 'file does not exist or is empty. Probably no motif matches were found.'))
+  if( !file.exists(fimo_file) ){
+    stop(paste(fimo_file, 'file does not exist or is empty!'))
   }
 
-  cat('Load FIMO result and flank motifs by', flank, 'bp... \n')
+  cat('Load FIMO result... \n')
   fimo.df <- read.table(fimo_file, header = TRUE, stringsAsFactors = FALSE,
                         comment.char = '', sep = '\t')
   # Sort sites
@@ -19,6 +19,8 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
   fimo.df <- fimo.df[fimo.df$sequence_name %in% chr_order,]
   fimo.df$sequence_name <- factor(fimo.df$sequence_name, chr_order, ordered=TRUE)
   fimo.df <- fimo.df[order(fimo.df$sequence_name, fimo.df$start, fimo.df$stop),]
+
+  cat('Flank motif matches by', flank, 'bp... \n')
 
   ## Prepare candidate sites
   sites.df <- data.frame(chr = fimo.df$sequence_name,
@@ -65,28 +67,30 @@ filter_blacklist <- function(sites.df, blacklist_file) {
 
   # Filter sites overlapping with blacklist regions
   sites.gr <- makeGRangesFromDataFrame(sites.df, keep.extra.columns = T)
-  in.blacklist <- which(countOverlaps(query = sites.gr, subject = blacklist.gr))
-  cat('Filter out', length(in.blacklist), 'sites overlapping with blacklist regions. \n')
+  in.blacklist <- which(countOverlaps(query = sites.gr, subject = blacklist.gr)>0)
+  cat('Filter out', length(in.blacklist), 'sites in blacklist regions. \n')
   sites.df <- sites.df[-in.blacklist, ]
 
   return(sites.df)
 
 }
 
-# Compute mapability for candidate sites
+# Filter mapability for candidate sites
 #' Title
 #'
-#' @param sites A data frame of candidate binding sites with the first
+#' @param sites.df A data frame of candidate binding sites with the first
 #' 6 columns the same as in the BED format
 #' @param mapability_file ENCODE mapability bigWig file
+#' @param thresh_mapability Mpability filter threshold
 #' @param bigWigAverageOverBed_path path of bigWigAverageOverBed executable
 #' @importFrom data.table fread fwrite
 #'
 #' @export
 #'
-compute_mapability <- function(sites,
-                               mapability_file,
-                               bigWigAverageOverBed_path='bigWigAverageOverBed') {
+filter_mapability <- function(sites.df=NULL,
+                              mapability_file=NULL,
+                              thresh_mapability=0.8,
+                              bigWigAverageOverBed_path='bigWigAverageOverBed') {
 
   if( !file.exists(mapability_file) ){
     stop( 'Cannot locate the mapability bigWig file!' )
@@ -96,24 +100,24 @@ compute_mapability <- function(sites,
     stop( 'bigWigAverageOverBed could not be executed, set bigWigAverageOverBed_path!' )
   }
 
-  sites_tmp <- sites[,1:6]
-  sites_tmp$name <- paste('site', c(1:nrow(sites_tmp)), sep = '')
-  sites_tmp$score <- 0
+  sites_tmp.df <- sites.df[,1:6]
+  sites_tmp.df$name <- paste('site', c(1:nrow(sites_tmp.df)), sep = '')
+  sites_tmp.df$score <- 0
 
   tmp_mapability_filesites <- tempfile('sites')
-  fwrite(sites_tmp, tmp_mapability_filesites, sep = '\t')
+  fwrite(sites_tmp.df, tmp_mapability_filesites, sep = '\t')
 
   cat('Compute mapability ... \n')
   tmp_mapability_file <- tempfile('mapability')
-  cmd <- paste(bigWigAverageOverBed_path,
-               mapability_file, tmp_mapability_filesites, tmp_mapability_file)
-  system(cmd)
+  system(paste(bigWigAverageOverBed_path, mapability_file, tmp_mapability_filesites, tmp_mapability_file))
 
-  mapability <- fread(tmp_mapability_file)[,5]
+  sites.df$mapability <- fread(tmp_mapability_file)[,5]
+
+  sites.df <- sites.df[sites.df$mapability > thresh_mapability, ]
 
   file.remove(c(tmp_mapability_filesites, tmp_mapability_file))
 
-  return(mapability)
+  return(sites.df)
 
 }
 
@@ -124,6 +128,7 @@ compute_mapability <- function(sites,
 #' @param fimo_file Filename of FIMO result.
 #' @param flank Flanking region (bp) around motif matches (default: 100)
 #' @param thresh_pValue FIMO p-value threshold.
+#' @param thresh_pwmscore FIMO PWM score threshold.
 #' @param blacklist_file Filename of the blacklist regions
 #' @param mapability_file Filename of the mapability reference file in bigWig format.
 #' @param out_file Filename of processed candidate sites.
@@ -133,39 +138,45 @@ compute_mapability <- function(sites,
 #'
 #' @export
 #'
-process_candidate_sites <- function(fimo_file,
+process_candidate_sites <- function(fimo_file=NULL,
                                     flank=100,
                                     thresh_pValue=1e-5,
-                                    blacklist_file,
-                                    mapability_file,
-                                    out_file,
+                                    thresh_pwmscore=0,
+                                    blacklist_file=NULL,
+                                    mapability_file=NULL,
+                                    thresh_mapability=0.8,
+                                    out_file=NULL,
                                     bigWigAverageOverBed_path='bigWigAverageOverBed') {
 
-  # Get candidate sites using FIMO motif matches with flanking regions
+  # Get candidate sites from FIMO motif matches and add flanking regions
   sites.df <- flank_fimo_sites(fimo_file, flank)
 
-  # Select candidate sites with FIMO p-value < thresh_pValue
+  # Filter candidate sites by FIMO p-value
   sites.df <- sites.df[which(as.numeric(sites.df$p.value) < as.numeric(thresh_pValue)), ]
-  cat(nrow(sites.df), 'sites with p-value <', thresh_pValue, '\n')
+  cat('Select candidate sites with FIMO p-value <', thresh_pValue, '\n')
+
+  # Filter candidate sites by FIMO PWM score
+  sites.df <- sites.df[which(as.numeric(sites.df$score) > as.numeric(thresh_pwmscore)), ]
+  cat('Select candidate sites with PWM score >', thresh_pwmscore, '\n')
 
   # Filter candidate sites in ENCODE blacklist
   if(!is.null(blacklist_file)) {
     sites.df <- filter_blacklist(sites.df, blacklist_file)
   }
 
-  # Compute mapability for candidate sites
+  # Filter candidate sites by mapability
   if(!is.null(mapability_file)) {
-    sites.df$mapability <- compute_mapability(sites.df, mapability_file,
-                                              bigWigAverageOverBed_path)
+    sites.df <- filter_mapability(sites.df, mapability_file,
+                                  thresh_mapability, bigWigAverageOverBed_path)
   }
 
-  if(is.null(out_file)){
+  if(!is.null(out_file)){
     if(!dir.exists(dirname(out_file))){
       dir.create(dirname(out_file), showWarnings = F, recursive = T)
     }
     colnames(sites.df)[1] <- paste0('#', colnames(sites.df)[1])
     fwrite(sites.df, out_file, sep = '\t')
-    cat('Candidate sites output to', out_file, '\n')
+    cat('Save candidate sites at', out_file, '\n')
   }
 
   return(sites.df)
