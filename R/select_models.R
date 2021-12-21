@@ -10,6 +10,7 @@
 #' @param model_level Specific the TOP model hierarchy level:
 #' 'top', 'bottom', 'middle', or 'best'.
 #' Default: 'best', the lowest hierarchy level of the model will be used.
+#' @export
 #'
 select_model_coef_mean <- function(pwm_id,
                                    cell_type,

@@ -13,6 +13,8 @@
 #' @param k which partition to use for training the model
 #'
 #' @return Returns a data frame of training data with all TFs and cell type combos.
+#' @export
+#'
 assemble_TOP_training_data <- function(tf_cell_table,
                                        transform = c('asinh', 'log2', 'sqrt', 'none'),
                                        training_chrs = paste0('chr', seq(1,21,2)),
@@ -103,6 +105,8 @@ assemble_TOP_training_data <- function(tf_cell_table,
 #' @param k which partition to use for training the model
 #'
 #' @return Returns a data frame of training data with all TFs and cell type combos.
+#' @export
+#'
 assemble_TOP_logistic_training_data <- function(tf_cell_table,
                                                 chiplabel_colname = 'chip_label',
                                                 training_chrs = paste0('chr', seq(1,21,2)),

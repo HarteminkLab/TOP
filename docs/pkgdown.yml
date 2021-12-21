@@ -3,9 +3,10 @@ pkgdown: 2.0.1
 pkgdown_sha: ~
 articles:
   data_preparation: data_preparation.html
+  data_preparation_example: data_preparation_example.html
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_model_JAGS: train_TOP_model_JAGS.html
-last_built: 2021-12-20T06:22Z
+last_built: 2021-12-21T21:11Z
 urls:
   reference: https://kevinlkx.github.io/TOP/reference
   article: https://kevinlkx.github.io/TOP/articles

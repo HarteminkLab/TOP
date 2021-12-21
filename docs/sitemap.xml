@@ -13,6 +13,9 @@
     <loc>https://kevinlkx.github.io/TOP/articles/data_preparation.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/articles/data_preparation_example.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/articles/index.html</loc>
   </url>
   <url>
@@ -71,6 +74,9 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/filter_blacklist.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/filter_mapability.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_M5_model.html</loc>

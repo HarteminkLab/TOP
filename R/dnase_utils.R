@@ -261,6 +261,8 @@ merge_normalize_dnase_counts <- function(dnase_counts_files, dnase_idxstats_file
 #' @param bedtools_path Path to bedtools executable.
 #' @param bedGraphToBigWig_path Path to UCSC bedGraphToBigWig executable.
 #' @param bedSort_path Path to UCSC bedSort executable.
+#' @export
+#'
 count_dnase_genome_cuts <- function(bam_file,
                                     chrom_size_file,
                                     outdir,
@@ -320,6 +322,8 @@ count_dnase_genome_cuts <- function(bam_file,
 #' @param dnase_fwd_matrix_file Filename for DNase count matrix in forward strand
 #' @param dnase_rev_matrix_file Filename for DNase count matrix in reverse strand
 #' @param bwtool_path Path to bwtool executable.
+#' @export
+#'
 get_dnase_sites_counts <- function(sites_file,
                                    dnase_fwd_count_file, dnase_rev_count_file,
                                    dnase_fwd_matrix_file, dnase_rev_matrix_file,
@@ -365,6 +369,7 @@ get_dnase_sites_counts <- function(sites_file,
 #' @param dnase_fwd_matrix_file Filename for DNase count matrix in forward strand
 #' @param dnase_rev_matrix_file Filename for DNase count matrix in reverse strand
 #' @importFrom  data.table fread fwrite
+#' @export
 #'
 rev_count_bwtool <- function(sites_file, dnase_fwd_matrix_file, dnase_rev_matrix_file) {
 

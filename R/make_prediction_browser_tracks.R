@@ -2,6 +2,7 @@
 #' remove the overlapping sites with lower occupancy
 #'
 #' @param predicted_bedgraph.df predicted TF occupancy in bedgraph format
+#' @export
 #'
 sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
 
@@ -38,6 +39,7 @@ sort_merge_overlap_bedgraph <- function(predicted_bedgraph.df){
 #' @param type_model model type
 #' @param viewMax upper limit to view TF occupancy in genome browser
 #' @param mycolor color of the track
+#' @export
 #'
 track_def_line <- function(tf_name, pwm_id, cell_type, rep_name, type_model,
                            viewMax = 100, mycolor = '0,0,0'){

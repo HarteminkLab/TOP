@@ -42,7 +42,6 @@ rule candidate_sites:
         f'{LOG_DIR}/candidate_sites/{VER_GENOME}/{{pwm_id}}_{THRESH_PVALUE}.log'
     shell:
         '''
-        module load R/3.6.0
         Rscript ../scripts/get_candidate_sites.R \
         --fimo {input.fimo} --blacklist {input.blacklist} \
         --flank {params.flank} --thresh_pValue {params.thresh_pValue} \

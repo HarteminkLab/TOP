@@ -35,6 +35,9 @@
       <a href="../articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
+      <a href="../articles/data_preparation_example.html">An example for input data preparation</a>
+    </li>
+    <li>
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -67,13 +70,14 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">process_candidate_sites</span><span class="op">(</span>
-  <span class="va">fimo_file</span>,
-  <span class="va">sites_file</span>,
+  fimo_file <span class="op">=</span> <span class="cn">NULL</span>,
   flank <span class="op">=</span> <span class="fl">100</span>,
   thresh_pValue <span class="op">=</span> <span class="fl">1e-05</span>,
-  <span class="va">blacklist_file</span>,
-  <span class="va">mapability_file</span>,
-  <span class="va">out_file</span>,
+  thresh_pwmscore <span class="op">=</span> <span class="fl">0</span>,
+  blacklist_file <span class="op">=</span> <span class="cn">NULL</span>,
+  mapability_file <span class="op">=</span> <span class="cn">NULL</span>,
+  thresh_mapability <span class="op">=</span> <span class="fl">0.8</span>,
+  out_file <span class="op">=</span> <span class="cn">NULL</span>,
   bigWigAverageOverBed_path <span class="op">=</span> <span class="st">"bigWigAverageOverBed"</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -82,12 +86,12 @@
     <h2>Arguments</h2>
     <dl><dt>fimo_file</dt>
 <dd><p>Filename of FIMO result.</p></dd>
-<dt>sites_file</dt>
-<dd><p>Filename of candidate sites.</p></dd>
 <dt>flank</dt>
 <dd><p>Flanking region (bp) around motif matches (default: 100)</p></dd>
 <dt>thresh_pValue</dt>
 <dd><p>FIMO p-value threshold.</p></dd>
+<dt>thresh_pwmscore</dt>
+<dd><p>FIMO PWM score threshold.</p></dd>
 <dt>blacklist_file</dt>
 <dd><p>Filename of the blacklist regions</p></dd>
 <dt>mapability_file</dt>

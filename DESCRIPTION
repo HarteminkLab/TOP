@@ -17,7 +17,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports:
     GenomicRanges,
-    data.table
+    data.table,
+    R.utils
 Suggests: 
     testthat,
     knitr,
