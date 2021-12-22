@@ -53,9 +53,6 @@
       <a href="../articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
-      <a href="../articles/data_preparation_example.html">An example for input data preparation</a>
-    </li>
-    <li>
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -117,7 +114,7 @@
 </h2>
 <p>Predict TF occupancy using trained TOP regression coefficients</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_mean_coef</span>, logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
+<code class="sourceCode R"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_mean_coef</span>, 
                            posterior.option <span class="op">=</span> <span class="st">'mean'</span>, transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></code></pre></div>
 <!-- Option 2: Predict TF occupancy using the posterior samples of  -->
 <!-- regression coefficients trained from the TOP model -->

@@ -13,9 +13,6 @@
     <loc>https://kevinlkx.github.io/TOP/articles/data_preparation.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/data_preparation_example.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/articles/index.html</loc>
   </url>
   <url>
@@ -43,6 +40,9 @@
     <loc>https://kevinlkx.github.io/TOP/reference/bin_dnase.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/bin_transform_counts.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/combine_TOP_samples.html</loc>
   </url>
   <url>
@@ -62,6 +62,9 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/count_genome_coverage.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/count_normalize_chip.html</loc>
@@ -94,6 +97,9 @@
     <loc>https://kevinlkx.github.io/TOP/reference/get_dnase_sites_counts.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/get_sites_counts.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/get_total_reads.html</loc>
   </url>
   <url>
@@ -104,6 +110,9 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/match_tagcount_sites.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_counts.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_dnase_counts.html</loc>
@@ -118,7 +127,13 @@
     <loc>https://kevinlkx.github.io/TOP/reference/normalize_bin_dnase.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/normalize_bin_transform_counts.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/normalize_chip.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/normalize_counts.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/normalize_dnase.html</loc>

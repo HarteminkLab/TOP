@@ -1,108 +1,75 @@
-
-#' @title Binning and transform DNase count matrix
+#' @title MILLIPEDE binning
 #'
-#' @description Binning DNase using MILLIPEDE binning and
-#' then take asinh (or log2) transform
-#' @param dnase_counts DNase (or ATAC) count matrix
-#' @param bin.method MILLIPEDE binning scheme (Default: 'M5').
-#' @param transform asinh or log2 transform of DNase counts
-#'
-#' @export
-#'
-bin_dnase <- function(dnase_counts,
-                      bin.method=c('M5','M1','M2','M3','M12','M24'),
-                      transform=c('asinh','log2')) {
-
-  bin.method <- match.arg(bin.method)
-  transform <- match.arg(transform)
-
-  ## MILLIPEDE binning DNase counts
-  cat('Binning DNase data with MILLIPEDE', bin.method, 'binning... \n')
-  dnase_bins.df <- as.data.frame(millipede_binning(dnase_counts)[[bin.method]])
-
-  if (transform == 'asinh') {
-    cat('Perform asinh transform. \n')
-    dnase_bins.df <- asinh(dnase_bins.df)
-  } else if (transform == 'log2') {
-    cat('Perform log2 transform. \n')
-    dnase_bins.df <- log2(dnase_bins.df+1)
-  }
-
-  return(dnase_bins.df)
-
-}
-
-
-
-#' @title Count DNase cuts with different MILLIPEDE binning settings.
-#'
-#' @param data DNase data matrix, rows are candidate sites,
-#' columns are DNase cuts with 100bp flanks around motifs in forward and reverse strands
-#' @param combine_strands Method to combine DNase cuts from M24 bins in both strands to M12 bins:
+#' @param counts Counts matrix, rows are candidate sites,
+#' columns are DNase or ATAC counts with 100bp flanks around motifs in forward and reverse strands
+#' @param combine_strands Method to combine counts from M24 bins in both strands to M12 bins:
 #' 'vertical' (default) or 'motif'.
 #' @export
 #'
-millipede_binning <- function(data, combine_strands=c('vertical', 'motif')) {
+millipede_binning <- function(counts, combine_strands=c('vertical', 'motif')) {
 
   combine_strands <- match.arg(combine_strands)
+
+  counts <- as.matrix(counts)
 
   flank_LF1 <- 81:100
   flank_LF2 <- flank_LF1 - 20
   flank_LF3 <- flank_LF2 - 20
   flank_LF4 <- flank_LF3 - 20
   flank_LF5 <- flank_LF4 - 20
-  flank_RF1 <- (ncol(data)/2-99): (ncol(data)/2-80)
+  flank_RF1 <- (ncol(counts)/2-99): (ncol(counts)/2-80)
   flank_RF2 <- flank_RF1 + 20
   flank_RF3 <- flank_RF2 + 20
   flank_RF4 <- flank_RF3 + 20
   flank_RF5 <- flank_RF4 + 20
 
-  flank_LR1 <- ncol(data)/2 + flank_LF1
-  flank_LR2 <- ncol(data)/2 + flank_LF2
-  flank_LR3 <- ncol(data)/2 + flank_LF3
-  flank_LR4 <- ncol(data)/2 + flank_LF4
-  flank_LR5 <- ncol(data)/2 + flank_LF5
-  flank_RR1 <- ncol(data)/2 + flank_RF1
-  flank_RR2 <- ncol(data)/2 + flank_RF2
-  flank_RR3 <- ncol(data)/2 + flank_RF3
-  flank_RR4 <- ncol(data)/2 + flank_RF4
-  flank_RR5 <- ncol(data)/2 + flank_RF5
+  flank_LR1 <- ncol(counts)/2 + flank_LF1
+  flank_LR2 <- ncol(counts)/2 + flank_LF2
+  flank_LR3 <- ncol(counts)/2 + flank_LF3
+  flank_LR4 <- ncol(counts)/2 + flank_LF4
+  flank_LR5 <- ncol(counts)/2 + flank_LF5
+  flank_RR1 <- ncol(counts)/2 + flank_RF1
+  flank_RR2 <- ncol(counts)/2 + flank_RF2
+  flank_RR3 <- ncol(counts)/2 + flank_RF3
+  flank_RR4 <- ncol(counts)/2 + flank_RF4
+  flank_RR5 <- ncol(counts)/2 + flank_RF5
 
-  motif_LF <- 101: round(ncol(data)/4)
-  motif_RF <- (round(ncol(data)/4)+1) : (ncol(data)/2-100)
-  motif_LR <- ncol(data)/2 + motif_LF
-  motif_RR <- ncol(data)/2 + motif_RF
+  motif_LF <- 101: round(ncol(counts)/4)
+  motif_RF <- (round(ncol(counts)/4)+1) : (ncol(counts)/2-100)
+  motif_LR <- ncol(counts)/2 + motif_LF
+  motif_RR <- ncol(counts)/2 + motif_RF
 
   M24 <- data.frame(
-    flank_LF5 <- rowSums(data[,flank_LF5]),
-    flank_LF4 <- rowSums(data[,flank_LF4]),
-    flank_LF3 <- rowSums(data[,flank_LF3]),
-    flank_LF2 <- rowSums(data[,flank_LF2]),
-    flank_LF1 <- rowSums(data[,flank_LF1]),
+    flank_LF5 <- rowSums(counts[,flank_LF5]),
+    flank_LF4 <- rowSums(counts[,flank_LF4]),
+    flank_LF3 <- rowSums(counts[,flank_LF3]),
+    flank_LF2 <- rowSums(counts[,flank_LF2]),
+    flank_LF1 <- rowSums(counts[,flank_LF1]),
 
-    motif_LF <- rowSums(data[,motif_LF]),
-    motif_RF <- rowSums(data[,motif_RF]),
+    motif_LF <- rowSums(counts[,motif_LF]),
+    motif_RF <- rowSums(counts[,motif_RF]),
 
-    flank_RF1 <- rowSums(data[,flank_RF1]),
-    flank_RF2 <- rowSums(data[,flank_RF2]),
-    flank_RF3 <- rowSums(data[,flank_RF3]),
-    flank_RF4 <- rowSums(data[,flank_RF4]),
-    flank_RF5 <- rowSums(data[,flank_RF5]),
+    flank_RF1 <- rowSums(counts[,flank_RF1]),
+    flank_RF2 <- rowSums(counts[,flank_RF2]),
+    flank_RF3 <- rowSums(counts[,flank_RF3]),
+    flank_RF4 <- rowSums(counts[,flank_RF4]),
+    flank_RF5 <- rowSums(counts[,flank_RF5]),
 
-    flank_LR5 <- rowSums(data[,flank_LR5]),
-    flank_LR4 <- rowSums(data[,flank_LR4]),
-    flank_LR3 <- rowSums(data[,flank_LR3]),
-    flank_LR2 <- rowSums(data[,flank_LR2]),
-    flank_LR1 <- rowSums(data[,flank_LR1]),
+    flank_LR5 <- rowSums(counts[,flank_LR5]),
+    flank_LR4 <- rowSums(counts[,flank_LR4]),
+    flank_LR3 <- rowSums(counts[,flank_LR3]),
+    flank_LR2 <- rowSums(counts[,flank_LR2]),
+    flank_LR1 <- rowSums(counts[,flank_LR1]),
 
-    motif_LR <- rowSums(data[,motif_LR]),
-    motif_RR <- rowSums(data[,motif_RR]),
+    motif_LR <- rowSums(counts[,motif_LR]),
+    motif_RR <- rowSums(counts[,motif_RR]),
 
-    flank_RR1 <- rowSums(data[,flank_RR1]),
-    flank_RR2 <- rowSums(data[,flank_RR2]),
-    flank_RR3 <- rowSums(data[,flank_RR3]),
-    flank_RR4 <- rowSums(data[,flank_RR4]),
-    flank_RR5 <- rowSums(data[,flank_RR5]))
+    flank_RR1 <- rowSums(counts[,flank_RR1]),
+    flank_RR2 <- rowSums(counts[,flank_RR2]),
+    flank_RR3 <- rowSums(counts[,flank_RR3]),
+    flank_RR4 <- rowSums(counts[,flank_RR4]),
+    flank_RR5 <- rowSums(counts[,flank_RR5])
+    )
 
   if(combine_strands == 'vertical'){
     # vertical combine
@@ -141,19 +108,18 @@ millipede_binning <- function(data, combine_strands=c('vertical', 'motif')) {
 }
 
 
-#' @title Normalize DNase counts
+#' @title Normalize DNase or ATAC counts
 #'
-#' @description Normalize DNase counts by library size scaling,
-#' bin DNase using MILLIPEDE binning and then take log2 or asinh transform
-#' @param dnase_counts DNase count matrix
+#' @description Normalize DNase or ATAC counts by library size scaling
+#' @param counts count matrix
 #' @param idxstats_file The idxstats file generated by samtools
-#' @param ref.size Scale to DNase-seq reference library size (Default: 100 million)
+#' @param ref.size Scale to reference library size
 #'
 #' @export
 #'
-normalize_dnase <- function(dnase_counts,
-                            idxstats_file,
-                            ref.size=1e8) {
+normalize_counts <- function(counts,
+                             idxstats_file,
+                             ref.size=1e8) {
 
   ## Count total mapped reads (chr1:22)
   total_readsMapped <- get_total_reads(idxstats_file, select.chr = TRUE)
@@ -161,93 +127,108 @@ normalize_dnase <- function(dnase_counts,
   ## Normalize (scale) read counts
   cat('Normalize (scale) to', ref.size / 1e6, 'million reads. \n')
   scaling_factor <- ref.size / total_readsMapped
-  normalized_dnase_counts <- dnase_counts * scaling_factor
+  normalized_counts <- counts * scaling_factor
 
-  return(normalized_dnase_counts)
+  return(normalized_counts)
 
 }
 
 
-#' @title Normalize, binning and transform DNase counts
+#' @title Binning and transform count matrix
 #'
-#' @description Normalize DNase counts by library size,
-#' binning DNase using MILLIPEDE binning and then take asinh or log2 transform
-#'
-#' @param dnase_counts DNase count matrix
-#' @param idxstats_file The idxstats file generated by samtools
-#' @param ref.size Scale to DNase-seq reference library size (Default: 100 million)
+#' @description Binning DNase (or ATAC) count matrix
+#' using MILLIPEDE binning and then take asinh (or log2) transform
+#' @param counts DNase (or ATAC) count matrix
 #' @param bin.method MILLIPEDE binning scheme (Default: 'M5').
-#' @param transform asinh or log2 transform of DNase counts.
+#' @param transform asinh or log2 transform
 #'
 #' @export
 #'
-normalize_bin_dnase <- function(dnase_counts,
-                                idxstats_file,
-                                ref.size=1e8,
-                                bin.method=c('M5','M1','M2','M3','M12','M24'),
-                                transform=c('asinh','log2')) {
+bin_transform_counts <- function(counts,
+                                 bin.method=c('M5','M1','M2','M3','M12','M24'),
+                                 transform=c('asinh','log2')) {
 
   bin.method <- match.arg(bin.method)
   transform <- match.arg(transform)
 
-  ## Count total mapped reads (chr1:22)
-  total_readsMapped <- get_total_reads(idxstats_file, select.chr = TRUE)
-
-  ## Normalize (scale) read counts
-  cat('Normalize (scale) to', ref.size / 1e6, 'million reads. \n')
-  scaling_factor <- ref.size / total_readsMapped
-  normalized_dnase_counts <- dnase_counts * scaling_factor
-
-  ## MILLIPEDE binning DNase counts
-  cat('Binning DNase data with MILLIPEDE', bin.method, 'binning... \n')
-  dnase_bins.df <- as.data.frame(millipede_binning(normalized_dnase_counts)[[bin.method]])
+  ## MILLIPEDE binning
+  cat('Binning with MILLIPEDE', bin.method, 'binning... \n')
+  bins.df <- millipede_binning(counts)[[bin.method]]
 
   if (transform == 'asinh') {
     cat('Perform asinh transform. \n')
-    dnase_bins.df <- asinh(dnase_bins.df)
+    bins.df <- asinh(bins.df)
   } else if (transform == 'log2') {
     cat('Perform log2 transform. \n')
-    dnase_bins.df <- log2(dnase_bins.df+1)
+    bins.df <- log2(bins.df+1)
   }
 
-  return(dnase_bins.df)
+  return(bins.df)
 
 }
 
 
-#' @title Merge DNase counts, then normalize merged DNase counts data.
-#' @description Merge DNase counts, then normalize DNase counts by library size scaling.
-#' @param dnase_counts_files DNase counts files
-#' @param dnase_idxstats_files The DNase idxstats files generated by samtools
-#' @param ref.size Scale to DNase-seq reference library size (Default: 100 million for DNase-seq)
+#' @title Normalize, binning and transform counts
+#'
+#' @description Normalize counts by library size,
+#' bin using MILLIPEDE binning method and then take asinh or log2 transform
+#'
+#' @param count_matrix Counts matrix
+#' @param idxstats_file The idxstats file generated by samtools
+#' @param ref.size Scale to reference library size (Default: 1e8)
+#' @param bin.method MILLIPEDE binning scheme (Default: 'M5').
+#' @param transform asinh or log2 transform
 #'
 #' @export
 #'
-merge_normalize_dnase_counts <- function(dnase_counts_files, dnase_idxstats_files, ref.size = 1e8){
+normalize_bin_transform_counts <- function(count_matrix,
+                                           idxstats_file,
+                                           ref.size=1e8,
+                                           bin.method=c('M5','M1','M2','M3','M12','M24'),
+                                           transform=c('asinh','log2')) {
+
+  bin.method <- match.arg(bin.method)
+  transform <- match.arg(transform)
+
+  # Normalize (scale) read counts
+  normalized_counts <- normalize_counts(count_matrix, idxstats_file, ref.size)
+
+  ## MILLIPEDE binning and transform counts
+  bins.df <- bin_transform_counts(normalized_counts, bin.method, transform)
+
+  return(bins.df)
+
+}
+
+
+#' @title Merge counts, then normalize merged counts data.
+#' @param counts_files Counts files
+#' @param idxstats_files The idxstats files generated by samtools
+#' @param ref.size Scale to reference library size
+#'
+#' @export
+#'
+merge_normalize_counts <- function(counts_files, idxstats_files, ref.size = 1e8){
 
   ## Load raw counts and sum over the replicates
-  for (i in 1:length(dnase_counts_files)) {
-    dnase_counts <- readRDS(dnase_counts_files[i])$combined
-    dnase_countmatrix <- as.matrix(dnase_counts[,-c(1:4)])
+  for (i in 1:length(counts_files)) {
+    count_matrix <- readRDS(counts_files[i])
     if ( i == 1 ) {
-      sites_info <- dnase_counts[,1:4]
-      dnase_total_countmatrix <- dnase_countmatrix
+      total_countmatrix <- count_matrix
     }else{
-      dnase_total_countmatrix <- dnase_total_countmatrix + dnase_countmatrix
+      total_countmatrix <- total_countmatrix + count_matrix
     }
   }
 
-  ## Count total mapped reads (chr1:22)
-  total_readsMapped <- sum(sapply(dnase_idxstats_files, get_total_reads, select.chr = TRUE))
+  ## Count total mapped reads
+  total_readsMapped <- sum(sapply(idxstats_files, get_total_reads, select.chr = TRUE))
 
   ## Normalize (scale) read counts
   cat('Normalize (scale) to', ref.size / 1e6, 'million reads. \n')
   scaling_factor <- ref.size / total_readsMapped
-  normalized_dnase_countmatrix <- dnase_total_countmatrix * scaling_factor
+  normalized_countmatrix <- total_countmatrix * scaling_factor
 
-  normalized_dnase_countmatrix.df <- cbind(sites_info, normalized_dnase_countmatrix)
-
-  return(normalized_dnase_countmatrix.df)
+  return(normalized_countmatrix)
 
 }
 
@@ -261,15 +242,16 @@ merge_normalize_dnase_counts <- function(dnase_counts_files, dnase_idxstats_file
 #' @param bedtools_path Path to bedtools executable.
 #' @param bedGraphToBigWig_path Path to UCSC bedGraphToBigWig executable.
 #' @param bedSort_path Path to UCSC bedSort executable.
+#' @importFrom data.table fread fwrite
 #' @export
 #'
-count_dnase_genome_cuts <- function(bam_file,
-                                    chrom_size_file,
-                                    outdir,
-                                    outname,
-                                    bedtools_path='bedtools',
-                                    bedGraphToBigWig_path='bedGraphToBigWig',
-                                    bedSort_path='bedSort') {
+count_genome_cuts <- function(bam_file,
+                              chrom_size_file,
+                              outdir,
+                              outname,
+                              bedtools_path='bedtools',
+                              bedGraphToBigWig_path='bedGraphToBigWig',
+                              bedSort_path='bedSort') {
 
   # Checking input arguments
   if ( Sys.which(bedtools_path) == "") {
@@ -280,11 +262,17 @@ count_dnase_genome_cuts <- function(bam_file,
     stop( 'bedGraphToBigWig could not be executed, set bedGraphToBigWig_path.\n' )
   }
 
-  if ( Sys.which(bedSort_path) == "" ) {
-    stop( 'bedSort could not be executed, set bedSort_path.\n' )
+  if(missing(outdir)){
+    outdir <- dirname(bam_file)
   }
 
-  dir.create(outdir, showWarnings = F, recursive = T)
+  if(!dir.exists(outdir)){
+    dir.create(outdir, showWarnings = F, recursive = T)
+  }
+
+  if(missing(outname)){
+    outname <- tools::file_path_sans_ext(basename(bam_file))
+  }
 
   for (strand in c('+', '-')) {
     if (strand == '+') {
@@ -293,7 +281,8 @@ count_dnase_genome_cuts <- function(bam_file,
       out_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bw'))
     }
 
-    cat('Counting genome cleavage for', bam_file, 'in', strand, 'strand...\n')
+    # Count 5' end cleavage and save as a .bedGraph file
+    cat('Counting genome cleavage for', bam_file, strand, 'strand...\n')
     temp_file <- paste0(tools::file_path_sans_ext(out_file), '.bedGraph')
     cmd <- paste(bedtools_path, 'genomecov -bg -5', '-strand', strand,
                  '-ibam', bam_file, '>', temp_file)
@@ -301,80 +290,82 @@ count_dnase_genome_cuts <- function(bam_file,
 
     # sort .bedGraph file
     cat('Sorting bedGraph ...\n')
-    cmd <- paste(bedSort_path, temp_file, temp_file)
-    system(cmd)
+    if ( Sys.which(bedSort_path) == "" ) {
+      system( paste("LC_COLLATE=C sort -k1,1 -k2,2n", temp_file, ">", temp_file ))
+    }else{
+      system( paste(bedSort_path, temp_file, temp_file) )
+    }
 
     # Convert bedGraph to Bigwig format
-    cat('Converting bedGraph to Bigwig format ...\n')
-    cmd <- paste(bedGraphToBigWig_path, temp_file, chrom_size_file, out_file)
-    system(cmd)
+    cat('Converting to Bigwig format ...\n')
+    system(paste(bedGraphToBigWig_path, temp_file, chrom_size_file, out_file))
 
     file.remove(temp_file)
   }
 
 }
 
-#' @title Get DNase count matrices for candidate sites.
+#' @title Get count matrices around candidate sites.
 #'
 #' @param sites_file Filename for candidate sites
-#' @param dnase_fwd_count_file Filename for DNase counts in forward strand (Bigwig format)
-#' @param dnase_rev_count_file Filename for DNase counts in reverse strand (Bigwig format)
-#' @param dnase_fwd_matrix_file Filename for DNase count matrix in forward strand
-#' @param dnase_rev_matrix_file Filename for DNase count matrix in reverse strand
+#' @param genomecount_dir Directory for genome counts
+#' @param genomecount_name Filename prefix for genome counts
 #' @param bwtool_path Path to bwtool executable.
+#' @importFrom data.table fread fwrite
 #' @export
 #'
-get_dnase_sites_counts <- function(sites_file,
-                                   dnase_fwd_count_file, dnase_rev_count_file,
-                                   dnase_fwd_matrix_file, dnase_rev_matrix_file,
-                                   bwtool_path='bwtool') {
-
-  options(scipen=999) # not to use scientific notation when writing out
+get_sites_counts <- function(sites_file,
+                             genomecount_dir,
+                             genomecount_name,
+                             bwtool_path='bwtool') {
 
   if ( Sys.which(bwtool_path) == '' ) {
     stop( 'bwtool could not be executed, set bwtool_path!' )
   }
 
-  dir.create(dirname(dnase_fwd_matrix_file), showWarnings = F, recursive = T)
+  genome_fwd_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.fwd.genomecounts.bw'))
+  genome_rev_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.rev.genomecounts.bw'))
 
-  cat('Matching DNase count matrices around candidate sites ... \n')
+  fwd_matrix_file <- tempfile(pattern = "fwd.matrix")
+  rev_matrix_file <- tempfile(pattern = "rev.matrix")
+
+  # dir.create(dirname(fwd_matrix_file), showWarnings = F, recursive = T)
+  cat('Extract counts around candidate sites ... \n')
   cmd <- paste('cut -f 1-4', sites_file, '|', bwtool_path, 'extract bed stdin',
-               dnase_fwd_count_file, dnase_fwd_matrix_file, '-fill=0 -decimals=0 -tabs')
-  try(system(cmd))
+               genome_fwd_count_file, fwd_matrix_file, '-fill=0 -decimals=0 -tabs')
+  system(cmd)
 
   cmd <- paste('cut -f 1-4', sites_file, '|', bwtool_path, 'extract bed stdin',
-               dnase_rev_count_file, dnase_rev_matrix_file, '-fill=0 -decimals=0 -tabs')
-  try(system(cmd))
+               genome_rev_count_file, rev_matrix_file, '-fill=0 -decimals=0 -tabs')
+  system(cmd)
 
   # Flip the counts generated from bwtool for motifs on the reverse strand
-  rev_count_bwtool(sites_file, dnase_fwd_matrix_file, dnase_rev_matrix_file)
+  rev_count_bwtool(sites_file, fwd_matrix_file, rev_matrix_file)
 
-  cat('Combining DNase count matrices in both strands ...\n')
+  # Combine counts on both strands
+  sites.df <- fread(sites_file)
+  fwd_counts <- fread(fwd_matrix_file)
+  rev_counts <- fread(rev_matrix_file)
 
-  dnase_fwd <- fread(dnase_fwd_matrix_file)
-  dnase_rev <- fread(dnase_rev_matrix_file)
+  combined_counts <- as.matrix(cbind(fwd_counts[,-c(1:4)], rev_counts[,-c(1:4)]))
+  rownames(combined_counts) <- sites.df$name
 
-  dnase_combined <- cbind(dnase_fwd[,1:4],
-                          dnase_fwd[,-c(1:4)],
-                          dnase_rev[,-c(1:4)])
+  file.remove(fwd_matrix_file, rev_matrix_file)
 
-  dnase_counts <- list(fwd = dnase_fwd,
-                       rev = dnase_rev,
-                       combined = dnase_combined)
+  return(combined_counts)
 }
 
 #' @title Flip the counts generated from bwtool for motifs on the reverse (minus) strand
 #'
 #' @param sites_file Filename for candidate sites
-#' @param dnase_fwd_matrix_file Filename for DNase count matrix in forward strand
-#' @param dnase_rev_matrix_file Filename for DNase count matrix in reverse strand
+#' @param fwd_matrix_file Filename for count matrix in forward strand
+#' @param rev_matrix_file Filename for count matrix in reverse strand
 #' @importFrom  data.table fread fwrite
-#' @export
 #'
-rev_count_bwtool <- function(sites_file, dnase_fwd_matrix_file, dnase_rev_matrix_file) {
+rev_count_bwtool <- function(sites_file, fwd_matrix_file, rev_matrix_file) {
 
-  fwd_count.df <- fread(dnase_fwd_matrix_file)
-  rev_count.df <- fread(dnase_rev_matrix_file)
+  fwd_count.df <- fread(fwd_matrix_file)
+  rev_count.df <- fread(rev_matrix_file)
   sites.df <- fread(sites_file)
 
   if(sum(sites.df[,2] != fwd_count.df[,2]) != 0) {
@@ -399,8 +390,8 @@ rev_count_bwtool <- function(sites_file, dnase_fwd_matrix_file, dnase_rev_matrix
     fwd_count.df <- cbind(sites.df[,c(1:3,6)], fwd_output)
     rev_count.df <- cbind(sites.df[,c(1:3,6)], rev_output)
 
-    fwrite(fwd_count.df, dnase_fwd_matrix_file, sep = ' ')
-    fwrite(rev_count.df, dnase_rev_matrix_file, sep = ' ')
+    fwrite(fwd_count.df, fwd_matrix_file, sep = ' ')
+    fwrite(rev_count.df, rev_matrix_file, sep = ' ')
 
   }
 

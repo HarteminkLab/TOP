@@ -5,10 +5,11 @@
 #' @param select.chr If TRUE, use all chromosomes in the idxstats file.
 #' If FALSE, select chromosomes in chrs.
 #' @param chrs Chromosomes to be included.
+#' @importFrom data.table fread
 #' @export
 get_total_reads <- function(idxstats_file, select.chr = TRUE, chrs = paste0('chr', c(1:22))) {
-  count.df <- read.table(idxstats_file, header = FALSE, sep = '\t', stringsAsFactors = FALSE)
-  names(count.df) = c('chr', 'length', 'reads_mapped', 'reads_unmapped')
+  count.df <- as.data.frame(fread(idxstats_file, sep = '\t'))
+  names(count.df) <- c('chr', 'length', 'reads_mapped', 'reads_unmapped')
 
   if( select.chr ){
     total_count <- sum(count.df[which(count.df$chr %in% chrs), 'reads_mapped'])

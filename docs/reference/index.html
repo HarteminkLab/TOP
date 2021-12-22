@@ -35,9 +35,6 @@
       <a href="../articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
-      <a href="../articles/data_preparation_example.html">An example for input data preparation</a>
-    </li>
-    <li>
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -82,19 +79,15 @@ then split training data into partitions</p></td>
         </td>
         <td><p>Sort and index the BAM file, and then retrieve and print stats in the index file.</p></td>
       </tr><tr><td>
-          <p><code><a href="bin_dnase.html">bin_dnase()</a></code> </p>
+          <p><code><a href="bin_transform_counts.html">bin_transform_counts()</a></code> </p>
         </td>
-        <td><p>Binning and transform DNase count matrix</p></td>
+        <td><p>Binning and transform count matrix</p></td>
       </tr><tr><td>
           <p><code><a href="combine_TOP_samples.html">combine_TOP_samples()</a></code> </p>
         </td>
         <td><p>Combine and take the average of TOP posterior samples from all partitions</p></td>
       </tr><tr><td>
-          <p><code><a href="combine_dnase_bins_chip_data.html">combine_dnase_bins_chip_data()</a></code> </p>
-        </td>
-        <td><p>Combined normalized and binned DNase data with normalized ChIP counts data</p></td>
-      </tr><tr><td>
-          <p><code><a href="count_dnase_genome_cuts.html">count_dnase_genome_cuts()</a></code> </p>
+          <p><code><a href="count_genome_cuts.html">count_genome_cuts()</a></code> </p>
         </td>
         <td><p>Count DNase-seq or ATAC-seq cleavage for a given genome.</p></td>
       </tr><tr><td>
@@ -130,9 +123,9 @@ then split training data into partitions</p></td>
         </td>
         <td><p>Get candidate sites using FIMO motifs with flanking regions</p></td>
       </tr><tr><td>
-          <p><code><a href="get_dnase_sites_counts.html">get_dnase_sites_counts()</a></code> </p>
+          <p><code><a href="get_sites_counts.html">get_sites_counts()</a></code> </p>
         </td>
-        <td><p>Get DNase count matrices for candidate sites.</p></td>
+        <td><p>Get count matrices around candidate sites.</p></td>
       </tr><tr><td>
           <p><code><a href="get_total_reads.html">get_total_reads()</a></code> </p>
         </td>
@@ -142,25 +135,25 @@ then split training data into partitions</p></td>
         </td>
         <td><p>Load TOP posterior samples</p></td>
       </tr><tr><td>
-          <p><code><a href="merge_normalize_dnase_counts.html">merge_normalize_dnase_counts()</a></code> </p>
+          <p><code><a href="merge_normalize_counts.html">merge_normalize_counts()</a></code> </p>
         </td>
-        <td><p>Merge DNase counts, then normalize merged DNase counts data.</p></td>
+        <td><p>Merge counts, then normalize merged counts data.</p></td>
       </tr><tr><td>
           <p><code><a href="millipede_binning.html">millipede_binning()</a></code> </p>
         </td>
-        <td><p>Count DNase cuts with different MILLIPEDE binning settings.</p></td>
+        <td><p>MILLIPEDE binning</p></td>
       </tr><tr><td>
-          <p><code><a href="normalize_bin_dnase.html">normalize_bin_dnase()</a></code> </p>
+          <p><code><a href="normalize_bin_transform_counts.html">normalize_bin_transform_counts()</a></code> </p>
         </td>
-        <td><p>Normalize, binning and transform DNase counts</p></td>
+        <td><p>Normalize, binning and transform counts</p></td>
       </tr><tr><td>
           <p><code><a href="normalize_chip.html">normalize_chip()</a></code> </p>
         </td>
         <td><p>Normalize and transform ChIP counts</p></td>
       </tr><tr><td>
-          <p><code><a href="normalize_dnase.html">normalize_dnase()</a></code> </p>
+          <p><code><a href="normalize_counts.html">normalize_counts()</a></code> </p>
         </td>
-        <td><p>Normalize DNase counts</p></td>
+        <td><p>Normalize DNase or ATAC counts</p></td>
       </tr><tr><td>
           <p><code><a href="predict_TOP.html">predict_TOP()</a></code> </p>
         </td>

@@ -18,11 +18,11 @@ RoxygenNote: 7.1.2
 Imports:
     GenomicRanges,
     data.table,
-    R.utils
+    R.utils,
+    rjags,
+    R2jags
 Suggests: 
     testthat,
     knitr,
-    rmarkdown,
-    rjags,
-    R2jags
+    rmarkdown
 VignetteBuilder: knitr

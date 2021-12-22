@@ -3,6 +3,7 @@
 #'
 #' @param fimo_file FIMO result .txt file
 #' @param flank Flanking region (bp) around motif matches (default: 100)
+#' @importFrom data.table fread
 #' @export
 #'
 flank_fimo_sites <- function(fimo_file, flank=100) {
@@ -12,8 +13,8 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
   }
 
   cat('Load FIMO result... \n')
-  fimo.df <- read.table(fimo_file, header = TRUE, stringsAsFactors = FALSE,
-                        comment.char = '', sep = '\t')
+  fimo.df <- as.data.frame(fread(fimo_file, sep ='\t'))
+
   # Sort sites
   chr_order <- paste0('chr', c(1:22, 'X','Y','M'))
   fimo.df <- fimo.df[fimo.df$sequence_name %in% chr_order,]
@@ -21,11 +22,10 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
   fimo.df <- fimo.df[order(fimo.df$sequence_name, fimo.df$start, fimo.df$stop),]
 
   cat('Flank motif matches by', flank, 'bp... \n')
-
   ## Prepare candidate sites
   sites.df <- data.frame(chr = fimo.df$sequence_name,
                          start = fimo.df$start,
-                         stop = fimo.df$stop,
+                         end = fimo.df$stop,
                          name = paste0('site', c(1:nrow(fimo.df))),
                          score = fimo.df$score,
                          strand = fimo.df$strand,
@@ -33,11 +33,11 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
 
   # FIMO output are 1-based, convert to BED format 0-based coordinates
   sites.df$start <- sites.df$start -1
-  sites.df$stop <- sites.df$stop
+  sites.df$end <- sites.df$end
 
   # Expand flanking regions
   sites.df$start <- sites.df$start - flank
-  sites.df$stop <- sites.df$stop + flank
+  sites.df$end <- sites.df$end + flank
 
   # Filter out sites with start positions < 0 after flanking
   sites.df <- sites.df[sites.df$start >= 0, ]
@@ -131,6 +131,8 @@ filter_mapability <- function(sites.df=NULL,
 #' @param thresh_pwmscore FIMO PWM score threshold.
 #' @param blacklist_file Filename of the blacklist regions
 #' @param mapability_file Filename of the mapability reference file in bigWig format.
+#' @param thresh_mapability Mapability threshold (default: 0.8,
+#' include sites map-able at least 80% positions).
 #' @param out_file Filename of processed candidate sites.
 #' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable.
 #' This is only needed for computing mapability.
@@ -174,8 +176,9 @@ process_candidate_sites <- function(fimo_file=NULL,
     if(!dir.exists(dirname(out_file))){
       dir.create(dirname(out_file), showWarnings = F, recursive = T)
     }
-    colnames(sites.df)[1] <- paste0('#', colnames(sites.df)[1])
-    fwrite(sites.df, out_file, sep = '\t')
+    tmp.df <- sites.df
+    colnames(tmp.df)[1] <- paste0('#', colnames(tmp.df)[1])
+    fwrite(tmp.df, out_file, sep = '\t')
     cat('Save candidate sites at', out_file, '\n')
   }
 

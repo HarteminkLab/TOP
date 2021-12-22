@@ -55,9 +55,6 @@
       <a href="articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
-      <a href="articles/data_preparation_example.html">An example for input data preparation</a>
-    </li>
-    <li>
       <a href="articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -92,11 +89,10 @@
 <!-- badges: end -->
 <p>Transcription factor Occupancy Profiler (TOP) fits a Bayesian hierarchical model using transcription factor (TF) motif information, DNase or ATAC-seq and ChIP-seq data from multiple TFs across multiple cell types or conditions.</p>
 <p>It can be used to predict the quantitative occupancy (or TF binding probability) for many TFs using data from a single DNase- or ATAC-seq experiment.</p>
-<p><a href="https://kevinlkx.github.io/TOP/">R package</a></p>
+<p>Install <a href="https://kevinlkx.github.io/TOP/">TOP R package</a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
-
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kevinlkx/TOP"</span><span class="op">)</span>
 
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>

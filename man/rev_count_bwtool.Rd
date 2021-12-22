@@ -4,14 +4,14 @@
 \alias{rev_count_bwtool}
 \title{Flip the counts generated from bwtool for motifs on the reverse (minus) strand}
 \usage{
-rev_count_bwtool(sites_file, dnase_fwd_matrix_file, dnase_rev_matrix_file)
+rev_count_bwtool(sites_file, fwd_matrix_file, rev_matrix_file)
 }
 \arguments{
 \item{sites_file}{Filename for candidate sites}
 
-\item{dnase_fwd_matrix_file}{Filename for DNase count matrix in forward strand}
+\item{fwd_matrix_file}{Filename for count matrix in forward strand}
 
-\item{dnase_rev_matrix_file}{Filename for DNase count matrix in reverse strand}
+\item{rev_matrix_file}{Filename for count matrix in reverse strand}
 }
 \description{
 Flip the counts generated from bwtool for motifs on the reverse (minus) strand

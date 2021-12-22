@@ -39,7 +39,7 @@ Predict TF occupancy using trained TOP model
 Predict TF occupancy using trained TOP regression coefficients
 
 ```{r predict-TOP-mean-coef, eval = FALSE}
-predictions <- predict_TOP(data, TOP_mean_coef, logistic.model = FALSE,
+predictions <- predict_TOP(data, TOP_mean_coef, 
                            posterior.option = 'mean', transform = 'asinh')
 ```
 

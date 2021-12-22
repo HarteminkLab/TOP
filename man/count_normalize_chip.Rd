@@ -5,34 +5,24 @@
 \title{Count and normalize ChIP-seq read coverage}
 \usage{
 count_normalize_chip(
-  pwm_id,
-  cell_type,
-  training_metadata,
   sites_file,
+  chip_bam_files,
+  chip_idxstats_files,
   chrom_size_file,
-  chip_dir,
-  outdir,
-  outname,
   ref.size = 1e+07,
   bedtools_path = "bedtools"
 )
 }
 \arguments{
-\item{pwm_id}{Motif pwm ID}
+\item{sites_file}{Candidate sites file}
 
-\item{cell_type}{Cell type}
+\item{chip_bam_files}{ChIP-seq bam files}
 
-\item{training_metadata}{training metadata}
+\item{chip_idxstats_files}{ChIP-seq idxstats files.
+By default, use the corresponding '.idxstats.txt' files in the same directory
+of the bam files.}
 
-\item{sites_file}{Filename for candidate sites}
-
-\item{chrom_size_file}{Filename for chromosome sizes}
-
-\item{chip_dir}{Directory of ChIP-seq bam files}
-
-\item{outdir}{Output directory}
-
-\item{outname}{Output filename prefix}
+\item{chrom_size_file}{Chromosome size file}
 
 \item{ref.size}{ChIP-Seq reference library size (Default: 10 million)}
 

@@ -88,7 +88,7 @@ predict_TOP_samples <- function(data,
       n_data <- nrow(data)
       n_samples <- ncol(coefficients)
 
-      predictions <- sapply(1:n_samples, function(x) rnorm(n_data, mean = means[, x], sd = sds[x]))
+      predictions <- sapply(1:n_samples, function(x) stats::rnorm(n_data, mean = means[, x], sd = sds[x]))
       predictions <- apply(predictions, 1, mean)
     }else{
       predictions <- as.numeric(apply(means, 1, mean))

@@ -15,12 +15,11 @@ It can be used to predict the quantitative occupancy (or TF binding
 probability) for many TFs using data from a single DNase- or ATAC-seq
 experiment.
 
-[R package](https://kevinlkx.github.io/TOP/)
+Install [TOP R package](https://kevinlkx.github.io/TOP/)
 
 ``` r
 install.packages("devtools")
 library(devtools)
-
 devtools::install_github("kevinlkx/TOP")
 
 library(TOP)

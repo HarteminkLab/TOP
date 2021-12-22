@@ -35,9 +35,6 @@
       <a href="../articles/data_preparation.html">Prepare input data</a>
     </li>
     <li>
-      <a href="../articles/data_preparation_example.html">An example for input data preparation</a>
-    </li>
-    <li>
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
@@ -70,14 +67,10 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">count_normalize_chip</span><span class="op">(</span>
-  <span class="va">pwm_id</span>,
-  <span class="va">cell_type</span>,
-  <span class="va">training_metadata</span>,
   <span class="va">sites_file</span>,
+  <span class="va">chip_bam_files</span>,
+  <span class="va">chip_idxstats_files</span>,
   <span class="va">chrom_size_file</span>,
-  <span class="va">chip_dir</span>,
-  <span class="va">outdir</span>,
-  <span class="va">outname</span>,
   ref.size <span class="op">=</span> <span class="fl">1e+07</span>,
   bedtools_path <span class="op">=</span> <span class="st">"bedtools"</span>
 <span class="op">)</span></code></pre></div>
@@ -85,22 +78,16 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>pwm_id</dt>
-<dd><p>Motif pwm ID</p></dd>
-<dt>cell_type</dt>
-<dd><p>Cell type</p></dd>
-<dt>training_metadata</dt>
-<dd><p>training metadata</p></dd>
-<dt>sites_file</dt>
-<dd><p>Filename for candidate sites</p></dd>
+    <dl><dt>sites_file</dt>
+<dd><p>Candidate sites file</p></dd>
+<dt>chip_bam_files</dt>
+<dd><p>ChIP-seq bam files</p></dd>
+<dt>chip_idxstats_files</dt>
+<dd><p>ChIP-seq idxstats files.
+By default, use the corresponding '.idxstats.txt' files in the same directory
+of the bam files.</p></dd>
 <dt>chrom_size_file</dt>
-<dd><p>Filename for chromosome sizes</p></dd>
-<dt>chip_dir</dt>
-<dd><p>Directory of ChIP-seq bam files</p></dd>
-<dt>outdir</dt>
-<dd><p>Output directory</p></dd>
-<dt>outname</dt>
-<dd><p>Output filename prefix</p></dd>
+<dd><p>Chromosome size file</p></dd>
 <dt>ref.size</dt>
 <dd><p>ChIP-Seq reference library size (Default: 10 million)</p></dd>
 <dt>bedtools_path</dt>

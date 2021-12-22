@@ -2,17 +2,17 @@
 % Please edit documentation in R/dnase_utils.R
 \name{millipede_binning}
 \alias{millipede_binning}
-\title{Count DNase cuts with different MILLIPEDE binning settings.}
+\title{MILLIPEDE binning}
 \usage{
-millipede_binning(data, combine_strands = c("vertical", "motif"))
+millipede_binning(counts, combine_strands = c("vertical", "motif"))
 }
 \arguments{
-\item{data}{DNase data matrix, rows are candidate sites,
-columns are DNase cuts with 100bp flanks around motifs in forward and reverse strands}
+\item{counts}{Counts matrix, rows are candidate sites,
+columns are DNase or ATAC counts with 100bp flanks around motifs in forward and reverse strands}
 
-\item{combine_strands}{Method to combine DNase cuts from M24 bins in both strands to M12 bins:
+\item{combine_strands}{Method to combine counts from M24 bins in both strands to M12 bins:
 'vertical' (default) or 'motif'.}
 }
 \description{
-Count DNase cuts with different MILLIPEDE binning settings.
+MILLIPEDE binning
 }

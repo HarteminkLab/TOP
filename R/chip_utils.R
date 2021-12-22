@@ -1,27 +1,21 @@
 
 #' Count and normalize ChIP-seq read coverage
 #'
-#' @param pwm_id Motif pwm ID
-#' @param cell_type Cell type
-#' @param training_metadata training metadata
-#' @param sites_file Filename for candidate sites
-#' @param chrom_size_file Filename for chromosome sizes
-#' @param chip_dir Directory of ChIP-seq bam files
-#' @param outdir Output directory
-#' @param outname Output filename prefix
+#' @param sites_file Candidate sites file
+#' @param chip_bam_files ChIP-seq bam files
+#' @param chip_idxstats_files ChIP-seq idxstats files.
+#' By default, use the corresponding '.idxstats.txt' files in the same directory
+#' of the bam files.
+#' @param chrom_size_file Chromosome size file
 #' @param ref.size ChIP-Seq reference library size (Default: 10 million)
 #' @param bedtools_path Path to bedtools executable
-#' @importFrom  data.table fread
+# @importFrom  data.table fread
 #' @export
 #'
-count_normalize_chip = function(pwm_id,
-                                cell_type,
-                                training_metadata,
-                                sites_file,
+count_normalize_chip = function(sites_file,
+                                chip_bam_files,
+                                chip_idxstats_files,
                                 chrom_size_file,
-                                chip_dir,
-                                outdir,
-                                outname,
                                 ref.size=1e7,
                                 bedtools_path='bedtools'){
 
@@ -29,43 +23,33 @@ count_normalize_chip = function(pwm_id,
     stop( 'bedtools could not be executed, set bedtools_path!' )
   }
 
-  dir.create(outdir, showWarnings = F, recursive = T)
-
-  selected_row <- which(training_metadata$pwm_id == pwm_id & training_metadata$cell_type == cell_type)
-  selected_metadata <- training_metadata[selected_row, ]
-  # Split the ChIP-seq bam files, which were separated by ';' in the training_metadata table.
-  chip_samples <- unlist(strsplit(selected_metadata$chip_file, ';'))
-
-  if ( length(chip_samples) == 0 ) {
-    cat(paste('No chip-seq files for ', pwm_id, '\n'))
+  if ( length(chip_bam_files) == 0 ) {
+    stop('No ChIP-seq files! \n')
   }
 
-  cat('Counting chip read coverage ... \n')
-  cat('ChIP-seq bam files:', chip_samples, '\n')
+  if(missing(chip_idxstats_files)){
+    chip_idxstats_files <- paste0(chip_bam_files, '.idxstats.txt')
+  }
 
-  # Join the ChIP-seq bam files by space
-  chip_bam_files <- paste(file.path(chip_dir, paste0(chip_samples, '.bam')), collapse = ' ')
-  chip_idxstats_files <- file.path(chip_dir, paste0(chip_samples, '.bam.idxstats.txt'))
-
-  ## Extract total mapped reads in the idxstats files
-  total_readsMapped <- sum(sapply(chip_idxstats_files, get_total_reads, select.chr = TRUE))
-
-  ## Count total reads by pooling replicates together
-  chip_count_file <- file.path(outdir, paste0(outname, '.totalcounts'))
+  # Count total ChIP-seq reads (pool replicates together)
+  cat('Counting ChIP-seq read coverage ... \n')
+  chip_bam_files <- paste(chip_bam_files, collapse = ' ')
+  chip_count_file <- tempfile(pattern = "totalcounts")
   cmd <- paste(bedtools_path, 'coverage -a', sites_file, '-b', chip_bam_files,
                '-counts -sorted -g', chrom_size_file, '>', chip_count_file)
-  try(system(cmd))
+  system(cmd)
 
   chip_counts <- fread(chip_count_file)
   sites <- as.data.frame(fread(sites_file))
-  colnames(chip_counts) <- c(colnames(sites), 'chip_total')
+  colnames(chip_counts) <- c(colnames(sites), 'chip')
 
-  ## Normalize (scale) ChIP-seq read counts
+  # Normalize (scale) ChIP-seq read counts
   cat('Normalize (scale) ChIP-seq library to', ref.size / 1e6, 'million reads... \n')
+  total_readsMapped <- sum(sapply(chip_idxstats_files, get_total_reads, select.chr = TRUE))
   scaling_factor <- ref.size / total_readsMapped
-  chip_counts$chip_normalized <- chip_counts$chip_total * scaling_factor
+  chip_counts$chip <- chip_counts$chip * scaling_factor
 
-  unlink(chip_count_file)
+  file.remove(chip_count_file)
 
   return(chip_counts)
 
@@ -102,49 +86,3 @@ normalize_chip <- function(chip_counts, idxstats_file, ref.size=1e7, transform='
 
 }
 
-
-#' Combined normalized and binned DNase data with normalized ChIP counts data
-#' @description Combined normalized and binned DNase data with
-#' normalized ChIP counts data. This function takes normalized
-#' DNase and ChIP data with replicates merged.
-#'
-#' @param dnase_counts_file Normalized DNase counts files
-#' @param chip_counts_file Normalized ChIP counts files
-#' @param bin.method MILLIPEDE binning scheme (Default: 'M5')
-#' @export
-#'
-combine_dnase_bins_chip_data <- function(dnase_counts_file,
-                                         chip_counts_file,
-                                         bin.method = 'M5'){
-
-  if ( !file.exists(dnase_counts_file) ) {
-    stop('DNase file does not exist! \n')
-  }
-
-  if (!file.exists(chip_counts_file) ) {
-    stop('ChIP file does not exist! \n')
-  }
-
-  chip_counts.df <- readRDS(chip_counts_file)
-  colnames(chip_counts.df)[1:7] <- c('chr', 'start', 'end', 'name', 'pwm_score',  'strand', 'p_value')
-
-  sites.df <- chip_counts.df[,1:6]
-
-  dnase_counts.df <- readRDS(dnase_counts_file)
-
-  if ( any(sites.df[,2] != dnase_counts.df[,2]) ){
-    stop('Sites do not match!')
-  }
-
-  dnase_bins <- bin_dnase(as.matrix(dnase_counts.df[,-c(1:4)]), bin.method)
-
-  combined_data <- data.frame(sites.df,
-                              dnase = dnase_bins,
-                              chip = chip_counts.df$chip_normalized)
-  colnames(combined_data) <- c(colnames(sites.df),
-                               paste('dnase', colnames(dnase_bins), sep = '.'),
-                               'chip')
-
-  return(combined_data)
-
-}

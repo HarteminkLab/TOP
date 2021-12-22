@@ -29,6 +29,9 @@ process_candidate_sites(
 
 \item{mapability_file}{Filename of the mapability reference file in bigWig format.}
 
+\item{thresh_mapability}{Mapability threshold (default: 0.8,
+include sites map-able at least 80\% positions).}
+
 \item{out_file}{Filename of processed candidate sites.}
 
 \item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable.
