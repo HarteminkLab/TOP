@@ -9,7 +9,7 @@
 #' coefficients.
 #' @param logistic.model If TRUE, use logistic version of the model
 #' to predict TF binding probability.
-#' @param posterior.option "samples": uses posterior samples, "mean": uses posterior mean of
+#' @param posterior.option 'samples': uses posterior samples, 'mean': uses posterior mean of
 #' trained regression coefficients
 #' @param transform Method used to transform ChIP-seq counts when training
 #' the TOP quantitative model. Options: asinh, log2, log, none.
@@ -20,7 +20,7 @@
 predict_TOP <- function(data,
                         TOP_model,
                         logistic.model = FALSE,
-                        posterior.option = c("mean", "samples"),
+                        posterior.option = c('mean', 'samples'),
                         transform = c('asinh', 'log2', 'log', 'none')){
 
   posterior.option <- match.arg(posterior.option)
@@ -67,25 +67,29 @@ predict_TOP_samples <- function(data,
 
   transform <- match.arg(transform)
 
+  cat('Predicting TF occupancy using TOP posterior samples...\n')
+
+  features <- select_features(data)
+
+  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
+
   alpha_samples <- TOP_samples$alpha_samples
   beta_samples  <- TOP_samples$beta_samples
   tau_samples   <- TOP_samples$tau_samples
 
   coefficients  <- t(cbind(alpha_samples, beta_samples))
 
-  data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
-
   if(use.posterior.mean){
     coefficients <- apply(coefficients, 1, mean)
-    means <- data %*% coefficients
+    means <- data.matrix %*% coefficients
     predictions <- as.numeric(means)
   }else{
-    means <- data %*% coefficients
+    means <- data.matrix %*% coefficients
 
     if(sample.predictions){
       sds <- 1 / sqrt(tau_samples)
 
-      n_data <- nrow(data)
+      n_data <- nrow(data.matrix)
       n_samples <- ncol(coefficients)
 
       predictions <- sapply(1:n_samples, function(x) stats::rnorm(n_data, mean = means[, x], sd = sds[x]))
@@ -136,16 +140,20 @@ predict_TOP_mean_coef <- function(data,
 
   transform <- match.arg(transform)
 
-  if((ncol(data)+1) != length(mean_coef)){
-    stop('The number of coefficients should be equal to
-         the number of data columns + 1 (intercept)!')
+  cat('Predicting TF occupancy using TOP posterior mean coefficients...\n')
+
+  features <- select_features(data)
+
+  if((ncol(features)+1) != length(mean_coef)){
+    stop('The number of coefficients not equal to
+         the number of features + intercept! Check input data!')
   }
 
   coefficients <- as.matrix(mean_coef, ncol = 1)
 
-  data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
+  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
-  predictions <- as.numeric(data %*% coefficients)
+  predictions <- as.numeric(data.matrix %*% coefficients)
 
   if(transform == 'asinh'){
     predictions <- sinh(predictions)
@@ -161,9 +169,9 @@ predict_TOP_mean_coef <- function(data,
 
 }
 
-#' @title Predict TF binding by TOP logistic model
+#' @title Predict TF binding probability by TOP logistic model
 #' with posterior mean of regression coefficients
-#' @description Predict TF binding using posterior mean of the regression
+#' @description Predict TF binding probability using posterior mean of the regression
 #' coefficients trained from TOP logistic model
 #'
 #' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
@@ -178,16 +186,20 @@ predict_TOP_mean_coef <- function(data,
 #' @export
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
-  if((ncol(data)+1) != length(mean_coef)){
-    stop('The number of coefficients should be equal to
-         the number of data columns + 1 (intercept)!')
+  features <- select_features(data)
+
+  cat('Predicting TF binding probability using TOP logistic model posterior mean coefficients...\n')
+
+  if((ncol(features)+1) != length(mean_coef)){
+    stop('The number of coefficients not equal to
+         the number of features + intercept! Check input data!')
   }
 
   coefficients <- as.matrix(mean_coef, ncol = 1)
 
-  data <- as.matrix(data.frame(intercept = 1, data, check.names = F))
+  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
-  mu <- as.numeric(data %*% coefficients)
+  mu <- as.numeric(data.matrix %*% coefficients)
 
   p <- 1 / (1 + exp(-mu)) # inverse logit
 
@@ -195,3 +207,18 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
 }
 
+#' Extract PWM and bin features
+#'
+#' @param data Input data frame
+#' @param pwm.name column name (prefix) of the PMW score
+#' @param bin.name column name (prefix) of the DNase or ATAC bins
+#'
+select_features <- function(data, pwm.name = 'pwm', bin.name = 'bin'){
+  data <- as.data.frame(data)
+  pwm.col <- grep(pwm.name, colnames(data), ignore.case = TRUE, value = TRUE)
+  bin.cols <- grep(bin.name, colnames(data), ignore.case = TRUE, value = TRUE)
+  features.cols <- c(pwm.col, bin.cols)
+  cat('Select features:', features.cols, '\n')
+  features <- data[, features.cols]
+  return(features)
+}

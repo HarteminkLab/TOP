@@ -27,7 +27,7 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
                          start = fimo.df$start,
                          end = fimo.df$stop,
                          name = paste0('site', c(1:nrow(fimo.df))),
-                         score = fimo.df$score,
+                         pwm.score = fimo.df$score,
                          strand = fimo.df$strand,
                          p.value = fimo.df$`p-value`)
 
@@ -102,7 +102,7 @@ filter_mapability <- function(sites.df=NULL,
 
   sites_tmp.df <- sites.df[,1:6]
   sites_tmp.df$name <- paste('site', c(1:nrow(sites_tmp.df)), sep = '')
-  sites_tmp.df$score <- 0
+  sites_tmp.df$pwm.score <- 0
 
   tmp_mapability_filesites <- tempfile('sites')
   fwrite(sites_tmp.df, tmp_mapability_filesites, sep = '\t')
@@ -158,7 +158,7 @@ process_candidate_sites <- function(fimo_file=NULL,
   cat('Select candidate sites with FIMO p-value <', thresh_pValue, '\n')
 
   # Filter candidate sites by FIMO PWM score
-  sites.df <- sites.df[which(as.numeric(sites.df$score) > as.numeric(thresh_pwmscore)), ]
+  sites.df <- sites.df[which(as.numeric(sites.df$pwm.score) > as.numeric(thresh_pwmscore)), ]
   cat('Select candidate sites with PWM score >', thresh_pwmscore, '\n')
 
   # Filter candidate sites in ENCODE blacklist

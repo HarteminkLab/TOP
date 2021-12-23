@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_occupancy.R
 \name{predict_TOP_logistic_mean_coef}
 \alias{predict_TOP_logistic_mean_coef}
-\title{Predict TF binding by TOP logistic model
+\title{Predict TF binding probability by TOP logistic model
 with posterior mean of regression coefficients}
 \usage{
 predict_TOP_logistic_mean_coef(data, mean_coef)
@@ -20,6 +20,6 @@ length(mean_coef) should be equal to 1+ncol(data).}
 The function returns a vector of predicted TF binding probabilities
 }
 \description{
-Predict TF binding using posterior mean of the regression
+Predict TF binding probability using posterior mean of the regression
 coefficients trained from TOP logistic model
 }

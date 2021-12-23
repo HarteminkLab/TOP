@@ -22,7 +22,7 @@ coefficients.}
 \item{logistic.model}{If TRUE, use logistic version of the model
 to predict TF binding probability.}
 
-\item{posterior.option}{"samples": uses posterior samples, "mean": uses posterior mean of
+\item{posterior.option}{'samples': uses posterior samples, 'mean': uses posterior mean of
 trained regression coefficients}
 
 \item{transform}{Method used to transform ChIP-seq counts when training

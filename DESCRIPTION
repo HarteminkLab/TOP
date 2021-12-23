@@ -19,6 +19,8 @@ Imports:
     GenomicRanges,
     data.table,
     R.utils,
+    ggplot2,
+    cowplot,
     rjags,
     R2jags
 Suggests: 
