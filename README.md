@@ -7,17 +7,17 @@
 <!-- badges: end -->
 
 Transcription factor Occupancy Profiler (TOP) fits a Bayesian
-hierarchical model using transcription factor (TF) motif information,
-DNase or ATAC-seq and ChIP-seq data from multiple TFs across multiple
-cell types or conditions.
+hierarchical model using transcription factor (TF) binding specificity
+(motifs), DNase- or ATAC-seq data, as well as ChIP-seq training data
+from multiple TFs across multiple cell types or conditions.
 
-It can be used to predict the quantitative occupancy (or TF binding
-probability) for many TFs using data from a single DNase- or ATAC-seq
+It can be used to predict the quantitative occupancy or binding
+probability for many TFs using data from a single DNase- or ATAC-seq
 experiment.
 
-[TOP R package website](https://kevinlkx.github.io/TOP/)
+## [TOP R package website](https://kevinlkx.github.io/TOP/)
 
-Install TOP R package
+Install R package
 
 ``` r
 install.packages("devtools")
@@ -27,7 +27,7 @@ devtools::install_github("kevinlkx/TOP")
 library(TOP)
 ```
 
-**Reference**
+## Reference
 
 -   Luo, K., Zhong, J., Safi, A., Hong, L., Tewari, A., Song, L., Reddy,
     T., Ma, L., Crawford, G., & Hartemink, A. (2020) “Quantitative
