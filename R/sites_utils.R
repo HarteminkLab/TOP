@@ -29,7 +29,7 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
                          name = paste0('site', c(1:nrow(fimo.df))),
                          score = fimo.df$score,
                          strand = fimo.df$strand,
-                         p.value = fimo.df$p.value)
+                         p.value = fimo.df$`p-value`)
 
   # FIMO output are 1-based, convert to BED format 0-based coordinates
   sites.df$start <- sites.df$start -1
