@@ -12,7 +12,8 @@ scatterplot_predictions(
   title = "",
   transform = c("asinh", "log2", "sqrt"),
   xlim = c(0, 10),
-  ylim = c(0, 10)
+  ylim = c(0, 10),
+  color = "black"
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ scatterplot_predictions(
 \item{xlim}{range of x-axis values}
 
 \item{ylim}{range of y-axis values}
+
+\item{color}{color of the dots}
 }
 \description{
 Make a scatter plot of measured and predicted occupancy

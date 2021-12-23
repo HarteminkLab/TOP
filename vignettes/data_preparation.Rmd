@@ -181,7 +181,7 @@ saveRDS(combined_data.df, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combin
 
 ```{r load-combined-data, eval=TRUE}
 combined_data.df <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
-head(combined_data.df)
+head(combined_data.df, 3)
 ```
 
 **Step 5: Prepare ChIP-seq data (optional if you want to train your own model)**
@@ -223,7 +223,7 @@ saveRDS(combined_data.df, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIPco
 
 ```{r load-combined-data-with-chip, eval=TRUE}
 combined_data.df <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIPcounts.combined.data.rds')
-head(combined_data.df)
+head(combined_data.df, 3)
 ```
 
 Replace ChIP-seq counts with binary ChIP labels (from ChIP-seq peaks) 

@@ -10,6 +10,7 @@
 #' @param transform transformation of the occupancy (asinh, log2 or sqrt)
 #' @param xlim range of x-axis values
 #' @param ylim range of y-axis values
+#' @param color color of the dots
 #' @import ggplot2
 #' @import cowplot
 #' @export
@@ -19,7 +20,8 @@ scatterplot_predictions <- function(x, y,
                            title = '',
                            transform = c('asinh', 'log2', 'sqrt'),
                            xlim = c(0,10),
-                           ylim = c(0,10)){
+                           ylim = c(0,10),
+                           color = "black"){
   transform <- match.arg(transform)
 
   df <- data.frame(x=x, y=y)
@@ -41,7 +43,7 @@ scatterplot_predictions <- function(x, y,
                 size = 0.5) +
     geom_point(shape=19,      # Use solid circles
                alpha=0.3,     # opacity
-               color = "blue",
+               color = color,
                size = 0.5) +
     scale_x_continuous(breaks=seq(xlim[1],xlim[2],length.out = 5), limits = c(xlim[1],xlim[2])) +
     scale_y_continuous(breaks=seq(ylim[1],ylim[2],length.out = 5), limits = c(ylim[1],ylim[2])) +

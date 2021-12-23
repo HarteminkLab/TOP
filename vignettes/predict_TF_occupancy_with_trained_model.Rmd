@@ -39,17 +39,17 @@ TOP_posterior_mean_coef <- readRDS('../inst/trained_model_coef/ATAC/M5/TOP_poste
 summary(TOP_posterior_mean_coef)
 ```
 
-TF- and cell-type- specific model (bottom level) parameters
+TF- and cell-type- specific model (bottom level) regression coefficients
 ```{r show-bottom-level-coef, eval=TRUE}
-head(TOP_posterior_mean_coef$bottom)
+head(TOP_posterior_mean_coef$bottom, 3)
 ```
 
-TF-specific cell-type-generic model (middle level) parameters
+TF-specific cell-type-generic model (middle level) regression coefficients
 ```{r show-middle-level-coef, eval=TRUE}
-head(TOP_posterior_mean_coef$middle)
+head(TOP_posterior_mean_coef$middle, 3)
 ```
 
-TF-generic model (top level) parameters
+TF-generic model (top level) regression coefficients
 ```{r show-top-level-coef, eval=TRUE}
 head(TOP_posterior_mean_coef$top)
 ```

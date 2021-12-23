@@ -116,41 +116,29 @@
 <span class="co">#&gt; top       7   -none- numeric</span>
 <span class="co">#&gt; middle  455   -none- numeric</span>
 <span class="co">#&gt; bottom 1414   -none- numeric</span></code></pre></div>
-<p>TF- and cell-type- specific model (bottom level) parameters</p>
+<p>TF- and cell-type- specific model (bottom level) regression coefficients</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">bottom</span><span class="op">)</span>
-<span class="co">#&gt;                  Intercept         PWM       Bin1      Bin2         Bin3</span>
-<span class="co">#&gt; ATF1.K562       -1.7690767  0.21758724 0.10161658 0.4209041 -0.416652011</span>
-<span class="co">#&gt; BACH1.GM12878    0.3781784  0.04573713 0.15204184 0.2209277 -0.004968313</span>
-<span class="co">#&gt; BACH1.K562      -0.2657850  0.07925225 0.07578085 0.2991205 -0.012988483</span>
-<span class="co">#&gt; BATF.GM12878    -0.4203831  0.07440667 0.15052131 0.4343648 -0.089721355</span>
-<span class="co">#&gt; BHLHE40.A549     1.6517474 -0.05898423 0.04100423 0.2841420 -0.034521036</span>
-<span class="co">#&gt; BHLHE40.GM12878  0.2321256  0.05451968 0.20259419 0.4790257 -0.080095435</span>
-<span class="co">#&gt;                      Bin4       Bin5</span>
-<span class="co">#&gt; ATF1.K562       0.4456277 0.10719844</span>
-<span class="co">#&gt; BACH1.GM12878   0.2045168 0.14301801</span>
-<span class="co">#&gt; BACH1.K562      0.2997322 0.02633572</span>
-<span class="co">#&gt; BATF.GM12878    0.4279685 0.12726595</span>
-<span class="co">#&gt; BHLHE40.A549    0.3287464 0.04964573</span>
-<span class="co">#&gt; BHLHE40.GM12878 0.4441979 0.14729243</span></code></pre></div>
-<p>TF-specific cell-type-generic model (middle level) parameters</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">bottom</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;                Intercept        PWM       Bin1      Bin2         Bin3      Bin4</span>
+<span class="co">#&gt; ATF1.K562     -1.7690767 0.21758724 0.10161658 0.4209041 -0.416652011 0.4456277</span>
+<span class="co">#&gt; BACH1.GM12878  0.3781784 0.04573713 0.15204184 0.2209277 -0.004968313 0.2045168</span>
+<span class="co">#&gt; BACH1.K562    -0.2657850 0.07925225 0.07578085 0.2991205 -0.012988483 0.2997322</span>
+<span class="co">#&gt;                     Bin5</span>
+<span class="co">#&gt; ATF1.K562     0.10719844</span>
+<span class="co">#&gt; BACH1.GM12878 0.14301801</span>
+<span class="co">#&gt; BACH1.K562    0.02633572</span></code></pre></div>
+<p>TF-specific cell-type-generic model (middle level) regression coefficients</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">middle</span><span class="op">)</span>
-<span class="co">#&gt;           Intercept         PWM       Bin1      Bin2        Bin3      Bin4</span>
-<span class="co">#&gt; ATF1    -0.97200352 0.142192327 0.09213494 0.3566015 -0.20341658 0.3664693</span>
-<span class="co">#&gt; BACH1   -0.02804098 0.062251044 0.10576962 0.2685970 -0.01240542 0.2649561</span>
-<span class="co">#&gt; BATF    -0.30109722 0.074633798 0.10686063 0.3500711 -0.04610244 0.3532608</span>
-<span class="co">#&gt; BHLHE40  0.78484284 0.003049302 0.10912619 0.3748675 -0.02425472 0.3795166</span>
-<span class="co">#&gt; CEBPB   -1.25178717 0.157487528 0.07627769 0.4170173 -0.26484919 0.3133201</span>
-<span class="co">#&gt; CREB1   -1.73595216 0.193588383 0.12749083 0.3675073 -0.11923783 0.2555481</span>
-<span class="co">#&gt;               Bin5</span>
-<span class="co">#&gt; ATF1    0.09053287</span>
-<span class="co">#&gt; BACH1   0.08219806</span>
-<span class="co">#&gt; BATF    0.10103080</span>
-<span class="co">#&gt; BHLHE40 0.09942905</span>
-<span class="co">#&gt; CEBPB   0.14050633</span>
-<span class="co">#&gt; CREB1   0.16107756</span></code></pre></div>
-<p>TF-generic model (top level) parameters</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">middle</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;         Intercept        PWM       Bin1      Bin2        Bin3      Bin4</span>
+<span class="co">#&gt; ATF1  -0.97200352 0.14219233 0.09213494 0.3566015 -0.20341658 0.3664693</span>
+<span class="co">#&gt; BACH1 -0.02804098 0.06225104 0.10576962 0.2685970 -0.01240542 0.2649561</span>
+<span class="co">#&gt; BATF  -0.30109722 0.07463380 0.10686063 0.3500711 -0.04610244 0.3532608</span>
+<span class="co">#&gt;             Bin5</span>
+<span class="co">#&gt; ATF1  0.09053287</span>
+<span class="co">#&gt; BACH1 0.08219806</span>
+<span class="co">#&gt; BATF  0.10103080</span></code></pre></div>
+<p>TF-generic model (top level) regression coefficients</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">top</span><span class="op">)</span>
 <span class="co">#&gt;   Intercept         PWM        Bin1        Bin2        Bin3        Bin4 </span>
