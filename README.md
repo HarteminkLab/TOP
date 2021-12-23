@@ -7,13 +7,15 @@
 <!-- badges: end -->
 
 Transcription factor Occupancy Profiler (TOP) fits a Bayesian
-hierarchical model using transcription factor (TF) binding specificity
-(motifs), DNase- or ATAC-seq data, as well as ChIP-seq training data
-from multiple TFs across multiple cell types or conditions.
+hierarchical model using transcription factor (TF) motifs, DNase- or
+ATAC-seq data, as well as ChIP-seq data (only required when training the
+models) in multiple TFs across multiple cell types.
 
 It can be used to predict the quantitative occupancy or binding
 probability for many TFs using data from a single DNase- or ATAC-seq
-experiment.
+experiment. Thus, it allows efficient profiling of quantitative TF
+occupancy landscapes across multiple cell types or conditions using
+DNase- or ATAC-seq experiments.
 
 ## [TOP R package website](https://kevinlkx.github.io/TOP/)
 

@@ -5,7 +5,7 @@ articles:
   data_preparation: data_preparation.html
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_model_JAGS: train_TOP_model_JAGS.html
-last_built: 2021-12-23T18:55Z
+last_built: 2021-12-23T19:06Z
 urls:
   reference: https://kevinlkx.github.io/TOP/reference
   article: https://kevinlkx.github.io/TOP/articles
