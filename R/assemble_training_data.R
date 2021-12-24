@@ -1,6 +1,5 @@
-#' @title Assemble TOP training data for all TF x cell type combos,
-#' then split training data into partitions
-#' #'
+#' @title Assemble TOP training data for all TF x cell type combos in one partition
+#'
 #' @param tf_cell_table a data frame with TF name, cell type,
 #' and links to the training data files.
 #' @param logistic.model If TRUE, use logistic version of the model

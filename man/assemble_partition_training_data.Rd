@@ -2,9 +2,7 @@
 % Please edit documentation in R/assemble_training_data.R
 \name{assemble_partition_training_data}
 \alias{assemble_partition_training_data}
-\title{Assemble TOP training data for all TF x cell type combos,
-then split training data into partitions
-#'}
+\title{Assemble TOP training data for all TF x cell type combos in one partition}
 \usage{
 assemble_partition_training_data(
   tf_cell_table,
@@ -40,7 +38,5 @@ to run Gibbs sampling in parallel.}
 Returns a data frame of training data with all TFs and cell type combos.
 }
 \description{
-Assemble TOP training data for all TF x cell type combos,
-then split training data into partitions
-#'
+Assemble TOP training data for all TF x cell type combos in one partition
 }
