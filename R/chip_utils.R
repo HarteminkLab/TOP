@@ -22,6 +22,8 @@ count_normalize_chip = function(sites_file,
                                 transform = c('none', 'asinh', 'log2', 'sqrt'),
                                 bedtools_path='bedtools'){
 
+  transform <- match.arg(transform)
+
   if ( Sys.which(bedtools_path) == '' ) {
     stop( 'bedtools could not be executed, set bedtools_path!' )
   }
@@ -81,6 +83,8 @@ normalize_chip <- function(chip_counts,
                            idxstats_file,
                            ref.size=1e7,
                            transform = c('none', 'asinh', 'log2', 'sqrt')) {
+
+  transform <- match.arg(transform)
 
   # Count total mapped DNase reads (chr1:22)
   total_readsMapped <- get_total_reads(idxstats_file, select.chr = TRUE)
