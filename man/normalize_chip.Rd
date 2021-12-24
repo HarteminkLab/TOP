@@ -8,7 +8,7 @@ normalize_chip(
   chip_counts,
   idxstats_file,
   ref.size = 1e+07,
-  transform = "asinh"
+  transform = c("none", "asinh", "log2", "sqrt")
 )
 }
 \arguments{
@@ -18,7 +18,8 @@ normalize_chip(
 
 \item{ref.size}{ChIP-Seq reference library size (Default: 10 million)}
 
-\item{transform}{log2 or asinh transform}
+\item{transform}{Transform of ChIP read counts.
+Options are 'none' (do not transform), 'asinh', 'log2', 'sqrt'.}
 }
 \description{
 Normalize and transform ChIP counts

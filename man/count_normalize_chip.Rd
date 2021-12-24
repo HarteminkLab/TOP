@@ -10,6 +10,7 @@ count_normalize_chip(
   chip_idxstats_files,
   chrom_size_file,
   ref.size = 1e+07,
+  transform = c("none", "asinh", "log2", "sqrt"),
   bedtools_path = "bedtools"
 )
 }
@@ -25,6 +26,9 @@ of the bam files.}
 \item{chrom_size_file}{Chromosome size file}
 
 \item{ref.size}{ChIP-Seq reference library size (Default: 10 million)}
+
+\item{transform}{Transform of ChIP read counts.
+Options are 'none' (do not transform), 'asinh', 'log2', 'sqrt'.}
 
 \item{bedtools_path}{Path to bedtools executable}
 }

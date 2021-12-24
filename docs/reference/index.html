@@ -27,7 +27,7 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
@@ -38,7 +38,10 @@
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model_JAGS.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+    </li>
+    <li>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -64,16 +67,16 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="assemble_TOP_logistic_training_data.html">assemble_TOP_logistic_training_data()</a></code> </p>
-        </td>
-        <td><p>Assemble TOP (logistic version) training data for all TF x cell type combos,
-then split training data into partitions
-#'</p></td>
-      </tr><tr><td>
           <p><code><a href="assemble_TOP_training_data.html">assemble_TOP_training_data()</a></code> </p>
         </td>
         <td><p>Assemble TOP training data for all TF x cell type combos,
-then split training data into partitions</p></td>
+then split training data into 10 partitions</p></td>
+      </tr><tr><td>
+          <p><code><a href="assemble_partition_training_data.html">assemble_partition_training_data()</a></code> </p>
+        </td>
+        <td><p>Assemble TOP training data for all TF x cell type combos,
+then split training data into partitions
+#'</p></td>
       </tr><tr><td>
           <p><code><a href="bam_sort_index_stats.html">bam_sort_index_stats()</a></code> </p>
         </td>
@@ -110,14 +113,6 @@ then split training data into partitions</p></td>
           <p><code><a href="filter_mapability.html">filter_mapability()</a></code> </p>
         </td>
         <td><p>Title</p></td>
-      </tr><tr><td>
-          <p><code><a href="fit_TOP_M5_model.html">fit_TOP_M5_model()</a></code> </p>
-        </td>
-        <td><p>Fit TOP model</p></td>
-      </tr><tr><td>
-          <p><code><a href="fit_TOP_logistic_M5_model.html">fit_TOP_logistic_M5_model()</a></code> </p>
-        </td>
-        <td><p>Fit TOP logistic model</p></td>
       </tr><tr><td>
           <p><code><a href="flank_fimo_sites.html">flank_fimo_sites()</a></code> </p>
         </td>
@@ -180,6 +175,10 @@ with posterior mean of regression coefficients</p></td>
         </td>
         <td><p>Flip the counts generated from bwtool for motifs on the reverse (minus) strand</p></td>
       </tr><tr><td>
+          <p><code><a href="scatterplot.html">scatterplot()</a></code> </p>
+        </td>
+        <td><p>Simple scatter plot</p></td>
+      </tr><tr><td>
           <p><code><a href="scatterplot_predictions.html">scatterplot_predictions()</a></code> </p>
         </td>
         <td><p>Make a scatter plot of measured and predicted occupancy</p></td>
@@ -200,6 +199,18 @@ remove the overlapping sites with lower occupancy</p></td>
           <p><code><a href="track_def_line.html">track_def_line()</a></code> </p>
         </td>
         <td><p>Set genome browser track parameters for predictions in bedGraph format</p></td>
+      </tr><tr><td>
+          <p><code><a href="train_TOP_M5_model_jags.html">train_TOP_M5_model_jags()</a></code> </p>
+        </td>
+        <td><p>Train TOP model</p></td>
+      </tr><tr><td>
+          <p><code><a href="train_TOP_logistic_M5_model_jags.html">train_TOP_logistic_M5_model_jags()</a></code> </p>
+        </td>
+        <td><p>Train TOP logistic model</p></td>
+      </tr><tr><td>
+          <p><code><a href="train_TOP_model.html">train_TOP_model()</a></code> </p>
+        </td>
+        <td><p>Train TOP model for each partition separately</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

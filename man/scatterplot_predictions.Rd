@@ -10,7 +10,6 @@ scatterplot_predictions(
   xlab = "measured",
   ylab = "predicted",
   title = "",
-  transform = c("asinh", "log2", "sqrt"),
   xlim = c(0, 10),
   ylim = c(0, 10),
   color = "black"
@@ -26,8 +25,6 @@ scatterplot_predictions(
 \item{ylab}{y-axis label}
 
 \item{title}{title of the figure}
-
-\item{transform}{transformation of the occupancy (asinh, log2 or sqrt)}
 
 \item{xlim}{range of x-axis values}
 

@@ -19,6 +19,12 @@
     <loc>https://kevinlkx.github.io/TOP/articles/predict_TF_occupancy_with_trained_model.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_logistic_model.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_model.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_model_JAGS.html</loc>
   </url>
   <url>
@@ -32,6 +38,9 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/assemble_TOP_training_data.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/assemble_partition_training_data.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/bam_sort_index_stats.html</loc>
@@ -166,6 +175,9 @@
     <loc>https://kevinlkx.github.io/TOP/reference/rev_tagcount_bwtool.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/scatterplot.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/scatterplot_predictions.html</loc>
   </url>
   <url>
@@ -179,5 +191,14 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/track_def_line.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/train_TOP_M5_model_jags.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/train_TOP_logistic_M5_model_jags.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/train_TOP_model.html</loc>
   </url>
 </urlset>

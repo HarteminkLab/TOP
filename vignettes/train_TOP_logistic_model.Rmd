@@ -1,0 +1,114 @@
+---
+title: 'Train TOP logistic model'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Train TOP logistic model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = '#>'
+)
+```
+
+Load TOP R package
+---------------------
+```{r load-TOP-package, eval = FALSE}
+library(TOP)
+```
+
+
+Prepare training data
+---------------------
+
+**Step 1: Prepare training data for each TF in each cell type**
+
+For each TF in each cell type, prepare training data for candidate binding sites:
+including: PWM scores, DNase (or ATAC) bins, 
+and binary ChIP labels (from ChIP-seq peaks).
+
+You can follow this [page](data_preparation.html) to prepare training data.
+
+Then create a data frame listing all the TF names, cell types, 
+and links to the training data files.
+
+**Step 2: Assemble training data for all TF-cell type combinations**
+
+Assemble training datasets for all training TF-cell type 
+combinations, then split training data into 10 partitions.
+
+```{r assemble-TOP-logistic-training-data, eval = FALSE}
+all_training_data <- assemble_TOP_training_data(tf_cell_table = './tf_cell_table.txt',
+                                                training_data_dir = './', 
+                                                training_data_name = 'TOP_training_data',
+                                                logistic.model = TRUE,
+                                                chip_colname = 'chip_label',
+                                                training_chrs = paste0('chr', seq(1,21,2)),
+                                                n.partitions = 10)
+```
+
+
+Train TOP logistic models using assembled training data
+-------------------------------------------------------------
+Train TOP logistic model for each partition separately, and save the posterior samples.
+
+We can set the following parameters for Gibbs sampling: 
+
+- n.iter: number of total iterations per chain (including burn-in iterations).
+- n.burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.
+- n.chains: number of Markov chains.
+- n.thin: thinning rate, must be a positive integer.
+
+To save computation time, we can run the partitions 
+(choose which partition to run, e.g. `partitions=3 or partition=c(1,3,5)`) 
+in parallel on separate compute nodes (if you have access to compute clusters). 
+
+```{r train-TOP-logistic-model, eval = FALSE}
+train_TOP_model(model_file = '../model/TOP_M5_logit_model_jags_priorVar1.txt',
+                training_data_dir = './', 
+                training_data_name = 'TOP_training_data',
+                logistic.model = TRUE,
+                out_dir = 'TOP_output',
+                partitions=c(1:10),
+                n.iter=10000,
+                n.burnin=5000,
+                n.chains=3,
+                n.thin=10)
+```
+
+
+Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients
+----------------------------------------------------------------------------------------------------------------
+
+After the training is done, we can combine the posterior samples from the partitions,
+and obtain the posterior mean of the regression coefficients.
+
+Combine TOP posterior samples from the 10 partitions
+```{r combine-TOP-coef, eval = FALSE}
+TOP_samples_files <- file.path('TOP_output', 
+                               paste0('TOP_logistic_M5_partition', 1:10, '.posterior_samples.rds'))
+TOP_samples <- combine_TOP_samples(TOP_samples_files)
+```
+
+Extract posterior mean coefficients for all three levels
+```{r extract-TOP-mean-coef, eval = FALSE}
+tf_cell_combos <- read.table(tf_cell_combo_file, header=TRUE, sep='\t', stringsAsFactors = FALSE)
+tf_cell_combos <- unique(tf_cell_combos[, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, tf_cell_combos)
+```
+
+Save posterior samples and posterior mean of the regression coefficients
+```{r save-samples-coef, eval = FALSE}
+saveRDS(TOP_samples, 'TOP_output/TOP_logistic_M5_combined_posterior_samples.rds')
+saveRDS(TOP_mean_coef, 'TOP_output/TOP_logistic_M5_posterior_mean_coef.rds')
+```
+
+We will provide pre-trained models using ENCODE data
+[here](https://users.cs.duke.edu/~amink/software/).
+
+To make predictions for TF occupancy using new DNase- or ATAC-seq data,
+see this [page](predict_TF_occupancy_with_trained_model.html)
+

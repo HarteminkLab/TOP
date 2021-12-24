@@ -27,7 +27,7 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
@@ -38,7 +38,10 @@
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model_JAGS.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+    </li>
+    <li>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -72,6 +75,7 @@
   <span class="va">chip_idxstats_files</span>,
   <span class="va">chrom_size_file</span>,
   ref.size <span class="op">=</span> <span class="fl">1e+07</span>,
+  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span><span class="op">)</span>,
   bedtools_path <span class="op">=</span> <span class="st">"bedtools"</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -90,6 +94,9 @@ of the bam files.</p></dd>
 <dd><p>Chromosome size file</p></dd>
 <dt>ref.size</dt>
 <dd><p>ChIP-Seq reference library size (Default: 10 million)</p></dd>
+<dt>transform</dt>
+<dd><p>Transform of ChIP read counts.
+Options are 'none' (do not transform), 'asinh', 'log2', 'sqrt'.</p></dd>
 <dt>bedtools_path</dt>
 <dd><p>Path to bedtools executable</p></dd>
 </dl></div>

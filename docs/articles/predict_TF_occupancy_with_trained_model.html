@@ -44,7 +44,7 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
@@ -56,7 +56,10 @@
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model_JAGS.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+    </li>
+    <li>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
     </li>
   </ul>
 </li>
@@ -95,7 +98,9 @@
 <h2 id="load-top-r-package">Load TOP R package<a class="anchor" aria-label="anchor" href="#load-top-r-package"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
@@ -108,17 +113,17 @@
 <h2 id="download-pre-trained-top-models">Download pre-trained TOP models<a class="anchor" aria-label="anchor" href="#download-pre-trained-top-models"></a>
 </h2>
 <p>We will provide pre-trained models using ENCODE data <a href="https://users.cs.duke.edu/~amink/software/" class="external-link">here</a>.</p>
-<p>Load trained TOP model</p>
+<p>Load trained TOP model regression coefficients</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_posterior_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/trained_model_coef/ATAC/M5/TOP_posterior_mean_coef.rds'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/trained_model_coef/ATAC/TOP_M5_posterior_mean_coef.rds'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span><span class="op">)</span>
 <span class="co">#&gt;        Length Class  Mode   </span>
 <span class="co">#&gt; top       7   -none- numeric</span>
 <span class="co">#&gt; middle  455   -none- numeric</span>
 <span class="co">#&gt; bottom 1414   -none- numeric</span></code></pre></div>
 <p>TF- and cell-type- specific model (bottom level) regression coefficients</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">bottom</span>, <span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span><span class="op">$</span><span class="va">bottom</span>, <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt;                Intercept        PWM       Bin1      Bin2         Bin3      Bin4</span>
 <span class="co">#&gt; ATF1.K562     -1.7690767 0.21758724 0.10161658 0.4209041 -0.416652011 0.4456277</span>
 <span class="co">#&gt; BACH1.GM12878  0.3781784 0.04573713 0.15204184 0.2209277 -0.004968313 0.2045168</span>
@@ -129,7 +134,7 @@
 <span class="co">#&gt; BACH1.K562    0.02633572</span></code></pre></div>
 <p>TF-specific cell-type-generic model (middle level) regression coefficients</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">middle</span>, <span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span><span class="op">$</span><span class="va">middle</span>, <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt;         Intercept        PWM       Bin1      Bin2        Bin3      Bin4</span>
 <span class="co">#&gt; ATF1  -0.97200352 0.14219233 0.09213494 0.3566015 -0.20341658 0.3664693</span>
 <span class="co">#&gt; BACH1 -0.02804098 0.06225104 0.10576962 0.2685970 -0.01240542 0.2649561</span>
@@ -140,7 +145,7 @@
 <span class="co">#&gt; BATF  0.10103080</span></code></pre></div>
 <p>TF-generic model (top level) regression coefficients</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">top</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span><span class="op">$</span><span class="va">top</span><span class="op">)</span>
 <span class="co">#&gt;   Intercept         PWM        Bin1        Bin2        Bin3        Bin4 </span>
 <span class="co">#&gt; -0.20701728  0.07683929  0.07946925  0.27850429  0.00873352  0.28956758</span></code></pre></div>
 </div>
@@ -150,24 +155,19 @@
 <p>Load data</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt;    chr  start    end  name pwm.score strand  p.value      bin1      bin2</span>
-<span class="co">#&gt; 1 chr1  11122  11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000</span>
-<span class="co">#&gt; 2 chr1  11180  11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134</span>
-<span class="co">#&gt; 3 chr1  24681  24900 site3   16.5645      - 1.31e-06 0.0000000 0.0000000</span>
-<span class="co">#&gt; 4 chr1  91319  91538 site4   15.1774      + 3.11e-06 0.2232134 0.2232134</span>
-<span class="co">#&gt; 5 chr1 104884 105103 site5   15.6613      - 2.32e-06 0.0000000 0.0000000</span>
-<span class="co">#&gt; 6 chr1 131227 131446 site6   13.1452      + 9.84e-06 0.0000000 0.0000000</span>
-<span class="co">#&gt;        bin3      bin4      bin5</span>
-<span class="co">#&gt; 1 0.0000000 0.0000000 0.0000000</span>
-<span class="co">#&gt; 2 0.0000000 0.0000000 0.0000000</span>
-<span class="co">#&gt; 3 0.0000000 0.0000000 0.0000000</span>
-<span class="co">#&gt; 4 0.0000000 0.4361803 0.2232134</span>
-<span class="co">#&gt; 5 0.2232134 0.0000000 0.0000000</span>
-<span class="co">#&gt; 6 0.0000000 0.0000000 0.0000000</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>,<span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;    chr start   end  name pwm.score strand  p.value      bin1      bin2 bin3</span>
+<span class="co">#&gt; 1 chr1 11122 11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000    0</span>
+<span class="co">#&gt; 2 chr1 11180 11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134    0</span>
+<span class="co">#&gt; 3 chr1 24681 24900 site3   16.5645      - 1.31e-06 0.0000000 0.0000000    0</span>
+<span class="co">#&gt;   bin4 bin5</span>
+<span class="co">#&gt; 1    0    0</span>
+<span class="co">#&gt; 2    0    0</span>
+<span class="co">#&gt; 3    0    0</span></code></pre></div>
+<p>Predict CTCF occupancy in K562 cell type using bottom level regression coefficients for CTCF in K562</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Select trained regression coefficients (bottom level) for CTCF in K562</span>
-<span class="va">model_coef</span> <span class="op">&lt;-</span> <span class="va">TOP_posterior_mean_coef</span><span class="op">$</span><span class="va">bottom</span><span class="op">[</span><span class="st">'CTCF.K562'</span>,<span class="op">]</span>
+<code class="sourceCode R"><span class="co"># Choose trained regression coefficients (bottom level) for CTCF in K562</span>
+<span class="va">model_coef</span> <span class="op">&lt;-</span> <span class="va">TOP_mean_coef</span><span class="op">$</span><span class="va">bottom</span><span class="op">[</span><span class="st">'CTCF.K562'</span>,<span class="op">]</span>
 
 <span class="va">data</span><span class="op">$</span><span class="va">predicted.occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, 
                                         <span class="va">model_coef</span>, 
@@ -177,30 +177,53 @@
 <span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5</span></code></pre></div>
 <p>Plot predicted occupancy vs. measured occupancy</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data_chip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIPcounts.combined.data.rds'</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">data_chip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds'</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/scatterplot_predictions.html">scatterplot_predictions</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">data_chip</span><span class="op">$</span><span class="va">chip</span>,
-                        y <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">predicted.occupancy</span>,
+<span class="fu"><a href="../reference/scatterplot_predictions.html">scatterplot_predictions</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data_chip</span><span class="op">$</span><span class="va">chip</span><span class="op">)</span>,
+                        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">predicted.occupancy</span><span class="op">)</span>,
                         title <span class="op">=</span> <span class="st">'Predicting CTCF occupancy in K562 cell'</span>,
                         xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,
                         ylab <span class="op">=</span> <span class="st">'asinh(predicted occupancy)'</span>,
-                        transform <span class="op">=</span> <span class="st">'asinh'</span>,
                         xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>,
                         ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="predict_TF_occupancy_with_trained_model_files/figure-html/plot-predicted-measured-1.png" width="480"></p>
-<!-- Option 2: Predict TF occupancy using the posterior samples of  -->
-<!-- regression coefficients trained from the TOP model -->
-<!-- ```{r predict-TOP-samples, eval = FALSE} -->
-<!-- predictions <- predict_TOP(data, TOP_samples, logistic.model = FALSE, -->
-<!--                            posterior.option = 'samples', transform = 'asinh') -->
-<!-- ``` -->
 </div>
 <div class="section level2">
 <h2 id="predict-tf-binding-probability-using-trained-top-logistic-model">Predict TF binding probability using trained TOP logistic model<a class="anchor" aria-label="anchor" href="#predict-tf-binding-probability-using-trained-top-logistic-model"></a>
 </h2>
+<p>Load trained TOP model regression coefficients</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span><span class="op">$</span><span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_logistic_mean_coef</span>, 
-                                   logistic.model <span class="op">=</span> <span class="cn">TRUE</span>, posterior.option <span class="op">=</span> <span class="st">'mean'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">TOP_logistic_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/trained_model_coef/ATAC/TOP_logistic_M5_posterior_mean_coef.rds'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">TOP_logistic_mean_coef</span><span class="op">)</span>
+<span class="co">#&gt;        Length Class  Mode   </span>
+<span class="co">#&gt; top       7   -none- numeric</span>
+<span class="co">#&gt; middle  455   -none- numeric</span>
+<span class="co">#&gt; bottom 1400   -none- numeric</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Choose trained regression coefficients (bottom level) for CTCF in K562</span>
+<span class="va">model_coef</span> <span class="op">&lt;-</span> <span class="va">TOP_logistic_mean_coef</span><span class="op">$</span><span class="va">bottom</span><span class="op">[</span><span class="st">'CTCF.K562'</span>,<span class="op">]</span>
+
+<span class="va">data</span><span class="op">$</span><span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, 
+                                   <span class="va">model_coef</span>, 
+                                   logistic.model <span class="op">=</span> <span class="cn">TRUE</span>, 
+                                   posterior.option <span class="op">=</span> <span class="st">'mean'</span><span class="op">)</span>
+<span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
+<span class="co">#&gt; Predicting TF binding probability using TOP logistic model posterior mean coefficients...</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;    chr start   end  name pwm.score strand  p.value      bin1      bin2 bin3</span>
+<span class="co">#&gt; 1 chr1 11122 11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000    0</span>
+<span class="co">#&gt; 2 chr1 11180 11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134    0</span>
+<span class="co">#&gt; 3 chr1 24681 24900 site3   16.5645      - 1.31e-06 0.0000000 0.0000000    0</span>
+<span class="co">#&gt;   bin4 bin5 predicted.occupancy predicted.prob</span>
+<span class="co">#&gt; 1    0    0           1.6817220     0.05973761</span>
+<span class="co">#&gt; 2    0    0           1.8754262     0.06533921</span>
+<span class="co">#&gt; 3    0    0           0.9999525     0.01410157</span></code></pre></div>
+<!-- Plot predicted binding probability vs. asinh(predicted occupancy) -->
+<!-- ```{r plot-predicted-prob-occupancy, eval=TRUE, fig.width=5, fig.height=3} -->
+<!-- scatterplot(x=asinh(data$predicted.occupancy), y=data$predicted.prob,  -->
+<!--             xlab='asinh(predicted occupancy)', ylab='P(bound)') -->
+<!-- ``` -->
 </div>
   </div>
 
