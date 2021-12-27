@@ -30,9 +30,7 @@ assemble_partition_training_data <- function(tf_cell_table,
   # Load training data for each TF x cell type combo,
   # split training data into partitions,
   # and select the subset (part) and combine all TF x cell type combos
-
   assembled_trainng_data <- list()
-  data_count <- 0
 
   for(i in 1:nrow(tf_cell_table)) {
 
@@ -55,6 +53,24 @@ assemble_partition_training_data <- function(tf_cell_table,
       next
     }
 
+    if(!'pwm' %in% colnames(data)){
+       pwm_col <- grep('pwm', colnames(data), ignore.case = TRUE)
+       if(length(pwm_col)==1){
+         colnames(data)[pwm_col] <- 'pwm'
+       }else{
+         stop('No \"pwm\" column found in data file! \n')
+       }
+    }
+
+    if(length(grep('bin', colnames(data))) == 0){
+      bin_cols <- grep('dnase|atac', colnames(data), ignore.case = TRUE)
+      if(length(bin_cols) > 0){
+        colnames(data)[bin_cols] <- paste0('bin', 1:length(bin_cols))
+      }else{
+        stop('No \"pwm\" column found in data file! \n')
+      }
+    }
+
     if(logistic.model){
       data <- data.frame(data[, -grep('chip', colnames(data))], chip_label = data[, chip_colname])
     }else{
@@ -73,17 +89,13 @@ assemble_partition_training_data <- function(tf_cell_table,
     if(nrow(training_data_partition) > max.sites){
       training_data_partition <- training_data_partition[sample(1:nrow(training_data_partition), max.sites), ]
     }
-    assembled_trainng_data[[ paste(tf_name, cell_type, sep = '|') ]] <- training_data_partition
-
-    data_count <- data_count + 1
+    assembled_trainng_data[[ paste(tf_name, cell_type, sep = '.') ]] <- training_data_partition
 
   }
 
   ## row combine all data
   assembled_trainng_data <- do.call(rbind, assembled_trainng_data)
   row.names(assembled_trainng_data) <- NULL
-
-  cat('Assembled', data_count, 'datasets for partition', part,'\n')
 
   return(assembled_trainng_data)
 
@@ -170,5 +182,6 @@ assemble_TOP_training_data <- function(tf_cell_table_file,
          file.path(training_data_dir, paste0(training_data_name, '_tf_cell_combos.txt')),
          sep = '\t')
 
+  return(all_training_data)
 }
 

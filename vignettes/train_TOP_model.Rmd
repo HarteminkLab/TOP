@@ -16,12 +16,8 @@ knitr::opts_chunk$set(
 
 Load TOP R package
 ---------------------
-Note: you would need to install `rjags` and `R2jags` packages to train TOP models, 
-as the model was implemented using `JAGS`.
 
 ```{r load-TOP-package, eval = FALSE}
-library(rjags)
-library(R2jags)
 library(TOP)
 ```
 
@@ -58,12 +54,18 @@ combinations, then split training data into 10 partitions.
 
 Select the odd chromosomes as training set.
 ```{r assemble-TOP-training-data, eval = FALSE}
-assemble_TOP_training_data(tf_cell_table_file = 'tf_cell_table.tsv',
-                           training_data_dir = 'training_data_dir/', 
-                           training_data_name = 'TOP_training_data',
-                           chip_colname = 'chip',
-                           training_chrs = paste0('chr', seq(1,21,2)), 
-                           n.partitions = 10)
+training_data_partitions <- assemble_TOP_training_data(tf_cell_table_file = 'tf_cell_table.tsv',
+                                                       training_data_dir = 'training_data_dir/', 
+                                                       training_data_name = 'TOP_training_data',
+                                                       chip_colname = 'chip',
+                                                       training_chrs = paste0('chr', seq(1,21,2)), 
+                                                       n.partitions = 10)
+```
+
+Save a table listing all TF and cell type combinations. 
+This will be used later to extract regression coefficients.
+```{r}
+tf_cell_combos <- unique(training_data_partitions[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
 ```
 
 Train TOP models using assembled training data
@@ -82,16 +84,24 @@ To save computation time, we can run the partitions
 (choose which partition to run, e.g. `partitions=3 or partition=c(1,3,5)`) 
 in parallel on separate compute nodes (if you have access to compute clusters). 
 
+Note: we need `R2jags` or `rjags` package to fit TOP models 
+in our current version using `JAGS`.
 ```{r train-TOP-model, eval = FALSE}
-train_TOP_model(model_file = '../model/TOP_M5_model_jags_priorVar1.txt',
-                training_data_dir = 'training_data_dir/', 
-                training_data_name = 'TOP_training_data',
-                out_dir = 'TOP_samples/',
-                partitions = c(1:10),
-                n.iter = 10000,
-                n.burnin = 5000,
-                n.chains = 3,
-                n.thin = 10)
+library(R2jags)
+
+training_data_partitions <- readRDS('processed_data/ATAC_example_training_data.all.partitions.rds')
+
+TOP_samples_files <- fit_TOP_model(training_data_partitions, 
+                                   model.file = '../model/TOP_M5_model_jags_priorVar1.txt',
+                                   out.dir = 'TOP_fit',
+                                   partitions = 1,5,
+                                   n.iter = 10000,
+                                   n.burnin = 5000,
+                                   n.chains = 3,
+                                   n.thin = 10,
+                                   transform = 'asinh',
+                                   quiet = TRUE,
+                                   parallel = TRUE)
 ```
 
 Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients
@@ -102,15 +112,11 @@ and obtain the posterior mean of the regression coefficients.
 
 Combine TOP posterior samples from the 10 partitions.
 ```{r combine-TOP-coef, eval = FALSE}
-top_model_dir <- 'TOP_samples/'
-TOP_samples_files <- file.path(top_model_dir, paste0('TOP_M5_partition', 1:10, '.posterior_samples.rds'))
 TOP_samples <- combine_TOP_samples(TOP_samples_files)
 ```
 
 Extract posterior mean coefficients for all three levels.
 ```{r extract-TOP-mean-coef, eval = FALSE}
-tf_cell_combos <- read.table(tf_cell_combo_file, header=TRUE, sep='\t', stringsAsFactors = FALSE)
-tf_cell_combos <- unique(tf_cell_combos[, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
 TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, tf_cell_combos)
 ```
 
@@ -120,9 +126,7 @@ saveRDS(TOP_samples, file.path(top_model_dir, 'TOP_M5_combined_posterior_samples
 saveRDS(TOP_mean_coef, file.path(top_model_dir, 'TOP_M5_posterior_mean_coef.rds'))
 ```
 
-We will provide pre-trained models using ENCODE data
-[here](https://users.cs.duke.edu/~amink/software/).. 
-
-To make predictions for TF occupancy using new DNase- or ATAC-seq data,
+To make predictions for TF occupancy using new DNase- or ATAC-seq data 
+using trained model coefficients,
 see this [page](predict_TF_occupancy_with_trained_model.html)
 
