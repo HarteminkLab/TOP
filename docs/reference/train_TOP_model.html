@@ -79,7 +79,8 @@
   n.iter <span class="op">=</span> <span class="fl">10000</span>,
   n.burnin <span class="op">=</span> <span class="fl">5000</span>,
   n.chains <span class="op">=</span> <span class="fl">3</span>,
-  n.thin <span class="op">=</span> <span class="fl">10</span>
+  n.thin <span class="op">=</span> <span class="fl">10</span>,
+  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -105,6 +106,8 @@
 <dd><p>number of Markov chains.</p></dd>
 <dt>n.thin</dt>
 <dd><p>thinning rate, must be a positive integer.</p></dd>
+<dt>transform</dt>
+<dd><p>Transformation of ChIP counts (asinh, log2, sqrt, or none)</p></dd>
 </dl></div>
 
   </div>

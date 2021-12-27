@@ -6,7 +6,7 @@
 then split training data into 10 partitions}
 \usage{
 assemble_TOP_training_data(
-  tf_cell_table,
+  tf_cell_table_file,
   training_data_dir = "./",
   training_data_name = "TOP_training_data",
   logistic.model = FALSE,
@@ -18,8 +18,8 @@ assemble_TOP_training_data(
 )
 }
 \arguments{
-\item{tf_cell_table}{a data frame with TF name, cell type,
-and links to the training data files.}
+\item{tf_cell_table_file}{a tab delimited file with three columns:
+TF names, cell types, and paths to the training data files.}
 
 \item{training_data_dir}{Directory for saving training data}
 

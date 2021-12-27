@@ -16,7 +16,12 @@ knitr::opts_chunk$set(
 
 Load TOP R package
 ---------------------
+Note: you would need to install `rjags` and `R2jags` packages to train TOP models, 
+as the model was implemented using `JAGS`.
+
 ```{r load-TOP-package, eval = FALSE}
+library(rjags)
+library(R2jags)
 library(TOP)
 ```
 
