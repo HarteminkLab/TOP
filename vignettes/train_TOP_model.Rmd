@@ -32,8 +32,19 @@ and measured TF occupancy (from ChIP-seq data).
 
 You can follow this [page](data_preparation.html) to prepare training data.
 
-Then create a data frame listing all the TF names, cell types, 
-and links to the training data files.
+Create a tab delimited table listing all the TFs and cell types. 
+The table should have three columns:
+TF names, cell types, and paths to the training data files.
+
+For example:
+```{r create-tf_cell_table, eval=FALSE}
+tf_cell_table <- data.frame(tf_name = c('TF1', 'TF2', ...),
+                            cell_type = c('cell1', 'cell2', ...),
+                            data_file = c('data.file1', 'data.file2', ...))
+
+write.table(tf_cell_table, "tf_cell_table.tsv", sep = '\t', 
+            col.names = TRUE, row.names = FALSE, quote = FALSE)
+```
 
 **Step 2: Assemble training data for all TF-cell type combinations**
 
@@ -42,12 +53,12 @@ combinations, then split training data into 10 partitions.
 
 Select the odd chromosomes as training set.
 ```{r assemble-TOP-training-data, eval = FALSE}
-all_training_data <- assemble_TOP_training_data(tf_cell_table = './tf_cell_table.txt',
-                                                training_data_dir = './', 
-                                                training_data_name = 'TOP_training_data',
-                                                chip_colname = 'chip',
-                                                training_chrs = paste0('chr', seq(1,21,2)), 
-                                                n.partitions = 10)
+assemble_TOP_training_data(tf_cell_table_file = 'tf_cell_table.tsv',
+                           training_data_dir = 'training_data_dir/', 
+                           training_data_name = 'TOP_training_data',
+                           chip_colname = 'chip',
+                           training_chrs = paste0('chr', seq(1,21,2)), 
+                           n.partitions = 10)
 ```
 
 Train TOP models using assembled training data
@@ -68,9 +79,9 @@ in parallel on separate compute nodes (if you have access to compute clusters).
 
 ```{r train-TOP-model, eval = FALSE}
 train_TOP_model(model_file = '../model/TOP_M5_model_jags_priorVar1.txt',
-                training_data_dir = './', 
+                training_data_dir = 'training_data_dir/', 
                 training_data_name = 'TOP_training_data',
-                out_dir = './TOP_samples/',
+                out_dir = 'TOP_samples/',
                 partitions = c(1:10),
                 n.iter = 10000,
                 n.burnin = 5000,
@@ -86,7 +97,7 @@ and obtain the posterior mean of the regression coefficients.
 
 Combine TOP posterior samples from the 10 partitions.
 ```{r combine-TOP-coef, eval = FALSE}
-top_model_dir <- './TOP_samples/'
+top_model_dir <- 'TOP_samples/'
 TOP_samples_files <- file.path(top_model_dir, paste0('TOP_M5_partition', 1:10, '.posterior_samples.rds'))
 TOP_samples <- combine_TOP_samples(TOP_samples_files)
 ```

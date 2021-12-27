@@ -43,7 +43,7 @@ assemble_partition_training_data <- function(tf_cell_table,
     if(!file.exists(data_file)){
       if(part == 1){
         cat('Warning:', tf_name, 'in', cell_type, 'data file is not available!\n')
-        cat('Check:', data_file, '\n')
+        cat('Check data file:', data_file, '\n')
       }
       next
     }
@@ -83,7 +83,7 @@ assemble_partition_training_data <- function(tf_cell_table,
   assembled_trainng_data <- do.call(rbind, assembled_trainng_data)
   row.names(assembled_trainng_data) <- NULL
 
-  cat('Assembled', data_count, 'datasets. \n')
+  cat('Assembled', data_count, 'datasets for partition', part,'\n')
 
   return(assembled_trainng_data)
 
@@ -92,8 +92,8 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @title Assemble TOP training data for all TF x cell type combos,
 #' then split training data into 10 partitions
 #'
-#' @param tf_cell_table a data frame with TF name, cell type,
-#' and links to the training data files.
+#' @param tf_cell_table_file a tab delimited file with three columns:
+#' TF names, cell types, and paths to the training data files.
 #' @param training_data_dir Directory for saving training data
 #' @param training_data_name Prefix for training data file names
 #' @param logistic.model If TRUE, use logistic version of the model
@@ -105,15 +105,15 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @param seed seed used when sampling sites.
 #' @import doParallel
 #' @import foreach
-#' @importFrom data.table fwrite
+#' @importFrom data.table fread fwrite
 #'
 #' @export
 #'
-assemble_TOP_training_data <- function(tf_cell_table,
-                                       training_data_dir="./",
+assemble_TOP_training_data <- function(tf_cell_table_file,
+                                       training_data_dir='./',
                                        training_data_name='TOP_training_data',
                                        logistic.model=FALSE,
-                                       chip_colname="chip",
+                                       chip_colname='chip',
                                        training_chrs=paste0('chr', seq(1,21,2)),
                                        n.partitions=10,
                                        max.sites=50000,
@@ -123,23 +123,30 @@ assemble_TOP_training_data <- function(tf_cell_table,
     dir.create(training_data_dir, showWarnings = FALSE, recursive = TRUE)
   }
 
-  cat("Assemble TOP training data...\n")
-  tf_list <- sort(unique(tf_cell_table$tf_name))
-  celltype_list <- sort(unique(tf_cell_table$cell_type))
-  cat("TFs:", tf_list, "\n")
-  cat("Cell types:", celltype_list, "\n")
+  tf_cell_table <- as.data.frame(fread(tf_cell_table_file))
+
+  if(ncol(tf_cell_table) < 3){
+    stop('The table should have at least three columns separated by tab! ')
+  }
+  colnames(tf_cell_table)[1:3] <- c('tf_name', 'cell_type', 'data_file')
+
+  cat('Assemble TOP training data...\n')
+  tf_list <- sort(unique(as.character(tf_cell_table$tf_name)))
+  celltype_list <- sort(unique(as.character(tf_cell_table$cell_type)))
+  cat('TFs:', tf_list, '\n')
+  cat('Cell types:', celltype_list, '\n')
 
   tf_cell_table$tf_name <- factor(tf_cell_table$tf_name, levels = tf_list)
   tf_cell_table$cell_type <- factor(tf_cell_table$cell_type, levels = celltype_list)
   tf_cell_table <- tf_cell_table[with(tf_cell_table, order(tf_name, cell_type)),]
 
   doParallel::registerDoParallel(cores=n.partitions)
-  cat("Using", foreach::getDoParWorkers(), "cores in parallel. \n")
+  cat('Using', foreach::getDoParWorkers(), 'cores in parallel. \n')
 
   all_training_data <- foreach(k=1:n.partitions) %dopar% {
     training_data <- assemble_partition_training_data(tf_cell_table,
-                                                      chip_colname,
                                                       logistic.model,
+                                                      chip_colname,
                                                       training_chrs,
                                                       n.partitions,
                                                       k,
@@ -150,16 +157,18 @@ assemble_TOP_training_data <- function(tf_cell_table,
     training_data$cell_id <- as.integer(factor(training_data$cell_type, levels = celltype_list))
     saveRDS(training_data,
             file.path(training_data_dir, paste0(training_data_name, '.partition', k, '.rds')))
+
+    cat('Training data saved at:',
+        file.path(training_data_dir, paste0(training_data_name, '.partition', k, '.rds')), '\n')
     training_data
   }
 
   # Save a table with all TF and cell type combinations
-  tf_cell_combos <- unique(training_data[, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+  tf_cell_combos <- unique(all_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
   cat(nrow(tf_cell_combos), 'TF x cell type combos assembled in training data. \n')
   fwrite(tf_cell_combos,
          file.path(training_data_dir, paste0(training_data_name, '_tf_cell_combos.txt')),
          sep = '\t')
 
-  return(all_training_data)
 }
 
