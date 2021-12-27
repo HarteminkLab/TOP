@@ -7,7 +7,7 @@ Authors@R: c(
   person("Alex", "Hartemink", role = c("aut", "cph"), email = "amink@cs.duke.edu"))
 Description: Predict transcription factor (TF) occupancy using DNase- or ATAC-seq data.
   TOP is a Bayesian hierarchical model trained using DNase- or ATAC-seq and ChIP-seq data 
-  to predict binding occupancy for many TFs in many cell types.
+  to predict quantitative TF occupancy across cell types or conditions.
 URL: https://github.com/kevinlkx/TOP
 BugReports: https://github.com/kevinlkx/TOP/issues
 License: MIT + file LICENSE
@@ -19,14 +19,13 @@ Imports:
     GenomicRanges,
     data.table,
     R.utils,
-    doParallel,
-    foreach,
     ggplot2,
-    cowplot,
-    rjags,
-    R2jags
+    doParallel,
+    foreach
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    rjags,
+    R2jags
 VignetteBuilder: knitr

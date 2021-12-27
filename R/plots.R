@@ -11,15 +11,22 @@
 #' @param ylim range of y-axis values
 #' @param color color of the dots
 #' @import ggplot2
-#' @import cowplot
+#'
 #' @export
 #'
 scatterplot_predictions <- function(x, y,
-                           xlab = 'measured', ylab = 'predicted',
-                           title = '',
-                           xlim = c(0,10),
-                           ylim = c(0,10),
-                           color = "black"){
+                                    xlab = 'measured', ylab = 'predicted',
+                                    title = '',
+                                    xlim = c(0,10),
+                                    ylim = c(0,10),
+                                    color = "black"){
+
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop(
+      "Package \"ggplot2\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
 
   df <- data.frame(x=x, y=y)
 
@@ -35,7 +42,7 @@ scatterplot_predictions <- function(x, y,
     scale_y_continuous(breaks=seq(ylim[1],ylim[2],length.out = 5), limits = c(ylim[1],ylim[2])) +
     labs(x = xlab, y = ylab, title = title,
          subtitle = paste('R =', round(stats::cor(df[,1], df[,2]),3))) +
-    theme_cowplot()
+    theme_classic()
 
   return(p)
 }
@@ -51,7 +58,7 @@ scatterplot_predictions <- function(x, y,
 #' @param ylim range of y-axis values
 #' @param color color of the dots
 #' @import ggplot2
-#' @import cowplot
+#'
 #' @export
 #'
 scatterplot <- function(x, y,
@@ -62,6 +69,13 @@ scatterplot <- function(x, y,
                         ylim = NULL,
                         color = "black"){
 
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop(
+      "Package \"ggplot2\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+
   df <- data.frame(x=x, y=y)
 
   # Make a simple scatter plot
@@ -71,7 +85,7 @@ scatterplot <- function(x, y,
                color = color,
                size = 0.5) +
     labs(x = xlab, y = ylab, title = title) +
-    theme_cowplot()
+    theme_classic()
 
   if(!is.null(xlim)){
     p <- p + scale_x_continuous(breaks=seq(xlim[1],xlim[2],length.out = 5), limits = c(xlim[1],xlim[2]))

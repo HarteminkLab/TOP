@@ -7,8 +7,7 @@
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' @param n.thin thinning rate, must be a positive integer.
 #' @param n.chains number of Markov chains.
-#'
-#' @import R2jags
+#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none).
 #'
 #' @export
 train_TOP_M5_model_jags <- function(data,
@@ -16,10 +15,34 @@ train_TOP_M5_model_jags <- function(data,
                                n.iter=10000,
                                n.burnin=5000,
                                n.chains=3,
-                               n.thin=10) {
+                               n.thin=10,
+                               transform=c('asinh', 'log2', 'sqrt', 'none')) {
+
+  if (!requireNamespace("R2jags", quietly = TRUE)) {
+    stop(
+      "Package \"R2jags\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
 
   if(!all(c('pmw',paste0('bin', 1:5),'chip','tf_id','cell_id') %in% colnames(data))){
     stop('Check colnames of the data! \n')
+  }
+
+  transform <- match.arg(transform)
+
+  # Transform the ChIP counts
+  if (transform == 'asinh') {
+    cat(transform, 'transform ChIP data...\n')
+    data$chip <- asinh(data$chip)
+  } else if (transform == 'log2') {
+    cat(transform, 'transform ChIP data...\n')
+    data$chip <- log2(data$chip + 1)
+  } else if (transform == 'sqrt') {
+    cat(transform, 'transform ChIP data...\n')
+    data$chip <- sqrt(data$chip)
+  }else{
+    cat('No transform for ChIP data...\n')
   }
 
   # Training data
@@ -68,8 +91,6 @@ train_TOP_M5_model_jags <- function(data,
 #' @param n.chains number of Markov chains.
 #' @param n.thin thinning rate, must be a positive integer.
 #'
-#' @import R2jags
-#'
 #' @export
 #'
 train_TOP_logistic_M5_model_jags <- function(data,
@@ -78,6 +99,13 @@ train_TOP_logistic_M5_model_jags <- function(data,
                                         n.burnin=5000,
                                         n.chains=3,
                                         n.thin=10) {
+
+  if (!requireNamespace("R2jags", quietly = TRUE)) {
+    stop(
+      "Package \"R2jags\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
 
   if(!all(c('pmw',paste0('bin', 1:5),'chip_label','tf_id','cell_id') %in% colnames(data))){
     stop('Check colnames of the data! \n')
@@ -130,6 +158,7 @@ train_TOP_logistic_M5_model_jags <- function(data,
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' @param n.chains number of Markov chains.
 #' @param n.thin thinning rate, must be a positive integer.
+#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none)
 #' @import doParallel
 #' @import foreach
 #'
@@ -144,7 +173,17 @@ train_TOP_model <- function(model_file,
                             n.iter=10000,
                             n.burnin=5000,
                             n.chains=3,
-                            n.thin=10){
+                            n.thin=10,
+                            transform = c('asinh', 'log2', 'sqrt', 'none')){
+
+  if (!requireNamespace("R2jags", quietly = TRUE)) {
+    stop(
+      "Package \"R2jags\" must be installed to train TOP models.",
+      call. = FALSE
+    )
+  }
+
+  transform <- match.arg(transform)
 
   if(!dir.exists(out_dir)){
     dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
@@ -170,7 +209,7 @@ train_TOP_model <- function(model_file,
       saveRDS(TOP_samples, out_file)
     }else{
       # get TOP model posterior samples
-      TOP_samples <- train_TOP_M5_model_jags(training_data, model_file, n.iter, n.burnin, n.chains, n.thin)
+      TOP_samples <- train_TOP_M5_model_jags(training_data, model_file, n.iter, n.burnin, n.chains, n.thin, transform)
       out_file <- paste0(out_dir, '/TOP_M5_partition', k, '.posterior_samples.rds')
       saveRDS(TOP_samples, out_file)
     }

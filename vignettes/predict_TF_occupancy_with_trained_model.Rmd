@@ -19,7 +19,6 @@ Load TOP R package
 ```{r load-TOP-package, eval = TRUE, message=FALSE, warning=FALSE}
 library(TOP)
 library(ggplot2)
-library(cowplot)
 ```
 
 Input data

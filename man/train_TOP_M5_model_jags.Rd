@@ -10,7 +10,8 @@ train_TOP_M5_model_jags(
   n.iter = 10000,
   n.burnin = 5000,
   n.chains = 3,
-  n.thin = 10
+  n.thin = 10,
+  transform = c("asinh", "log2", "sqrt", "none")
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ train_TOP_M5_model_jags(
 \item{n.chains}{number of Markov chains.}
 
 \item{n.thin}{thinning rate, must be a positive integer.}
+
+\item{transform}{Transformation of ChIP counts (asinh, log2, sqrt, or none).}
 }
 \description{
 Train TOP model
