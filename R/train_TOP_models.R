@@ -62,12 +62,10 @@ fit_TOP_M5_model_jags <- function(data,
                     'beta1', 'beta2', 'beta3', 'beta4','beta5', 'beta6',
                     'T', 'Tau', 'tau')
 
-  ## Fit Top M5 model using R2jags
-  cat('Fit TOP M5 model... \n')
-
+  ## Fit Top M5 model
   if (requireNamespace("R2jags", quietly = TRUE)) {
     # Use "R2jags" package
-    cat('Using R2jags ...\n')
+    cat('Fit TOP M5 model using R2jags ...\n')
     jagsfit <- R2jags::jags(data = training.data,
                             parameters.to.save = model.params,
                             model.file = model.file,
@@ -81,7 +79,7 @@ fit_TOP_M5_model_jags <- function(data,
   } else if (requireNamespace("rjags", quietly = TRUE)) {
     # Use "rjags" package
     # Set up the JAGS model and settings
-    # cat('using rjags ...\n')
+    cat('Fit TOP M5 model using rjags ...\n')
     cat('Init model... \n')
     jags.obj <- rjags::jags.model(data = training.data, file = model.file, n.chains = n.chains, quiet = quiet)
     # Burn-ins
@@ -159,7 +157,7 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 
   if (requireNamespace("R2jags", quietly = TRUE)) {
     # Use "R2jags" package
-    cat('Using R2jags ...\n')
+    cat('Fit TOP M5 model using R2jags ...\n')
     jagsfit <- R2jags::jags(data = training.data,
                             parameters.to.save = model.params,
                             model.file = model.file,
@@ -173,7 +171,7 @@ fit_TOP_logistic_M5_model_jags <- function(data,
   } else if (requireNamespace("rjags", quietly = TRUE)) {
     # Use "rjags" package
     # Set up the JAGS model and settings
-    # cat('using rjags ...\n')
+    cat('Fit TOP M5 model using rjags ...\n')
     cat('Init model... \n')
     jags.obj <- rjags::jags.model(data = training.data, file = model.file, n.chains = n.chains, quiet = quiet)
     # Burn-ins
@@ -208,6 +206,7 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' @param n.chains number of Markov chains.
 #' @param n.thin thinning rate, must be a positive integer.
+#' @param quiet Logical, whether to suppress stdout.
 #' @import doParallel
 #' @import foreach
 #'
@@ -223,7 +222,8 @@ fit_TOP_model <- function(all_training_data,
                           n.iter=2000,
                           n.burnin=floor(n.iter/2),
                           n.chains=3,
-                          n.thin=max(1, floor((n.iter - n.burnin) / 1000))){
+                          n.thin=max(1, floor((n.iter - n.burnin) / 1000)),
+                          quiet = FALSE){
 
   if(!dir.exists(out.dir)){
     dir.create(out.dir, showWarnings = FALSE, recursive = TRUE)
@@ -252,12 +252,12 @@ fit_TOP_model <- function(all_training_data,
 
     if(logistic.model){
       # obtain TOP logistic model posterior samples
-      TOP_samples <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin)
+      TOP_samples <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, quiet)
       out_file <- paste0(out.dir, '/TOP_logistic_M5_partition', k, '.posterior_samples.rds')
       saveRDS(TOP_samples, out_file)
     }else{
       # obtain TOP model posterior samples
-      TOP_samples <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin)
+      TOP_samples <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin, quiet)
       out_file <- paste0(out.dir, '/TOP_M5_partition', k, '.posterior_samples.rds')
       saveRDS(TOP_samples, out_file)
     }

@@ -91,7 +91,7 @@ TOP_samples_files <- fit_TOP_model(all_training_data,
                                    n.iter = 5000, 
                                    n.burnin = 2500,
                                    n.chains = 3,
-                                   n.thin = 10)
+                                   n.thin = 2)
 ```
 
 
