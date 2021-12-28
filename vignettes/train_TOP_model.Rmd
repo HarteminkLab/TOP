@@ -38,12 +38,15 @@ listing all the TFs and cell types.
 The table should have three columns:
 TF names, cell types, and paths to the training data files, like:
 
-|   tf_name    |   cell_type   |        data_file       |
-|:------------:|:-------------:|:----------------------:|
-|     CTCF     |     K562      |   CTCF.K562.data.rds   |
-|     CTCF     |     A549      |   CTCF.A549.data.rds   |
-|     NRF1     |     K562      |   NRF1.K562.data.rds   |
-|     ...      |     ...       |   ...                  |
+|   tf_name    |   cell_type   |        data_file         |
+|:------------:|:-------------:|:------------------------:|
+|     CTCF     |     K562      |   CTCF.K562.data.rds     |
+|     CTCF     |     A549      |   CTCF.A549.data.rds     |
+|     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |
+|     NRF1     |     K562      |   NRF1.K562.data.rds     |
+|     MYC      |     K562      |   MYC.K562.data.rds      |
+|     ...      |     ...       |   ...                    |
+
 
 **Step 2: Assemble training data for all TF-cell type combinations**
 
@@ -121,6 +124,9 @@ Save the posterior samples and posterior mean coefficients.
 saveRDS(TOP_samples, 'TOP_fit/TOP_M5_combined_posterior_samples.rds')
 saveRDS(TOP_mean_coef, 'TOP_fit/TOP_M5_posterior_mean_coef.rds')
 ```
+
+We will provide pre-trained models using ENCODE data
+[here](https://users.cs.duke.edu/~amink/software/).
 
 To make predictions for TF occupancy using new DNase- or ATAC-seq data 
 using trained model coefficients,

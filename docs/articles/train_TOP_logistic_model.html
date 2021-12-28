@@ -125,9 +125,19 @@
 <td align="center">CTCF.A549.data.rds</td>
 </tr>
 <tr class="odd">
+<td align="center">CTCF</td>
+<td align="center">GM12878</td>
+<td align="center">CTCF.GM12878.data.rds</td>
+</tr>
+<tr class="even">
 <td align="center">NRF1</td>
 <td align="center">K562</td>
 <td align="center">NRF1.K562.data.rds</td>
+</tr>
+<tr class="odd">
+<td align="center">MYC</td>
+<td align="center">K562</td>
+<td align="center">MYC.K562.data.rds</td>
 </tr>
 <tr class="even">
 <td align="center">…</td>
@@ -187,7 +197,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="st">'TOP_output/TOP_logistic_M5_combined_posterior_samples.rds'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span>, <span class="st">'TOP_output/TOP_logistic_M5_posterior_mean_coef.rds'</span><span class="op">)</span></code></pre></div>
 <p>We will provide pre-trained models using ENCODE data <a href="https://users.cs.duke.edu/~amink/software/" class="external-link">here</a>.</p>
-<p>To make predictions for TF occupancy using new DNase- or ATAC-seq data, see this <a href="predict_TF_occupancy_with_trained_model.html">page</a></p>
+<p>To make predictions for TF occupancy using new DNase- or ATAC-seq data using trained model coefficients, see this <a href="predict_TF_occupancy_with_trained_model.html">page</a></p>
 </div>
   </div>
 
