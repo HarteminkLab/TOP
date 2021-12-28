@@ -10,10 +10,10 @@ combine_TOP_samples(TOP_samples_files, thin = 1, n.samples = 1000)
 \item{TOP_samples_files}{file names of the posterior samples from all partitions}
 
 \item{thin}{thinning rate of extract the posterior samples,
-must be a positive integer.}
+must be a positive integer (default = 1, no thin).}
 
 \item{n.samples}{Randomly choose n.samples posterior samples,
-if the number of posterior samples is greater than n.samples}
+when the number of posterior samples is greater than n.samples.}
 }
 \description{
 Combine and take the average of TOP posterior samples from all partitions

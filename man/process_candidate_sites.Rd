@@ -5,34 +5,34 @@
 \title{Full process to get candidate sites from FIMO result}
 \usage{
 process_candidate_sites(
-  fimo_file = NULL,
+  fimo_file,
   flank = 100,
   thresh_pValue = 1e-05,
   thresh_pwmscore = 0,
-  blacklist_file = NULL,
-  mapability_file = NULL,
+  blacklist_file,
+  mapability_file,
   thresh_mapability = 0.8,
-  out_file = NULL,
+  out_file,
   bigWigAverageOverBed_path = "bigWigAverageOverBed"
 )
 }
 \arguments{
-\item{fimo_file}{Filename of FIMO result.}
+\item{fimo_file}{File of FIMO result.}
 
 \item{flank}{Flanking region (bp) around motif matches (default: 100)}
 
-\item{thresh_pValue}{FIMO p-value threshold.}
+\item{thresh_pValue}{FIMO p-value threshold (default: 1e-5)}
 
-\item{thresh_pwmscore}{FIMO PWM score threshold.}
+\item{thresh_pwmscore}{FIMO PWM score threshold (default: 0)}
 
 \item{blacklist_file}{Filename of the blacklist regions}
 
 \item{mapability_file}{Filename of the mapability reference file in bigWig format.}
 
 \item{thresh_mapability}{Mapability threshold (default: 0.8,
-include sites map-able at least 80\% positions).}
+candidate sites need to be mapable at least 80\% positions).}
 
-\item{out_file}{Filename of processed candidate sites.}
+\item{out_file}{File of processed candidate sites.}
 
 \item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable.
 This is only needed for computing mapability.}

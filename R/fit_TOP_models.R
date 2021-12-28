@@ -1,14 +1,18 @@
 
-#' @title Fit TOP model using JAGS
+#' @title Fit TOP quantitative occupancy model with M5 bins using JAGS
 #'
-#' @param data combined training data.
-#' @param model.file TOP model (written in BUGS code).
-#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none).
+#' @param data a data frame containing the combined training data.
+#' @param model.file file containing the TOP model written in BUGS code.
+#' @param transform Type of transformation for ChIP counts.
+#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
+#' Default is n.iter/2, that is, discarding the first half of the simulations.
 #' @param n.thin thinning rate, must be a positive integer.
-#' @param n.chains number of Markov chains.
-#' @param quiet Logical, whether to suppress stdout.
+#' Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+#' which will only thin if there are at least 2000 simulations.
+#' @param n.chains number of Markov chains (default: 3).
+#' @param quiet Logical, whether to suppress stdout in jags.model().
 #'
 #' @export
 fit_TOP_M5_model_jags <- function(data,
@@ -101,15 +105,18 @@ fit_TOP_M5_model_jags <- function(data,
 }
 
 
-#' @title Fit TOP logistic model using JAGS
+#' @title Fit TOP binary (logistic) model with M5 bins using JAGS
 #'
-#' @param data combined training data.
-#' @param model.file TOP logistic model (written in BUGS code).
+#' @param data a data frame containing the combined training data.
+#' @param model.file file containing the TOP model written in BUGS code.
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
-#' @param n.chains number of Markov chains.
+#' Default is n.iter/2, that is, discarding the first half of the simulations.
 #' @param n.thin thinning rate, must be a positive integer.
-#' @param quiet Logical, whether to suppress stdout.
+#' Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+#' which will only thin if there are at least 2000 simulations.
+#' @param n.chains number of Markov chains (default: 3).
+#' @param quiet Logical, whether to suppress stdout in jags.model().
 #'
 #' @export
 #'
@@ -192,21 +199,28 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 
 }
 
-#' Fit TOP model for each partition separately
-#' @param all_training_data Training data of all partitions.
-#' @param all_training_data_files Training data files of all partitions
-#' Requires either all_training_data or all_training_data_files.
-#' @param model.file TOP logistic model file.
-#' @param logistic.model If TRUE, use logistic version of the model
-#' @param out.dir Output directory for TOP model posterior samples
-#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none).
+#' @title Fit TOP model for the selected partitions (in parallel)
+#'
+#' @param all_training_data a list of the assembled training data of all partitions.
+#' @param all_training_data_files a vector of the assembled training data
+#' files of all partitions. If all_training_data is missing,
+#' it will load the training data from all_training_data_files.
+#' @param model.file file containing the TOP model written in BUGS code.
+#' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
+#' @param out.dir Output directory for TOP model posterior samples.
+#' @param transform Type of transformation for ChIP counts.
+#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 #' Only needed when logistic.model is FALSE.
-#' @param partitions select which partition(s) to run
+#' @param partitions a vector selecting which partition(s) to run.
+#' (default: all 10 partitions (1:10))
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
-#' @param n.chains number of Markov chains.
+#' Default is n.iter/2, that is, discarding the first half of the simulations.
 #' @param n.thin thinning rate, must be a positive integer.
-#' @param quiet Logical, whether to suppress stdout.
+#' Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+#' which will only thin if there are at least 2000 simulations.
+#' @param n.chains number of Markov chains (default: 3).
+#' @param quiet Logical, whether to suppress stdout in jags.model().
 #' @import doParallel
 #' @import foreach
 #'
@@ -236,7 +250,7 @@ fit_TOP_model <- function(all_training_data,
 
   # We can submit jobs in parallel for the partitions on separate compute nodes
   # instead of using the foreach loop here.
-  TOP_samples_files <- foreach(k=partitions, .combine = "rbind") %dopar% {
+  TOP_samples_files <- foreach::foreach(k=partitions, .combine = "rbind") %dopar% {
     cat('Load assembled training data in partition: ', k, '\n')
 
     if(length(all_training_data) == 10){

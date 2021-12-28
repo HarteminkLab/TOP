@@ -70,7 +70,7 @@
           <p><code><a href="assemble_TOP_training_data.html">assemble_TOP_training_data()</a></code> </p>
         </td>
         <td><p>Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions.</p></td>
+then split training data into 10 partitions</p></td>
       </tr><tr><td>
           <p><code><a href="assemble_partition_training_data.html">assemble_partition_training_data()</a></code> </p>
         </td>
@@ -78,7 +78,7 @@ then split training data into 10 partitions.</p></td>
       </tr><tr><td>
           <p><code><a href="bam_sort_index_stats.html">bam_sort_index_stats()</a></code> </p>
         </td>
-        <td><p>Sort and index the BAM file, and then retrieve and print stats in the index file.</p></td>
+        <td><p>Sort and index the BAM file, and retrieve stats (idxstats)</p></td>
       </tr><tr><td>
           <p><code><a href="bin_transform_counts.html">bin_transform_counts()</a></code> </p>
         </td>
@@ -90,7 +90,7 @@ then split training data into 10 partitions.</p></td>
       </tr><tr><td>
           <p><code><a href="count_genome_cuts.html">count_genome_cuts()</a></code> </p>
         </td>
-        <td><p>Count DNase-seq or ATAC-seq cleavage for a given genome.</p></td>
+        <td><p>Count DNase-seq or ATAC-seq cleavage along the genome</p></td>
       </tr><tr><td>
           <p><code><a href="count_normalize_chip.html">count_normalize_chip()</a></code> </p>
         </td>
@@ -114,15 +114,15 @@ then split training data into 10 partitions.</p></td>
       </tr><tr><td>
           <p><code><a href="fit_TOP_M5_model_jags.html">fit_TOP_M5_model_jags()</a></code> </p>
         </td>
-        <td><p>Fit TOP model using JAGS</p></td>
+        <td><p>Fit TOP quantitative occupancy model with M5 bins using JAGS</p></td>
       </tr><tr><td>
           <p><code><a href="fit_TOP_logistic_M5_model_jags.html">fit_TOP_logistic_M5_model_jags()</a></code> </p>
         </td>
-        <td><p>Fit TOP logistic model using JAGS</p></td>
+        <td><p>Fit TOP binary (logistic) model with M5 bins using JAGS</p></td>
       </tr><tr><td>
           <p><code><a href="fit_TOP_model.html">fit_TOP_model()</a></code> </p>
         </td>
-        <td><p>Fit TOP model for each partition separately</p></td>
+        <td><p>Fit TOP model for the selected partitions (in parallel)</p></td>
       </tr><tr><td>
           <p><code><a href="flank_fimo_sites.html">flank_fimo_sites()</a></code> </p>
         </td>
@@ -130,7 +130,7 @@ then split training data into 10 partitions.</p></td>
       </tr><tr><td>
           <p><code><a href="get_sites_counts.html">get_sites_counts()</a></code> </p>
         </td>
-        <td><p>Get count matrices around candidate sites.</p></td>
+        <td><p>Get count matrices around candidate sites</p></td>
       </tr><tr><td>
           <p><code><a href="get_total_reads.html">get_total_reads()</a></code> </p>
         </td>
@@ -142,7 +142,7 @@ then split training data into 10 partitions.</p></td>
       </tr><tr><td>
           <p><code><a href="merge_normalize_counts.html">merge_normalize_counts()</a></code> </p>
         </td>
-        <td><p>Merge counts, then normalize merged counts data.</p></td>
+        <td><p>Merge counts from multiple replicates, then normalize merged counts</p></td>
       </tr><tr><td>
           <p><code><a href="millipede_binning.html">millipede_binning()</a></code> </p>
         </td>
@@ -166,8 +166,7 @@ then split training data into 10 partitions.</p></td>
       </tr><tr><td>
           <p><code><a href="predict_TOP_logistic_mean_coef.html">predict_TOP_logistic_mean_coef()</a></code> </p>
         </td>
-        <td><p>Predict TF binding probability by TOP logistic model
-with posterior mean of regression coefficients</p></td>
+        <td><p>Predict TF binding probability by TOP logistic model</p></td>
       </tr><tr><td>
           <p><code><a href="predict_TOP_mean_coef.html">predict_TOP_mean_coef()</a></code> </p>
         </td>
@@ -191,24 +190,16 @@ with posterior mean of regression coefficients</p></td>
       </tr><tr><td>
           <p><code><a href="scatterplot_predictions.html">scatterplot_predictions()</a></code> </p>
         </td>
-        <td><p>Make a scatter plot of measured and predicted occupancy</p></td>
+        <td><p>Make a scatter plot of measured and predicted occupancy,
+with Pearson's correlation (R) between measured and predicted occupancy</p></td>
       </tr><tr><td>
           <p><code><a href="select_features.html">select_features()</a></code> </p>
         </td>
-        <td><p>Extract PWM and bin features</p></td>
+        <td><p>Select PWM and DNase (or ATAC) bin features from the input data frame</p></td>
       </tr><tr><td>
-          <p><code><a href="select_model_coef_mean.html">select_model_coef_mean()</a></code> </p>
+          <p><code><a href="select_model_coef_level.html">select_model_coef_level()</a></code> </p>
         </td>
-        <td><p>Select TOP model hierarchy level</p></td>
-      </tr><tr><td>
-          <p><code><a href="sort_merge_overlap_bedgraph.html">sort_merge_overlap_bedgraph()</a></code> </p>
-        </td>
-        <td><p>Sort and merge the overlapping sites,
-remove the overlapping sites with lower occupancy</p></td>
-      </tr><tr><td>
-          <p><code><a href="track_def_line.html">track_def_line()</a></code> </p>
-        </td>
-        <td><p>Set genome browser track parameters for predictions in bedGraph format</p></td>
+        <td><p>Select regression coefficients by the TOP hierarchy level</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

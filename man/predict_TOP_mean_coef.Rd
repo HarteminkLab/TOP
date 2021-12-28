@@ -11,21 +11,20 @@ predict_TOP_mean_coef(
 )
 }
 \arguments{
-\item{data}{A data frame. Columns are motif score and DNase (or ATAC) bins.
-Rows are candidate sites.}
+\item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
 \item{mean_coef}{A numeric vector. The posterior mean of trained regression
-coefficients, including the intercept and coefficients for motif score and
-DNase features.
+coefficients, including the intercept and coefficients for PWM score and
+DNase (or ATAC) bins.
 length(mean_coef) should be equal to 1+ncol(data).}
 
 \item{transform}{Method used to transform ChIP-seq counts when training
-the TOP model. Options: asinh, log2, log, none.}
+the TOP model. Options: asinh, log2, sqrt, none.}
 }
 \value{
-The function returns a vector of predicted TF occupancy.
+Returns a vector of predicted TF occupancy (posterior mean).
 }
 \description{
-Predict TF occupancy using posterior mean of regression
-coefficients trained from the TOP model
+Predict TF occupancy using posterior mean of TOP regression
+coefficients.
 }

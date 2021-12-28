@@ -2,17 +2,17 @@
 % Please edit documentation in R/predict_occupancy.R
 \name{select_features}
 \alias{select_features}
-\title{Extract PWM and bin features}
+\title{Select PWM and DNase (or ATAC) bin features from the input data frame}
 \usage{
 select_features(data, pwm.name = "pwm", bin.name = "bin")
 }
 \arguments{
-\item{data}{Input data frame}
+\item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
-\item{pwm.name}{column name (prefix) of the PMW score}
+\item{pwm.name}{name (prefix) of the PMW score column.}
 
-\item{bin.name}{column name (prefix) of the DNase or ATAC bins}
+\item{bin.name}{name (prefix) of the DNase or ATAC bin columns.}
 }
 \description{
-Extract PWM and bin features
+Select PWM and DNase (or ATAC) bin features from the input data frame
 }

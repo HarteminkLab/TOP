@@ -6,31 +6,30 @@
 \usage{
 predict_TOP_samples(
   data,
-  TOP_samples,
+  coef_samples,
   use.posterior.mean = FALSE,
   sample.predictions = TRUE,
-  transform = c("asinh", "log2", "log", "none")
+  transform = c("asinh", "log2", "sqrt", "none")
 )
 }
 \arguments{
-\item{data}{A data frame. Columns are motif score and DNase (or ATAC) bins.
-Rows are candidate sites.}
+\item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
-\item{TOP_samples}{TOP posterior samples.}
+\item{coef_samples}{TOP posterior samples.}
 
-\item{use.posterior.mean}{If TRUE, uses the posterior mean of
+\item{use.posterior.mean}{Logical; if TRUE, uses the posterior mean of
 regression coefficients to make predictions.}
 
-\item{sample.predictions}{If TRUE, sample from posterior predictions and then
-take the mean of posterior prediction samples.}
+\item{sample.predictions}{Logical; if TRUE, sample from posterior predictions
+and then take the mean of posterior prediction samples.}
 
 \item{transform}{Method used to transform ChIP-seq counts when training
-the TOP model. Options: asinh, log2, log, none.}
+the TOP model. Options: asinh, log2, sqrt, none.}
 }
 \value{
-The function returns a vector of predicted TF occupancy.
+Returns a vector of predicted TF occupancy (posterior mean).
 }
 \description{
-Predict TF occupancy using posterior samples of regression
-coefficients trained from the TOP model
+Predict TF occupancy using posterior samples of TOP regression
+coefficients.
 }

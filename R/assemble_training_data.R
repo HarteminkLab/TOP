@@ -1,15 +1,14 @@
 #' @title Assemble TOP training data for all TF x cell type combos in one partition
 #'
-#' @param tf_cell_table a data frame with TF name, cell type,
-#' and links to the training data files.
-#' @param logistic.model If TRUE, use logistic version of the model
-#' @param chip_colname The column name of ChIP data in the combined data.
-#' @param training_chrs Chromosomes used for training the model.
-#' @param n.partitions split the data into partitions (default = 10)
-#' to run Gibbs sampling in parallel.
-#' @param part which partition to use for training the model
-#' @param max.sites Max number of candidate sites in each partition.
-#' @param seed seed used when sampling sites.
+#' @param tf_cell_table a data frame with at least three columns:
+#' TF name, cell type, and file name containing the corresponding training data.
+#' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
+#' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
+#' @param training_chrs Chromosomes used for training the model (default: odd chromosomes)
+#' @param n.partitions Total number of partitions to split the training data (default: 10).
+#' @param part specifies which partition to assemble the training data for
+#' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
+#' @param seed seed used when sampling sites (default: 123).
 #'
 #' @export
 #'
@@ -19,8 +18,8 @@ assemble_partition_training_data <- function(tf_cell_table,
                                              training_chrs = paste0('chr', seq(1,21,2)),
                                              n.partitions = 10,
                                              part,
-                                             max.sites = 10000,
-                                             seed = 1) {
+                                             max.sites = 50000/n.partitions,
+                                             seed = 123) {
 
   cat('Assemble training data for partition', part, '... \n')
 
@@ -30,6 +29,8 @@ assemble_partition_training_data <- function(tf_cell_table,
   # split training data into partitions,
   # and select the subset (part) and combine all TF x cell type combos
   assembled_trainng_data <- list()
+
+  colnames(tf_cell_table)[1:3] <- c('tf_name', 'cell_type', 'data_file')
 
   for(i in 1:nrow(tf_cell_table)) {
 
@@ -106,20 +107,18 @@ assemble_partition_training_data <- function(tf_cell_table,
 }
 
 #' @title Assemble TOP training data for all TF x cell type combos,
-#' then split training data into 10 partitions.
+#' then split training data into 10 partitions
 #'
-#' @param tf_cell_table_file a tab delimited file with three columns:
-#' TF names, cell types, and paths to the training data files.
-#' @param logistic.model If TRUE, use logistic version of the model
-#' @param chip_colname The column name of ChIP data in the combined data.
-#' @param training_chrs Chromosomes used for training the model.
-#' @param n.partitions split the data into partitions (default = 10)
-#' to run Gibbs sampling in parallel.
-#' @param max.sites Max number of candidate sites in each partition.
-#' @param seed seed used when sampling sites.
+#' @param tf_cell_table_file a tab delimited file with at least three columns:
+#' The first three columns should be TF names, cell types, and the training data files.
+#' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
+#' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
+#' @param training_chrs Chromosomes used for training the model (default: odd chromosomes)
+#' @param n.partitions Total number of partitions to split the training data (default: 10).
+#' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
+#' @param seed seed used when sampling sites (default: 123).
 #' @import doParallel
 #' @import foreach
-#' @importFrom data.table fread fwrite
 #'
 #' @export
 #'
@@ -129,9 +128,9 @@ assemble_TOP_training_data <- function(tf_cell_table_file,
                                        training_chrs=paste0('chr', seq(1,21,2)),
                                        n.partitions=10,
                                        max.sites=50000,
-                                       seed=1){
+                                       seed=123){
 
-  tf_cell_table <- as.data.frame(fread(tf_cell_table_file))
+  tf_cell_table <- as.data.frame(data.table::fread(tf_cell_table_file))
 
   if(ncol(tf_cell_table) < 3){
     stop('The table should have at least three columns separated by tab! ')

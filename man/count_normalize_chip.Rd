@@ -15,20 +15,20 @@ count_normalize_chip(
 )
 }
 \arguments{
-\item{sites_file}{Candidate sites file}
+\item{sites_file}{File containing the candidate sites.}
 
-\item{chip_bam_files}{ChIP-seq bam files}
+\item{chip_bam_files}{ChIP-seq bam files.}
 
 \item{chip_idxstats_files}{ChIP-seq idxstats files.
 By default, use the corresponding '.idxstats.txt' files in the same directory
 of the bam files.}
 
-\item{chrom_size_file}{Chromosome size file}
+\item{chrom_size_file}{Chromosome size file.}
 
 \item{ref.size}{ChIP-Seq reference library size (Default: 10 million)}
 
-\item{transform}{Transform of ChIP read counts.
-Options are 'none' (do not transform), 'asinh', 'log2', 'sqrt'.}
+\item{transform}{Type of transformation for the ChIP read counts.
+Options are 'none' (do not transform), 'asinh', 'log2', and 'sqrt'.}
 
 \item{bedtools_path}{Path to bedtools executable}
 }

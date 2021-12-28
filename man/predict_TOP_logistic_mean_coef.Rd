@@ -2,24 +2,22 @@
 % Please edit documentation in R/predict_occupancy.R
 \name{predict_TOP_logistic_mean_coef}
 \alias{predict_TOP_logistic_mean_coef}
-\title{Predict TF binding probability by TOP logistic model
-with posterior mean of regression coefficients}
+\title{Predict TF binding probability by TOP logistic model}
 \usage{
 predict_TOP_logistic_mean_coef(data, mean_coef)
 }
 \arguments{
-\item{data}{A data frame. Columns are motif score and DNase (or ATAC) bins.
-Rows are candidate sites.}
+\item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
 \item{mean_coef}{A numeric vector. The posterior mean of trained regression
-coefficients, including the intercept and coefficients for motif score and
-DNase features.
+coefficients, including the intercept and coefficients for PWM score and
+DNase (or ATAC) bins.
 length(mean_coef) should be equal to 1+ncol(data).}
 }
 \value{
-The function returns a vector of predicted TF binding probabilities
+Returns a vector of predicted TF binding probabilities.
 }
 \description{
 Predict TF binding probability using posterior mean of the regression
-coefficients trained from TOP logistic model
+coefficients trained from TOP logistic model.
 }

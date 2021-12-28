@@ -5,8 +5,8 @@
 \title{Title}
 \usage{
 filter_mapability(
-  sites.df = NULL,
-  mapability_file = NULL,
+  sites.df,
+  mapability_file,
   thresh_mapability = 0.8,
   bigWigAverageOverBed_path = "bigWigAverageOverBed"
 )
@@ -17,7 +17,7 @@ filter_mapability(
 
 \item{mapability_file}{ENCODE mapability bigWig file}
 
-\item{thresh_mapability}{Mpability filter threshold}
+\item{thresh_mapability}{Mpability filter threshold (default: 0.8)}
 
 \item{bigWigAverageOverBed_path}{path of bigWigAverageOverBed executable}
 }

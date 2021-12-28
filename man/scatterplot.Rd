@@ -16,21 +16,21 @@ scatterplot(
 )
 }
 \arguments{
-\item{x}{x values (measured)}
+\item{x}{x-axis values of points in the plot.}
 
-\item{y}{y values (predicted)}
+\item{y}{y-axis values of points in the plot.}
 
-\item{xlab}{x-axis label}
+\item{xlab}{a label for the x axis.}
 
-\item{ylab}{y-axis label}
+\item{ylab}{a label for the y axis.}
 
-\item{title}{title of the figure}
+\item{title}{a title for the plot.}
 
-\item{xlim}{range of x-axis values}
+\item{xlim}{range of x-axis values.}
 
-\item{ylim}{range of y-axis values}
+\item{ylim}{range of y-axis values.}
 
-\item{color}{color of the dots}
+\item{color}{The plotting color.}
 }
 \description{
 Simple scatter plot

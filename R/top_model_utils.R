@@ -3,9 +3,9 @@
 #'
 #' @param TOP_samples_file file names of the posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
-#' must be a positive integer.
+#' must be a positive integer (default = 1, no thin).
 #' @param n.samples Randomly choose n.samples posterior samples,
-#' if the number of posterior samples is greater than n.samples
+#' when the number of posterior samples is greater than n.samples.
 #'
 #' @export
 #'
@@ -23,7 +23,9 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 
   if (thin > 1) {
     TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), by = thin), ]
-  } else if (nrow(TOP_samples) > n.samples) {
+  }
+
+  if (nrow(TOP_samples) > n.samples) {
     TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), length.out = n.samples),]
   }
 
@@ -35,9 +37,9 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 #'
 #' @param TOP_samples_files file names of the posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
-#' must be a positive integer.
+#' must be a positive integer (default = 1, no thin).
 #' @param n.samples Randomly choose n.samples posterior samples,
-#' if the number of posterior samples is greater than n.samples
+#' when the number of posterior samples is greater than n.samples.
 #'
 #' @export
 #'
@@ -61,12 +63,13 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 
 #' Extract alpha and beta coefficients from TOP posterior samples
 #'
-#' @param TOP_samples TOP samples combined from all partitions
-#' @param tf_cell_combos a table of TF x cell type combinations
-#' @param tf_name TF name of interest
-#' @param cell_type Cell type of interest
-#' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5)
-#' @param level The level in the TOP model (bottom, middle, or top),
+#' @param TOP_samples TOP samples combined from all partitions.
+#' @param tf_cell_combos a table of TF x cell type combinations,
+#' included in the training data.
+#' @param tf_name TF name of interest.
+#' @param cell_type Cell type of interest.
+#' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5).
+#' @param level The level in the TOP model (options: bottom, middle, or top),
 #' 'bottom' level: TF- and cell-type- specific,
 #' 'middle' level: TF-specific, cell-type generic,
 #' 'top' level: TF-generic
@@ -166,4 +169,88 @@ extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
                         bottom = bottom_level_mean_coef)
 
   return(TOP_mean_coef)
+}
+
+#' @title Select regression coefficients by the TOP hierarchy level
+#'
+#' @param pwm_id specifies the motif PWM ID.
+#' @param cell_type specifies the cell type.
+#' @param training_tf_pwm_table A data frame including TF names and motif PWM IDs
+#' in the training data.
+#' @param TOP_mean_coef Trained TOP posterior mean regression coefficients.
+#' @param level Specific the TOP model hierarchy level to use.
+#' Options: 'best', 'middle', or 'top'.
+#' Default: 'best' -- choose the best model (lowest level of the hierarchy available):
+#' If the TF motif and cell type is available in the training data,
+#' then use the bottom level (TF- and cell-type-specific model).
+#' otherwise, if TF motif (but not cell type) is available in the training data,
+#' choose the middle level (TF-specific model) of that TF motif;
+#' otherwise, use the top level TF-generic model.
+#' @export
+#'
+select_model_coef_level <- function(pwm_id,
+                                    cell_type,
+                                    training_tf_pwm_table,
+                                    TOP_mean_coef,
+                                    level = c('best', 'middle', 'top')) {
+
+  level <- match.arg(level)
+
+  bottom_level_mean_coef <- TOP_mean_coef$bottom
+  middle_level_mean_coef <- TOP_mean_coef$middle
+  top_level_mean_coef <- TOP_mean_coef$top
+
+  # find the TF with the motif PWM ID
+  pwm_id <- gsub('[.].+', '', pwm_id)
+
+  if (pwm_id %in% training_tf_pwm_table$pwm_id) {
+    cat('TF model available. \n')
+    tf_model <- training_tf_pwm_table[training_tf_pwm_table$pwm_id == pwm_id, 'tf_name']
+  } else {
+    cat('No TF-specific model available. Use TF generic model. ')
+    tf_model <- 'TF-generic'
+  }
+
+  if(level == 'best'){
+
+    ## load model, using lower level model if available
+    tf_cell_name <- paste(tf_model, cell_type, sep = '.')
+    if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
+      cat('Use bottom level model. \n')
+      model_coef <- bottom_level_mean_coef[tf_cell_name, ]
+      model_type <- 'Bottom'
+    } else if (tf_model %in% rownames(middle_level_mean_coef)) {
+      cat('Use middle level model. \n')
+      model_coef <- middle_level_mean_coef[tf_model, ]
+      model_type <- 'Middle'
+    } else {
+      cat('Use top level model. \n')
+      model_coef <- top_level_mean_coef
+      model_type <- 'Top'
+    }
+
+  }else if (level == 'middle'){
+
+    if (tf_model %in% rownames(middle_level_mean_coef)) {
+      cat('Use middle level model. \n')
+      model_coef <- middle_level_mean_coef[tf_model, ]
+      model_type <- 'Middle'
+    } else{
+      cat('The middle level model is not available. Use top level model. \n')
+      model_coef <- top_level_mean_coef
+      model_type <- 'Top'
+    }
+
+  }else if(level == 'top'){
+
+    cat('Use top level model. \n')
+    model_coef <- top_level_mean_coef
+    model_type <- 'Top'
+
+  }
+
+  return(list(tf_model = tf_model,
+              model_type = model_type,
+              model_coef = model_coef))
+
 }

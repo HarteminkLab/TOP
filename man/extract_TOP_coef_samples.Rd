@@ -14,17 +14,18 @@ extract_TOP_coef_samples(
 )
 }
 \arguments{
-\item{TOP_samples}{TOP samples combined from all partitions}
+\item{TOP_samples}{TOP samples combined from all partitions.}
 
-\item{tf_cell_combos}{a table of TF x cell type combinations}
+\item{tf_cell_combos}{a table of TF x cell type combinations,
+included in the training data.}
 
-\item{tf_name}{TF name of interest}
+\item{tf_name}{TF name of interest.}
 
-\item{cell_type}{Cell type of interest}
+\item{cell_type}{Cell type of interest.}
 
-\item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
+\item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5).}
 
-\item{level}{The level in the TOP model (bottom, middle, or top),
+\item{level}{The level in the TOP model (options: bottom, middle, or top),
 'bottom' level: TF- and cell-type- specific,
 'middle' level: TF-specific, cell-type generic,
 'top' level: TF-generic}

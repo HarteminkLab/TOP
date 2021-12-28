@@ -2,7 +2,8 @@
 % Please edit documentation in R/plots.R
 \name{scatterplot_predictions}
 \alias{scatterplot_predictions}
-\title{Make a scatter plot of measured and predicted occupancy}
+\title{Make a scatter plot of measured and predicted occupancy,
+with Pearson's correlation (R) between measured and predicted occupancy}
 \usage{
 scatterplot_predictions(
   x,
@@ -16,22 +17,23 @@ scatterplot_predictions(
 )
 }
 \arguments{
-\item{x}{x values (measured)}
+\item{x}{x-axis values of points in the plot (measured).}
 
-\item{y}{y values (predicted)}
+\item{y}{y-axis values of points in the plot (predicted).}
 
-\item{xlab}{x-axis label}
+\item{xlab}{a label for the x axis.}
 
-\item{ylab}{y-axis label}
+\item{ylab}{a label for the y axis.}
 
-\item{title}{title of the figure}
+\item{title}{a title for the plot.}
 
-\item{xlim}{range of x-axis values}
+\item{xlim}{range of x-axis values.}
 
-\item{ylim}{range of y-axis values}
+\item{ylim}{range of y-axis values.}
 
-\item{color}{color of the dots}
+\item{color}{The plotting color.}
 }
 \description{
-Make a scatter plot of measured and predicted occupancy
+Make a scatter plot of measured and predicted occupancy,
+with Pearson's correlation (R) between measured and predicted occupancy
 }

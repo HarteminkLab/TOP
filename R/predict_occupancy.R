@@ -3,22 +3,22 @@
 #' @description Predict quantitative TF occupancy or TF binding probability
 #' using TOP model trained from ChIP-seq read counts or binary labels.
 #'
-#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
-#' Rows are candidate sites.
-#' @param TOP_model TOP posterior samples or posterior mean of regression
-#' coefficients.
-#' @param logistic.model If TRUE, use logistic version of the model
-#' to predict TF binding probability.
-#' @param posterior.option 'samples': uses posterior samples, 'mean': uses posterior mean of
-#' trained regression coefficients
-#' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP quantitative model. Options: asinh, log2, log, none.
-#' This does not apply to the logistic version.
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
+#' @param TOP_coef A data frame or list containing the posterior samples
+#' or posterior mean of TOP regression coefficients.
+#' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
+#' @param posterior.option Method to predict occupancy.
+#' 'samples': uses posterior samples,
+#' 'mean': uses posterior mean of regression coefficients.
+#' @param transform Type of transformation for ChIP counts.
+#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
+#' Only needed when logistic.model is FALSE.
 #'
-#' @return The function returns a vector of predicted TF occupancy.
+#' @return Returns a vector of predicted TF occupancy (posterior mean).
 #' @export
+#'
 predict_TOP <- function(data,
-                        TOP_model,
+                        TOP_coef,
                         logistic.model = FALSE,
                         posterior.option = c('mean', 'samples'),
                         transform = c('asinh', 'log2', 'log', 'none')){
@@ -28,14 +28,14 @@ predict_TOP <- function(data,
   if(logistic.model == FALSE) {
     transform <- match.arg(transform)
     if ( posterior.option == 'mean' ) {
-      predictions <- predict_TOP_mean_coef(data, TOP_model, transform = transform)
+      predictions <- predict_TOP_mean_coef(data, TOP_coef, transform = transform)
     } else if ( posterior.option == 'samples' ) {
-      predictions <- predict_TOP_samples(data, TOP_model, transform = transform)
+      predictions <- predict_TOP_samples(data, TOP_coef, transform = transform)
     } else{
       stop('posterior.option needs to be samples or mean!')
     }
   }else if (logistic.model == TRUE){
-    predictions <- predict_TOP_logistic_mean_coef(data, TOP_model)
+    predictions <- predict_TOP_logistic_mean_coef(data, TOP_coef)
   }
 
   return(predictions)
@@ -44,39 +44,35 @@ predict_TOP <- function(data,
 
 
 #' @title Predict TF occupancy using posterior samples of regression coefficients
-#' @description Predict TF occupancy using posterior samples of regression
-#' coefficients trained from the TOP model
+#' @description Predict TF occupancy using posterior samples of TOP regression
+#' coefficients.
 #'
-#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
-#' Rows are candidate sites.
-#' @param TOP_samples TOP posterior samples.
-#' @param use.posterior.mean If TRUE, uses the posterior mean of
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
+#' @param coef_samples TOP posterior samples.
+#' @param use.posterior.mean Logical; if TRUE, uses the posterior mean of
 #' regression coefficients to make predictions.
-#' @param sample.predictions If TRUE, sample from posterior predictions and then
-#' take the mean of posterior prediction samples.
+#' @param sample.predictions Logical; if TRUE, sample from posterior predictions
+#' and then take the mean of posterior prediction samples.
 #' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Options: asinh, log2, log, none.
+#' the TOP model. Options: asinh, log2, sqrt, none.
 #'
-#' @return The function returns a vector of predicted TF occupancy.
+#' @return Returns a vector of predicted TF occupancy (posterior mean).
 #' @export
 predict_TOP_samples <- function(data,
-                                TOP_samples,
+                                coef_samples,
                                 use.posterior.mean = FALSE,
                                 sample.predictions = TRUE,
-                                transform = c('asinh', 'log2', 'log', 'none')){
-
-  transform <- match.arg(transform)
+                                transform = c('asinh', 'log2', 'sqrt', 'none')){
 
   cat('Predicting TF occupancy using TOP posterior samples...\n')
+  transform <- match.arg(transform)
 
   features <- select_features(data)
-
   data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
-  alpha_samples <- TOP_samples$alpha_samples
-  beta_samples  <- TOP_samples$beta_samples
-  tau_samples   <- TOP_samples$tau_samples
-
+  alpha_samples <- coef_samples$alpha_samples
+  beta_samples  <- coef_samples$beta_samples
+  tau_samples   <- coef_samples$tau_samples
   coefficients  <- t(cbind(alpha_samples, beta_samples))
 
   if(use.posterior.mean){
@@ -88,10 +84,8 @@ predict_TOP_samples <- function(data,
 
     if(sample.predictions){
       sds <- 1 / sqrt(tau_samples)
-
       n_data <- nrow(data.matrix)
       n_samples <- ncol(coefficients)
-
       predictions <- sapply(1:n_samples, function(x) stats::rnorm(n_data, mean = means[, x], sd = sds[x]))
       predictions <- apply(predictions, 1, mean)
     }else{
@@ -100,14 +94,15 @@ predict_TOP_samples <- function(data,
 
   }
 
+  # transform back to the original scale
   if(transform == 'asinh'){
     predictions <- sinh(predictions)
   }else if (transform == 'log2'){
     # log2(y+1)
     predictions <- 2^predictions - 1
-  }else if (transform == 'log'){
-    # log(y+1)
-    predictions <- exp(predictions) - 1
+  }else if (transform == 'sqrt'){
+    # sqrt(y)
+    predictions <- predictions^2
   }else if (transform == 'none'){
     # no transform
     # cat('No transform done. \n')
@@ -119,28 +114,27 @@ predict_TOP_samples <- function(data,
 
 
 #' @title Predict TF occupancy using posterior mean of regression coefficients
-#' @description Predict TF occupancy using posterior mean of regression
-#' coefficients trained from the TOP model
+#' @description Predict TF occupancy using posterior mean of TOP regression
+#' coefficients.
 #'
-#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
-#' Rows are candidate sites.
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param mean_coef A numeric vector. The posterior mean of trained regression
-#' coefficients, including the intercept and coefficients for motif score and
-#' DNase features.
+#' coefficients, including the intercept and coefficients for PWM score and
+#' DNase (or ATAC) bins.
 #' length(mean_coef) should be equal to 1+ncol(data).
 #' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Options: asinh, log2, log, none.
+#' the TOP model. Options: asinh, log2, sqrt, none.
 #'
-#' @return The function returns a vector of predicted TF occupancy.
+#' @return Returns a vector of predicted TF occupancy (posterior mean).
 #'
 #' @export
+#'
 predict_TOP_mean_coef <- function(data,
                                   mean_coef,
                                   transform = c('asinh', 'log2', 'log', 'none')){
 
-  transform <- match.arg(transform)
-
   cat('Predicting TF occupancy using TOP posterior mean coefficients...\n')
+  transform <- match.arg(transform)
 
   features <- select_features(data)
 
@@ -155,14 +149,18 @@ predict_TOP_mean_coef <- function(data,
 
   predictions <- as.numeric(data.matrix %*% coefficients)
 
+  # transform back to the original scale
   if(transform == 'asinh'){
     predictions <- sinh(predictions)
-  }else if (transform == 'log2'){ # log2(y+1)
+  }else if (transform == 'log2'){
+    # log2(y+1)
     predictions <- 2^predictions - 1
-  }else if (transform == 'log'){ # log(y+1)
-    predictions <- exp(predictions) - 1
-  }else if (transform == 'none'){ # no transform
-    # cat('Do not transform predictions. \n')
+  }else if (transform == 'sqrt'){
+    # sqrt(y)
+    predictions <- predictions^2
+  }else if (transform == 'none'){
+    # no transform
+    # cat('No transform done. \n')
   }
 
   return(predictions)
@@ -170,20 +168,19 @@ predict_TOP_mean_coef <- function(data,
 }
 
 #' @title Predict TF binding probability by TOP logistic model
-#' with posterior mean of regression coefficients
 #' @description Predict TF binding probability using posterior mean of the regression
-#' coefficients trained from TOP logistic model
+#' coefficients trained from TOP logistic model.
 #'
-#' @param data A data frame. Columns are motif score and DNase (or ATAC) bins.
-#' Rows are candidate sites.
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param mean_coef A numeric vector. The posterior mean of trained regression
-#' coefficients, including the intercept and coefficients for motif score and
-#' DNase features.
+#' coefficients, including the intercept and coefficients for PWM score and
+#' DNase (or ATAC) bins.
 #' length(mean_coef) should be equal to 1+ncol(data).
 #'
-#' @return The function returns a vector of predicted TF binding probabilities
+#' @return Returns a vector of predicted TF binding probabilities.
 #'
 #' @export
+#'
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
   features <- select_features(data)
@@ -207,11 +204,11 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
 }
 
-#' Extract PWM and bin features
+#' Select PWM and DNase (or ATAC) bin features from the input data frame
 #'
-#' @param data Input data frame
-#' @param pwm.name column name (prefix) of the PMW score
-#' @param bin.name column name (prefix) of the DNase or ATAC bins
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
+#' @param pwm.name name (prefix) of the PMW score column.
+#' @param bin.name name (prefix) of the DNase or ATAC bin columns.
 #'
 select_features <- function(data, pwm.name = 'pwm', bin.name = 'bin'){
   data <- as.data.frame(data)

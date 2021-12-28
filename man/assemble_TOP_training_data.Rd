@@ -3,7 +3,7 @@
 \name{assemble_TOP_training_data}
 \alias{assemble_TOP_training_data}
 \title{Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions.}
+then split training data into 10 partitions}
 \usage{
 assemble_TOP_training_data(
   tf_cell_table_file,
@@ -12,27 +12,26 @@ assemble_TOP_training_data(
   training_chrs = paste0("chr", seq(1, 21, 2)),
   n.partitions = 10,
   max.sites = 50000,
-  seed = 1
+  seed = 123
 )
 }
 \arguments{
-\item{tf_cell_table_file}{a tab delimited file with three columns:
-TF names, cell types, and paths to the training data files.}
+\item{tf_cell_table_file}{a tab delimited file with at least three columns:
+The first three columns should be TF names, cell types, and the training data files.}
 
-\item{logistic.model}{If TRUE, use logistic version of the model}
+\item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
 
-\item{chip_colname}{The column name of ChIP data in the combined data.}
+\item{chip_colname}{The column name of ChIP data in the combined data (default: "chip").}
 
-\item{training_chrs}{Chromosomes used for training the model.}
+\item{training_chrs}{Chromosomes used for training the model (default: odd chromosomes)}
 
-\item{n.partitions}{split the data into partitions (default = 10)
-to run Gibbs sampling in parallel.}
+\item{n.partitions}{Total number of partitions to split the training data (default: 10).}
 
-\item{max.sites}{Max number of candidate sites in each partition.}
+\item{max.sites}{Max number of candidate sites in each partition (default: 50000/n.partitions).}
 
-\item{seed}{seed used when sampling sites.}
+\item{seed}{seed used when sampling sites (default: 123).}
 }
 \description{
 Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions.
+then split training data into 10 partitions
 }

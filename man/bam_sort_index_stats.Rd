@@ -2,11 +2,11 @@
 % Please edit documentation in R/reads_utils.R
 \name{bam_sort_index_stats}
 \alias{bam_sort_index_stats}
-\title{Sort and index the BAM file, and then retrieve and print stats in the index file.}
+\title{Sort and index the BAM file, and retrieve stats (idxstats)}
 \usage{
 bam_sort_index_stats(
   bam_file,
-  outdir = NA,
+  outdir,
   sort = TRUE,
   stats = TRUE,
   samtools_path = "samtools"
@@ -17,12 +17,12 @@ bam_sort_index_stats(
 
 \item{outdir}{Output directory.}
 
-\item{sort}{logical. If TRUE, sort (and index) the BAM file.}
+\item{sort}{Logical. If TRUE, sort (and index) the BAM file.}
 
-\item{stats}{logical. If TRUE, retrieve and print stats in the index file.}
+\item{stats}{Logical. If TRUE, retrieve stats (idxstats) in the index file.}
 
 \item{samtools_path}{Path to samtools executable.}
 }
 \description{
-Sort and index the BAM file, and then retrieve and print stats in the index file.
+Sort and index the BAM file, and retrieve stats (idxstats)
 }
