@@ -28,8 +28,8 @@ It could be quantitative TF occupancy
 binary TF binding labels (from ChIP-seq peaks).
 
 
-Here we give an example for preparing input data for TOP to predict CTCF occupancy 
-in K562 cell type.
+Here we show an example procedure for preparing input data for TOP 
+to predict CTCF occupancy in K562 cell type.
 
 Major steps
 --------------
@@ -230,10 +230,8 @@ if you want to train TOP logistic version to predict TF binding probability.
 Snakemake pipeline
 -------------------
 
-We provided [Snakemake pipelines](https://github.com/kevinlkx/TOP/tree/main/inst/snakemake) 
-to automate the whole process using the above mentioned R scripts. 
-The Snakemake is especially helpful if you have many TFs (motifs) in many cell types.
+It is recommended to write [Snakemake pipelines](https://github.com/kevinlkx/TOP/tree/main/inst/snakemake) 
+to automate the whole process. It is especially helpful if you have many TFs and many cell types.
 
-Run `Snakefile_training_ATAC` for ATAC-seq, or `Snakefile_training_DNase` for DNase-seq. 
 For more details and instructions about running Snakemake pipelines, 
 see [Snakemake tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html).

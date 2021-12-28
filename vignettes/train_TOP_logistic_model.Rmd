@@ -71,9 +71,14 @@ We can set the following parameters for Gibbs sampling:
 - n.chains: number of Markov chains.
 - n.thin: thinning rate, must be a positive integer.
 
+This step usually takes a long time if we have many TFs and many cell types. 
+
 To save computation time, we can run the partitions 
-(choose which partition to run, e.g. `partitions=3 or partition=c(1,3,5)`) 
+(choose which partition to run, e.g. `partitions=3`) 
 in parallel on separate compute nodes (if you have access to compute clusters). 
+
+**Note**: we need to install `R2jags` and/or `rjags` packages to fit TOP models 
+in our current version using `JAGS`.
 
 ```{r train-TOP-logistic-model, eval = FALSE}
 library(R2jags)
@@ -82,10 +87,9 @@ TOP_samples_files <- fit_TOP_model(all_training_data,
                                    model.file = '../model/TOP_M5_logit_model_jags_priorVar1.txt',
                                    logistic.model = TRUE,
                                    out.dir = 'TOP_logistic_fit',
-                                   transform = 'asinh', # asinh transform ChIP-seq counts
                                    partitions = 1:10,
-                                   n.iter = 10000,
-                                   n.burnin = 5000,
+                                   n.iter = 5000, 
+                                   n.burnin = 2500,
                                    n.chains = 3,
                                    n.thin = 10)
 ```

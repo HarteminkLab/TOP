@@ -82,8 +82,9 @@ To save computation time, we can also run the partitions
 (choose which partition to run, e.g. `partitions=3`) 
 in parallel on separate compute nodes. 
 
-Note: we need `R2jags` or `rjags` package to fit TOP models 
+**Note**: we need to install `R2jags` and/or `rjags` packages to fit TOP models 
 in our current version using `JAGS`.
+
 ```{r train-TOP-model, eval = FALSE}
 library(R2jags)
 

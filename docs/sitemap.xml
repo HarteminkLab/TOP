@@ -94,10 +94,19 @@
     <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_M5_model.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_M5_model_jags.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_jags.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_logistic_M5_model.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_logistic_M5_model_jags.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_model.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/flank_fimo_sites.html</loc>

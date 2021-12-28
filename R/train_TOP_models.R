@@ -201,7 +201,8 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 #' @param model.file TOP logistic model file.
 #' @param logistic.model If TRUE, use logistic version of the model
 #' @param out.dir Output directory for TOP model posterior samples
-#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none)
+#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none).
+#' Only needed when logistic.model is FALSE.
 #' @param partitions select which partition(s) to run
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
@@ -223,8 +224,6 @@ fit_TOP_model <- function(all_training_data,
                           n.burnin=floor(n.iter/2),
                           n.chains=3,
                           n.thin=max(1, floor((n.iter - n.burnin) / 1000))){
-
-  transform <- match.arg(transform)
 
   if(!dir.exists(out.dir)){
     dir.create(out.dir, showWarnings = FALSE, recursive = TRUE)
