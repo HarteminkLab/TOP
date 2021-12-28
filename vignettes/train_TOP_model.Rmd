@@ -118,8 +118,8 @@ TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, tf_cell_combos)
 
 Save the posterior samples and posterior mean coefficients.
 ```{r save-samples-coef, eval = FALSE}
-saveRDS(TOP_samples, file.path(top_model_dir, 'TOP_M5_combined_posterior_samples.rds'))
-saveRDS(TOP_mean_coef, file.path(top_model_dir, 'TOP_M5_posterior_mean_coef.rds'))
+saveRDS(TOP_samples, 'TOP_fit/TOP_M5_combined_posterior_samples.rds')
+saveRDS(TOP_mean_coef, 'TOP_fit/TOP_M5_posterior_mean_coef.rds')
 ```
 
 To make predictions for TF occupancy using new DNase- or ATAC-seq data 
