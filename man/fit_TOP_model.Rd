@@ -30,7 +30,8 @@ Requires either all_training_data or all_training_data_files.}
 
 \item{out.dir}{Output directory for TOP model posterior samples}
 
-\item{transform}{Transformation of ChIP counts (asinh, log2, sqrt, or none)}
+\item{transform}{Transformation of ChIP counts (asinh, log2, sqrt, or none).
+Only needed when logistic.model is FALSE.}
 
 \item{partitions}{select which partition(s) to run}
 
