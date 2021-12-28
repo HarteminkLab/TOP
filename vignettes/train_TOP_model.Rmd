@@ -33,19 +33,17 @@ and measured TF occupancy (from ChIP-seq data).
 
 You can follow this [page](data_preparation.html) to prepare training data.
 
-Create a tab delimited table listing all the TFs and cell types. 
+Create a tab delimited table (e.g. `tf_cell_table.txt`) 
+listing all the TFs and cell types. 
 The table should have three columns:
-TF names, cell types, and paths to the training data files.
+TF names, cell types, and paths to the training data files, like:
 
-For example:
-```{r create-tf_cell_table, eval=FALSE}
-tf_cell_table <- data.frame(tf_name = c('TF1', 'TF2', ...),
-                            cell_type = c('cell1', 'cell2', ...),
-                            data_file = c('data.file1', 'data.file2', ...))
-
-write.table(tf_cell_table, "tf_cell_table.tsv", sep = '\t', 
-            col.names = TRUE, row.names = FALSE, quote = FALSE)
-```
+|   tf_name    |   cell_type   |        data_file       |
+|:------------:|:-------------:|:----------------------:|
+|     CTCF     |     K562      |   CTCF.K562.data.rds   |
+|     CTCF     |     A549      |   CTCF.A549.data.rds   |
+|     NRF1     |     K562      |   NRF1.K562.data.rds   |
+|     ...      |     ...       |   ...                  |
 
 **Step 2: Assemble training data for all TF-cell type combinations**
 
@@ -54,18 +52,17 @@ combinations, then split training data into 10 partitions.
 
 Select the odd chromosomes as training set.
 ```{r assemble-TOP-training-data, eval = FALSE}
-training_data_partitions <- assemble_TOP_training_data(tf_cell_table_file = 'tf_cell_table.tsv',
-                                                       training_data_dir = 'training_data_dir/', 
-                                                       training_data_name = 'TOP_training_data',
-                                                       chip_colname = 'chip',
-                                                       training_chrs = paste0('chr', seq(1,21,2)), 
-                                                       n.partitions = 10)
+all_training_data <- assemble_TOP_training_data(tf_cell_table_file = 'tf_cell_table.txt',
+                                                logistic.model = FALSE,
+                                                chip_colname = 'chip',
+                                                training_chrs = paste0('chr', seq(1,21,2)), 
+                                                n.partitions = 10)
 ```
 
 Save a table listing all TF and cell type combinations. 
 This will be used later to extract regression coefficients.
-```{r}
-tf_cell_combos <- unique(training_data_partitions[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+```{r tf-cell-combos, eval = FALSE}
+tf_cell_combos <- unique(all_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
 ```
 
 Train TOP models using assembled training data
@@ -80,28 +77,26 @@ We can set the following parameters for Gibbs sampling:
 - n.chains: number of Markov chains.
 - n.thin: thinning rate, must be a positive integer.
 
-To save computation time, we can run the partitions 
-(choose which partition to run, e.g. `partitions=3 or partition=c(1,3,5)`) 
-in parallel on separate compute nodes (if you have access to compute clusters). 
+This step usually takes a long time if we have many TFs and many cell types. 
+To save computation time, we can also run the partitions 
+(choose which partition to run, e.g. `partitions=3`) 
+in parallel on separate compute nodes. 
 
 Note: we need `R2jags` or `rjags` package to fit TOP models 
 in our current version using `JAGS`.
 ```{r train-TOP-model, eval = FALSE}
 library(R2jags)
 
-training_data_partitions <- readRDS('processed_data/ATAC_example_training_data.all.partitions.rds')
-
-TOP_samples_files <- fit_TOP_model(training_data_partitions, 
+TOP_samples_files <- fit_TOP_model(all_training_data, 
                                    model.file = '../model/TOP_M5_model_jags_priorVar1.txt',
+                                   logistic.model = FALSE,
                                    out.dir = 'TOP_fit',
-                                   partitions = 1,5,
+                                   transform = 'asinh', # asinh transform ChIP-seq counts
+                                   partitions = 1:10,
                                    n.iter = 10000,
                                    n.burnin = 5000,
                                    n.chains = 3,
-                                   n.thin = 10,
-                                   transform = 'asinh',
-                                   quiet = TRUE,
-                                   parallel = TRUE)
+                                   n.thin = 10)
 ```
 
 Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients

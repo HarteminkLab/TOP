@@ -11,7 +11,6 @@
 #' @param max.sites Max number of candidate sites in each partition.
 #' @param seed seed used when sampling sites.
 #'
-#' @return Returns a data frame of training data with all TFs and cell type combos.
 #' @export
 #'
 assemble_partition_training_data <- function(tf_cell_table,
@@ -46,7 +45,12 @@ assemble_partition_training_data <- function(tf_cell_table,
       next
     }
 
-    data <- as.data.frame(readRDS(data_file))
+    if(grepl('.rds', data_file, ignore.case = TRUE)){
+      data <- as.data.frame(readRDS(data_file))
+    }else{
+      data <- as.data.frame(data.table::fread(data_file))
+    }
+
 
     if(!chip_colname %in% colnames(data)){
       cat('Warning:', tf_name, 'in', cell_type, 'data file does not have', chip_colname, 'column!\n')
@@ -102,12 +106,10 @@ assemble_partition_training_data <- function(tf_cell_table,
 }
 
 #' @title Assemble TOP training data for all TF x cell type combos,
-#' then split training data into 10 partitions
+#' then split training data into 10 partitions.
 #'
 #' @param tf_cell_table_file a tab delimited file with three columns:
 #' TF names, cell types, and paths to the training data files.
-#' @param training_data_dir Directory for saving training data
-#' @param training_data_name Prefix for training data file names
 #' @param logistic.model If TRUE, use logistic version of the model
 #' @param chip_colname The column name of ChIP data in the combined data.
 #' @param training_chrs Chromosomes used for training the model.
@@ -122,18 +124,12 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @export
 #'
 assemble_TOP_training_data <- function(tf_cell_table_file,
-                                       training_data_dir='./',
-                                       training_data_name='TOP_training_data',
                                        logistic.model=FALSE,
                                        chip_colname='chip',
                                        training_chrs=paste0('chr', seq(1,21,2)),
                                        n.partitions=10,
                                        max.sites=50000,
                                        seed=1){
-
-  if(!dir.exists(training_data_dir)){
-    dir.create(training_data_dir, showWarnings = FALSE, recursive = TRUE)
-  }
 
   tf_cell_table <- as.data.frame(fread(tf_cell_table_file))
 
@@ -167,20 +163,13 @@ assemble_TOP_training_data <- function(tf_cell_table_file,
     # Add TF and cell type indices
     training_data$tf_id <- as.integer(factor(training_data$tf_name, levels = tf_list))
     training_data$cell_id <- as.integer(factor(training_data$cell_type, levels = celltype_list))
-    saveRDS(training_data,
-            file.path(training_data_dir, paste0(training_data_name, '.partition', k, '.rds')))
 
-    cat('Training data saved at:',
-        file.path(training_data_dir, paste0(training_data_name, '.partition', k, '.rds')), '\n')
     training_data
   }
 
-  # Save a table with all TF and cell type combinations
+  # Save a table listing all TF and cell type combinations
   tf_cell_combos <- unique(all_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
   cat(nrow(tf_cell_combos), 'TF x cell type combos assembled in training data. \n')
-  fwrite(tf_cell_combos,
-         file.path(training_data_dir, paste0(training_data_name, '_tf_cell_combos.txt')),
-         sep = '\t')
 
   return(all_training_data)
 }

@@ -28,5 +28,6 @@ Suggests:
     knitr,
     rmarkdown,
     rjags,
-    R2jags
+    R2jags,
+    coda
 VignetteBuilder: knitr

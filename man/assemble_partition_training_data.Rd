@@ -34,9 +34,6 @@ to run Gibbs sampling in parallel.}
 
 \item{seed}{seed used when sampling sites.}
 }
-\value{
-Returns a data frame of training data with all TFs and cell type combos.
-}
 \description{
 Assemble TOP training data for all TF x cell type combos in one partition
 }

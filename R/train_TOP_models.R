@@ -1,23 +1,23 @@
 
-#' @title Train TOP model
+#' @title Fit TOP model using JAGS
 #'
 #' @param data combined training data.
 #' @param model.file TOP model (written in BUGS code).
+#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none).
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' @param n.thin thinning rate, must be a positive integer.
 #' @param n.chains number of Markov chains.
-#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none).
 #' @param quiet Logical, whether to suppress stdout.
 #'
 #' @export
 fit_TOP_M5_model_jags <- function(data,
                                   model.file,
+                                  transform=c('asinh', 'log2', 'sqrt', 'none'),
                                   n.iter=2000,
                                   n.burnin=floor(n.iter/2),
                                   n.chains=3,
                                   n.thin=max(1, floor((n.iter - n.burnin) / 1000)),
-                                  transform=c('asinh', 'log2', 'sqrt', 'none'),
                                   quiet = FALSE) {
 
 
@@ -67,7 +67,7 @@ fit_TOP_M5_model_jags <- function(data,
 
   if (requireNamespace("R2jags", quietly = TRUE)) {
     # Use "R2jags" package
-    cat('using R2jags ...\n')
+    cat('Using R2jags ...\n')
     jagsfit <- R2jags::jags(data = training.data,
                             parameters.to.save = model.params,
                             model.file = model.file,
@@ -76,12 +76,12 @@ fit_TOP_M5_model_jags <- function(data,
                             n.thin = n.thin,
                             n.chains = n.chains,
                             quiet = quiet)
-    fit.samples <- as.mcmc(jagsfit)
+    fit.samples <- coda::as.mcmc(jagsfit)
     cat('Done. \n')
   } else if (requireNamespace("rjags", quietly = TRUE)) {
     # Use "rjags" package
     # Set up the JAGS model and settings
-    cat('using rjags ...\n')
+    # cat('using rjags ...\n')
     cat('Init model... \n')
     jags.obj <- rjags::jags.model(data = training.data, file = model.file, n.chains = n.chains, quiet = quiet)
     # Burn-ins
@@ -103,7 +103,7 @@ fit_TOP_M5_model_jags <- function(data,
 }
 
 
-#' @title Train TOP logistic model
+#' @title Fit TOP logistic model using JAGS
 #'
 #' @param data combined training data.
 #' @param model.file TOP logistic model (written in BUGS code).
@@ -159,7 +159,7 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 
   if (requireNamespace("R2jags", quietly = TRUE)) {
     # Use "R2jags" package
-    cat('using R2jags ...\n')
+    cat('Using R2jags ...\n')
     jagsfit <- R2jags::jags(data = training.data,
                             parameters.to.save = model.params,
                             model.file = model.file,
@@ -168,12 +168,12 @@ fit_TOP_logistic_M5_model_jags <- function(data,
                             n.thin = n.thin,
                             n.chains = n.chains,
                             quiet = quiet)
-    fit.samples <- as.mcmc(jagsfit)
+    fit.samples <- coda::as.mcmc(jagsfit)
     cat('Done. \n')
   } else if (requireNamespace("rjags", quietly = TRUE)) {
     # Use "rjags" package
     # Set up the JAGS model and settings
-    cat('using rjags ...\n')
+    # cat('using rjags ...\n')
     cat('Init model... \n')
     jags.obj <- rjags::jags.model(data = training.data, file = model.file, n.chains = n.chains, quiet = quiet)
     # Burn-ins
@@ -195,35 +195,34 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 }
 
 #' Fit TOP model for each partition separately
-#' @param data.partitions Training data of all partitions
+#' @param all_training_data Training data of all partitions.
+#' @param all_training_data_files Training data files of all partitions
+#' Requires either all_training_data or all_training_data_files.
 #' @param model.file TOP logistic model file.
 #' @param logistic.model If TRUE, use logistic version of the model
 #' @param out.dir Output directory for TOP model posterior samples
+#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none)
 #' @param partitions select which partition(s) to run
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' @param n.chains number of Markov chains.
 #' @param n.thin thinning rate, must be a positive integer.
-#' @param transform Transformation of ChIP counts (asinh, log2, sqrt, or none)
-#' @param quiet Logical, whether to suppress stdout.
 #' @import doParallel
 #' @import foreach
 #'
 #' @export
 #'
-fit_TOP_model <- function(all.training.data,
-                          all.training.data.files,
+fit_TOP_model <- function(all_training_data,
+                          all_training_data_files,
                           model.file,
                           logistic.model = FALSE,
                           out.dir = "TOP_samples",
+                          transform = c('asinh', 'log2', 'sqrt', 'none'),
                           partitions=1:10,
                           n.iter=2000,
                           n.burnin=floor(n.iter/2),
                           n.chains=3,
-                          n.thin=max(1, floor((n.iter - n.burnin) / 1000)),
-                          transform = c('asinh', 'log2', 'sqrt', 'none'),
-                          quiet = TRUE,
-                          parallel = TRUE){
+                          n.thin=max(1, floor((n.iter - n.burnin) / 1000))){
 
   transform <- match.arg(transform)
 
@@ -233,35 +232,33 @@ fit_TOP_model <- function(all.training.data,
 
   partitions <- as.integer(partitions)
 
-  if(parallel){
-    doParallel::registerDoParallel(cores=length(partitions))
-    cat("Using", foreach::getDoParWorkers(), "cores in parallel. \n")
-  }
+  doParallel::registerDoParallel(cores=length(partitions))
+  cat("Using", foreach::getDoParWorkers(), "cores in parallel. \n")
 
   # We can submit jobs in parallel for the partitions on separate compute nodes
   # instead of using the foreach loop here.
   TOP_samples_files <- foreach(k=partitions, .combine = "rbind") %dopar% {
     cat('Load assembled training data in partition: ', k, '\n')
 
-    if(length(all.training.data) == 10){
-      data <- all.training.data[[k]]
-    }else if (length(all.training.data.files) == 10) {
-      data <- readRDS(all.training.data.files[k])
+    if(length(all_training_data) == 10){
+      data <- all_training_data[[k]]
+    }else if (length(all_training_data_files) == 10) {
+      data <- readRDS(all_training_data_files[k])
     }else{
-      stop('Check all.training.data or all.training.data.files!')
+      stop('Check all_training_data or all_training_data_files!')
     }
 
-    cat('Training TFs: ', unique(data$tf_name), '\n')
-    cat('Training cell types: ', unique(data$cell_type), '\n')
+    # cat('Training TFs: ', unique(data$tf_name), '\n')
+    # cat('Training cell types: ', unique(data$cell_type), '\n')
 
     if(logistic.model){
       # obtain TOP logistic model posterior samples
-      TOP_samples <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, quiet)
+      TOP_samples <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin)
       out_file <- paste0(out.dir, '/TOP_logistic_M5_partition', k, '.posterior_samples.rds')
       saveRDS(TOP_samples, out_file)
     }else{
       # obtain TOP model posterior samples
-      TOP_samples <- fit_TOP_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, transform, quiet)
+      TOP_samples <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin)
       out_file <- paste0(out.dir, '/TOP_M5_partition', k, '.posterior_samples.rds')
       saveRDS(TOP_samples, out_file)
     }

@@ -3,12 +3,10 @@
 \name{assemble_TOP_training_data}
 \alias{assemble_TOP_training_data}
 \title{Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions}
+then split training data into 10 partitions.}
 \usage{
 assemble_TOP_training_data(
   tf_cell_table_file,
-  training_data_dir = "./",
-  training_data_name = "TOP_training_data",
   logistic.model = FALSE,
   chip_colname = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
@@ -20,10 +18,6 @@ assemble_TOP_training_data(
 \arguments{
 \item{tf_cell_table_file}{a tab delimited file with three columns:
 TF names, cell types, and paths to the training data files.}
-
-\item{training_data_dir}{Directory for saving training data}
-
-\item{training_data_name}{Prefix for training data file names}
 
 \item{logistic.model}{If TRUE, use logistic version of the model}
 
@@ -40,5 +34,5 @@ to run Gibbs sampling in parallel.}
 }
 \description{
 Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions
+then split training data into 10 partitions.
 }

@@ -15,10 +15,6 @@ option_list <- list(
               help="FIMO p-value threshold [default: %default]"),
   make_option("--bin", action="store", default='M5', type='character',
               help="MILLIPEDE binning scheme."),
-  make_option("--transform", action="store", default='asinh', type='character',
-              help="Transformation of ChIP counts. (default: asinh)"),
-  make_option("--max_sites", action="store", default=50000, type='integer',
-              help="Max number of candidate sites"),
   make_option('--outdir', action='store', default=NULL, type='character',
               help='Output directory.'),
   make_option('--outname', action='store', default=NULL, type='character',
@@ -30,8 +26,6 @@ metadata_file          <- opt$metadata
 combined_data_dir      <- opt$combined_data_dir
 thresh_pValue          <- opt$thresh_pValue
 bin_method             <- opt$bin
-transform_chip         <- opt$transform
-max_sites              <- opt$max_sites
 outdir                 <- opt$outdir
 outname                <- opt$outname
 
@@ -41,8 +35,8 @@ metadata_file          <- "/datacommons/harteminklab/kl124/TOP/data/ENCODE/metad
 combined_data_dir      <- "/hpc/home/kl124/work/TOP/processed_data/combined_atac_chip_data/hg38/JASPARver1"
 thresh_pValue          <- "1e-5"
 bin_method             <- "M5"
-outdir                 <- "/hpc/home/kl124/work/TOP/processed_data/assembled_training_data/test"
-outname                <- "ATAC_hg38_training_data"
+outdir                 <- "/hpc/home/kl124/work/TOP/processed_data/assembled_training_data/test/example"
+outname                <- "ATAC_example_training_data"
 
 ##### Begins here #####
 
@@ -50,11 +44,11 @@ metadata <- read.table(metadata_file, header = T, sep = "\t", stringsAsFactors =
 tf_list <- sort(unique(metadata$tf_name))
 celltype_list <- sort(unique(metadata$cell_type))
 
-###################################
-# Test a few TF x cell type combos
-tf_list <- tf_list[1:10]
-celltype_list <- celltype_list[1:3]
-###################################
+# ###################################
+# # Test a few TF x cell type combos
+# tf_list <- c("CTCF", "YY1", "REST")
+# celltype_list <- c("K562", "A549")
+# ###################################
 
 metadata <- metadata[which( (metadata$tf_name %in% tf_list) & (metadata$cell_type %in% celltype_list) ), ]
 metadata$pwm_name <- paste(metadata$tf_name, metadata$pwm_id, thresh_pValue, sep = '_')
@@ -69,13 +63,20 @@ dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 write.table(tf_cell_table, file.path(outdir, 'tf_cell_table.txt'), sep = '\t',
             col.names = TRUE, row.names = FALSE, quote = FALSE)
 
-## Load data, split into partitions, and combine all tf x cell type combos
-assemble_TOP_training_data(tf_cell_table_file = file.path(outdir, 'tf_cell_table.txt'),
-                           training_data_dir = outdir,
-                           training_data_name = 'ATAC_hg38_training_data',
-                           chip_colname = 'chip',
-                           training_chrs = paste0('chr', seq(1,21,2)),
-                           n.partitions = 10)
+# Load data, split into partitions, and combine all tf x cell type combos
+all_training_data <- assemble_TOP_training_data(tf_cell_table_file = file.path(outdir, 'tf_cell_table.txt'),
+                                                training_data_dir = outdir,
+                                                training_data_name = outname,
+                                                chip_colname = 'chip',
+                                                training_chrs = paste0('chr', seq(1,21,2)),
+                                                n.partitions = 10)
+
+saveRDS(all_training_data, file.path(outdir, paste0(outname, '.all.partitions.rds')))
+
+# Save a table listing all TF and cell type combinations.
+tf_cell_combos <- unique(all_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+write.table(tf_cell_combos, file.path(outdir, paste0(outname, '.tf_cell_combos.txt')),
+            sep = '\t', col.names = TRUE, row.names = FALSE, quote = FALSE)
 
 cat("Assemble training data saved at:", outdir, "\n")
 
