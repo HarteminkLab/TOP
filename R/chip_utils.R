@@ -1,5 +1,5 @@
 
-#' Count and normalize ChIP-seq read coverage
+#' @title Count and normalize ChIP-seq read coverage
 #'
 #' @param sites_file File containing the candidate sites.
 #' @param chip_bam_files ChIP-seq bam files.

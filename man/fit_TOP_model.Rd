@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_TOP_models.R
 \name{fit_TOP_model}
 \alias{fit_TOP_model}
-\title{a wrapper function to fit TOP model for the selected partitions in parallel}
+\title{Fit TOP model for the selected partitions in parallel}
 \usage{
 fit_TOP_model(
   all_training_data,
@@ -57,5 +57,5 @@ which will only thin if there are at least 2000 simulations.}
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}
 }
 \description{
-a wrapper function to fit TOP model for the selected partitions in parallel
+Fit TOP model for the selected partitions in parallel
 }

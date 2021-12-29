@@ -2,8 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{scatterplot_predictions}
 \alias{scatterplot_predictions}
-\title{Make a scatter plot of measured and predicted occupancy,
-with Pearson's correlation (R) between measured and predicted occupancy}
+\title{Scatter plot of measured and predicted occupancy}
 \usage{
 scatterplot_predictions(
   x,

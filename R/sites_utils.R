@@ -1,5 +1,5 @@
 
-#' Get candidate sites using FIMO motifs with flanking regions
+#' @title Get candidate sites using FIMO motifs with flanking regions
 #'
 #' @param fimo_file FIMO result .txt file
 #' @param flank Flanking region (bp) around motif matches (default: 100)
@@ -46,7 +46,7 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
 
 }
 
-#' Filter sites in ENCODE blacklist regions
+#' @title Filter sites in ENCODE blacklist regions
 #'
 #' @param sites.df A data frame of candidate binding sites
 #' @param blacklist_file ENCODE blacklist file
@@ -75,8 +75,7 @@ filter_blacklist <- function(sites.df, blacklist_file) {
 
 }
 
-# Filter mapability for candidate sites
-#' Title
+#' @title Filter mapability for candidate sites
 #'
 #' @param sites.df A data frame of candidate binding sites with the first
 #' 6 columns the same as in the BED format

@@ -1,5 +1,5 @@
 
-#' Load TOP posterior samples
+#' @title Load TOP posterior samples
 #'
 #' @param TOP_samples_file file names of the posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
@@ -33,7 +33,7 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 
 }
 
-#' Combine and take the average of TOP posterior samples from all partitions
+#' @title Combine and take the average of TOP posterior samples from all partitions
 #'
 #' @param TOP_samples_files file names of the posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
@@ -61,7 +61,7 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 
 }
 
-#' Extract alpha and beta coefficients from TOP posterior samples
+#' @title Extract alpha and beta coefficients from TOP posterior samples
 #'
 #' @param TOP_samples TOP samples combined from all partitions.
 #' @param tf_cell_combos a table of TF x cell type combinations,

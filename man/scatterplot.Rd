@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{scatterplot}
 \alias{scatterplot}
-\title{Simple scatter plot}
+\title{Simple x-y scatter plot}
 \usage{
 scatterplot(
   x,
@@ -33,5 +33,5 @@ scatterplot(
 \item{color}{The plotting color.}
 }
 \description{
-Simple scatter plot
+Simple x-y scatter plot
 }

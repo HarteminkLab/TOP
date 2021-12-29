@@ -204,7 +204,7 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
 }
 
-#' Select PWM and DNase (or ATAC) bin features from the input data frame
+#' @title Select PWM and DNase (or ATAC) bin features from the input data frame
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param pwm.name name (prefix) of the PMW score column.

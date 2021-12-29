@@ -1,6 +1,8 @@
 
 
-#' Make a scatter plot of measured and predicted occupancy,
+#' @title Scatter plot of measured and predicted occupancy
+#'
+#' @description Make a scatter plot of measured and predicted occupancy,
 #' with Pearson's correlation (R) between measured and predicted occupancy
 #'
 #' @param x x-axis values of points in the plot (measured).
@@ -49,7 +51,7 @@ scatterplot_predictions <- function(x, y,
   return(p)
 }
 
-#' Simple scatter plot
+#' @title Simple x-y scatter plot
 #'
 #' @param x x-axis values of points in the plot.
 #' @param y y-axis values of points in the plot.

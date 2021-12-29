@@ -2,7 +2,7 @@
 % Please edit documentation in R/sites_utils.R
 \name{filter_mapability}
 \alias{filter_mapability}
-\title{Title}
+\title{Filter mapability for candidate sites}
 \usage{
 filter_mapability(
   sites.df,
@@ -22,5 +22,5 @@ filter_mapability(
 \item{bigWigAverageOverBed_path}{path of bigWigAverageOverBed executable}
 }
 \description{
-Title
+Filter mapability for candidate sites
 }

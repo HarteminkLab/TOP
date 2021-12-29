@@ -152,7 +152,7 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 
 }
 
-#' @title a wrapper function to fit TOP model for the selected partitions in parallel
+#' @title Fit TOP model for the selected partitions in parallel
 #'
 #' @param all_training_data a list of the assembled training data of all partitions.
 #' @param all_training_data_files a vector of the assembled training data
