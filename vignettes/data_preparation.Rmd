@@ -18,18 +18,18 @@ Input data
 --------------
 TOP requires a data frame for each TF and cell type of interest. 
 
-The format of the input data frame:
+The format of the input data frame (see example data below):
 
-- Columns of the candidate binding sites: 
-chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif match scanning. 
+  - Columns of the candidate binding sites: 
+  chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif match scanning. 
 
-- Columns of DNase-seq or ATAC-seq bins:
-MILLIPEDE bins around motif matches (default: M5 bins). 
+  - Columns of DNase-seq or ATAC-seq bins: 
+  MILLIPEDE bins around motif matches (default: M5 bins). 
 
-- optional: one column of ChIP-seq measurement, if you want to train the models.
-It could be quantitative TF occupancy 
-(asinh transformed ChIP-seq read counts) or 
-binary TF binding labels (from ChIP-seq peaks).
+  - optional: one column of ChIP-seq measurement, if you want to train the models.
+  It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) or 
+  binary TF binding labels (from ChIP-seq peaks).
+
 
 Example procedure
 -----------------
