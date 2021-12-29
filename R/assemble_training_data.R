@@ -115,6 +115,8 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
 #' @param training_chrs Chromosomes used for training the model (default: odd chromosomes)
 #' @param n.partitions Total number of partitions to split the training data (default: 10).
+#' @param n.cores Number of cores to use in parallel
+#' (default: equal to the number of partitions).
 #' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
 #' @param seed seed used when sampling sites (default: 123).
 #' @import doParallel
@@ -127,6 +129,7 @@ assemble_TOP_training_data <- function(tf_cell_table_file,
                                        chip_colname='chip',
                                        training_chrs=paste0('chr', seq(1,21,2)),
                                        n.partitions=10,
+                                       n.cores=n.partitions,
                                        max.sites=50000,
                                        seed=123){
 
@@ -147,8 +150,8 @@ assemble_TOP_training_data <- function(tf_cell_table_file,
   tf_cell_table$cell_type <- factor(tf_cell_table$cell_type, levels = celltype_list)
   tf_cell_table <- tf_cell_table[with(tf_cell_table, order(tf_name, cell_type)),]
 
-  doParallel::registerDoParallel(cores=n.partitions)
-  cat('Using', foreach::getDoParWorkers(), 'cores in parallel. \n')
+  registerDoParallel(cores=n.cores)
+  cat('Using', getDoParWorkers(), 'cores in parallel. \n')
 
   all_training_data <- foreach(k=1:n.partitions) %dopar% {
     training_data <- assemble_partition_training_data(tf_cell_table,

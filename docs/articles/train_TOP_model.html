@@ -171,12 +171,12 @@
 <li>n.thin: thinning rate, must be a positive integer.</li>
 </ul>
 <p>This step usually takes a long time if we have many TFs and many cell types. To save computation time, we can also run the partitions (choose which partition to run, e.g. <code>partitions=3</code>) in parallel on separate compute nodes.</p>
-<p><strong>Note</strong>: we need to install <code>R2jags</code> and/or <code>rjags</code> packages to fit TOP models in our current version using <code>JAGS</code>.</p>
+<p><strong>Note</strong>: need to install <code>R2jags</code> package to fit TOP models using JAGS.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">R2jags</span><span class="op">)</span>
 
 <span class="va">TOP_samples_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_model.html">fit_TOP_model</a></span><span class="op">(</span><span class="va">all_training_data</span>, 
-                                   model.file <span class="op">=</span> <span class="st">'../model/TOP_M5_model_jags_priorVar1.txt'</span>,
+                                   model.file <span class="op">=</span> <span class="st">'../jags/TOP_M5_model_jags.bug'</span>,
                                    logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
                                    out.dir <span class="op">=</span> <span class="st">'TOP_fit'</span>,
                                    transform <span class="op">=</span> <span class="st">'asinh'</span>, <span class="co"># asinh transform ChIP-seq counts</span>
@@ -184,7 +184,8 @@
                                    n.iter <span class="op">=</span> <span class="fl">10000</span>,
                                    n.burnin <span class="op">=</span> <span class="fl">5000</span>,
                                    n.chains <span class="op">=</span> <span class="fl">3</span>,
-                                   n.thin <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+                                   n.thin <span class="op">=</span> <span class="fl">5</span>,
+                                   quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients">Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients<a class="anchor" aria-label="anchor" href="#combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients"></a>
@@ -192,7 +193,8 @@
 <p>After the training is done, we can combine the posterior samples from the partitions, and obtain the posterior mean of the regression coefficients.</p>
 <p>Combine TOP posterior samples from the 10 partitions.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combine_TOP_samples.html">combine_TOP_samples</a></span><span class="op">(</span><span class="va">TOP_samples_files</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combine_TOP_samples.html">combine_TOP_samples</a></span><span class="op">(</span><span class="va">TOP_samples_files</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">TOP_samples</span><span class="op">)</span></code></pre></div>
 <p>Extract posterior mean coefficients for all three levels.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="va">tf_cell_combos</span><span class="op">)</span></code></pre></div>

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_TOP_models.R
 \name{fit_TOP_model}
 \alias{fit_TOP_model}
-\title{Fit TOP model for the selected partitions (in parallel)}
+\title{a wrapper function to fit TOP model for the selected partitions in parallel}
 \usage{
 fit_TOP_model(
   all_training_data,
@@ -16,6 +16,7 @@ fit_TOP_model(
   n.burnin = floor(n.iter/2),
   n.chains = 3,
   n.thin = max(1, floor((n.iter - n.burnin)/1000)),
+  n.cores = length(partitions),
   quiet = FALSE
 )
 }
@@ -50,8 +51,11 @@ Default is n.iter/2, that is, discarding the first half of the simulations.}
 Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
 which will only thin if there are at least 2000 simulations.}
 
+\item{n.cores}{Number of cores to use in parallel
+(default: equal to the number of partitions).}
+
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}
 }
 \description{
-Fit TOP model for the selected partitions (in parallel)
+a wrapper function to fit TOP model for the selected partitions in parallel
 }

@@ -85,14 +85,13 @@ To save computation time, we can also run the partitions
 (choose which partition to run, e.g. `partitions=3`) 
 in parallel on separate compute nodes. 
 
-**Note**: we need to install `R2jags` and/or `rjags` packages to fit TOP models 
-in our current version using `JAGS`.
+**Note**: need to install `R2jags` package to fit TOP models using JAGS.
 
 ```{r train-TOP-model, eval = FALSE}
 library(R2jags)
 
 TOP_samples_files <- fit_TOP_model(all_training_data, 
-                                   model.file = '../model/TOP_M5_model_jags_priorVar1.txt',
+                                   model.file = '../jags/TOP_M5_model_jags.bug',
                                    logistic.model = FALSE,
                                    out.dir = 'TOP_fit',
                                    transform = 'asinh', # asinh transform ChIP-seq counts
@@ -100,7 +99,8 @@ TOP_samples_files <- fit_TOP_model(all_training_data,
                                    n.iter = 10000,
                                    n.burnin = 5000,
                                    n.chains = 3,
-                                   n.thin = 5)
+                                   n.thin = 5,
+                                   quiet = TRUE)
 ```
 
 Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients
@@ -112,6 +112,7 @@ and obtain the posterior mean of the regression coefficients.
 Combine TOP posterior samples from the 10 partitions.
 ```{r combine-TOP-coef, eval = FALSE}
 TOP_samples <- combine_TOP_samples(TOP_samples_files)
+dim(TOP_samples)
 ```
 
 Extract posterior mean coefficients for all three levels.

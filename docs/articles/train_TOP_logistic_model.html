@@ -168,19 +168,20 @@
 </ul>
 <p>This step usually takes a long time if we have many TFs and many cell types.</p>
 <p>To save computation time, we can run the partitions (choose which partition to run, e.g. <code>partitions=3</code>) in parallel on separate compute nodes (if you have access to compute clusters).</p>
-<p><strong>Note</strong>: we need to install <code>R2jags</code> and/or <code>rjags</code> packages to fit TOP models in our current version using <code>JAGS</code>.</p>
+<p><strong>Note</strong>: need to install <code>R2jags</code> package to fit TOP models using JAGS.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">R2jags</span><span class="op">)</span>
 
 <span class="va">TOP_samples_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_model.html">fit_TOP_model</a></span><span class="op">(</span><span class="va">all_training_data</span>, 
-                                   model.file <span class="op">=</span> <span class="st">'../model/TOP_M5_logit_model_jags_priorVar1.txt'</span>,
+                                   model.file <span class="op">=</span> <span class="st">'../jags/TOP_M5_logit_model_jags.bug'</span>,
                                    logistic.model <span class="op">=</span> <span class="cn">TRUE</span>,
                                    out.dir <span class="op">=</span> <span class="st">'TOP_logistic_fit'</span>,
                                    partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
                                    n.iter <span class="op">=</span> <span class="fl">5000</span>, 
                                    n.burnin <span class="op">=</span> <span class="fl">2500</span>,
                                    n.chains <span class="op">=</span> <span class="fl">3</span>,
-                                   n.thin <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+                                   n.thin <span class="op">=</span> <span class="fl">2</span>,
+                                   quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients">Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients<a class="anchor" aria-label="anchor" href="#combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients"></a>

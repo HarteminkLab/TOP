@@ -111,9 +111,3 @@ data$predicted.prob <- predict_TOP(data,
 head(data, 3)
 ```
 
-<!-- Plot predicted binding probability vs. asinh(predicted occupancy) -->
-<!-- ```{r plot-predicted-prob-occupancy, eval=TRUE, fig.width=5, fig.height=3} -->
-<!-- scatterplot(x=asinh(data$predicted.occupancy), y=data$predicted.prob,  -->
-<!--             xlab='asinh(predicted occupancy)', ylab='P(bound)') -->
-<!-- ``` -->
-

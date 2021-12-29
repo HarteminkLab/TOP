@@ -3,3 +3,4 @@
 .RData
 data/
 inst/snakemake/
+inst/stan/

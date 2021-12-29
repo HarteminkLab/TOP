@@ -79,21 +79,21 @@ To save computation time, we can run the partitions
 (choose which partition to run, e.g. `partitions=3`) 
 in parallel on separate compute nodes (if you have access to compute clusters). 
 
-**Note**: we need to install `R2jags` and/or `rjags` packages to fit TOP models 
-in our current version using `JAGS`.
+**Note**: need to install `R2jags` package to fit TOP models using JAGS.
 
 ```{r train-TOP-logistic-model, eval = FALSE}
 library(R2jags)
 
 TOP_samples_files <- fit_TOP_model(all_training_data, 
-                                   model.file = '../model/TOP_M5_logit_model_jags_priorVar1.txt',
+                                   model.file = '../jags/TOP_M5_logit_model_jags.bug',
                                    logistic.model = TRUE,
                                    out.dir = 'TOP_logistic_fit',
                                    partitions = 1:10,
                                    n.iter = 5000, 
                                    n.burnin = 2500,
                                    n.chains = 3,
-                                   n.thin = 2)
+                                   n.thin = 2,
+                                   quiet = TRUE)
 ```
 
 

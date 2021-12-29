@@ -11,6 +11,7 @@ assemble_TOP_training_data(
   chip_colname = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
   n.partitions = 10,
+  n.cores = n.partitions,
   max.sites = 50000,
   seed = 123
 )
@@ -26,6 +27,9 @@ The first three columns should be TF names, cell types, and the training data fi
 \item{training_chrs}{Chromosomes used for training the model (default: odd chromosomes)}
 
 \item{n.partitions}{Total number of partitions to split the training data (default: 10).}
+
+\item{n.cores}{Number of cores to use in parallel
+(default: equal to the number of partitions).}
 
 \item{max.sites}{Max number of candidate sites in each partition (default: 50000/n.partitions).}
 
