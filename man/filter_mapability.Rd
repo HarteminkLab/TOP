@@ -2,7 +2,7 @@
 % Please edit documentation in R/sites_utils.R
 \name{filter_mapability}
 \alias{filter_mapability}
-\title{Filter mapability for candidate sites}
+\title{Filter candidate sites by mapability}
 \usage{
 filter_mapability(
   sites.df,
@@ -17,10 +17,10 @@ filter_mapability(
 
 \item{mapability_file}{ENCODE mapability bigWig file}
 
-\item{thresh_mapability}{Mpability filter threshold (default: 0.8)}
+\item{thresh_mapability}{Mapability threshold (default: 0.8)}
 
 \item{bigWigAverageOverBed_path}{path of bigWigAverageOverBed executable}
 }
 \description{
-Filter mapability for candidate sites
+Filter candidate sites by mapability
 }

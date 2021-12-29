@@ -46,7 +46,7 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
 
 }
 
-#' @title Filter sites in ENCODE blacklist regions
+#' @title Filter candidate sites in ENCODE blacklist regions
 #'
 #' @param sites.df A data frame of candidate binding sites
 #' @param blacklist_file ENCODE blacklist file
@@ -75,12 +75,12 @@ filter_blacklist <- function(sites.df, blacklist_file) {
 
 }
 
-#' @title Filter mapability for candidate sites
+#' @title Filter candidate sites by mapability
 #'
 #' @param sites.df A data frame of candidate binding sites with the first
 #' 6 columns the same as in the BED format
 #' @param mapability_file ENCODE mapability bigWig file
-#' @param thresh_mapability Mpability filter threshold (default: 0.8)
+#' @param thresh_mapability Mapability threshold (default: 0.8)
 #' @param bigWigAverageOverBed_path path of bigWigAverageOverBed executable
 #' @importFrom data.table fread fwrite
 #'
