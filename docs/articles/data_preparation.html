@@ -95,20 +95,20 @@
     
     
 <div class="section level2">
-<h2 id="top-input-data">TOP input data<a class="anchor" aria-label="anchor" href="#top-input-data"></a>
+<h2 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
 </h2>
-<p>TOP requires a data frame as input data for each TF in each cell type.</p>
+<p>TOP requires a data frame for each TF and cell type of interest.</p>
 <p>The format of the input data frame:</p>
 <ul>
-<li>The first six columns: chr, start, end, site name, strand, motif PWM score.</li>
-<li>The next five columns (if using M5 bins): five MILLIPEDE bins around motif matches.</li>
-<li>optional: one ChIP column as the response variable. It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) or binary TF binding labels (from ChIP-seq peaks).</li>
+<li><p>Columns of the candidate binding sites: chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif match scanning.</p></li>
+<li><p>Columns of DNase-seq or ATAC-seq bins: MILLIPEDE bins around motif matches (default: M5 bins).</p></li>
+<li><p>optional: one column of ChIP-seq measurement, if you want to train the models. It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) or binary TF binding labels (from ChIP-seq peaks).</p></li>
 </ul>
-<p>Here we show an example procedure for preparing input data for TOP to predict CTCF occupancy in K562 cell type.</p>
 </div>
 <div class="section level2">
-<h2 id="major-steps">Major steps<a class="anchor" aria-label="anchor" href="#major-steps"></a>
+<h2 id="example-procedure">Example procedure<a class="anchor" aria-label="anchor" href="#example-procedure"></a>
 </h2>
+<p>Here are example steps of preparing input data for TOP to predict CTCF occupancy in K562 cell type:</p>
 <p><strong>Step 1: Find TF motif matches using FIMO software</strong></p>
 <p>To scan for TF motif matches, we use the <a href="http://meme-suite.org/doc/fimo.html?man_type=web" class="external-link">FIMO</a> software from the MEME suite.</p>
 <p>We use the command line version of FIMO. By default, we used with the threshold <code>p-value &lt; 1e-5</code> and uniform background nucleotide frequency. You can use FIMO’s default threshold <code>p-value &lt; 1e-4</code> (which will result in more motif matches), or use other background nucleotide frequency.</p>
@@ -245,7 +245,7 @@
 <div class="section level2">
 <h2 id="snakemake-pipeline">Snakemake pipeline<a class="anchor" aria-label="anchor" href="#snakemake-pipeline"></a>
 </h2>
-<p>It is recommended to write <a href="https://github.com/kevinlkx/TOP/tree/main/inst/snakemake" class="external-link">Snakemake pipelines</a> to automate the whole process. It is especially helpful if you have many TFs and many cell types.</p>
+<p>It is recommended to write a <a href="https://github.com/kevinlkx/TOP/tree/main/inst/snakemake" class="external-link">Snakemake pipeline</a> to automate the whole process. It is especially helpful if you have many TFs and many cell types.</p>
 <p>For more details and instructions about running Snakemake pipelines, see <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html" class="external-link">Snakemake tutorial</a>.</p>
 </div>
   </div>

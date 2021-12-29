@@ -80,6 +80,7 @@ then split training data into 10 partitions</p>
   chip_colname <span class="op">=</span> <span class="st">"chip"</span>,
   training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
   n.partitions <span class="op">=</span> <span class="fl">10</span>,
+  n.cores <span class="op">=</span> <span class="va">n.partitions</span>,
   max.sites <span class="op">=</span> <span class="fl">50000</span>,
   seed <span class="op">=</span> <span class="fl">123</span>
 <span class="op">)</span></code></pre></div>
@@ -98,6 +99,9 @@ The first three columns should be TF names, cell types, and the training data fi
 <dd><p>Chromosomes used for training the model (default: odd chromosomes)</p></dd>
 <dt>n.partitions</dt>
 <dd><p>Total number of partitions to split the training data (default: 10).</p></dd>
+<dt>n.cores</dt>
+<dd><p>Number of cores to use in parallel
+(default: equal to the number of partitions).</p></dd>
 <dt>max.sites</dt>
 <dd><p>Max number of candidate sites in each partition (default: 50000/n.partitions).</p></dd>
 <dt>seed</dt>
