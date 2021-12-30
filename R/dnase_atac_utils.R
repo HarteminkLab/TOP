@@ -390,6 +390,6 @@ flip_rev_strand_counts <- function(sites.df, fwd_matrix_file, rev_matrix_file) {
   fwrite(fwd_count.df, fwd_matrix_file, sep = ' ')
   fwrite(rev_count.df, rev_matrix_file, sep = ' ')
 
-  return(combined_counts)
+  return(sites_counts.l)
 }
 
