@@ -1,7 +1,7 @@
 
 #' @title Count and normalize ChIP-seq read coverage
 #'
-#' @param sites_file File containing the candidate sites.
+#' @param sites.df data frame containing the candidate sites.
 #' @param chip_bam_files ChIP-seq bam files.
 #' @param chip_idxstats_files ChIP-seq idxstats files.
 #' By default, use the corresponding '.idxstats.txt' files in the same directory
@@ -10,11 +10,12 @@
 #' @param ref.size ChIP-Seq reference library size (Default: 10 million)
 #' @param transform Type of transformation for the ChIP read counts.
 #' Options are 'none' (do not transform), 'asinh', 'log2', and 'sqrt'.
-#' @param bedtools_path Path to bedtools executable
+#' @param bedtools_path Path to bedtools executable (default: bedtools)
+#' @importFrom data.table fread fwrite
 #'
 #' @export
 #'
-count_normalize_chip = function(sites_file,
+count_normalize_chip = function(sites.df,
                                 chip_bam_files,
                                 chip_idxstats_files,
                                 chrom_size_file,
@@ -39,14 +40,16 @@ count_normalize_chip = function(sites_file,
   # Count total ChIP-seq reads (pool replicates together)
   cat('Counting ChIP-seq read coverage ... \n')
   chip_bam_files <- paste(chip_bam_files, collapse = ' ')
-  chip_count_file <- tempfile(pattern = "totalcounts")
+  chip_count_file <- tempfile(pattern = 'totalcounts')
+  sites_file <- tempfile('tmp_sites')
+  fwrite(sites.df[,1:4], sites_file, sep = '\t', col.names = FALSE)
+
   cmd <- paste(bedtools_path, 'coverage -a', sites_file, '-b', chip_bam_files,
                '-counts -sorted -g', chrom_size_file, '>', chip_count_file)
   system(cmd)
 
-  sites_chip.df <- data.table::fread(chip_count_file)
-  sites <- as.data.frame(data.table::fread(sites_file))
-  colnames(sites_chip.df) <- c(colnames(sites), 'chip')
+  sites_chip.df <- as.data.frame(data.table::fread(chip_count_file))
+  colnames(sites_chip.df) <- c(colnames(sites.df[,1:4]), 'chip')
 
   # Normalize (scale) ChIP-seq read counts
   cat('Normalize (scale) ChIP-seq library to', ref.size / 1e6, 'million reads... \n')
@@ -63,7 +66,7 @@ count_normalize_chip = function(sites_file,
     sites_chip.df$chip <- sqrt(sites_chip.df$chip)
   }
 
-  file.remove(chip_count_file)
+  unlink(chip_count_file)
 
   return(sites_chip.df)
 
@@ -104,6 +107,113 @@ normalize_chip <- function(chip_counts,
   }
 
   return(chip_counts)
+
+}
+
+#' @title Add ChIP-seq peak labels to the candidate sites
+#'
+#' @param sites.df data frame containing the candidate sites
+#' @param chip_peak_file ChIP-seq peak file (.bed.gz format)
+#' @param chip_peak_sampleID ENCODE sample ID of ChIP-seq peaks (.bed.gz format)
+#' @param chip_peak_dir Directory of ChIP-seq peaks
+#'
+#' @import GenomicRanges
+#' @importFrom data.table fread
+#'
+#' @export
+#'
+add_chip_peak_labels_to_sites <- function(sites.df,
+                                          chip_peak_file=NULL,
+                                          chip_peak_sampleID=NULL,
+                                          chip_peak_dir='./'){
+
+  if(is.null(chip_peak_file) || !file.exists(chip_peak_file)){
+    if( is.null(chip_peak_sampleID) || is.na(chip_peak_sampleID) || chip_peak_sampleID == '' ){
+      cat('No ChIP peak data. \n')
+      return(sites.df)
+    }else{
+      chip_peak_file <- file.path(chip_peak_dir, paste0(chip_peak_sampleID,'.bed.gz'))
+      if(!file.exists(chip_peak_file)){
+        cat('Download ChIP peak file from ENCODE ... \n')
+        chip_peak_url <- sprintf('https://www.encodeproject.org/files/%s/@@download/%s.bed.gz',
+                                 chip_peak_sampleID, chip_peak_sampleID)
+        system(paste('wget', chip_peak_url, '-P', chip_peak_dir))
+      }
+    }
+  }
+
+  # Add ChIP-seq peak information
+  cat('Add ChIP peak information ... \n')
+  chip_peaks <- as.data.frame(data.table::fread(chip_peak_file))
+  colnames(chip_peaks) <- c('chr', 'start', 'end', 'name', 'score', 'strand', 'signalValue', 'pValue', 'qValue', 'peak')
+  chip_peaks.gr <- makeGRangesFromDataFrame(chip_peaks, keep.extra.columns = TRUE)
+  sites.gr <- makeGRangesFromDataFrame(sites.df, keep.extra.columns = TRUE)
+
+  sites_chip.df <- cbind(sites.df, chip_label = 0)
+  in.peaks <- which(countOverlaps(sites.gr, chip_peaks.gr) > 0)
+  sites_chip.df$chip_label[in.peaks] <- 1
+
+  return(sites_chip.df)
+
+}
+
+#' @title Add ChIP-seq signals to the candidate sites
+#'
+#' @param sites.df data frame containing the candidate sites
+#' @param chip_signal_file ChIP-seq signal file (.bigWig format)
+#' @param chip_signal_sampleID ENCODE sample ID of ChIP-seq signals (.bigWig format)
+#' @param chip_signal_dir Directory of ChIP-seq signals
+#' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable
+#' (default: bigWigAverageOverBed)
+#'
+#' @import GenomicRanges
+#' @importFrom data.table fread fwrite
+#'
+#' @export
+#'
+add_chip_signals_to_sites <- function(sites.df,
+                                      chip_signal_file=NULL,
+                                      chip_signal_sampleID=NULL,
+                                      chip_signal_dir='./',
+                                      bigWigAverageOverBed_path = 'bigWigAverageOverBed'){
+
+  if ( Sys.which(bigWigAverageOverBed_path) == '' ) {
+    stop( 'bigWigAverageOverBed could not be executed, set bigWigAverageOverBed_path!' )
+  }
+
+  if(is.null(chip_signal_file) || !file.exists(chip_signal_file)){
+    if( is.null(chip_signal_sampleID) || is.na(chip_signal_sampleID) || chip_signal_sampleID == '' ){
+      cat('No ChIP signal data. \n')
+      return(sites.df)
+    }else{
+      chip_signal_file <- file.path(chip_signal_dir, paste0(chip_signal_sampleID, '.bigWig'))
+
+      if(!file.exists(chip_signal_file)){
+        cat('Download ChIP signal file from ENCODE ... \n')
+        chip_signal_url <- sprintf('https://www.encodeproject.org/files/%s/@@download/%s.bigWig',
+                                   chip_signal_sampleID, chip_signal_sampleID)
+        system(paste('wget', chip_signal_url, '-P', chip_signal_dir))
+      }
+    }
+  }
+
+  # Add ChIP-seq signal information
+  sites_file <- tempfile('tmp_sites')
+  fwrite(sites.df[,1:4], sites_file, sep = '\t', col.names = FALSE)
+
+  # take the average signal values in each site
+  sites_signals_file <- tempfile('tmp_signals')
+  system( paste(bigWigAverageOverBed_path, chip_signal_file, sites_file, sites_signals_file) )
+
+  sites_signals <- as.data.frame(fread(sites_signals_file))
+  colnames(sites_signals) <- c('name', 'size', 'covered', 'sum', 'mean0', 'mean')
+
+  m <- match(sites.df$name, sites_signals$name)
+  sites_chip.df <- cbind(sites.df, chip_signal=sites_signals$mean[m])
+
+  unlink(c(sites_file, sites_signals_file))
+
+  return(sites_chip.df)
 
 }
 

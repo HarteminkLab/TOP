@@ -5,14 +5,14 @@
 \title{Get count matrices around candidate sites}
 \usage{
 get_sites_counts(
-  sites_file,
+  sites.df,
   genomecount_dir,
   genomecount_name,
   bwtool_path = "bwtool"
 )
 }
 \arguments{
-\item{sites_file}{File for candidate sites}
+\item{sites.df}{data frame containing candidate sites}
 
 \item{genomecount_dir}{Directory for genome counts}
 

@@ -5,7 +5,7 @@
 \title{Count and normalize ChIP-seq read coverage}
 \usage{
 count_normalize_chip(
-  sites_file,
+  sites.df,
   chip_bam_files,
   chip_idxstats_files,
   chrom_size_file,
@@ -15,7 +15,7 @@ count_normalize_chip(
 )
 }
 \arguments{
-\item{sites_file}{File containing the candidate sites.}
+\item{sites.df}{data frame containing the candidate sites.}
 
 \item{chip_bam_files}{ChIP-seq bam files.}
 
@@ -30,7 +30,7 @@ of the bam files.}
 \item{transform}{Type of transformation for the ChIP read counts.
 Options are 'none' (do not transform), 'asinh', 'log2', and 'sqrt'.}
 
-\item{bedtools_path}{Path to bedtools executable}
+\item{bedtools_path}{Path to bedtools executable (default: bedtools)}
 }
 \description{
 Count and normalize ChIP-seq read coverage

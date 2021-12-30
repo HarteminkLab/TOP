@@ -128,13 +128,13 @@
 <p>Save FIMO output in text format (<code>MA0139.1_1e-5.fimo.txt</code>), which will be used in the next step.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find motif matches for CTCF</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">fimo</span> <span class="at">--text</span> <span class="dt">\</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">--skip-matched-sequence</span> <span class="dt">\</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">--verbosity</span> 2 <span class="dt">\</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">--bgfile</span> <span class="at">--uniform--</span> <span class="dt">\</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">--thresh</span> 1e-5 <span class="dt">\</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">--max-stored-scores</span> 1000000 <span class="dt">\</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>     MA0139.1.meme hg38.fa <span class="dt">\</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>     <span class="op">&gt;</span> MA0139.1_1e-5.fimo.txt</span></code></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>--skip-matched-sequence <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>--verbosity 2 <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>--bgfile <span class="at">--uniform--</span> <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>--thresh 1e-5 <span class="dt">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>--max-stored-scores 1000000 <span class="dt">\</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>MA0139.1.meme hg38.fa <span class="dt">\</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> MA0139.1_1e-5.fimo.txt</span></code></pre></div>
 <p><strong>Step 2: Get candidate TF binding sites</strong></p>
 <p>We take motif matches obtained from FIMO (<code>MA0139.1_1e-5.fimo.txt</code>) as candidate binding sites, and add 100 bp flanking regions on both sides of the motifs, then filter candidate sites by FIMO p-value, and filter the candidate sites falling in ENCODE blacklist regions. We save the candidate sites in a text file (<code>MA0139.1_1e-5.candidate_sites.txt</code>)</p>
 <p>Download ENCODE blacklist from <a href="https://www.encodeproject.org/annotations/ENCSR636HFF/" class="external-link">ENCODE portal</a></p>
@@ -145,8 +145,7 @@
 <code class="sourceCode R"><span class="va">sites.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_candidate_sites.html">process_candidate_sites</a></span><span class="op">(</span>fimo_file<span class="op">=</span><span class="st">'MA0139.1_1e-5.fimo.txt'</span>, 
                                     flank<span class="op">=</span><span class="fl">100</span>, 
                                     thresh_pValue<span class="op">=</span><span class="fl">1e-5</span>, 
-                                    blacklist_file<span class="op">=</span><span class="st">'blacklist.hg38.bed.gz'</span>,
-                                    out_file <span class="op">=</span> <span class="st">'processed_data/MA0139.1_1e-5.candidate_sites.txt'</span><span class="op">)</span></code></pre></div>
+                                    blacklist_file<span class="op">=</span><span class="st">'blacklist.hg38.bed.gz'</span><span class="op">)</span></code></pre></div>
 <p><strong>Step 3: Count DNase- or ATAC-seq genome-wide cleavage</strong></p>
 <p>We use ATAC-seq reads in K562 cell line from ENCODE (ID: <code>ENCSR868FGK</code>) for example.</p>
 <p>There are three replicates in this study. In practice, we merge replicate samples. Here we only use one of the replicates (<code>ENCFF534DCE.bam</code>) as an example to demo the process, and rename the file as <code>K562.ATAC.bam</code>.</p>
@@ -167,14 +166,14 @@
                   chrom_size_file <span class="op">=</span> <span class="st">'hg38.chrom.sizes'</span>, 
                   outdir <span class="op">=</span> <span class="st">"processed_data/"</span><span class="op">)</span></code></pre></div>
 <p><strong>Step 4: Get DNase- or ATAC-seq count matrices for each motif, then normalize, bin and transform the counts</strong></p>
-<p>Get count matrices around candidate sites. We need <code>bwtool</code> for this step.</p>
+<p>Get count matrices around candidate sites. We need <a href="https://pubmed.ncbi.nlm.nih.gov/24489365/" class="external-link">bwtool</a> for this step.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># sites_file: Candidate sites filename.</span>
 <span class="co"># genomecount_dir: Genome counts directory.</span>
 <span class="co"># genomecount_name: Genome counts prefix.</span>
-<span class="va">count_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_sites_counts.html">get_sites_counts</a></span><span class="op">(</span>sites_file<span class="op">=</span><span class="st">'processed_data/MA0139.1_1e-5.candidate_sites.txt'</span>, 
-                                 genomecount_dir<span class="op">=</span><span class="st">'./processed_data/'</span>,
-                                 genomecount_name<span class="op">=</span><span class="st">'K562.ATAC'</span><span class="op">)</span></code></pre></div>
+<span class="va">sites_counts.mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_sites_counts.html">get_sites_counts</a></span><span class="op">(</span><span class="va">sites.df</span>, 
+                                     genomecount_dir<span class="op">=</span><span class="st">'./processed_data/'</span>,
+                                     genomecount_name<span class="op">=</span><span class="st">'K562.ATAC'</span><span class="op">)</span></code></pre></div>
 <p>Normalize, bin and transform counts.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># count_matrix: ATAC (or DNase) count matrix</span>
@@ -183,7 +182,7 @@
 <span class="co"># (default: 50 million for ATAC-seq, 100 million for DNase-seq)</span>
 <span class="co"># bin.method: MILLIPEDE binning scheme (default: 'M5').</span>
 <span class="co"># transform: asinh transform of the counts.</span>
-<span class="va">bins.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize_bin_transform_counts.html">normalize_bin_transform_counts</a></span><span class="op">(</span><span class="va">count_matrix</span>, 
+<span class="va">bins.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize_bin_transform_counts.html">normalize_bin_transform_counts</a></span><span class="op">(</span><span class="va">sites_counts.mat</span>, 
                                           idxstats_file<span class="op">=</span><span class="st">'K562.ATAC.bam.idxstats.txt'</span>, 
                                           ref.size<span class="op">=</span><span class="fl">5e7</span>,
                                           bin.method<span class="op">=</span><span class="st">'M5'</span>,
@@ -220,7 +219,7 @@
 <p>Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates), and normalize (scale) to the same reference library size (10 million).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># ref.size: ChIP-Seq reference library size (default: 10 million)</span>
-<span class="va">sites_chip.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/count_normalize_chip.html">count_normalize_chip</a></span><span class="op">(</span>sites_file <span class="op">=</span> <span class="st">'processed_data/MA0139.1_1e-5.candidate_sites.txt'</span>, 
+<span class="va">sites_chip.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/count_normalize_chip.html">count_normalize_chip</a></span><span class="op">(</span><span class="va">sites.df</span>,
                                       chip_bam_files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'CTCF.K562.ChIPseq.rep1.bam'</span>, <span class="st">'CTCF.K562.ChIPseq.rep2.bam'</span><span class="op">)</span>,
                                       chrom_size_file <span class="op">=</span> <span class="st">'hg38.chrom.sizes'</span>, 
                                       ref.size <span class="op">=</span> <span class="fl">1e7</span><span class="op">)</span></code></pre></div>
@@ -241,6 +240,22 @@
 <span class="co">#&gt; 2    0    0    0</span>
 <span class="co">#&gt; 3    0    0    0</span></code></pre></div>
 <p>Replace ChIP-seq counts with binary ChIP labels (from ChIP-seq peaks) if you want to train TOP logistic version to predict TF binding probability.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sites_chip_labels.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_chip_peak_labels_to_sites.html">add_chip_peak_labels_to_sites</a></span><span class="op">(</span><span class="va">sites.df</span>, 
+                                                      chip_peak_sampleID <span class="op">=</span> <span class="st">'ENCFF660GHM'</span>,
+                                                      chip_peak_dir <span class="op">=</span> <span class="st">'./processed_data/'</span><span class="op">)</span>
+<span class="va">combined_data.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">sites.df</span>, <span class="va">bins.df</span>, <span class="va">sites_chip_labels.df</span><span class="op">$</span><span class="va">chip_label</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combined_data.df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'chr'</span>,<span class="st">'start'</span>,<span class="st">'end'</span>,<span class="st">'name'</span>,<span class="st">'pwm.score'</span>,<span class="st">'strand'</span>,<span class="st">'p.value'</span>, 
+                                <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'bin'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bins.df</span><span class="op">)</span><span class="op">)</span>, <span class="st">'chip_label'</span><span class="op">)</span></code></pre></div>
+<p>You can also replace ChIP-seq counts with signal values (fold-over control at each position from ENCODE).</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sites_chip_signals.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_chip_signals_to_sites.html">add_chip_signals_to_sites</a></span><span class="op">(</span><span class="va">sites.df</span>, 
+                                                   chip_signal_sampleID <span class="op">=</span> <span class="st">'ENCFF682MFJ'</span>,
+                                                   chip_signal_dir <span class="op">=</span> <span class="st">'./processed_data/'</span><span class="op">)</span>
+
+<span class="va">combined_data.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">sites.df</span>, <span class="va">bins.df</span>, <span class="va">sites_chip_signals.df</span><span class="op">$</span><span class="va">chip_signal</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">combined_data.df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'chr'</span>,<span class="st">'start'</span>,<span class="st">'end'</span>,<span class="st">'name'</span>,<span class="st">'pwm.score'</span>,<span class="st">'strand'</span>,<span class="st">'p.value'</span>, 
+                                <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'bin'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bins.df</span><span class="op">)</span><span class="op">)</span>, <span class="st">'chip_signal'</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="snakemake-pipeline">Snakemake pipeline<a class="anchor" aria-label="anchor" href="#snakemake-pipeline"></a>

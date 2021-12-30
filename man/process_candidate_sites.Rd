@@ -2,7 +2,7 @@
 % Please edit documentation in R/sites_utils.R
 \name{process_candidate_sites}
 \alias{process_candidate_sites}
-\title{Full process to get candidate sites from FIMO result}
+\title{Obtain and filter candidate sites from FIMO result}
 \usage{
 process_candidate_sites(
   fimo_file,
@@ -12,12 +12,11 @@ process_candidate_sites(
   blacklist_file,
   mapability_file,
   thresh_mapability = 0.8,
-  out_file,
   bigWigAverageOverBed_path = "bigWigAverageOverBed"
 )
 }
 \arguments{
-\item{fimo_file}{File of FIMO result.}
+\item{fimo_file}{FIMO result .txt file}
 
 \item{flank}{Flanking region (bp) around motif matches (default: 100)}
 
@@ -32,11 +31,9 @@ process_candidate_sites(
 \item{thresh_mapability}{Mapability threshold (default: 0.8,
 candidate sites need to be mapable at least 80\% positions).}
 
-\item{out_file}{File of processed candidate sites.}
-
-\item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable.
-This is only needed for computing mapability.}
+\item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable,
+only needed when filtering mapability.}
 }
 \description{
-Full process to get candidate sites from FIMO result
+Obtain and filter candidate sites from FIMO result
 }

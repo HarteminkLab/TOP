@@ -82,19 +82,19 @@ millipede_binning <- function(counts, combine_strands=c('vertical', 'motif')) {
 
   colnames(M12) <- c('L5', 'L4', 'L3', 'L2', 'L1', 'motif_L', 'motif_R', 'R1', 'R2', 'R3', 'R4', 'R5')
 
-  left2_sum <- rowSums(M12[,c(1,2)])
-  left1_sum <- rowSums(M12[,c(3,4,5)])
-  motif_sum <- rowSums(M12[,c(6,7)])
-  right1_sum <- rowSums(M12[,c(8,9,10)])
-  right2_sum <- rowSums(M12[,c(11,12)])
+  left2_bin <- rowSums(M12[,c(1,2)])
+  left1_bin <- rowSums(M12[,c(3,4,5)])
+  motif_bin <- rowSums(M12[,c(6,7)])
+  right1_bin <- rowSums(M12[,c(8,9,10)])
+  right2_bin <- rowSums(M12[,c(11,12)])
 
-  M5 <- data.frame(left2_sum, left1_sum, motif_sum, right1_sum, right2_sum)
+  M5 <- data.frame(left2_bin, left1_bin, motif_bin, right1_bin, right2_bin)
 
-  M3 <- data.frame(left1_sum, motif_sum, right1_sum)
+  M3 <- data.frame(left1_bin, motif_bin, right1_bin)
 
-  M2 <- data.frame(left1_sum, right1_sum)
+  M2 <- data.frame(left1_bin, right1_bin)
 
-  M1 <- data.frame(left1_right1_sum = left1_sum + right1_sum)
+  M1 <- data.frame(left1_right1_bin = left1_bin + right1_bin)
 
   res <- list(M24 = M24,
               M12 = M12,
@@ -302,21 +302,21 @@ count_genome_cuts <- function(bam_file,
     cat('Converting to Bigwig format ...\n')
     system(paste(bedGraphToBigWig_path, temp_file, chrom_size_file, out_file))
 
-    file.remove(temp_file)
+    unlink(temp_file)
   }
 
 }
 
 #' @title Get count matrices around candidate sites
 #'
-#' @param sites_file File for candidate sites
+#' @param sites.df data frame containing candidate sites
 #' @param genomecount_dir Directory for genome counts
 #' @param genomecount_name File prefix for genome counts
 #' @param bwtool_path Path to bwtool executable.
-#' @importFrom data.table fread
+#' @importFrom data.table fread fwrite
 #' @export
 #'
-get_sites_counts <- function(sites_file,
+get_sites_counts <- function(sites.df,
                              genomecount_dir,
                              genomecount_name,
                              bwtool_path='bwtool') {
@@ -331,71 +331,69 @@ get_sites_counts <- function(sites_file,
   fwd_matrix_file <- tempfile(pattern = "fwd.matrix")
   rev_matrix_file <- tempfile(pattern = "rev.matrix")
 
-  # dir.create(dirname(fwd_matrix_file), showWarnings = F, recursive = T)
+  sites_file <- tempfile('tmp_sites')
+  fwrite(sites.df[,1:4], sites_file, sep = '\t', col.names = FALSE)
+
   cat('Extract counts around candidate sites ... \n')
-  cmd <- paste('cut -f 1-4', sites_file, '|', bwtool_path, 'extract bed stdin',
+  cmd <- paste(bwtool_path, 'extract bed', sites_file,
                genome_fwd_count_file, fwd_matrix_file, '-fill=0 -decimals=0 -tabs')
   system(cmd)
 
-  cmd <- paste('cut -f 1-4', sites_file, '|', bwtool_path, 'extract bed stdin',
+  cmd <- paste(bwtool_path, 'extract bed', sites_file,
                genome_rev_count_file, rev_matrix_file, '-fill=0 -decimals=0 -tabs')
   system(cmd)
 
   # Flip the counts generated from bwtool for motifs on the reverse strand
-  rev_count_bwtool(sites_file, fwd_matrix_file, rev_matrix_file)
+  combined_counts <- flip_rev_strand_counts(sites.df, fwd_matrix_file, rev_matrix_file)
 
   # Combine counts on both strands
-  sites.df <- fread(sites_file)
-  fwd_counts <- fread(fwd_matrix_file)
-  rev_counts <- fread(rev_matrix_file)
+  sites_counts <- as.matrix(cbind(combined_counts$fwd, combined_counts$rev))
+  rownames(sites_counts) <- sites.df$name
 
-  combined_counts <- as.matrix(cbind(fwd_counts[,-c(1:4)], rev_counts[,-c(1:4)]))
-  rownames(combined_counts) <- sites.df$name
-
-  file.remove(fwd_matrix_file, rev_matrix_file)
-
-  return(combined_counts)
+  return(sites_counts)
 }
 
 #' @title Flip the counts generated from bwtool for motifs on the reverse (minus) strand
 #'
-#' @param sites_file File for candidate sites
+#' @param sites.df data frame containing candidate sites
 #' @param fwd_matrix_file File for count matrix in forward strand
 #' @param rev_matrix_file File for count matrix in reverse strand
+#' @param write Logical; if TRUE, write count matrices to fwd_matrix_file and rev_matrix_file
 #' @importFrom  data.table fread fwrite
 #'
-rev_count_bwtool <- function(sites_file, fwd_matrix_file, rev_matrix_file) {
+flip_rev_strand_counts <- function(sites.df, fwd_matrix_file, rev_matrix_file, write = FALSE) {
 
-  fwd_count.df <- fread(fwd_matrix_file)
-  rev_count.df <- fread(rev_matrix_file)
-  sites.df <- fread(sites_file)
+  fwd_count.df <- as.data.frame(fread(fwd_matrix_file))
+  rev_count.df <- as.data.frame(fread(rev_matrix_file))
 
   if(sum(sites.df[,2] != fwd_count.df[,2]) != 0) {
     stop('Sites do not match!')
-  } else {
-    # Extract the count values
-    fwd_count.m <- as.matrix(fwd_count.df[, -c(1:5)])
-    colnames(fwd_count.m) <- paste0('F', c(1:ncol(fwd_count.m)))
-    rev_count.m <- as.matrix(rev_count.df[, -c(1:5)])
-    colnames(rev_count.m) <- paste0('R', c(1:ncol(rev_count.m)))
+  }
 
-    fwd_output <- fwd_count.m
-    rev_output <- rev_count.m
+  # Extract the count values
+  fwd_count.m <- as.matrix(fwd_count.df[, -c(1:5)])
+  colnames(fwd_count.m) <- paste0('F', c(1:ncol(fwd_count.m)))
+  rev_count.m <- as.matrix(rev_count.df[, -c(1:5)])
+  colnames(rev_count.m) <- paste0('R', c(1:ncol(rev_count.m)))
 
-    # For motifs match to the minus strand, flip the fwd and rev counts, and reverse the counts
-    idx_minusStrand <- which(sites.df[,6] == '-')
+  # For motifs match to the minus strand, flip the fwd and rev counts, and reverse the counts
+  combined_counts <- list(fwd = fwd_count.m, rev = rev_count.m)
 
-    fwd_output[idx_minusStrand, ] <- t(apply(rev_count.m[idx_minusStrand, ], 1, rev))
-    rev_output[idx_minusStrand, ] <- t(apply(fwd_count.m[idx_minusStrand, ], 1, rev))
+  minusStrand <- (sites.df$strand == '-')
 
-    # Add the sites info to the first few columns
-    fwd_count.df <- cbind(sites.df[,c(1:3,6)], fwd_output)
-    rev_count.df <- cbind(sites.df[,c(1:3,6)], rev_output)
+  combined_counts$fwd[minusStrand, ] <- t(apply(rev_count.m[minusStrand, ], 1, rev))
+  combined_counts$rev[minusStrand, ] <- t(apply(fwd_count.m[minusStrand, ], 1, rev))
+
+  if(write){
+    fwd_count.df <- cbind(sites.df[,c(1:3,6)], combined_counts$fwd)
+    rev_count.df <- cbind(sites.df[,c(1:3,6)], combined_counts$rev)
 
     fwrite(fwd_count.df, fwd_matrix_file, sep = ' ')
     fwrite(rev_count.df, rev_matrix_file, sep = ' ')
-
+  }else{
+    unlink(c(fwd_matrix_file, rev_matrix_file))
   }
 
+  return(combined_counts)
 }
 

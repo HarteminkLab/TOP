@@ -20,15 +20,15 @@ TOP requires a data frame for each TF and cell type of interest.
 
 The format of the input data frame (see example data below):
 
-  - Columns of the candidate binding sites: 
-  chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif match scanning. 
+- Columns of the candidate binding sites: 
+chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif match scanning. 
 
-  - Columns of DNase-seq or ATAC-seq bins: 
-  MILLIPEDE bins around motif matches (default: M5 bins). 
+- Columns of DNase-seq or ATAC-seq bins: 
+MILLIPEDE bins around motif matches (default: M5 bins). 
 
-  - optional: one column of ChIP-seq measurement, if you want to train the models.
-  It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) or 
-  binary TF binding labels (from ChIP-seq peaks).
+- optional: one column of ChIP-seq measurement, if you want to train the models.
+It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) or 
+binary TF binding labels (from ChIP-seq peaks).
 
 
 Example procedure
@@ -50,8 +50,8 @@ You can use FIMO's default threshold `p-value < 1e-4`
 
 FIMO command line: `fimo [options] <motif file> <sequence file>`.
 
-  - motif file: The name of a file containing MEME formatted motifs. 
-  - sequence file: The name of a file containing a collection of sequences in FASTA format.
+- motif file: The name of a file containing MEME formatted motifs. 
+- sequence file: The name of a file containing a collection of sequences in FASTA format.
 
 Download the CTCF motif file `MA0139.1.meme` (in MEME format)
 from [JASPAR](https://jaspar.genereg.net/matrix/MA0139.1/). 
@@ -75,13 +75,13 @@ which will be used in the next step.
 ```{bash get-motif-matches, eval = FALSE}
 # Find motif matches for CTCF
 fimo --text \
-     --skip-matched-sequence \
-     --verbosity 2 \
-     --bgfile --uniform-- \
-     --thresh 1e-5 \
-     --max-stored-scores 1000000 \
-     MA0139.1.meme hg38.fa \
-     > MA0139.1_1e-5.fimo.txt
+--skip-matched-sequence \
+--verbosity 2 \
+--bgfile --uniform-- \
+--thresh 1e-5 \
+--max-stored-scores 1000000 \
+MA0139.1.meme hg38.fa \
+> MA0139.1_1e-5.fimo.txt
 ```
 
 **Step 2: Get candidate TF binding sites**
@@ -103,8 +103,7 @@ library(TOP)
 sites.df <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt', 
                                     flank=100, 
                                     thresh_pValue=1e-5, 
-                                    blacklist_file='blacklist.hg38.bed.gz',
-                                    out_file = 'processed_data/MA0139.1_1e-5.candidate_sites.txt')
+                                    blacklist_file='blacklist.hg38.bed.gz')
 ```
 
 **Step 3: Count DNase- or ATAC-seq genome-wide cleavage**
@@ -147,15 +146,14 @@ count_genome_cuts(bam_file = 'K562.ATAC.bam',
 **Step 4: Get DNase- or ATAC-seq count matrices for each motif, then normalize, bin and transform the counts**
 
 Get count matrices around candidate sites.
-We need `bwtool` for this step.
+We need [bwtool](https://pubmed.ncbi.nlm.nih.gov/24489365/) for this step.
 ```{r get-motif-counts, eval = FALSE}
 # sites_file: Candidate sites filename.
 # genomecount_dir: Genome counts directory.
 # genomecount_name: Genome counts prefix.
-count_matrix <- get_sites_counts(sites_file='processed_data/MA0139.1_1e-5.candidate_sites.txt', 
-                                 genomecount_dir='./processed_data/',
-                                 genomecount_name='K562.ATAC')
-
+sites_counts.mat <- get_sites_counts(sites.df, 
+                                     genomecount_dir='./processed_data/',
+                                     genomecount_name='K562.ATAC')
 ```
 
 Normalize, bin and transform counts.
@@ -166,7 +164,7 @@ Normalize, bin and transform counts.
 # (default: 50 million for ATAC-seq, 100 million for DNase-seq)
 # bin.method: MILLIPEDE binning scheme (default: 'M5').
 # transform: asinh transform of the counts.
-bins.df <- normalize_bin_transform_counts(count_matrix, 
+bins.df <- normalize_bin_transform_counts(sites_counts.mat, 
                                           idxstats_file='K562.ATAC.bam.idxstats.txt', 
                                           ref.size=5e7,
                                           bin.method='M5',
@@ -210,7 +208,7 @@ Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
 and normalize (scale) to the same reference library size (10 million).
 ```{r count-normalize-chip, eval=FALSE}
 # ref.size: ChIP-Seq reference library size (default: 10 million)
-sites_chip.df <- count_normalize_chip(sites_file = 'processed_data/MA0139.1_1e-5.candidate_sites.txt', 
+sites_chip.df <- count_normalize_chip(sites.df,
                                       chip_bam_files = c('CTCF.K562.ChIPseq.rep1.bam', 'CTCF.K562.ChIPseq.rep2.bam'),
                                       chrom_size_file = 'hg38.chrom.sizes', 
                                       ref.size = 1e7)
@@ -230,6 +228,27 @@ head(combined_data.df, 3)
 
 Replace ChIP-seq counts with binary ChIP labels (from ChIP-seq peaks) 
 if you want to train TOP logistic version to predict TF binding probability.
+```{r add-chip-peak-labels, eval=FALSE}
+sites_chip_labels.df <- add_chip_peak_labels_to_sites(sites.df, 
+                                                      chip_peak_sampleID = 'ENCFF660GHM',
+                                                      chip_peak_dir = './processed_data/')
+combined_data.df <- data.frame(sites.df, bins.df, sites_chip_labels.df$chip_label)
+colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', 
+                                paste0('bin', 1:ncol(bins.df)), 'chip_label')
+```
+
+You can also replace ChIP-seq counts with signal values 
+(fold-over control at each position from ENCODE).
+```{r add-chip-signals, eval=FALSE}
+sites_chip_signals.df <- add_chip_signals_to_sites(sites.df, 
+                                                   chip_signal_sampleID = 'ENCFF682MFJ',
+                                                   chip_signal_dir = './processed_data/')
+
+combined_data.df <- data.frame(sites.df, bins.df, sites_chip_signals.df$chip_signal)
+colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', 
+                                paste0('bin', 1:ncol(bins.df)), 'chip_signal')
+```
+
 
 Snakemake pipeline
 -------------------

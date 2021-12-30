@@ -122,9 +122,9 @@ filter_mapability <- function(sites.df,
 
 
 
-#' @title Full process to get candidate sites from FIMO result
+#' @title Obtain and filter candidate sites from FIMO result
 #'
-#' @param fimo_file File of FIMO result.
+#' @param fimo_file FIMO result .txt file
 #' @param flank Flanking region (bp) around motif matches (default: 100)
 #' @param thresh_pValue FIMO p-value threshold (default: 1e-5)
 #' @param thresh_pwmscore FIMO PWM score threshold (default: 0)
@@ -132,10 +132,8 @@ filter_mapability <- function(sites.df,
 #' @param mapability_file Filename of the mapability reference file in bigWig format.
 #' @param thresh_mapability Mapability threshold (default: 0.8,
 #' candidate sites need to be mapable at least 80% positions).
-#' @param out_file File of processed candidate sites.
-#' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable.
-#' This is only needed for computing mapability.
-#' @importFrom data.table fread fwrite
+#' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable,
+#' only needed when filtering mapability.
 #'
 #' @export
 #'
@@ -146,7 +144,6 @@ process_candidate_sites <- function(fimo_file,
                                     blacklist_file,
                                     mapability_file,
                                     thresh_mapability=0.8,
-                                    out_file,
                                     bigWigAverageOverBed_path='bigWigAverageOverBed') {
 
   # Get candidate sites from FIMO motif matches and add flanking regions
@@ -169,16 +166,6 @@ process_candidate_sites <- function(fimo_file,
   if(!missing(mapability_file)) {
     sites.df <- filter_mapability(sites.df, mapability_file,
                                   thresh_mapability, bigWigAverageOverBed_path)
-  }
-
-  if(!missing(out_file)){
-    if(!dir.exists(dirname(out_file))){
-      dir.create(dirname(out_file), showWarnings = F, recursive = T)
-    }
-    tmp.df <- sites.df
-    colnames(tmp.df)[1] <- paste0('#', colnames(tmp.df)[1])
-    fwrite(tmp.df, out_file, sep = '\t')
-    cat('Save candidate sites at', out_file, '\n')
   }
 
   return(sites.df)

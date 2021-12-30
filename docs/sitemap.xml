@@ -34,6 +34,12 @@
     <loc>https://kevinlkx.github.io/TOP/index.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/add_chip_peak_labels_to_sites.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/add_chip_signals_to_sites.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/assemble_TOP_logistic_training_data.html</loc>
   </url>
   <url>
@@ -110,6 +116,9 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/flank_fimo_sites.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/flip_rev_strand_counts.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/get_dnase_sites_counts.html</loc>

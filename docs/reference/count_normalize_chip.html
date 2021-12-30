@@ -70,7 +70,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">count_normalize_chip</span><span class="op">(</span>
-  <span class="va">sites_file</span>,
+  <span class="va">sites.df</span>,
   <span class="va">chip_bam_files</span>,
   <span class="va">chip_idxstats_files</span>,
   <span class="va">chrom_size_file</span>,
@@ -82,8 +82,8 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>sites_file</dt>
-<dd><p>File containing the candidate sites.</p></dd>
+    <dl><dt>sites.df</dt>
+<dd><p>data frame containing the candidate sites.</p></dd>
 <dt>chip_bam_files</dt>
 <dd><p>ChIP-seq bam files.</p></dd>
 <dt>chip_idxstats_files</dt>
@@ -98,7 +98,7 @@ of the bam files.</p></dd>
 <dd><p>Type of transformation for the ChIP read counts.
 Options are 'none' (do not transform), 'asinh', 'log2', and 'sqrt'.</p></dd>
 <dt>bedtools_path</dt>
-<dd><p>Path to bedtools executable</p></dd>
+<dd><p>Path to bedtools executable (default: bedtools)</p></dd>
 </dl></div>
 
   </div>
