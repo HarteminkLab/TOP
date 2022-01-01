@@ -2,7 +2,7 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{normalize_bin_transform_counts}
 \alias{normalize_bin_transform_counts}
-\title{Normalize, binning and transform counts}
+\title{Normalize, bin and transform counts}
 \usage{
 normalize_bin_transform_counts(
   count_matrix,

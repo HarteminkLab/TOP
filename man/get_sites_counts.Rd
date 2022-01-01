@@ -8,6 +8,7 @@ get_sites_counts(
   sites.df,
   genomecount_dir,
   genomecount_name,
+  tmpdir = genomecount_dir,
   bwtool_path = "bwtool"
 )
 }

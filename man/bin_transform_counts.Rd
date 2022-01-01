@@ -2,7 +2,7 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{bin_transform_counts}
 \alias{bin_transform_counts}
-\title{Binning and transform count matrix}
+\title{Bin and transform count matrix}
 \usage{
 bin_transform_counts(
   counts,

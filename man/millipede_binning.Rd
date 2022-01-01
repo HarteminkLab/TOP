@@ -2,7 +2,7 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{millipede_binning}
 \alias{millipede_binning}
-\title{MILLIPEDE binning}
+\title{Perform MILLIPEDE binning on counts}
 \usage{
 millipede_binning(counts, combine_strands = c("vertical", "motif"))
 }
@@ -14,5 +14,5 @@ columns are DNase or ATAC counts with 100bp flanks around motifs in forward and 
 'vertical' (default) or 'motif'.}
 }
 \description{
-MILLIPEDE binning
+Perform MILLIPEDE binning on counts
 }

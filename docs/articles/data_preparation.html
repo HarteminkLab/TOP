@@ -148,7 +148,7 @@
                                     blacklist_file<span class="op">=</span><span class="st">'blacklist.hg38.bed.gz'</span><span class="op">)</span></code></pre></div>
 <p><strong>Step 3: Count DNase- or ATAC-seq genome-wide cleavage</strong></p>
 <p>We use ATAC-seq reads in K562 cell line from ENCODE (ID: <code>ENCSR868FGK</code>) for example.</p>
-<p>There are three replicates in this study. In practice, we merge replicate samples. Here we only use one of the replicates (<code>ENCFF534DCE.bam</code>) as an example to demo the process, and rename the file as <code>K562.ATAC.bam</code>.</p>
+<p>There are three replicate samples in this study. Here we only use one replicate sample (<code>ENCFF534DCE.bam</code>) as an example, and rename the file as <code>K562.ATAC.bam</code>.</p>
 <p>We first sort and index the BAM file using <code>samtools</code>, and then print the stats of the reads, which will be used later when normalizing read counts by library sizes.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rename the bam file</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ENCFF534DCE.bam K562.ATAC.bam</span>
