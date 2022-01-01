@@ -142,8 +142,8 @@ add_chip_peak_labels_to_sites <- function(sites.df,
     }
   }
 
-  # Add ChIP-seq peak information
-  cat('Add ChIP peak information ... \n')
+  # Get ChIP peak labels for candidate sites
+  cat('Get ChIP peak labels for candidate sites... \n')
   chip_peaks <- as.data.frame(data.table::fread(chip_peak_file))
   colnames(chip_peaks) <- c('chr', 'start', 'end', 'name', 'score', 'strand', 'signalValue', 'pValue', 'qValue', 'peak')
   chip_peaks.gr <- makeGRangesFromDataFrame(chip_peaks, keep.extra.columns = TRUE)
