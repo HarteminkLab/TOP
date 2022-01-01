@@ -110,9 +110,9 @@ sites.df <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt',
 
 We use ATAC-seq reads in K562 cell line from ENCODE (ID: `ENCSR868FGK`) for example. 
 
-There are three replicates in this study. In practice, we merge replicate samples.
-Here we only use one of the replicates (`ENCFF534DCE.bam`) as an example 
-to demo the process, and rename the file as `K562.ATAC.bam`.
+There are three replicate samples in this study.
+Here we only use one replicate sample (`ENCFF534DCE.bam`) as an example, 
+and rename the file as `K562.ATAC.bam`.
 
 We first sort and index the BAM file using `samtools`,
 and then print the stats of the reads, which will be used later 

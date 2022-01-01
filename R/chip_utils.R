@@ -29,7 +29,7 @@ count_normalize_chip = function(sites.df,
     stop( 'bedtools could not be executed, set bedtools_path!' )
   }
 
-  if ( length(chip_bam_files) == 0 ) {
+  if ( length(chip_bam_files) == 0 || chip_bam_files == '' || is.na(chip_bam_files)) {
     stop('No ChIP-seq files! \n')
   }
 
@@ -42,14 +42,14 @@ count_normalize_chip = function(sites.df,
   chip_bam_files <- paste(chip_bam_files, collapse = ' ')
   chip_count_file <- tempfile(pattern = 'totalcounts')
   sites_file <- tempfile('tmp_sites')
-  fwrite(sites.df[,1:4], sites_file, sep = '\t', col.names = FALSE)
+  fwrite(sites.df, sites_file, sep = '\t', col.names = FALSE)
 
   cmd <- paste(bedtools_path, 'coverage -a', sites_file, '-b', chip_bam_files,
                '-counts -sorted -g', chrom_size_file, '>', chip_count_file)
   system(cmd)
 
   sites_chip.df <- as.data.frame(data.table::fread(chip_count_file))
-  colnames(sites_chip.df) <- c(colnames(sites.df[,1:4]), 'chip')
+  colnames(sites_chip.df) <- c(colnames(sites.df), 'chip')
 
   # Normalize (scale) ChIP-seq read counts
   cat('Normalize (scale) ChIP-seq library to', ref.size / 1e6, 'million reads... \n')
