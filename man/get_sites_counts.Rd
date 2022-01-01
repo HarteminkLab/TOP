@@ -19,6 +19,8 @@ get_sites_counts(
 
 \item{genomecount_name}{File prefix for genome counts}
 
+\item{tmpdir}{temporary directory to save intermediate files, default: genomecount_dir}
+
 \item{bwtool_path}{Path to bwtool executable.}
 }
 \description{

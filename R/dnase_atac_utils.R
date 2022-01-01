@@ -354,6 +354,7 @@ count_genome_cuts <- function(bam_file,
 #' @param sites.df data frame containing candidate sites
 #' @param genomecount_dir Directory for genome counts
 #' @param genomecount_name File prefix for genome counts
+#' @param tmpdir temporary directory to save intermediate files, default: genomecount_dir
 #' @param bwtool_path Path to bwtool executable.
 #' @importFrom data.table fread fwrite
 #' @export
