@@ -371,10 +371,10 @@ get_sites_counts <- function(sites.df,
   genome_fwd_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.fwd.genomecounts.bw'))
   genome_rev_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.rev.genomecounts.bw'))
 
-  fwd_matrix_file <- tempfile(pattern = paste0(genomecount_name, '.sites.'), tmpdir = tmpdir, fileext = '.fwd.matrix')
-  rev_matrix_file <- tempfile(pattern = paste0(genomecount_name, '.sites.'), tmpdir = tmpdir, fileext = '.rev.matrix')
+  fwd_matrix_file <- tempfile(pattern = paste0('sitescounts.'), tmpdir = tmpdir, fileext = '.fwd.matrix')
+  rev_matrix_file <- tempfile(pattern = paste0('sitescounts.'), tmpdir = tmpdir, fileext = '.rev.matrix')
 
-  sites_file <- tempfile(pattern = 'sites.', tmpdir = tmpdir, fileext = ".bed")
+  sites_file <- tempfile(pattern = 'sites.', tmpdir = tmpdir, fileext = ".txt")
   fwrite(sites.df[,1:4], sites_file, sep = '\t', col.names = FALSE)
 
   cat('Extract counts around candidate sites ... \n')
