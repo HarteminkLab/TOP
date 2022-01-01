@@ -393,7 +393,7 @@ get_sites_counts <- function(sites.df,
   sites_counts.mat <- as.matrix(cbind(sites_counts.l$fwd, sites_counts.l$rev))
   rownames(sites_counts.mat) <- sites.df$name
 
-  unlink(c(fwd_matrix_file, rev_matrix_file))
+  unlink(c(sites_file, fwd_matrix_file, rev_matrix_file))
   return(sites_counts.mat)
 }
 
