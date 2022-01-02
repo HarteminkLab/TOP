@@ -25,7 +25,7 @@ get_total_reads <- function(idxstats_file, select.chr = TRUE, chrs = paste0('chr
 #' @title Sort and index the BAM file, and retrieve stats (idxstats)
 #'
 #' @param bam_file Input BAM file.
-#' @param outdir Output directory.
+#' @param outdir Output directory (default: save to the directory of the BAM file).
 #' @param sort Logical. If TRUE, sort (and index) the BAM file.
 #' @param stats Logical. If TRUE, retrieve stats (idxstats) in the index file.
 #' @param samtools_path Path to samtools executable.
@@ -43,7 +43,9 @@ bam_sort_index_stats <- function(bam_file,
 
   if( missing(outdir) ) {
     outdir <- dirname(bam_file)
-  } else {
+  }
+
+  if(!dir.exists(outdir)){
     dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
   }
 

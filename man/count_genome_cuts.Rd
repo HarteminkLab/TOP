@@ -19,9 +19,9 @@ count_genome_cuts(
 
 \item{chrom_size_file}{File of genome sizes by chromosomes.}
 
-\item{outdir}{Output directory.}
+\item{outdir}{Output directory (default: use the directory of bam_file).}
 
-\item{outname}{Output prefix.}
+\item{outname}{Output prefix (default: use the prefix of bam_file).}
 
 \item{bedtools_path}{Path to bedtools executable.}
 

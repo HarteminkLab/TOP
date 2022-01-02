@@ -1,4 +1,54 @@
 
+#' @title Obtain and filter candidate sites from FIMO result
+#'
+#' @param fimo_file FIMO result .txt file
+#' @param flank Flanking region (bp) around motif matches (default: 100)
+#' @param thresh_pValue FIMO p-value threshold (default: 1e-5)
+#' @param thresh_pwmscore FIMO PWM score threshold (default: 0)
+#' @param blacklist_file Filename of the blacklist regions (default: NULL)
+#' @param mapability_file Filename of the mapability reference file
+# in bigWig format (default: NULL)
+#' @param thresh_mapability Mapability threshold (default: 0.8,
+#' candidate sites need to be mapable at least 80% positions).
+#' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable
+#' (only needed when filtering mapability).
+#'
+#' @export
+#'
+process_candidate_sites <- function(fimo_file,
+                                    flank=100,
+                                    thresh_pValue=1e-5,
+                                    thresh_pwmscore=0,
+                                    blacklist_file=NULL,
+                                    mapability_file=NULL,
+                                    thresh_mapability=0.8,
+                                    bigWigAverageOverBed_path='bigWigAverageOverBed') {
+
+  # Get candidate sites from FIMO motif matches and add flanking regions
+  sites.df <- flank_fimo_sites(fimo_file, flank)
+
+  # Filter candidate sites by FIMO p-value
+  sites.df <- sites.df[which(as.numeric(sites.df$p.value) < as.numeric(thresh_pValue)), ]
+  cat('Select candidate sites with FIMO p-value <', thresh_pValue, '\n')
+
+  # Filter candidate sites by FIMO PWM score
+  sites.df <- sites.df[which(as.numeric(sites.df$pwm.score) > as.numeric(thresh_pwmscore)), ]
+  cat('Select candidate sites with PWM score >', thresh_pwmscore, '\n')
+
+  # Filter candidate sites in ENCODE blacklist
+  if(!is.null(blacklist_file)) {
+    sites.df <- filter_blacklist(sites.df, blacklist_file)
+  }
+
+  # Filter candidate sites by mapability
+  if(!is.null(mapability_file)) {
+    sites.df <- filter_mapability(sites.df, mapability_file,
+                                  thresh_mapability, bigWigAverageOverBed_path)
+  }
+
+  return(sites.df)
+}
+
 #' @title Get candidate sites using FIMO motifs with flanking regions
 #'
 #' @param fimo_file FIMO result .txt file
@@ -121,52 +171,3 @@ filter_mapability <- function(sites.df,
 }
 
 
-
-#' @title Obtain and filter candidate sites from FIMO result
-#'
-#' @param fimo_file FIMO result .txt file
-#' @param flank Flanking region (bp) around motif matches (default: 100)
-#' @param thresh_pValue FIMO p-value threshold (default: 1e-5)
-#' @param thresh_pwmscore FIMO PWM score threshold (default: 0)
-#' @param blacklist_file Filename of the blacklist regions
-#' @param mapability_file Filename of the mapability reference file in bigWig format.
-#' @param thresh_mapability Mapability threshold (default: 0.8,
-#' candidate sites need to be mapable at least 80% positions).
-#' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable,
-#' only needed when filtering mapability.
-#'
-#' @export
-#'
-process_candidate_sites <- function(fimo_file,
-                                    flank=100,
-                                    thresh_pValue=1e-5,
-                                    thresh_pwmscore=0,
-                                    blacklist_file,
-                                    mapability_file,
-                                    thresh_mapability=0.8,
-                                    bigWigAverageOverBed_path='bigWigAverageOverBed') {
-
-  # Get candidate sites from FIMO motif matches and add flanking regions
-  sites.df <- flank_fimo_sites(fimo_file, flank)
-
-  # Filter candidate sites by FIMO p-value
-  sites.df <- sites.df[which(as.numeric(sites.df$p.value) < as.numeric(thresh_pValue)), ]
-  cat('Select candidate sites with FIMO p-value <', thresh_pValue, '\n')
-
-  # Filter candidate sites by FIMO PWM score
-  sites.df <- sites.df[which(as.numeric(sites.df$pwm.score) > as.numeric(thresh_pwmscore)), ]
-  cat('Select candidate sites with PWM score >', thresh_pwmscore, '\n')
-
-  # Filter candidate sites in ENCODE blacklist
-  if(!missing(blacklist_file)) {
-    sites.df <- filter_blacklist(sites.df, blacklist_file)
-  }
-
-  # Filter candidate sites by mapability
-  if(!missing(mapability_file)) {
-    sites.df <- filter_mapability(sites.df, mapability_file,
-                                  thresh_mapability, bigWigAverageOverBed_path)
-  }
-
-  return(sites.df)
-}

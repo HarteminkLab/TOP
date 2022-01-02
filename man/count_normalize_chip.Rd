@@ -20,8 +20,8 @@ count_normalize_chip(
 \item{chip_bam_files}{ChIP-seq bam files.}
 
 \item{chip_idxstats_files}{ChIP-seq idxstats files.
-By default, use the corresponding '.idxstats.txt' files in the same directory
-of the bam files.}
+(Default: use the corresponding '.idxstats.txt' files in the same directory
+of the bam files).}
 
 \item{chrom_size_file}{Chromosome size file.}
 

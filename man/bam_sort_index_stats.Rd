@@ -15,7 +15,7 @@ bam_sort_index_stats(
 \arguments{
 \item{bam_file}{Input BAM file.}
 
-\item{outdir}{Output directory.}
+\item{outdir}{Output directory (default: save to the directory of the BAM file).}
 
 \item{sort}{Logical. If TRUE, sort (and index) the BAM file.}
 

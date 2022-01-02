@@ -4,8 +4,8 @@
 #' @param sites.df data frame containing the candidate sites.
 #' @param chip_bam_files ChIP-seq bam files.
 #' @param chip_idxstats_files ChIP-seq idxstats files.
-#' By default, use the corresponding '.idxstats.txt' files in the same directory
-#' of the bam files.
+#' (Default: use the corresponding '.idxstats.txt' files in the same directory
+#' of the bam files).
 #' @param chrom_size_file Chromosome size file.
 #' @param ref.size ChIP-Seq reference library size (Default: 10 million)
 #' @param transform Type of transformation for the ChIP read counts.

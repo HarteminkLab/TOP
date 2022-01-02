@@ -281,8 +281,8 @@ merge_normalize_bin_transform_counts <- function(counts_files,
 #'
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param outdir Output directory.
-#' @param outname Output prefix.
+#' @param outdir Output directory (default: use the directory of bam_file).
+#' @param outname Output prefix (default: use the prefix of bam_file).
 #' @param bedtools_path Path to bedtools executable.
 #' @param bedGraphToBigWig_path Path to UCSC bedGraphToBigWig executable.
 #' @param bedSort_path Path to UCSC bedSort executable.

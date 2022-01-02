@@ -74,8 +74,8 @@
   flank <span class="op">=</span> <span class="fl">100</span>,
   thresh_pValue <span class="op">=</span> <span class="fl">1e-05</span>,
   thresh_pwmscore <span class="op">=</span> <span class="fl">0</span>,
-  <span class="va">blacklist_file</span>,
-  <span class="va">mapability_file</span>,
+  blacklist_file <span class="op">=</span> <span class="cn">NULL</span>,
+  mapability_file <span class="op">=</span> <span class="cn">NULL</span>,
   thresh_mapability <span class="op">=</span> <span class="fl">0.8</span>,
   bigWigAverageOverBed_path <span class="op">=</span> <span class="st">"bigWigAverageOverBed"</span>
 <span class="op">)</span></code></pre></div>
@@ -92,9 +92,9 @@
 <dt>thresh_pwmscore</dt>
 <dd><p>FIMO PWM score threshold (default: 0)</p></dd>
 <dt>blacklist_file</dt>
-<dd><p>Filename of the blacklist regions</p></dd>
+<dd><p>Filename of the blacklist regions (default: NULL)</p></dd>
 <dt>mapability_file</dt>
-<dd><p>Filename of the mapability reference file in bigWig format.</p></dd>
+<dd><p>Filename of the mapability reference file</p></dd>
 <dt>thresh_mapability</dt>
 <dd><p>Mapability threshold (default: 0.8,
 candidate sites need to be mapable at least 80% positions).</p></dd>

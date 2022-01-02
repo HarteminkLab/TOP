@@ -9,8 +9,8 @@ process_candidate_sites(
   flank = 100,
   thresh_pValue = 1e-05,
   thresh_pwmscore = 0,
-  blacklist_file,
-  mapability_file,
+  blacklist_file = NULL,
+  mapability_file = NULL,
   thresh_mapability = 0.8,
   bigWigAverageOverBed_path = "bigWigAverageOverBed"
 )
@@ -24,15 +24,15 @@ process_candidate_sites(
 
 \item{thresh_pwmscore}{FIMO PWM score threshold (default: 0)}
 
-\item{blacklist_file}{Filename of the blacklist regions}
+\item{blacklist_file}{Filename of the blacklist regions (default: NULL)}
 
-\item{mapability_file}{Filename of the mapability reference file in bigWig format.}
+\item{mapability_file}{Filename of the mapability reference file}
 
 \item{thresh_mapability}{Mapability threshold (default: 0.8,
 candidate sites need to be mapable at least 80\% positions).}
 
-\item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable,
-only needed when filtering mapability.}
+\item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable
+(only needed when filtering mapability).}
 }
 \description{
 Obtain and filter candidate sites from FIMO result
