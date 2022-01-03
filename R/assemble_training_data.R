@@ -120,6 +120,7 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
 #' @param seed seed used when sampling sites (default: 123).
 #' @import doParallel
+#' @import foreach
 #' @importFrom parallel detectCores
 #'
 #' @export

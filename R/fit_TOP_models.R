@@ -1,4 +1,101 @@
 
+#' @title Fit TOP model for the selected partitions in parallel
+#'
+#' @param all_training_data a list of the assembled training data of all partitions.
+#' @param all_training_data_files a vector of the assembled training data
+#' files of all partitions. If all_training_data is missing,
+#' it will load the training data from all_training_data_files.
+#' @param model.file file containing the TOP model written in BUGS code.
+#' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
+#' @param out.dir Output directory for TOP model posterior samples.
+#' @param transform Type of transformation for ChIP counts.
+#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
+#' Only needed when logistic.model is FALSE.
+#' @param partitions a vector selecting which partition(s) to run.
+#' (default: all 10 partitions (1:10))
+#' @param n.iter number of total iterations per chain (including burn in).
+#' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
+#' Default is n.iter/2, that is, discarding the first half of the simulations.
+#' @param n.chains number of Markov chains (default: 3).
+#' @param n.thin thinning rate, must be a positive integer.
+#' Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+#' which will only thin if there are at least 2000 simulations.
+#' @param n.cores Number of cores to use in parallel
+#' (default: equal to the number of partitions).
+#' @param quiet Logical, whether to suppress stdout in jags.model().
+#'
+#' @import doParallel
+#' @import foreach
+#' @importFrom parallel detectCores
+#'
+#' @export
+#'
+fit_TOP_model <- function(all_training_data,
+                          all_training_data_files,
+                          model.file,
+                          logistic.model = FALSE,
+                          out.dir = "TOP_samples",
+                          transform = c('asinh', 'log2', 'sqrt', 'none'),
+                          partitions=1:10,
+                          n.iter=2000,
+                          n.burnin=floor(n.iter/2),
+                          n.chains=3,
+                          n.thin=max(1, floor((n.iter - n.burnin) / 1000)),
+                          n.cores = length(partitions),
+                          quiet = FALSE){
+
+  if(!dir.exists(out.dir)){
+    dir.create(out.dir, showWarnings = FALSE, recursive = TRUE)
+  }
+
+
+  cat('Fitting TOP models for partition:', partitions,'...\n')
+
+  n.partitions <- length(partitions)
+  if(missing(n.cores)){
+    n.available.cores <- parallel::detectCores(logical = FALSE) - 1
+    n.cores <- min(n.available.cores, n.partitions)
+  }else{
+    n.cores <- min(n.cores, n.partitions)
+  }
+
+  registerDoParallel(cores=n.cores)
+  cat('Using', getDoParWorkers(), 'cores. \n')
+
+  # We can also submit jobs for each of the partitions
+  # on separate nodes on compute clusters.
+  TOP_samples_files <- foreach(k=partitions, .combine = "rbind") %dopar% {
+
+    if(length(all_training_data) == 10){
+      data <- all_training_data[[k]]
+    }else if (length(all_training_data_files) == 10) {
+      data <- readRDS(all_training_data_files[k])
+    }else{
+      stop('Check all_training_data or all_training_data_files!')
+    }
+
+    if(logistic.model){
+      # obtain TOP logistic model posterior samples
+      jagsfit <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, quiet)
+      fit_samples <- coda::as.mcmc(jagsfit)
+      saveRDS(jagsfit, file.path(out.dir, paste0('TOP_logistic_M5_partition', k, '.jagsfit.rds')))
+      samples_file <- file.path(out.dir, paste0('TOP_logistic_M5_partition', k, '.posterior_samples.rds'))
+      saveRDS(fit_samples, samples_file)
+    }else{
+      # obtain TOP model posterior samples
+      jagsfit <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin, quiet)
+      fit_samples <- coda::as.mcmc(jagsfit)
+      saveRDS(jagsfit, file.path(out.dir, paste0('TOP_M5_partition', k, '.jagsfit.rds')))
+      samples_file <- file.path(out.dir, paste0('TOP_M5_partition', k, '.posterior_samples.rds'))
+      saveRDS(fit_samples, samples_file)
+    }
+    samples_file
+  }
+
+  cat("Files of TOP posterior samples: \n")
+  print(TOP_samples_files)
+}
+
 #' @title Fit TOP quantitative occupancy model with M5 bins using JAGS
 #'
 #' @param data a data frame containing the combined training data.
@@ -150,100 +247,4 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 
   return(jagsfit)
 
-}
-
-#' @title Fit TOP model for the selected partitions in parallel
-#'
-#' @param all_training_data a list of the assembled training data of all partitions.
-#' @param all_training_data_files a vector of the assembled training data
-#' files of all partitions. If all_training_data is missing,
-#' it will load the training data from all_training_data_files.
-#' @param model.file file containing the TOP model written in BUGS code.
-#' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
-#' @param out.dir Output directory for TOP model posterior samples.
-#' @param transform Type of transformation for ChIP counts.
-#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-#' Only needed when logistic.model is FALSE.
-#' @param partitions a vector selecting which partition(s) to run.
-#' (default: all 10 partitions (1:10))
-#' @param n.iter number of total iterations per chain (including burn in).
-#' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
-#' Default is n.iter/2, that is, discarding the first half of the simulations.
-#' @param n.chains number of Markov chains (default: 3).
-#' @param n.thin thinning rate, must be a positive integer.
-#' Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
-#' which will only thin if there are at least 2000 simulations.
-#' @param n.cores Number of cores to use in parallel
-#' (default: equal to the number of partitions).
-#' @param quiet Logical, whether to suppress stdout in jags.model().
-#'
-#' @import doParallel
-#' @importFrom parallel detectCores
-#'
-#' @export
-#'
-fit_TOP_model <- function(all_training_data,
-                          all_training_data_files,
-                          model.file,
-                          logistic.model = FALSE,
-                          out.dir = "TOP_samples",
-                          transform = c('asinh', 'log2', 'sqrt', 'none'),
-                          partitions=1:10,
-                          n.iter=2000,
-                          n.burnin=floor(n.iter/2),
-                          n.chains=3,
-                          n.thin=max(1, floor((n.iter - n.burnin) / 1000)),
-                          n.cores = length(partitions),
-                          quiet = FALSE){
-
-  if(!dir.exists(out.dir)){
-    dir.create(out.dir, showWarnings = FALSE, recursive = TRUE)
-  }
-
-
-  cat('Fitting TOP models for partition:', partitions,'...\n')
-
-  n.partitions <- length(partitions)
-  if(missing(n.cores)){
-    n.available.cores <- parallel::detectCores(logical = FALSE) - 1
-    n.cores <- min(n.available.cores, n.partitions)
-  }else{
-    n.cores <- min(n.cores, n.partitions)
-  }
-
-  registerDoParallel(cores=n.cores)
-  cat('Using', getDoParWorkers(), 'cores. \n')
-
-  # We can also submit jobs for each of the partitions
-  # on separate nodes on compute clusters.
-  TOP_samples_files <- foreach(k=partitions, .combine = "rbind") %dopar% {
-
-    if(length(all_training_data) == 10){
-      data <- all_training_data[[k]]
-    }else if (length(all_training_data_files) == 10) {
-      data <- readRDS(all_training_data_files[k])
-    }else{
-      stop('Check all_training_data or all_training_data_files!')
-    }
-
-    if(logistic.model){
-      # obtain TOP logistic model posterior samples
-      jagsfit <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, quiet)
-      fit_samples <- coda::as.mcmc(jagsfit)
-      saveRDS(jagsfit, file.path(out.dir, paste0('TOP_logistic_M5_partition', k, '.jagsfit.rds')))
-      samples_file <- file.path(out.dir, paste0('TOP_logistic_M5_partition', k, '.posterior_samples.rds'))
-      saveRDS(fit_samples, samples_file)
-    }else{
-      # obtain TOP model posterior samples
-      jagsfit <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin, quiet)
-      fit_samples <- coda::as.mcmc(jagsfit)
-      saveRDS(jagsfit, file.path(out.dir, paste0('TOP_M5_partition', k, '.jagsfit.rds')))
-      samples_file <- file.path(out.dir, paste0('TOP_M5_partition', k, '.posterior_samples.rds'))
-      saveRDS(fit_samples, samples_file)
-    }
-    samples_file
-  }
-
-  cat("Files of TOP posterior samples: \n")
-  print(TOP_samples_files)
 }
