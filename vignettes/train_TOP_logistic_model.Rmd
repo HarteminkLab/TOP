@@ -33,9 +33,8 @@ and binary ChIP labels (from ChIP-seq peaks).
 
 You can follow this [page](data_preparation.html) to prepare training data.
 
-Create a tab delimited table (e.g. `tf_cell_table.txt`) 
-listing all the TFs and cell types. 
-The table should have three columns:
+Create a data frame listing all the TFs and cell types. 
+The data frame should have three columns:
 TF names, cell types, and paths to the training data files, like:
 
 |   tf_name    |   cell_type   |        data_file         |
@@ -50,11 +49,11 @@ TF names, cell types, and paths to the training data files, like:
 
 **Step 2: Assemble training data for all TF-cell type combinations**
 
-Assemble training datasets for all training TF-cell type 
+Assemble training data for all training TF-cell type 
 combinations, then split training data into 10 partitions.
 
 ```{r assemble-TOP-logistic-training-data, eval = FALSE}
-all_training_data <- assemble_TOP_training_data(tf_cell_table_file = 'tf_cell_table.txt',
+all_training_data <- assemble_TOP_training_data(tf_cell_table,
                                                 logistic.model = TRUE,
                                                 chip_colname = 'chip_label',
                                                 training_chrs = paste0('chr', seq(1,21,2)), 

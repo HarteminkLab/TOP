@@ -6,7 +6,7 @@ articles:
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_logistic_model: train_TOP_logistic_model.html
   train_TOP_model: train_TOP_model.html
-last_built: 2022-01-03T18:55Z
+last_built: 2022-01-03T18:59Z
 urls:
   reference: https://kevinlkx.github.io/TOP/reference
   article: https://kevinlkx.github.io/TOP/articles
