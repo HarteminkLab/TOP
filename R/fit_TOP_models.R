@@ -178,7 +178,7 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 #' @param quiet Logical, whether to suppress stdout in jags.model().
 #'
 #' @import doParallel
-#' @import foreach
+#' @importFrom parallel detectCores
 #'
 #' @export
 #'
@@ -200,7 +200,16 @@ fit_TOP_model <- function(all_training_data,
     dir.create(out.dir, showWarnings = FALSE, recursive = TRUE)
   }
 
+
   cat('Fitting TOP models for partition:', partitions,'...\n')
+
+  n.partitions <- length(partitions)
+  if(missing(n.cores)){
+    n.available.cores <- parallel::detectCores(logical = FALSE) - 1
+    n.cores <- min(n.available.cores, n.partitions)
+  }else{
+    n.cores <- min(n.cores, n.partitions)
+  }
 
   registerDoParallel(cores=n.cores)
   cat('Using', getDoParWorkers(), 'cores. \n')

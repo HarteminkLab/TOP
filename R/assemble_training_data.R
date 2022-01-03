@@ -120,7 +120,7 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
 #' @param seed seed used when sampling sites (default: 123).
 #' @import doParallel
-#' @import foreach
+#' @importFrom parallel detectCores
 #'
 #' @export
 #'
@@ -150,8 +150,15 @@ assemble_TOP_training_data <- function(tf_cell_table,
   tf_cell_table$cell_type <- factor(tf_cell_table$cell_type, levels = celltype_list)
   tf_cell_table <- tf_cell_table[with(tf_cell_table, order(tf_name, cell_type)),]
 
+  # Assemble training data for each partition
+  if(missing(n.cores)){
+    n.available.cores <- parallel::detectCores(logical = FALSE) - 1
+    n.cores <- min(n.available.cores, n.partitions)
+  }else{
+    n.cores <- min(n.cores, n.partitions)
+  }
+
   registerDoParallel(cores=n.cores)
-  cat('Using', getDoParWorkers(), 'cores in parallel. \n')
 
   all_training_data <- foreach(k=1:n.partitions) %dopar% {
     training_data <- assemble_partition_training_data(tf_cell_table,
