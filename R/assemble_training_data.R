@@ -1,6 +1,6 @@
 #' @title Assemble TOP training data for all TF x cell type combos in one partition
 #'
-#' @param tf_cell_table a data frame with at least three columns:
+#' @param tf_cell_table a data frame with the first three columns as:
 #' TF name, cell type, and file name containing the corresponding training data.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
 #' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
@@ -109,8 +109,8 @@ assemble_partition_training_data <- function(tf_cell_table,
 #' @title Assemble TOP training data for all TF x cell type combos,
 #' then split training data into 10 partitions
 #'
-#' @param tf_cell_table_file a tab delimited file with at least three columns:
-#' The first three columns should be TF names, cell types, and the training data files.
+#' @param tf_cell_table a data frame with the first three columns as:
+#' TF name, cell type, and file name containing the corresponding training data.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
 #' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
 #' @param training_chrs Chromosomes used for training the model (default: odd chromosomes)
@@ -124,7 +124,7 @@ assemble_partition_training_data <- function(tf_cell_table,
 #'
 #' @export
 #'
-assemble_TOP_training_data <- function(tf_cell_table_file,
+assemble_TOP_training_data <- function(tf_cell_table,
                                        logistic.model=FALSE,
                                        chip_colname='chip',
                                        training_chrs=paste0('chr', seq(1,21,2)),
@@ -133,10 +133,10 @@ assemble_TOP_training_data <- function(tf_cell_table_file,
                                        max.sites=50000,
                                        seed=123){
 
-  tf_cell_table <- as.data.frame(data.table::fread(tf_cell_table_file))
+  tf_cell_table <- as.data.frame(tf_cell_table)
 
   if(ncol(tf_cell_table) < 3){
-    stop('The table should have at least three columns separated by tab! ')
+    stop('tf_cell_table should have at least three columns! ')
   }
   colnames(tf_cell_table)[1:3] <- c('tf_name', 'cell_type', 'data_file')
 

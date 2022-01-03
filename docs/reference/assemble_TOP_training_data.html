@@ -75,7 +75,7 @@ then split training data into 10 partitions</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">assemble_TOP_training_data</span><span class="op">(</span>
-  <span class="va">tf_cell_table_file</span>,
+  <span class="va">tf_cell_table</span>,
   logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
   chip_colname <span class="op">=</span> <span class="st">"chip"</span>,
   training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
@@ -88,9 +88,9 @@ then split training data into 10 partitions</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>tf_cell_table_file</dt>
-<dd><p>a tab delimited file with at least three columns:
-The first three columns should be TF names, cell types, and the training data files.</p></dd>
+    <dl><dt>tf_cell_table</dt>
+<dd><p>a data frame with the first three columns as:
+TF name, cell type, and file name containing the corresponding training data.</p></dd>
 <dt>logistic.model</dt>
 <dd><p>Logical; if TRUE, use the logistic version of TOP model.</p></dd>
 <dt>chip_colname</dt>

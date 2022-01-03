@@ -16,7 +16,7 @@ assemble_partition_training_data(
 )
 }
 \arguments{
-\item{tf_cell_table}{a data frame with at least three columns:
+\item{tf_cell_table}{a data frame with the first three columns as:
 TF name, cell type, and file name containing the corresponding training data.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}

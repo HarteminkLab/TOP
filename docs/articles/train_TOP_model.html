@@ -106,7 +106,7 @@
 <p><strong>Step 1: Prepare training data for each TF in each cell type</strong></p>
 <p>For each TF in each cell type, prepare training data for candidate binding sites: including: PWM scores, DNase (or ATAC) bins, and measured TF occupancy (from ChIP-seq data).</p>
 <p>You can follow this <a href="data_preparation.html">page</a> to prepare training data.</p>
-<p>Create a tab delimited table (e.g. <code>tf_cell_table.txt</code>) listing all the TFs and cell types. The table should have three columns: TF names, cell types, and paths to the training data files, like:</p>
+<p>Create a data frame listing all the TFs and cell types. The data frame should have three columns: TF names, cell types, and paths to the training data files, like:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="center">tf_name</th>
@@ -147,10 +147,10 @@
 </tbody>
 </table>
 <p><strong>Step 2: Assemble training data for all TF-cell type combinations</strong></p>
-<p>Assemble training datasets for all training TF-cell type combinations, then split training data into 10 partitions.</p>
+<p>Assemble training data for all training TF-cell type combinations, then split training data into 10 partitions.</p>
 <p>Select the odd chromosomes as training set.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">all_training_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assemble_TOP_training_data.html">assemble_TOP_training_data</a></span><span class="op">(</span>tf_cell_table_file <span class="op">=</span> <span class="st">'tf_cell_table.txt'</span>,
+<code class="sourceCode R"><span class="va">all_training_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assemble_TOP_training_data.html">assemble_TOP_training_data</a></span><span class="op">(</span><span class="va">tf_cell_table</span>,
                                                 logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
                                                 chip_colname <span class="op">=</span> <span class="st">'chip'</span>,
                                                 training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 

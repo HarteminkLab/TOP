@@ -6,7 +6,7 @@
 then split training data into 10 partitions}
 \usage{
 assemble_TOP_training_data(
-  tf_cell_table_file,
+  tf_cell_table,
   logistic.model = FALSE,
   chip_colname = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
@@ -17,8 +17,8 @@ assemble_TOP_training_data(
 )
 }
 \arguments{
-\item{tf_cell_table_file}{a tab delimited file with at least three columns:
-The first three columns should be TF names, cell types, and the training data files.}
+\item{tf_cell_table}{a data frame with the first three columns as:
+TF name, cell type, and file name containing the corresponding training data.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
 
