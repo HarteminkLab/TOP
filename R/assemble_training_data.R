@@ -40,7 +40,7 @@ assemble_partition_training_data <- function(tf_cell_table,
 
     if(!file.exists(data_file)){
       if(part == 1){
-        cat('Warning:', tf_name, 'in', cell_type, 'data file is not available!\n')
+        message(paste('Warning:', tf_name, 'in', cell_type, 'data file is not available!\n'))
         cat('Check data file:', data_file, '\n')
       }
       next
@@ -54,7 +54,7 @@ assemble_partition_training_data <- function(tf_cell_table,
 
 
     if(!chip_colname %in% colnames(data)){
-      cat('Warning:', tf_name, 'in', cell_type, 'data file does not have', chip_colname, 'column!\n')
+      message(paste('Warning:', tf_name, 'in', cell_type, 'data file does not have', chip_colname, 'column!\n'))
       next
     }
 
