@@ -73,9 +73,11 @@ using TOP model trained from ChIP-seq read counts or binary labels.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">predict_TOP</span><span class="op">(</span>
   <span class="va">data</span>,
+  <span class="va">tf_name</span>,
+  <span class="va">cell_type</span>,
   <span class="va">TOP_coef</span>,
+  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"bottom"</span>, <span class="st">"middle"</span>, <span class="st">"top"</span><span class="op">)</span>,
   logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
-  posterior.option <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"samples"</span><span class="op">)</span>,
   transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"log"</span>, <span class="st">"none"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -84,24 +86,28 @@ using TOP model trained from ChIP-seq read counts or binary labels.</p>
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A data frame containing motif PWM score and DNase (or ATAC) bins.</p></dd>
+<dt>tf_name</dt>
+<dd><p>specifies TF name.</p></dd>
+<dt>cell_type</dt>
+<dd><p>specifies the cell type.</p></dd>
 <dt>TOP_coef</dt>
-<dd><p>A data frame or list containing the posterior samples
-or posterior mean of TOP regression coefficients.</p></dd>
+<dd><p>A list containing the posterior mean of TOP regression coefficients.</p></dd>
+<dt>level</dt>
+<dd><p>Specific the TOP model hierarchy level to use.
+Options: 'best', 'bottom', 'middle', or 'top'.
+Default: 'best' -- choose the best model (lowest level of the hierarchy available):
+If the TF motif and cell type is available in the training data,
+then use the bottom level (TF- and cell-type-specific model).
+otherwise, if TF motif (but not cell type) is available in the training data,
+choose the middle level (TF-specific model) of that TF motif;
+otherwise, use the top level TF-generic model.</p></dd>
 <dt>logistic.model</dt>
 <dd><p>Logical; if TRUE, use the logistic version of TOP model.</p></dd>
-<dt>posterior.option</dt>
-<dd><p>Method to predict occupancy.
-'samples': uses posterior samples,
-'mean': uses posterior mean of regression coefficients.</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 Only needed when logistic.model is FALSE.</p></dd>
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    <p>Returns a vector of predicted TF occupancy (posterior mean).</p>
-    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

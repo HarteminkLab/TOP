@@ -60,7 +60,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Select regression coefficients by the TOP hierarchy level</h1>
-    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/TOP_model_utils.R" class="external-link"><code>R/TOP_model_utils.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/predict_occupancy.R" class="external-link"><code>R/predict_occupancy.R</code></a></small>
     <div class="hidden name"><code>select_model_coef_level.Rd</code></div>
     </div>
 
@@ -70,28 +70,24 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">select_model_coef_level</span><span class="op">(</span>
-  <span class="va">pwm_id</span>,
+  <span class="va">tf_name</span>,
   <span class="va">cell_type</span>,
-  <span class="va">training_tf_pwm_table</span>,
   <span class="va">TOP_mean_coef</span>,
-  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"middle"</span>, <span class="st">"top"</span><span class="op">)</span>
+  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"bottom"</span>, <span class="st">"middle"</span>, <span class="st">"top"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>pwm_id</dt>
-<dd><p>specifies the motif PWM ID.</p></dd>
+    <dl><dt>tf_name</dt>
+<dd><p>specifies TF name.</p></dd>
 <dt>cell_type</dt>
 <dd><p>specifies the cell type.</p></dd>
-<dt>training_tf_pwm_table</dt>
-<dd><p>A data frame including TF names and motif PWM IDs
-in the training data.</p></dd>
 <dt>TOP_mean_coef</dt>
 <dd><p>Trained TOP posterior mean regression coefficients.</p></dd>
 <dt>level</dt>
 <dd><p>Specific the TOP model hierarchy level to use.
-Options: 'best', 'middle', or 'top'.
+Options: 'best', 'bottom', 'middle', or 'top'.
 Default: 'best' -- choose the best model (lowest level of the hierarchy available):
 If the TF motif and cell type is available in the training data,
 then use the bottom level (TF- and cell-type-specific model).

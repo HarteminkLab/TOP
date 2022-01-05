@@ -6,30 +6,37 @@
 \usage{
 predict_TOP(
   data,
+  tf_name,
+  cell_type,
   TOP_coef,
+  level = c("best", "bottom", "middle", "top"),
   logistic.model = FALSE,
-  posterior.option = c("mean", "samples"),
   transform = c("asinh", "log2", "log", "none")
 )
 }
 \arguments{
 \item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
-\item{TOP_coef}{A data frame or list containing the posterior samples
-or posterior mean of TOP regression coefficients.}
+\item{tf_name}{specifies TF name.}
+
+\item{cell_type}{specifies the cell type.}
+
+\item{TOP_coef}{A list containing the posterior mean of TOP regression coefficients.}
+
+\item{level}{Specific the TOP model hierarchy level to use.
+Options: 'best', 'bottom', 'middle', or 'top'.
+Default: 'best' -- choose the best model (lowest level of the hierarchy available):
+If the TF motif and cell type is available in the training data,
+then use the bottom level (TF- and cell-type-specific model).
+otherwise, if TF motif (but not cell type) is available in the training data,
+choose the middle level (TF-specific model) of that TF motif;
+otherwise, use the top level TF-generic model.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
-
-\item{posterior.option}{Method to predict occupancy.
-'samples': uses posterior samples,
-'mean': uses posterior mean of regression coefficients.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 Only needed when logistic.model is FALSE.}
-}
-\value{
-Returns a vector of predicted TF occupancy (posterior mean).
 }
 \description{
 Predict quantitative TF occupancy or TF binding probability

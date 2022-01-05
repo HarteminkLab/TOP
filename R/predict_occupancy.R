@@ -4,44 +4,113 @@
 #' using TOP model trained from ChIP-seq read counts or binary labels.
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param TOP_coef A data frame or list containing the posterior samples
-#' or posterior mean of TOP regression coefficients.
+#' @param tf_name specifies TF name.
+#' @param cell_type specifies the cell type.
+#' @param TOP_coef A list containing the posterior mean of TOP regression coefficients.
+#' @param level Specific the TOP model hierarchy level to use.
+#' Options: 'best', 'bottom', 'middle', or 'top'.
+#' Default: 'best' -- choose the best model (lowest level of the hierarchy available):
+#' If the TF motif and cell type is available in the training data,
+#' then use the bottom level (TF- and cell-type-specific model).
+#' otherwise, if TF motif (but not cell type) is available in the training data,
+#' choose the middle level (TF-specific model) of that TF motif;
+#' otherwise, use the top level TF-generic model.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
-#' @param posterior.option Method to predict occupancy.
-#' 'samples': uses posterior samples,
-#' 'mean': uses posterior mean of regression coefficients.
 #' @param transform Type of transformation for ChIP counts.
 #' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 #' Only needed when logistic.model is FALSE.
 #'
-#' @return Returns a vector of predicted TF occupancy (posterior mean).
 #' @export
 #'
 predict_TOP <- function(data,
+                        tf_name,
+                        cell_type,
                         TOP_coef,
+                        level = c('best', 'bottom', 'middle', 'top'),
                         logistic.model = FALSE,
-                        posterior.option = c('mean', 'samples'),
                         transform = c('asinh', 'log2', 'log', 'none')){
 
-  posterior.option <- match.arg(posterior.option)
+  level <- match.arg(level)
+
+  if(missing(tf_name)){
+    tf_name = NA
+  }
+  if(missing(cell_type)){
+    cell_type = NA
+  }
+
+  selected.model <- select_model_coef_level(tf_name, cell_type, TOP_coef, level)
 
   if(logistic.model == FALSE) {
     transform <- match.arg(transform)
-    if ( posterior.option == 'mean' ) {
-      predictions <- predict_TOP_mean_coef(data, TOP_coef, transform = transform)
-    } else if ( posterior.option == 'samples' ) {
-      predictions <- predict_TOP_samples(data, TOP_coef, transform = transform)
-    } else{
-      stop('posterior.option needs to be samples or mean!')
-    }
+    predicted <- predict_TOP_mean_coef(data, selected.model$coef, transform = transform)
   }else if (logistic.model == TRUE){
-    predictions <- predict_TOP_logistic_mean_coef(data, TOP_coef)
+    predicted <- predict_TOP_logistic_mean_coef(data, selected.model$coef)
+  }
+
+  res <- list(level = selected.model$level,
+              model = selected.model$model,
+              coef = selected.model$coef,
+              data = data,
+              predicted = predicted)
+  return(res)
+
+}
+
+
+#' @title Predict TF occupancy using posterior mean of regression coefficients
+#' @description Predict TF occupancy using posterior mean of TOP regression
+#' coefficients.
+#'
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
+#' @param mean_coef A numeric vector. The posterior mean of trained regression
+#' coefficients, including the intercept and coefficients for PWM score and
+#' DNase (or ATAC) bins.
+#' length(mean_coef) should be equal to 1+ncol(data).
+#' @param transform Method used to transform ChIP-seq counts when training
+#' the TOP model. Options: asinh, log2, sqrt, none.
+#'
+#' @return Returns a vector of predicted TF occupancy (posterior mean).
+#'
+#' @export
+#'
+predict_TOP_mean_coef <- function(data,
+                                  mean_coef,
+                                  transform = c('asinh', 'log2', 'log', 'none')){
+
+  cat('Predicting TF occupancy using TOP occupancy model...\n')
+  transform <- match.arg(transform)
+
+  features <- select_features(data)
+
+  if((ncol(features)+1) != length(mean_coef)){
+    stop('The number of coefficients not equal to
+         the number of features + intercept! Check input data!')
+  }
+
+  coefficients <- as.matrix(mean_coef, ncol = 1)
+
+  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
+
+  predictions <- as.numeric(data.matrix %*% coefficients)
+
+  # transform back to the original scale
+  if(transform == 'asinh'){
+    predictions <- sinh(predictions)
+  }else if (transform == 'log2'){
+    # log2(y+1)
+    predictions <- 2^predictions - 1
+  }else if (transform == 'sqrt'){
+    # sqrt(y)
+    predictions <- predictions^2
+  }else if (transform == 'none'){
+    # no transform
+    # cat('No transform done. \n')
   }
 
   return(predictions)
 
 }
-
 
 #' @title Predict TF occupancy using posterior samples of regression coefficients
 #' @description Predict TF occupancy using posterior samples of TOP regression
@@ -64,7 +133,7 @@ predict_TOP_samples <- function(data,
                                 sample.predictions = TRUE,
                                 transform = c('asinh', 'log2', 'sqrt', 'none')){
 
-  cat('Predicting TF occupancy using TOP posterior samples...\n')
+  cat('Predicting TF occupancy using TOP occupancy model with posterior samples...\n')
   transform <- match.arg(transform)
 
   features <- select_features(data)
@@ -113,60 +182,6 @@ predict_TOP_samples <- function(data,
 }
 
 
-#' @title Predict TF occupancy using posterior mean of regression coefficients
-#' @description Predict TF occupancy using posterior mean of TOP regression
-#' coefficients.
-#'
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param mean_coef A numeric vector. The posterior mean of trained regression
-#' coefficients, including the intercept and coefficients for PWM score and
-#' DNase (or ATAC) bins.
-#' length(mean_coef) should be equal to 1+ncol(data).
-#' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Options: asinh, log2, sqrt, none.
-#'
-#' @return Returns a vector of predicted TF occupancy (posterior mean).
-#'
-#' @export
-#'
-predict_TOP_mean_coef <- function(data,
-                                  mean_coef,
-                                  transform = c('asinh', 'log2', 'log', 'none')){
-
-  cat('Predicting TF occupancy using TOP posterior mean coefficients...\n')
-  transform <- match.arg(transform)
-
-  features <- select_features(data)
-
-  if((ncol(features)+1) != length(mean_coef)){
-    stop('The number of coefficients not equal to
-         the number of features + intercept! Check input data!')
-  }
-
-  coefficients <- as.matrix(mean_coef, ncol = 1)
-
-  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
-
-  predictions <- as.numeric(data.matrix %*% coefficients)
-
-  # transform back to the original scale
-  if(transform == 'asinh'){
-    predictions <- sinh(predictions)
-  }else if (transform == 'log2'){
-    # log2(y+1)
-    predictions <- 2^predictions - 1
-  }else if (transform == 'sqrt'){
-    # sqrt(y)
-    predictions <- predictions^2
-  }else if (transform == 'none'){
-    # no transform
-    # cat('No transform done. \n')
-  }
-
-  return(predictions)
-
-}
-
 #' @title Predict TF binding probability by TOP logistic model
 #' @description Predict TF binding probability using posterior mean of the regression
 #' coefficients trained from TOP logistic model.
@@ -185,7 +200,7 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
   features <- select_features(data)
 
-  cat('Predicting TF binding probability using TOP logistic model posterior mean coefficients...\n')
+  cat('Predicting TF binding probability using TOP logistic model...\n')
 
   if((ncol(features)+1) != length(mean_coef)){
     stop('The number of coefficients not equal to
@@ -218,4 +233,94 @@ select_features <- function(data, pwm.name = 'pwm', bin.name = 'bin'){
   cat('Select features:', features.cols, '\n')
   features <- data[, features.cols]
   return(features)
+}
+
+
+#' @title Select regression coefficients by the TOP hierarchy level
+#'
+#' @param tf_name specifies TF name.
+#' @param cell_type specifies the cell type.
+#' @param TOP_mean_coef Trained TOP posterior mean regression coefficients.
+#' @param level Specific the TOP model hierarchy level to use.
+#' Options: 'best', 'bottom', 'middle', or 'top'.
+#' Default: 'best' -- choose the best model (lowest level of the hierarchy available):
+#' If the TF motif and cell type is available in the training data,
+#' then use the bottom level (TF- and cell-type-specific model).
+#' otherwise, if TF motif (but not cell type) is available in the training data,
+#' choose the middle level (TF-specific model) of that TF motif;
+#' otherwise, use the top level TF-generic model.
+#' @export
+#'
+select_model_coef_level <- function(tf_name,
+                                    cell_type,
+                                    TOP_mean_coef,
+                                    level = c('best', 'bottom', 'middle', 'top')) {
+
+  level <- match.arg(level)
+
+  bottom_level_mean_coef <- TOP_mean_coef$bottom
+  middle_level_mean_coef <- TOP_mean_coef$middle
+  top_level_mean_coef <- TOP_mean_coef$top
+
+  if(level == 'best'){
+
+    ## load model, using lower level model if available
+    tf_cell_name <- paste(tf_name, cell_type, sep = '.')
+    if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
+      model_coef <- bottom_level_mean_coef[tf_cell_name, ]
+      model_level <- 'bottom'
+      model <- tf_cell_name
+    } else if (tf_name %in% rownames(middle_level_mean_coef)) {
+      model_coef <- middle_level_mean_coef[tf_name, ]
+      model_level <- 'middle'
+      model <- tf_name
+    } else {
+      model_coef <- top_level_mean_coef
+      model_level <- 'top'
+      model <- 'TF-generic'
+    }
+    cat(model, model_level, 'level model selected. \n')
+
+  }else if (level == 'bottom'){
+
+    tf_cell_name <- paste(tf_name, cell_type, sep = '.')
+
+    if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
+      model_coef <- bottom_level_mean_coef[tf_cell_name, ]
+      model_level <- 'bottom'
+      model <- tf_cell_name
+      cat(model, model_level, 'level model selected. \n')
+    } else{
+      model_coef <- NA
+      model_level <- 'bottom'
+      model <- NA
+      cat(model_level, 'level model is not available! \n')
+    }
+
+  }else if (level == 'middle'){
+
+    if (tf_name %in% rownames(middle_level_mean_coef)) {
+      model_coef <- middle_level_mean_coef[tf_name, ]
+      model_level <- 'middle'
+      model <- tf_name
+      cat(model, model_level, 'level model selected. \n')
+    } else{
+      model_coef <- NA
+      model_level <- 'middle'
+      cat(model_level, 'level model is not available! \n')
+    }
+
+  }else if(level == 'top'){
+
+    cat('Choose top level model. \n')
+    model_coef <- top_level_mean_coef
+    model_level <- 'top'
+    model <- 'TF-generic'
+    cat(model, model_level, 'level model selected. \n')
+  }
+
+  return(list(level = model_level,
+              model = model,
+              coef = model_coef))
+
 }
