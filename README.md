@@ -19,15 +19,27 @@ DNase- or ATAC-seq experiments.
 
 ## [TOP R package website](https://kevinlkx.github.io/TOP/)
 
-Install R package
+### Install R package
+
+You can install the development version of TOP from
+[GitHub](https://github.com/) with:
 
 ``` r
-install.packages("devtools")
-library(devtools)
+# install.packages("devtools")
 devtools::install_github("kevinlkx/TOP")
+```
 
+After installing, check that it loads properly:
+
+``` r
 library(TOP)
 ```
+
+### Usage
+
+Please follow the
+[tutorials](https://kevinlkx.github.io/TOP/articles/index.html) to learn
+how to use the package.
 
 ## Reference
 
