@@ -117,9 +117,11 @@ filter_blacklist <- function(sites.df, blacklist_file) {
 
   # Filter sites overlapping with blacklist regions
   sites.gr <- makeGRangesFromDataFrame(sites.df, keep.extra.columns = T)
-  in.blacklist <- which(countOverlaps(query = sites.gr, subject = blacklist.gr)>0)
-  cat('Filter out', length(in.blacklist), 'sites in blacklist regions. \n')
-  sites.df <- sites.df[-in.blacklist, ]
+  in.blacklist <- countOverlaps(query = sites.gr, subject = blacklist.gr)>0
+  cat('Filter out', sum(in.blacklist), 'sites in blacklist regions. \n')
+  if(any(in.blacklist)){
+    sites.df <- sites.df[!in.blacklist, ]
+  }
 
   return(sites.df)
 
