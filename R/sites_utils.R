@@ -24,6 +24,10 @@ process_candidate_sites <- function(fimo_file,
                                     thresh_mapability=0.8,
                                     bigWigAverageOverBed_path='bigWigAverageOverBed') {
 
+  if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
+    stop(paste(fimo_file, 'file does not exist or is empty!'))
+  }
+
   # Get candidate sites from FIMO motif matches and add flanking regions
   sites.df <- flank_fimo_sites(fimo_file, flank)
 
@@ -58,7 +62,7 @@ process_candidate_sites <- function(fimo_file,
 #'
 flank_fimo_sites <- function(fimo_file, flank=100) {
 
-  if( !file.exists(fimo_file) ){
+  if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
     stop(paste(fimo_file, 'file does not exist or is empty!'))
   }
 
