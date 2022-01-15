@@ -388,9 +388,11 @@ get_sites_counts <- function(sites.df,
   system(cmd)
 
   # Flip the counts generated from bwtool for motifs on the reverse strand
+  cat('Flip the counts for motifs on the reverse strand ... \n')
   sites_counts.l <- flip_rev_strand_counts(sites.df, fwd_matrix_file, rev_matrix_file)
 
   # Combine counts on both strands
+  cat('Combine counts on both strands ... \n')
   sites_counts.mat <- as.matrix(cbind(sites_counts.l$fwd, sites_counts.l$rev))
   rownames(sites_counts.mat) <- sites.df$name
 
