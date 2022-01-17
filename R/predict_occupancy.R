@@ -258,6 +258,9 @@ select_model_coef_level <- function(tf_name,
 
   level <- match.arg(level)
 
+  # convert TF names to upper case (as we use upper case for TF names in training)
+  tf_name <- toupper(tf_name)
+
   bottom_level_mean_coef <- TOP_mean_coef$bottom
   middle_level_mean_coef <- TOP_mean_coef$middle
   top_level_mean_coef <- TOP_mean_coef$top
