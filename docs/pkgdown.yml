@@ -1,12 +1,12 @@
 pandoc: 2.14.0.3
-pkgdown: 2.0.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   data_preparation: data_preparation.html
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_logistic_model: train_TOP_logistic_model.html
   train_TOP_model: train_TOP_model.html
-last_built: 2022-01-13T04:27Z
+last_built: 2022-01-17T22:33Z
 urls:
   reference: https://kevinlkx.github.io/TOP/reference
   article: https://kevinlkx.github.io/TOP/articles
