@@ -260,6 +260,7 @@ select_model_coef_level <- function(tf_name,
 
   # convert TF names to upper case (as we use upper case for TF names in training)
   tf_name <- toupper(tf_name)
+  cat('Choose model for', tf_name, 'in', cell_type, '...\n')
 
   bottom_level_mean_coef <- TOP_mean_coef$bottom
   middle_level_mean_coef <- TOP_mean_coef$middle
