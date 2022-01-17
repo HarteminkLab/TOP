@@ -78,7 +78,6 @@ predict_TOP_mean_coef <- function(data,
                                   mean_coef,
                                   transform = c('asinh', 'log2', 'log', 'none')){
 
-  cat('Predicting TF occupancy using TOP occupancy model...\n')
   transform <- match.arg(transform)
 
   features <- select_features(data)
@@ -87,6 +86,8 @@ predict_TOP_mean_coef <- function(data,
     stop('The number of coefficients not equal to
          the number of features + intercept! Check input data!')
   }
+
+  cat('Predicting TF occupancy using TOP occupancy model...\n')
 
   coefficients <- as.matrix(mean_coef, ncol = 1)
 
@@ -133,10 +134,11 @@ predict_TOP_samples <- function(data,
                                 sample.predictions = TRUE,
                                 transform = c('asinh', 'log2', 'sqrt', 'none')){
 
-  cat('Predicting TF occupancy using TOP occupancy model with posterior samples...\n')
   transform <- match.arg(transform)
 
   features <- select_features(data)
+
+  cat('Predicting TF occupancy using TOP occupancy model with posterior samples...\n')
   data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
   alpha_samples <- coef_samples$alpha_samples
@@ -200,12 +202,12 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
   features <- select_features(data)
 
-  cat('Predicting TF binding probability using TOP logistic model...\n')
-
   if((ncol(features)+1) != length(mean_coef)){
     stop('The number of coefficients not equal to
          the number of features + intercept! Check input data!')
   }
+
+  cat('Predicting TF binding probability using TOP logistic model...\n')
 
   coefficients <- as.matrix(mean_coef, ncol = 1)
 
@@ -230,7 +232,7 @@ select_features <- function(data, pwm.name = 'pwm', bin.name = 'bin'){
   pwm.col <- grep(pwm.name, colnames(data), ignore.case = TRUE, value = TRUE)
   bin.cols <- grep(bin.name, colnames(data), ignore.case = TRUE, value = TRUE)
   features.cols <- c(pwm.col, bin.cols)
-  cat('Select features:', features.cols, '\n')
+  cat('Model features:', features.cols, '\n')
   features <- data[, features.cols]
   return(features)
 }
