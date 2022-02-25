@@ -1,13 +1,23 @@
 Package: TOP
-Title: Transcription factor Occupancy Profiler (TOP)
+Title: Predict transcription factor occupancy using DNase- or ATAC-seq data 
 Version: 0.0.0.9000
 Authors@R: c(
   person("Kaixuan", "Luo", role = c("aut", "cre"), email = "kevinlkx@gmail.com"),
   person("Jianling", "Zhong", role = "aut", email = "jianlingzh@gmail.com"),
   person("Alex", "Hartemink", role = c("aut", "cph"), email = "amink@cs.duke.edu"))
-Description: Predict transcription factor (TF) occupancy using DNase- or ATAC-seq data.
-  TOP is a Bayesian hierarchical model trained using DNase- or ATAC-seq and ChIP-seq data 
-  to predict quantitative TF occupancy across cell types or conditions.
+Description: Transcription factor (TF) occupancy profiler (TOP) 
+    predicts quantitative TF occupancy at candidate TF motif locations 
+    across cell types or conditions.
+    It is a Bayesian hierarchical model trained using quantitative 
+    DNase- or ATAC-seq and ChIP-seq data 
+    from many TFs and cell types (from ENCODE data).
+    TOP learns both TF- and cell type- specific parameters as well 
+    as TF-generic parameters jointly for TFs and cell types from existing 
+    DNase-/ATAC-seq and ChIP-seq data. 
+    Once trained, it could predict quantitative TF occupancy or 
+    TF binding probability for TFs across cell types or conditions 
+    using DNase- or ATAC- seq data
+    without requring new ChIP data.
 URL: https://github.com/kevinlkx/TOP
 BugReports: https://github.com/kevinlkx/TOP/issues
 License: MIT + file LICENSE
