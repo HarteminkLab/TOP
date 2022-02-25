@@ -1,12 +1,12 @@
-
-#' @title Load TOP posterior samples
-#'
-#' @param TOP_samples_file file names of the posterior samples from all partitions
-#' @param thin thinning rate of extract the posterior samples,
-#' must be a positive integer (default = 1, no thin).
+#' @title Load and process TOP posterior samples
+#' @description Load posterior samples in \code{TOP_samples_file},
+#' perform thinning, and sampling of the posterior samples if needed.
+#' @param TOP_samples_file File name of the posterior samples
+#' @param thin Thinning rate of extract the posterior samples,
+#' must be a positive integer (default = 1, no thinning performed).
 #' @param n.samples Randomly choose n.samples posterior samples,
-#' when the number of posterior samples is greater than n.samples.
-#'
+#' when the number of posterior samples is greater than \code{n.samples}.
+#' @return A data frame of posterior samples.
 #' @export
 #'
 load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
@@ -34,13 +34,15 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 }
 
 #' @title Combine and take the average of TOP posterior samples from all partitions
-#'
-#' @param TOP_samples_files file names of the posterior samples from all partitions
+#' @description Combine and take the average of TOP posterior samples
+#' from all partitions. Use \code{load_TOP_samples} to load and process
+#' posterior samples from each partition.
+#' @param TOP_samples_files File names of the posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
-#' must be a positive integer (default = 1, no thin).
+#' must be a positive integer (default = 1, no thinning performed).
 #' @param n.samples Randomly choose n.samples posterior samples,
 #' when the number of posterior samples is greater than n.samples.
-#'
+#' @return A data frame of combined and averaged posterior samples.
 #' @export
 #'
 combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
@@ -53,7 +55,6 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
     for(i in 2:N) {
       TOP_samples <- TOP_samples + load_TOP_samples(TOP_samples_files[i], thin, n.samples)
     }
-    # take the average of the samples from multiple partitions
     TOP_samples <- TOP_samples / N
   }
 
@@ -63,17 +64,18 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 
 #' @title Extract alpha and beta coefficients from TOP posterior samples
 #'
-#' @param TOP_samples TOP samples combined from all partitions.
-#' @param tf_cell_combos a table of TF x cell type combinations,
-#' included in the training data.
-#' @param tf_name TF name of interest.
-#' @param cell_type Cell type of interest.
+#' @param TOP_samples TOP samples combined from all partitions using
+#' \code{combine_TOP_samples}.
+#' @param tf_cell_combos A table listing all TF x cell type combinations
+#' used for training TOP model.
+#' @param tf_name TF name.
+#' @param cell_type Cell type.
 #' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5).
 #' @param level The level in the TOP model (options: bottom, middle, or top),
 #' 'bottom' level: TF- and cell-type- specific,
 #' 'middle' level: TF-specific, cell-type generic,
 #' 'top' level: TF-generic
-#'
+#' @return A data frame of posterior samples for TOP's alpha and beta coefficients.
 #' @export
 #'
 extract_TOP_coef_samples <- function(TOP_samples,
@@ -117,17 +119,20 @@ extract_TOP_coef_samples <- function(TOP_samples,
 
 }
 
-#' Compute TOP posterior mean coefficients for all three levels of TOP model
-#'
-#' @param TOP_samples TOP samples combined from all partitions
-#' @param tf_cell_combos a table of TF x cell type combinations
+#' @title Extract the posterior mean coefficients for each level of TOP model
+#' @description Extract alpha and beta coefficients from TOP posterior samples,
+#' and return the mean of coefficients at each level of TOP model.
+#' @param TOP_samples TOP samples combined from all partitions using
+#' \code{combine_TOP_samples}.
+#' @param tf_cell_combos A table listing all TF x cell type combinations
+#' used for training TOP model.
 #' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5)
-#'
+#' @return A list of posterior mean coefficients at each level of TOP model.
 #' @export
 #'
 extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
 
-  # extract bottom level posterior mean coefficients for all TF x cell type combos
+  # Extract bottom level posterior mean coefficients for all TF x cell type combos
   bottom_level_mean_coef <- matrix(NA, nrow = nrow(tf_cell_combos), ncol = 2+n.bins)
   for( i in 1:nrow(tf_cell_combos)){
     bottom_level_coef_samples <- extract_TOP_coef_samples(TOP_samples,
@@ -141,7 +146,7 @@ extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
   rownames(bottom_level_mean_coef) <- paste(tf_cell_combos$tf_name, tf_cell_combos$cell_type, sep = '.')
   colnames(bottom_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n.bins))
 
-  # extract middle level posterior mean coefficients for all TFs
+  # Extract middle level posterior mean coefficients for all TFs
   tf_name_list <- unique(as.character(tf_cell_combos$tf_name))
   middle_level_mean_coef <- matrix(NA, nrow = length(tf_name_list), ncol = 2+n.bins)
   for( i in 1:length(tf_name_list)){
@@ -155,7 +160,7 @@ extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
   rownames(middle_level_mean_coef) <- tf_name_list
   colnames(middle_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n.bins))
 
-  # extract top level posterior mean coefficients
+  # Extract top level posterior mean coefficients
   top_level_coef_samples <- extract_TOP_coef_samples(TOP_samples,
                                                      tf_cell_combos,
                                                      n.bins = n.bins,
@@ -163,7 +168,7 @@ extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
   top_level_mean_coef <- colMeans(top_level_coef_samples)
   names(top_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n.bins))
 
-  # combine posterior mean coefficients for all three levels
+  # Combine posterior mean coefficients for all three levels
   TOP_mean_coef <- list(top = top_level_mean_coef,
                         middle = middle_level_mean_coef,
                         bottom = bottom_level_mean_coef)
