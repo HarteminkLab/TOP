@@ -79,15 +79,15 @@ fit_TOP_M5_model <- function(all_training_data,
       # Fit TOP binding probability model (logistic version)
       jagsfit <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, quiet)
       fit_samples <- coda::as.mcmc(jagsfit)
-      saveRDS(jagsfit, file.path(out.dir, paste0('TOP_logistic_M5_partition', k, '.jagsfit.rds')))
-      samples_file <- file.path(out.dir, paste0('TOP_logistic_M5_partition', k, '.posterior_samples.rds'))
+      saveRDS(jagsfit, file.path(out.dir, paste0('TOP.logistic.M5.partition', k, '.jagsfit.rds')))
+      samples_file <- file.path(out.dir, paste0('TOP.logistic.M5.partition', k, '.posterior.samples.rds'))
       saveRDS(fit_samples, samples_file)
     }else{
       # Fit TOP quantitative TF occupancy model
       jagsfit <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin, quiet)
       fit_samples <- coda::as.mcmc(jagsfit)
-      saveRDS(jagsfit, file.path(out.dir, paste0('TOP_M5_partition', k, '.jagsfit.rds')))
-      samples_file <- file.path(out.dir, paste0('TOP_M5_partition', k, '.posterior_samples.rds'))
+      saveRDS(jagsfit, file.path(out.dir, paste0('TOP.M5.partition', k, '.jagsfit.rds')))
+      samples_file <- file.path(out.dir, paste0('TOP.M5.partition', k, '.posterior.samples.rds'))
       saveRDS(fit_samples, samples_file)
     }
     samples_file
