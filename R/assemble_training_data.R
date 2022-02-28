@@ -1,26 +1,41 @@
-#' @title Assemble TOP training data for all TF x cell type combos in one partition
-#'
-#' @param tf_cell_table a data frame with the first three columns as:
-#' TF name, cell type, and file name containing the corresponding training data.
+#' @title Assemble TOP training data for all TF x cell type combos
+#' in a selected partition
+#' @description Prepare the training data for fitting TOP models. It first loads
+#' the training data for each of the training TF x cell type combos from
+#' \code{tf_cell_table}, then select the candidate sites in training chromosomes,
+#' and split the selected candidate sites into partitions (default: 10), and
+#' assemble training data for all TF x cell type combos for a selected partition.
+#' @param tf_cell_table A data frame containing the information about
+#' the training TFs, cell types and paths of the training data.
+#' The first three columns should contain TF name, cell type,
+#' and file name containing the corresponding training data.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
-#' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
-#' @param training_chrs Chromosomes used for training the model (default: odd chromosomes)
-#' @param n.partitions Total number of partitions to split the training data (default: 10).
-#' @param part specifies which partition to assemble the training data for
-#' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
-#' @param seed seed used when sampling sites (default: 123).
-#'
+#' @param chip_colname The column name of ChIP data in the combined data
+#' (default: "chip").
+#' @param training_chrs Chromosomes used for training the model
+#' (default: odd chromosomes).
+#' @param n.partitions Total number of partitions to split the training data
+#' (default: 10).
+#' @param part An integer between 1 and \code{n.partitions} to specify the
+#' partition to assemble the training data for.
+#' @param max.sites Max number of candidate sites in each partition
+#' (default: 50000/n.partitions).
+#' @param seed seed used when sampling sites.
+#' @return A data frame with the training data set with all TF x cell type combos.
 #' @export
 #'
 assemble_partition_training_data <- function(tf_cell_table,
-                                             logistic.model = FALSE,
-                                             chip_colname = 'chip',
-                                             training_chrs = paste0('chr', seq(1,21,2)),
-                                             n.partitions = 10,
-                                             part,
-                                             max.sites = 50000/n.partitions,
-                                             seed = 123) {
+                                             logistic.model=FALSE,
+                                             chip_colname='chip',
+                                             training_chrs=paste0('chr', seq(1,21,2)),
+                                             n.partitions=10,
+                                             part=1,
+                                             max.sites=50000/n.partitions,
+                                             seed=1) {
 
+  if(part > n.partitions || part < 1){
+    stop('part should be an integer less than n.partitions!')
+  }
   cat('Assemble training data for partition', part, '... \n')
 
   set.seed(seed)
@@ -52,7 +67,6 @@ assemble_partition_training_data <- function(tf_cell_table,
       data <- as.data.frame(data.table::fread(data_file))
     }
 
-
     if(!chip_colname %in% colnames(data)){
       message(paste('Warning:', tf_name, 'in', cell_type, 'data file does not have', chip_colname, 'column!\n'))
       next
@@ -82,15 +96,13 @@ assemble_partition_training_data <- function(tf_cell_table,
       data <- data.frame(data[, -grep('chip', colnames(data))], chip = data[, chip_colname])
     }
 
-    # Select training and test set
+    # Select the training set
     training_data <- data[data$chr %in% training_chrs,]
-
     partition_size <- ceiling(nrow(training_data) / n.partitions)
     partition_groups <- as.factor(ceiling(c(1:nrow(training_data))/partition_size))
     data_partitions <- split(training_data, partition_groups)
-
     training_data_partition <- data.frame(tf_name = tf_name, cell_type = cell_type, data_partitions[[part]])
-    # set the limit of training candidate sites
+    # set the max number of candidate sites for training
     if(nrow(training_data_partition) > max.sites){
       training_data_partition <- training_data_partition[sample(1:nrow(training_data_partition), max.sites), ]
     }
@@ -108,17 +120,26 @@ assemble_partition_training_data <- function(tf_cell_table,
 
 #' @title Assemble TOP training data for all TF x cell type combos,
 #' then split training data into 10 partitions
+#' @description Prepare the training data for fitting TOP models.
+#' It split training data into 10 partitions and
+#' assemble training data for all TF x cell type combos for each of the partitions
+#' using the function \code{assemble_partition_training_data}.
 #'
 #' @param tf_cell_table a data frame with the first three columns as:
 #' TF name, cell type, and file name containing the corresponding training data.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
-#' @param chip_colname The column name of ChIP data in the combined data (default: "chip").
-#' @param training_chrs Chromosomes used for training the model (default: odd chromosomes)
+#' @param chip_colname The column name of ChIP data in the combined data
+#' (default: "chip").
+#' @param training_chrs Chromosomes used for training the model
+#' (default: odd chromosomes)
 #' @param n.partitions Total number of partitions to split the training data (default: 10).
 #' @param n.cores Number of cores to use in parallel
 #' (default: equal to the number of partitions).
-#' @param max.sites Max number of candidate sites in each partition (default: 50000/n.partitions).
-#' @param seed seed used when sampling sites (default: 123).
+#' @param max.sites Max number of candidate sites in each partition
+#' (default: 50000/n.partitions).
+#' @param seed seed used when sampling sites.
+#' @return A list of data frames, each containing one partition of the
+#' training data set with all TF x cell type combos.
 #' @import doParallel
 #' @import foreach
 #' @importFrom parallel detectCores
@@ -132,7 +153,7 @@ assemble_TOP_training_data <- function(tf_cell_table,
                                        n.partitions=10,
                                        n.cores=n.partitions,
                                        max.sites=50000,
-                                       seed=123){
+                                       seed=1){
 
   tf_cell_table <- as.data.frame(tf_cell_table)
 
@@ -153,7 +174,7 @@ assemble_TOP_training_data <- function(tf_cell_table,
 
   # Assemble training data for each partition
   if(missing(n.cores)){
-    n.available.cores <- parallel::detectCores(logical = FALSE) - 1
+    n.available.cores <- detectCores(logical = FALSE) - 1
     n.cores <- min(n.available.cores, n.partitions)
   }else{
     n.cores <- min(n.cores, n.partitions)
@@ -177,7 +198,6 @@ assemble_TOP_training_data <- function(tf_cell_table,
     training_data
   }
 
-  # Save a table listing all TF and cell type combinations
   tf_cell_combos <- unique(all_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
   cat(nrow(tf_cell_combos), 'TF x cell type combos assembled in training data. \n')
 

@@ -1,10 +1,7 @@
 
-
 #' @title Scatter plot of measured and predicted occupancy
-#'
 #' @description Make a scatter plot of measured and predicted occupancy,
 #' with Pearson's correlation (R) between measured and predicted occupancy
-#'
 #' @param x x-axis values of points in the plot (measured).
 #' @param y y-axis values of points in the plot (predicted).
 #' @param xlab a label for the x axis.
@@ -13,8 +10,9 @@
 #' @param xlim range of x-axis values.
 #' @param ylim range of y-axis values.
 #' @param color The plotting color.
+#' @return A \code{ggplot} object for
+#' the scatter plot of measured and predicted occupancy.
 #' @import ggplot2
-#'
 #' @export
 #'
 scatterplot_predictions <- function(x, y,
@@ -34,7 +32,6 @@ scatterplot_predictions <- function(x, y,
 
   df <- data.frame(x=x, y=y)
 
-  # Make a scatter plot
   p <- ggplot(df, aes(x=x, y=y)) +
     geom_abline(intercept = 0, slope = 1, color="darkgray",
                 size = 0.5) +
@@ -52,7 +49,7 @@ scatterplot_predictions <- function(x, y,
 }
 
 #' @title Simple x-y scatter plot
-#'
+#' @description Make a simple x-y scatter plot
 #' @param x x-axis values of points in the plot.
 #' @param y y-axis values of points in the plot.
 #' @param xlab a label for the x axis.
@@ -61,8 +58,8 @@ scatterplot_predictions <- function(x, y,
 #' @param xlim range of x-axis values.
 #' @param ylim range of y-axis values.
 #' @param color The plotting color.
+#' @return A \code{ggplot} object.
 #' @import ggplot2
-#'
 #' @export
 #'
 scatterplot <- function(x, y,
