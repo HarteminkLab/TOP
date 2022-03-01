@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 Load TOP R package
 ---------------------
-```{r load-TOP-package, eval = TRUE, message=FALSE, warning=FALSE}
+```{r load-TOP-package, eval=TRUE, message=FALSE, warning=FALSE}
 library(TOP)
 library(ggplot2)
 ```
@@ -50,7 +50,7 @@ Predict TF occupancy using trained TOP model
 ------------------------------------------------
 
 Predict CTCF occupancy in K562 cell type using bottom level regression coefficients for CTCF in K562
-```{r predict-TOP-mean-coef, eval = TRUE}
+```{r predict-TOP-mean-coef, eval=TRUE}
 res <- predict_TOP(data, 
                    tf_name = 'CTCF',
                    cell_type = 'K562',
@@ -58,7 +58,7 @@ res <- predict_TOP(data,
                    level = 'bottom',
                    logistic.model = FALSE, 
                    transform = 'asinh')
-data$predicted.occupancy <- res$predicted
+predictions <- res$predictions
 ```
 
 Plot predicted occupancy vs. measured occupancy
@@ -66,7 +66,7 @@ Plot predicted occupancy vs. measured occupancy
 data_chip <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
 
 scatterplot_predictions(x = asinh(data_chip$chip),
-                        y = asinh(data$predicted.occupancy),
+                        y = asinh(predictions$predicted),
                         title = 'Predicting CTCF occupancy in K562 cell',
                         xlab = 'asinh(measured occupancy)',
                         ylab = 'asinh(predicted occupancy)',
@@ -91,10 +91,12 @@ res <- predict_TOP(data,
                    TOP_coef = TOP_logistic_coef, 
                    level = 'bottom',
                    logistic.model = TRUE)
-data$predicted.prob <- res$predicted
-
+predicted.prob <- res$predictions
 ```
-```{r show-TOP-predictions, eval = TRUE}
-head(data, 3)
+
+```{r show-TOP-logistic-predictions, eval=TRUE}
+head(predicted.prob, 3)
+
+hist(predicted.prob$predicted, main="Distribution of predicted binding probabiliy", xlab="P(bound)")
 ```
 
