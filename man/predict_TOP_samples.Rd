@@ -27,7 +27,7 @@ and then take the mean of posterior prediction samples.}
 the TOP model. Options: asinh, log2, sqrt, none.}
 }
 \value{
-Returns a vector of predicted TF occupancy (posterior mean).
+A data frame of input data and predicted TF occupancy (posterior mean).
 }
 \description{
 Predict TF occupancy using posterior samples of TOP regression

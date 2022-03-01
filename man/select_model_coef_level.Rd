@@ -27,6 +27,10 @@ otherwise, if TF motif (but not cell type) is available in the training data,
 choose the middle level (TF-specific model) of that TF motif;
 otherwise, use the top level TF-generic model.}
 }
+\value{
+A list containing the results, including selected hierarchy level,
+TOP model, regression coefficients (posterior mean).
+}
 \description{
 Select regression coefficients by the TOP hierarchy level
 }

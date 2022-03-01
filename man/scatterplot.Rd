@@ -32,6 +32,9 @@ scatterplot(
 
 \item{color}{The plotting color.}
 }
+\value{
+A \code{ggplot} object.
+}
 \description{
-Simple x-y scatter plot
+Make a simple x-y scatter plot
 }

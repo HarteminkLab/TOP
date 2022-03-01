@@ -39,10 +39,10 @@ using TOP model trained from ChIP-seq read counts or binary labels."><!-- mathja
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP quantitative occupancy model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic (binary binding) model</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -102,12 +102,20 @@ otherwise, if TF motif (but not cell type) is available in the training data,
 choose the middle level (TF-specific model) of that TF motif;
 otherwise, use the top level TF-generic model.</p></dd>
 <dt>logistic.model</dt>
-<dd><p>Logical; if TRUE, use the logistic version of TOP model.</p></dd>
+<dd><p>Logical. If TRUE, use the logistic version of TOP model
+to predict TF binding probability. If FALSE, predict quantitative TF occupancy.</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 Only needed when logistic.model is FALSE.</p></dd>
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>A list containing the results, including selected hierarchy level,
+TOP model name, regression coefficients (posterior mean),
+and prediction results.
+Predicted values are in the same order as the input data.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

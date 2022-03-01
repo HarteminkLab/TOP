@@ -2,7 +2,8 @@
 % Please edit documentation in R/assemble_training_data.R
 \name{assemble_partition_training_data}
 \alias{assemble_partition_training_data}
-\title{Assemble TOP training data for all TF x cell type combos in one partition}
+\title{Assemble TOP training data for all TF x cell type combos
+in a selected partition}
 \usage{
 assemble_partition_training_data(
   tf_cell_table,
@@ -10,29 +11,43 @@ assemble_partition_training_data(
   chip_colname = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
   n.partitions = 10,
-  part,
+  part = 1,
   max.sites = 50000/n.partitions,
-  seed = 123
+  seed = 1
 )
 }
 \arguments{
-\item{tf_cell_table}{a data frame with the first three columns as:
-TF name, cell type, and file name containing the corresponding training data.}
+\item{tf_cell_table}{A data frame containing the information about
+the training TFs, cell types and paths of the training data.
+The first three columns should contain TF name, cell type,
+and file name containing the corresponding training data.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
 
-\item{chip_colname}{The column name of ChIP data in the combined data (default: "chip").}
+\item{chip_colname}{The column name of ChIP data in the combined data
+(default: "chip").}
 
-\item{training_chrs}{Chromosomes used for training the model (default: odd chromosomes)}
+\item{training_chrs}{Chromosomes used for training the model
+(default: odd chromosomes).}
 
-\item{n.partitions}{Total number of partitions to split the training data (default: 10).}
+\item{n.partitions}{Total number of partitions to split the training data
+(default: 10).}
 
-\item{part}{specifies which partition to assemble the training data for}
+\item{part}{An integer between 1 and \code{n.partitions} to specify the
+partition to assemble the training data for.}
 
-\item{max.sites}{Max number of candidate sites in each partition (default: 50000/n.partitions).}
+\item{max.sites}{Max number of candidate sites in each partition
+(default: 50000/n.partitions).}
 
-\item{seed}{seed used when sampling sites (default: 123).}
+\item{seed}{seed used when sampling sites.}
+}
+\value{
+A data frame with the training data set with all TF x cell type combos.
 }
 \description{
-Assemble TOP training data for all TF x cell type combos in one partition
+Prepare the training data for fitting TOP models. It first loads
+the training data for each of the training TF x cell type combos from
+\code{tf_cell_table}, then select the candidate sites in training chromosomes,
+and split the selected candidate sites into partitions (default: 10), and
+assemble training data for all TF x cell type combos for a selected partition.
 }

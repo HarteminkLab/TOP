@@ -2,17 +2,19 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{flip_rev_strand_counts}
 \alias{flip_rev_strand_counts}
-\title{Flip the counts generated from bwtool for motifs on the reverse (minus) strand}
+\title{Flip the counts generated from \code{bwtool} for motifs
+on the reverse (minus) strand}
 \usage{
 flip_rev_strand_counts(sites.df, fwd_matrix_file, rev_matrix_file)
 }
 \arguments{
-\item{sites.df}{data frame containing candidate sites}
+\item{sites.df}{A data frame containing candidate sites}
 
-\item{fwd_matrix_file}{File for count matrix in forward strand}
+\item{fwd_matrix_file}{File for count matrix on forward strand}
 
-\item{rev_matrix_file}{File for count matrix in reverse strand}
+\item{rev_matrix_file}{File for count matrix on reverse strand}
 }
 \description{
-Flip the counts generated from bwtool for motifs on the reverse (minus) strand
+Flip the counts generated from \code{bwtool} for motifs
+on the reverse (minus) strand
 }

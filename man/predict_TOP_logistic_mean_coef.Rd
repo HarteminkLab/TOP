@@ -15,7 +15,7 @@ DNase (or ATAC) bins.
 length(mean_coef) should be equal to 1+ncol(data).}
 }
 \value{
-Returns a vector of predicted TF binding probabilities.
+A data frame of input data and predicted TF binding probability.
 }
 \description{
 Predict TF binding probability using posterior mean of the regression

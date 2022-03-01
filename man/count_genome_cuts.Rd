@@ -30,5 +30,9 @@ count_genome_cuts(
 \item{bedSort_path}{Path to UCSC bedSort executable.}
 }
 \description{
-Count DNase-seq or ATAC-seq cleavage along the genome
+Count genomic cleavage (5' end) from DNase or ATAC-seq bam files
+using the \code{genomecov} tool from \code{bedtools}.
+Then save the output in Bigwig format using
+the \code{bedGraphToBigWig} tool
+(and \code{bedSort} if available) from UCSC.
 }

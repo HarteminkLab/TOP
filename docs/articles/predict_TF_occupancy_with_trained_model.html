@@ -56,10 +56,10 @@
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP quantitative occupancy model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic (binary binding) model</a>
     </li>
   </ul>
 </li>
@@ -148,13 +148,13 @@
 <span class="co">#&gt; CTCF.K562 bottom level model selected. </span>
 <span class="co">#&gt; Model features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span>
-<span class="va">data</span><span class="op">$</span><span class="va">predicted.occupancy</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">predicted</span></code></pre></div>
+<span class="va">predictions</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">predictions</span></code></pre></div>
 <p>Plot predicted occupancy vs. measured occupancy</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_chip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds'</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/scatterplot_predictions.html">scatterplot_predictions</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data_chip</span><span class="op">$</span><span class="va">chip</span><span class="op">)</span>,
-                        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">predicted.occupancy</span><span class="op">)</span>,
+                        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">predictions</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span>,
                         title <span class="op">=</span> <span class="st">'Predicting CTCF occupancy in K562 cell'</span>,
                         xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,
                         ylab <span class="op">=</span> <span class="st">'asinh(predicted occupancy)'</span>,
@@ -185,17 +185,20 @@
 <span class="co">#&gt; CTCF.K562 bottom level model selected. </span>
 <span class="co">#&gt; Model features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF binding probability using TOP logistic model...</span>
-<span class="va">data</span><span class="op">$</span><span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">predicted</span></code></pre></div>
+<span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">predictions</span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, <span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predicted.prob</span>, <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt;    chr start   end  name pwm.score strand  p.value      bin1      bin2 bin3</span>
 <span class="co">#&gt; 1 chr1 11122 11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000    0</span>
 <span class="co">#&gt; 2 chr1 11180 11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134    0</span>
 <span class="co">#&gt; 3 chr1 24681 24900 site3   16.5645      - 1.31e-06 0.0000000 0.0000000    0</span>
-<span class="co">#&gt;   bin4 bin5 predicted.occupancy predicted.prob</span>
-<span class="co">#&gt; 1    0    0           1.6817220     0.05960797</span>
-<span class="co">#&gt; 2    0    0           1.8754262     0.06525858</span>
-<span class="co">#&gt; 3    0    0           0.9999525     0.01412231</span></code></pre></div>
+<span class="co">#&gt;   bin4 bin5  predicted</span>
+<span class="co">#&gt; 1    0    0 0.05960797</span>
+<span class="co">#&gt; 2    0    0 0.06525858</span>
+<span class="co">#&gt; 3    0    0 0.01412231</span>
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">predicted.prob</span><span class="op">$</span><span class="va">predicted</span>, main<span class="op">=</span><span class="st">"Distribution of predicted binding probabiliy"</span>, xlab<span class="op">=</span><span class="st">"P(bound)"</span><span class="op">)</span></code></pre></div>
+<p><img src="predict_TF_occupancy_with_trained_model_files/figure-html/show-TOP-logistic-predictions-1.png" width="700"></p>
 </div>
   </div>
 

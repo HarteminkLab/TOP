@@ -11,12 +11,15 @@ bin_transform_counts(
 )
 }
 \arguments{
-\item{counts}{DNase (or ATAC) count matrix}
+\item{counts}{A matrix of DNase (or ATAC) read counts.}
 
 \item{bin.method}{MILLIPEDE binning scheme (Default: 'M5').}
 
 \item{transform}{Type of transformation for DNase (or ATAC) counts.
 Options: asinh and log2.}
+}
+\value{
+A data frame of binned and transformed counts.
 }
 \description{
 Binning DNase (or ATAC) count matrix

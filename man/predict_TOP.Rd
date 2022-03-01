@@ -32,11 +32,18 @@ otherwise, if TF motif (but not cell type) is available in the training data,
 choose the middle level (TF-specific model) of that TF motif;
 otherwise, use the top level TF-generic model.}
 
-\item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
+\item{logistic.model}{Logical. If TRUE, use the logistic version of TOP model
+to predict TF binding probability. If FALSE, predict quantitative TF occupancy.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 Only needed when logistic.model is FALSE.}
+}
+\value{
+A list containing the results, including selected hierarchy level,
+TOP model name, regression coefficients (posterior mean),
+and prediction results.
+Predicted values are in the same order as the input data.
 }
 \description{
 Predict quantitative TF occupancy or TF binding probability

@@ -7,9 +7,6 @@ navbar:
     home:
       icon: fa-home fa-lg
       href: index.html
-    reference:
-      text: Reference
-      href: reference/index.html
     articles:
       text: Tutorials
       menu:
@@ -17,7 +14,10 @@ navbar:
         href: articles/data_preparation.html
       - text: Predict TF occupancy using trained TOP model
         href: articles/predict_TF_occupancy_with_trained_model.html
-      - text: Train TOP model
+      - text: Train TOP quantitative occupancy model
         href: articles/train_TOP_model.html
-      - text: Train TOP logistic model
+      - text: Train TOP logistic (binary binding) model
         href: articles/train_TOP_logistic_model.html
+    reference:
+      text: Reference
+      href: reference/index.html

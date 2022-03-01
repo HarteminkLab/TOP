@@ -12,14 +12,23 @@ add_chip_peak_labels_to_sites(
 )
 }
 \arguments{
-\item{sites.df}{data frame containing the candidate sites}
+\item{sites.df}{A data frame containing the candidate sites}
 
 \item{chip_peak_file}{ChIP-seq peak file (.bed.gz format)}
 
 \item{chip_peak_sampleID}{ENCODE sample ID of ChIP-seq peaks (.bed.gz format)}
 
-\item{chip_peak_dir}{Directory of ChIP-seq peaks}
+\item{chip_peak_dir}{Directory to save the downloaded ChIP-seq peaks}
+}
+\value{
+A data frame of candidate sites and binary ChIP-seq peak labels
+(bound: 1, unbound: 0).
 }
 \description{
-Add ChIP-seq peak labels to the candidate sites
+Add ChIP-seq peak labels to the candidate sites.
+It uses ChIP-seq peaks from \code{chip_peak_file} if available.
+If \code{chip_peak_file} is not available, it will download the
+ChIP-seq peaks from ENCODE database using
+the sample ID provided in \code{chip_peak_sampleID}, and
+(and save to the directory \code{chip_peak_dir}).
 }

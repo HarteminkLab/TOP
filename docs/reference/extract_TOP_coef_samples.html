@@ -38,10 +38,10 @@
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP quantitative occupancy model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic (binary binding) model</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -82,14 +82,15 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>TOP_samples</dt>
-<dd><p>TOP samples combined from all partitions.</p></dd>
+<dd><p>TOP samples combined from all partitions using
+<code>combine_TOP_samples</code>.</p></dd>
 <dt>tf_cell_combos</dt>
-<dd><p>a table of TF x cell type combinations,
-included in the training data.</p></dd>
+<dd><p>A table listing all TF x cell type combinations
+used for training TOP model.</p></dd>
 <dt>tf_name</dt>
-<dd><p>TF name of interest.</p></dd>
+<dd><p>TF name.</p></dd>
 <dt>cell_type</dt>
-<dd><p>Cell type of interest.</p></dd>
+<dd><p>Cell type.</p></dd>
 <dt>n.bins</dt>
 <dd><p>Number of DNase or ATAC bins in TOP model (default = 5).</p></dd>
 <dt>level</dt>
@@ -98,6 +99,10 @@ included in the training data.</p></dd>
 'middle' level: TF-specific, cell-type generic,
 'top' level: TF-generic</p></dd>
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>A data frame of posterior samples for TOP's alpha and beta coefficients.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

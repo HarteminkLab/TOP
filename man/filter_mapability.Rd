@@ -13,14 +13,18 @@ filter_mapability(
 }
 \arguments{
 \item{sites.df}{A data frame of candidate binding sites with the first
-6 columns the same as in the BED format}
+6 columns the same as in the BED format.}
 
-\item{mapability_file}{ENCODE mapability bigWig file}
+\item{mapability_file}{ENCODE mapability bigWig file.}
 
 \item{thresh_mapability}{Mapability threshold (default: 0.8)}
 
 \item{bigWigAverageOverBed_path}{path of bigWigAverageOverBed executable}
 }
+\value{
+A data frame of filtered candidate binding sites.
+}
 \description{
-Filter candidate sites by mapability
+Filter candidate sites by mapability threshold. It requires
+\code{bigWigAverageOverBed} tool from UCSC.
 }

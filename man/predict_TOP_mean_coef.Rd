@@ -22,7 +22,7 @@ length(mean_coef) should be equal to 1+ncol(data).}
 the TOP model. Options: asinh, log2, sqrt, none.}
 }
 \value{
-Returns a vector of predicted TF occupancy (posterior mean).
+A data frame of input data and predicted TF occupancy (posterior mean).
 }
 \description{
 Predict TF occupancy using posterior mean of TOP regression

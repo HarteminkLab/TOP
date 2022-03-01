@@ -14,14 +14,15 @@ extract_TOP_coef_samples(
 )
 }
 \arguments{
-\item{TOP_samples}{TOP samples combined from all partitions.}
+\item{TOP_samples}{TOP samples combined from all partitions using
+\code{combine_TOP_samples}.}
 
-\item{tf_cell_combos}{a table of TF x cell type combinations,
-included in the training data.}
+\item{tf_cell_combos}{A table listing all TF x cell type combinations
+used for training TOP model.}
 
-\item{tf_name}{TF name of interest.}
+\item{tf_name}{TF name.}
 
-\item{cell_type}{Cell type of interest.}
+\item{cell_type}{Cell type.}
 
 \item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5).}
 
@@ -29,6 +30,9 @@ included in the training data.}
 'bottom' level: TF- and cell-type- specific,
 'middle' level: TF-specific, cell-type generic,
 'top' level: TF-generic}
+}
+\value{
+A data frame of posterior samples for TOP's alpha and beta coefficients.
 }
 \description{
 Extract alpha and beta coefficients from TOP posterior samples

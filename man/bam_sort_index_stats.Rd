@@ -21,8 +21,10 @@ bam_sort_index_stats(
 
 \item{stats}{Logical. If TRUE, retrieve stats (idxstats) in the index file.}
 
-\item{samtools_path}{Path to samtools executable.}
+\item{samtools_path}{Path to \code{samtools} executable.}
 }
 \description{
-Sort and index the BAM file, and retrieve stats (idxstats)
+Uses \code{samtools} to sort and index the BAM file, and
+retrieve the number of mapped reads using the \code{idxstats} function from
+\code{samtools}.
 }

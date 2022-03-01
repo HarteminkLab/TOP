@@ -2,8 +2,8 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{merge_normalize_bin_transform_counts}
 \alias{merge_normalize_bin_transform_counts}
-\title{Merge counts from multiple replicates, then normalize merged counts,
-then bin and transform counts}
+\title{Merge counts from multiple replicates, then normalize,
+bin and transform the merged counts}
 \usage{
 merge_normalize_bin_transform_counts(
   counts_files,
@@ -25,7 +25,11 @@ merge_normalize_bin_transform_counts(
 \item{transform}{Type of transformation for DNase (or ATAC) counts.
 Options: asinh and log2.}
 }
+\value{
+A data frame of merged, normalized, binned, and transformed counts.
+}
 \description{
-Merge counts from multiple replicates, then normalize merged counts,
-then bin and transform counts
+Merge (sum) read counts from multiple replicate samples,
+normalize the read counts by scaling to the reference library size,
+then bin and transform the merged counts.
 }

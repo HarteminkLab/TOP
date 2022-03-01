@@ -2,7 +2,7 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{get_sites_counts}
 \alias{get_sites_counts}
-\title{Get count matrices around candidate sites}
+\title{Get count matrices around candidate binding sites}
 \usage{
 get_sites_counts(
   sites.df,
@@ -13,16 +13,28 @@ get_sites_counts(
 )
 }
 \arguments{
-\item{sites.df}{data frame containing candidate sites}
+\item{sites.df}{A data frame containing candidate sites}
 
 \item{genomecount_dir}{Directory for genome counts}
 
 \item{genomecount_name}{File prefix for genome counts}
 
-\item{tmpdir}{temporary directory to save intermediate files, default: genomecount_dir}
+\item{tmpdir}{Temporary directory to save intermediate files}
 
-\item{bwtool_path}{Path to bwtool executable.}
+\item{bwtool_path}{Path to \code{bwtool} executable.}
+}
+\value{
+A count matrix. The first half of the columns
+are the read counts on the forward strand, and the second half of the
+columns are the read counts on the reverse strand.
 }
 \description{
-Get count matrices around candidate sites
+Extract counts around candidate binding sites on both strands
+from the genome counts (BigWig files prepared using \code{count_genome_cuts}).
+It utilizes the \code{extract bed} function from the \code{bwtool} software
+to extract the read counts.
+Then combine the counts into one matrix, with the first half of the columns
+representing the read counts on the forward strand,
+and the second half of the columns representing the read counts
+on the reverse strand.
 }

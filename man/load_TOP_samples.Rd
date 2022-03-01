@@ -2,19 +2,23 @@
 % Please edit documentation in R/TOP_model_utils.R
 \name{load_TOP_samples}
 \alias{load_TOP_samples}
-\title{Load TOP posterior samples}
+\title{Load and process TOP posterior samples}
 \usage{
 load_TOP_samples(TOP_samples_file, thin = 1, n.samples = 1000)
 }
 \arguments{
-\item{TOP_samples_file}{file names of the posterior samples from all partitions}
+\item{TOP_samples_file}{File name of the posterior samples}
 
-\item{thin}{thinning rate of extract the posterior samples,
-must be a positive integer (default = 1, no thin).}
+\item{thin}{Thinning rate of extract the posterior samples,
+must be a positive integer (default = 1, no thinning performed).}
 
 \item{n.samples}{Randomly choose n.samples posterior samples,
-when the number of posterior samples is greater than n.samples.}
+when the number of posterior samples is greater than \code{n.samples}.}
+}
+\value{
+A data frame of posterior samples.
 }
 \description{
-Load TOP posterior samples
+Load posterior samples in \code{TOP_samples_file},
+perform thinning, and sampling of the posterior samples if needed.
 }

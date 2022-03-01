@@ -39,10 +39,10 @@ using MILLIPEDE binning and then take asinh (or log2) transform"><!-- mathjax --
       <a href="../articles/predict_TF_occupancy_with_trained_model.html">Predict TF occupancy using trained TOP model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_model.html">Train TOP model</a>
+      <a href="../articles/train_TOP_model.html">Train TOP quantitative occupancy model</a>
     </li>
     <li>
-      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic model</a>
+      <a href="../articles/train_TOP_logistic_model.html">Train TOP logistic (binary binding) model</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -81,13 +81,17 @@ using MILLIPEDE binning and then take asinh (or log2) transform</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>counts</dt>
-<dd><p>DNase (or ATAC) count matrix</p></dd>
+<dd><p>A matrix of DNase (or ATAC) read counts.</p></dd>
 <dt>bin.method</dt>
 <dd><p>MILLIPEDE binning scheme (Default: 'M5').</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for DNase (or ATAC) counts.
 Options: asinh and log2.</p></dd>
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>A data frame of binned and transformed counts.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

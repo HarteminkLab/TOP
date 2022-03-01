@@ -2,17 +2,25 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{millipede_binning}
 \alias{millipede_binning}
-\title{Perform MILLIPEDE binning on counts}
+\title{Perform MILLIPEDE binning on count matrix}
 \usage{
 millipede_binning(counts, combine_strands = c("vertical", "motif"))
 }
 \arguments{
-\item{counts}{Counts matrix, rows are candidate sites,
-columns are DNase or ATAC counts with 100bp flanks around motifs in forward and reverse strands}
+\item{counts}{A matrix of read counts around candidate sites,
+rows are candidate sites,
+columns are DNase or ATAC counts with 100bp flanks around motifs
+on the forward and reverse strands.}
 
-\item{combine_strands}{Method to combine counts from M24 bins in both strands to M12 bins:
+\item{combine_strands}{Method to combine counts from M24 bins
+on both strands to M12 bins:
 'vertical' (default) or 'motif'.}
 }
+\value{
+A list containing binning results (data frames) using different
+binning schemes.
+}
 \description{
-Perform MILLIPEDE binning on counts
+Perform binning using different MILLIPEDE binning schemes
+(M24, M12, M5, M3, M2, M1) on the input count matrix.
 }

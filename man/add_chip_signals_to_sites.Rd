@@ -13,17 +13,23 @@ add_chip_signals_to_sites(
 )
 }
 \arguments{
-\item{sites.df}{data frame containing the candidate sites}
+\item{sites.df}{A data frame containing the candidate sites}
 
-\item{chip_signal_file}{ChIP-seq signal file (.bigWig format)}
+\item{chip_signal_file}{ChIP-seq signal file (BigWig format).}
 
-\item{chip_signal_sampleID}{ENCODE sample ID of ChIP-seq signals (.bigWig format)}
+\item{chip_signal_sampleID}{ENCODE sample ID of ChIP-seq signals (BigWig format).}
 
-\item{chip_signal_dir}{Directory of ChIP-seq signals}
+\item{chip_signal_dir}{Directory to save the downloaded ChIP-seq signals.}
 
-\item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable
-(default: bigWigAverageOverBed)}
+\item{bigWigAverageOverBed_path}{Path to \code{bigWigAverageOverBed} executable.}
+}
+\value{
+A data frame of candidate sites and ChIP-seq signals.
 }
 \description{
-Add ChIP-seq signals to the candidate sites
+Add ChIP-seq signals to the candidate sites.
+It uses ChIP-seq signals (in BigWig format) from \code{chip_signal_file}.
+If \code{chip_peak_file} is not available, it will download the
+ChIP-seq signals from ENCODE database using
+the sample ID provided in \code{chip_signal_sampleID}.
 }

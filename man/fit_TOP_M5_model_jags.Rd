@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_TOP_models.R
 \name{fit_TOP_M5_model_jags}
 \alias{fit_TOP_M5_model_jags}
-\title{Fit TOP quantitative occupancy model with M5 bins using JAGS}
+\title{Fit TOP quantitative occupancy model with M5 bins}
 \usage{
 fit_TOP_M5_model_jags(
   data,
@@ -36,6 +36,10 @@ which will only thin if there are at least 2000 simulations.}
 
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}
 }
+\value{
+A jagsfit object from \code{R2jags}.
+}
 \description{
-Fit TOP quantitative occupancy model with M5 bins using JAGS
+Fit TOP quantitative occupancy model with M5 bins using JAGS.
+The R2jags package \code{\link[R2jags]{R2jags}} is required.
 }

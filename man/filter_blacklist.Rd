@@ -2,7 +2,7 @@
 % Please edit documentation in R/sites_utils.R
 \name{filter_blacklist}
 \alias{filter_blacklist}
-\title{Filter candidate sites in ENCODE blacklist regions}
+\title{Filter candidate sites in blacklist regions}
 \usage{
 filter_blacklist(sites.df, blacklist_file)
 }
@@ -11,6 +11,9 @@ filter_blacklist(sites.df, blacklist_file)
 
 \item{blacklist_file}{ENCODE blacklist file}
 }
+\value{
+A data frame of filtered candidate binding sites.
+}
 \description{
-Filter candidate sites in ENCODE blacklist regions
+Filter out candidate sites in ENCODE blacklist regions.
 }

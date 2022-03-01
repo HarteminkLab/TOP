@@ -11,6 +11,10 @@ flank_fimo_sites(fimo_file, flank = 100)
 
 \item{flank}{Flanking region (bp) around motif matches (default: 100)}
 }
+\value{
+A data frame of candidate binding sites with flanking regions.
+}
 \description{
-Get candidate sites using FIMO motifs with flanking regions
+Get candidate sites from FIMO motif matches and
+add flanking regions.
 }

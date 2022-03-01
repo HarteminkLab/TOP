@@ -2,17 +2,23 @@
 % Please edit documentation in R/TOP_model_utils.R
 \name{extract_TOP_mean_coef}
 \alias{extract_TOP_mean_coef}
-\title{Compute TOP posterior mean coefficients for all three levels of TOP model}
+\title{Extract the posterior mean coefficients for each level of TOP model}
 \usage{
 extract_TOP_mean_coef(TOP_samples, tf_cell_combos, n.bins = 5)
 }
 \arguments{
-\item{TOP_samples}{TOP samples combined from all partitions}
+\item{TOP_samples}{TOP samples combined from all partitions using
+\code{combine_TOP_samples}.}
 
-\item{tf_cell_combos}{a table of TF x cell type combinations}
+\item{tf_cell_combos}{A table listing all TF x cell type combinations
+used for training TOP model.}
 
 \item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
 }
+\value{
+A list of posterior mean coefficients at each level of TOP model.
+}
 \description{
-Compute TOP posterior mean coefficients for all three levels of TOP model
+Extract alpha and beta coefficients from TOP posterior samples,
+and return the mean of coefficients at each level of TOP model.
 }

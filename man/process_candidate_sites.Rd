@@ -34,6 +34,12 @@ candidate sites need to be mapable at least 80\% positions).}
 \item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable
 (only needed when filtering mapability).}
 }
+\value{
+A data frame of processed candidate binding sites
+passing the threshold filtering.
+}
 \description{
-Obtain and filter candidate sites from FIMO result
+Get candidate sites from FIMO motif matches and
+add flanking regions, and filter the candidate sites by different thresholds,
+and filter out sites in blacklist regions.
 }

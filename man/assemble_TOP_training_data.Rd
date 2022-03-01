@@ -13,7 +13,7 @@ assemble_TOP_training_data(
   n.partitions = 10,
   n.cores = n.partitions,
   max.sites = 50000,
-  seed = 123
+  seed = 1
 )
 }
 \arguments{
@@ -22,20 +22,29 @@ TF name, cell type, and file name containing the corresponding training data.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
 
-\item{chip_colname}{The column name of ChIP data in the combined data (default: "chip").}
+\item{chip_colname}{The column name of ChIP data in the combined data
+(default: "chip").}
 
-\item{training_chrs}{Chromosomes used for training the model (default: odd chromosomes)}
+\item{training_chrs}{Chromosomes used for training the model
+(default: odd chromosomes)}
 
 \item{n.partitions}{Total number of partitions to split the training data (default: 10).}
 
 \item{n.cores}{Number of cores to use in parallel
 (default: equal to the number of partitions).}
 
-\item{max.sites}{Max number of candidate sites in each partition (default: 50000/n.partitions).}
+\item{max.sites}{Max number of candidate sites in each partition
+(default: 50000/n.partitions).}
 
-\item{seed}{seed used when sampling sites (default: 123).}
+\item{seed}{seed used when sampling sites.}
+}
+\value{
+A list of data frames, each containing one partition of the
+training data set with all TF x cell type combos.
 }
 \description{
-Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions
+Prepare the training data for fitting TOP models.
+It split training data into 10 partitions and
+assemble training data for all TF x cell type combos for each of the partitions
+using the function \code{assemble_partition_training_data}.
 }
