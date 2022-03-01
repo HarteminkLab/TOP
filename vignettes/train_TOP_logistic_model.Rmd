@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 Load TOP R package
 ---------------------
 
-```{r load-TOP-package, eval = FALSE}
+```{r load-TOP-package, eval=FALSE}
 library(TOP)
 ```
 
@@ -52,7 +52,7 @@ TF names, cell types, and paths to the training data files, like:
 Assemble training data for all training TF-cell type 
 combinations, then split training data into 10 partitions.
 
-```{r assemble-TOP-logistic-training-data, eval = FALSE}
+```{r assemble-TOP-logistic-training-data, eval=FALSE}
 all_training_data <- assemble_TOP_training_data(tf_cell_table,
                                                 logistic.model = TRUE,
                                                 chip_colname = 'chip_label',
@@ -80,7 +80,7 @@ in parallel on separate compute nodes (if you have access to compute clusters).
 
 **Note**: need to install `R2jags` package to fit TOP models using JAGS.
 
-```{r train-TOP-logistic-model, eval = FALSE}
+```{r train-TOP-logistic-model, eval=FALSE}
 library(R2jags)
 
 TOP_samples_files <- fit_TOP_model(all_training_data, 
@@ -103,17 +103,17 @@ After the training is done, we can combine the posterior samples from the partit
 and obtain the posterior mean of the regression coefficients.
 
 Combine TOP posterior samples from the 10 partitions
-```{r combine-TOP-coef, eval = FALSE}
+```{r combine-TOP-coef, eval=FALSE}
 TOP_samples <- combine_TOP_samples(TOP_samples_files)
 ```
 
 Extract posterior mean coefficients for all three levels
-```{r extract-TOP-mean-coef, eval = FALSE}
+```{r extract-TOP-mean-coef, eval=FALSE}
 TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, tf_cell_combos)
 ```
 
 Save posterior samples and posterior mean of the regression coefficients
-```{r save-samples-coef, eval = FALSE}
+```{r save-samples-coef, eval=FALSE}
 saveRDS(TOP_samples, 'TOP_output/TOP_logistic_M5_combined_posterior_samples.rds')
 saveRDS(TOP_mean_coef, 'TOP_output/TOP_logistic_M5_posterior_mean_coef.rds')
 ```
