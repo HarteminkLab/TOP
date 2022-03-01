@@ -8,7 +8,8 @@ test_that("predict_TOP_mean_coef()", {
 
   mean_coef <- c(intercept = 5, pwm_score = 3, bin = c(1, 3, -1, 2, 1))
 
-  TOP_predictions <- predict_TOP_mean_coef(data, mean_coef, transform = 'asinh')
+  res <- predict_TOP_mean_coef(data, mean_coef, transform = 'asinh')
+  TOP_predictions <- res$predicted
 
   data_full <- as.matrix(data.frame(intercept = 1, data, check.names = F))
   coefficients <- as.matrix(mean_coef, ncol = 1)
