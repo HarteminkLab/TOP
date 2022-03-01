@@ -157,7 +157,7 @@ filter_mapability <- function(sites.df,
   }
 
   if ( system(paste(bigWigAverageOverBed_path,'--help'), ignore.stdout=T, ignore.stderr=T ) != 0 ) {
-    stop( 'bigWigAverageOverBed could not be executed, set bigWigAverageOverBed_path!' )
+    stop( 'bigWigAverageOverBed could not be executed. Please install bigWigAverageOverBed and set bigWigAverageOverBed_path.' )
   }
 
   sites_tmp.df <- sites.df[,1:6]
@@ -169,7 +169,8 @@ filter_mapability <- function(sites.df,
 
   cat('Compute mapability ... \n')
   tmp_mapability_file <- tempfile('mapability')
-  system(paste(bigWigAverageOverBed_path, mapability_file, tmp_mapability_filesites, tmp_mapability_file))
+  cmd <- paste(bigWigAverageOverBed_path, mapability_file, tmp_mapability_filesites, tmp_mapability_file)
+  if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
   sites.df$mapability <- fread(tmp_mapability_file)[,5]
 

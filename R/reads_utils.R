@@ -42,8 +42,8 @@ bam_sort_index_stats <- function(bam_file,
                                  stats=TRUE,
                                  samtools_path='samtools') {
 
-  if ( system( paste(samtools_path,'--help') , ignore.stdout=T,ignore.stderr=T ) != 0 ) {
-    stop('ERROR: samtools could not be executed, set samtools_path!')
+  if ( system( paste(samtools_path,'--help'), ignore.stdout=TRUE,ignore.stderr=TRUE ) != 0 ) {
+    stop('ERROR: samtools could not be executed. Please install samtools and set samtools_path.')
   }
 
   if( missing(outdir) ) {
@@ -61,17 +61,20 @@ bam_sort_index_stats <- function(bam_file,
     # sort and index the bam file
     cat('Sort and index the bam file...\n')
     bam_file_tmp <- paste0(outdir, '/', bam_prefix, '.tmp.bam')
-    system( paste(samtools_path, 'sort', bam_file, '-o', bam_file_tmp) )
+    cmd <- paste(samtools_path, 'sort', bam_file, '-o', bam_file_tmp)
+    if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
     file.rename(from = bam_file_tmp, to = bam_file_sorted)
-    system( paste(samtools_path, 'index', bam_file_sorted) )
+    cmd <- paste(samtools_path, 'index', bam_file_sorted)
+    if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
   }
 
   if( stats ){
     # Get index statistics (including the number of mapped reads in the third column)
     cat('Retrieve and print stats in the index file. Result saved to: ', bam_idxstats, '\n', sep='')
     bam_idxstats <- paste0(outdir, '/', bam_prefix, '.bam.idxstats.txt')
-    system( paste(samtools_path, 'idxstats', bam_file_sorted, '>', bam_idxstats) )
+    cmd <- paste(samtools_path, 'idxstats', bam_file_sorted, '>', bam_idxstats)
+    if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
   }
 
 }

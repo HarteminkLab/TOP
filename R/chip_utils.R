@@ -32,7 +32,7 @@ count_normalize_chip = function(sites.df,
   transform <- match.arg(transform)
 
   if ( Sys.which(bedtools_path) == '' ) {
-    stop( 'bedtools could not be executed, set bedtools_path!' )
+    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path.' )
   }
 
   if ( length(chip_bam_files) == 0 || chip_bam_files == '' || is.na(chip_bam_files)) {
@@ -52,7 +52,7 @@ count_normalize_chip = function(sites.df,
 
   cmd <- paste(bedtools_path, 'coverage -a', sites_file, '-b', chip_bam_files,
                '-counts -sorted -g', chrom_size_file, '>', chip_count_file)
-  system(cmd)
+  if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
   sites_chip.df <- as.data.frame(data.table::fread(chip_count_file))
   colnames(sites_chip.df) <- c(colnames(sites.df), 'chip')
@@ -195,7 +195,7 @@ add_chip_signals_to_sites <- function(sites.df,
                                       bigWigAverageOverBed_path='bigWigAverageOverBed'){
 
   if ( Sys.which(bigWigAverageOverBed_path) == '' ) {
-    stop( 'bigWigAverageOverBed could not be executed, set bigWigAverageOverBed_path!' )
+    stop( 'bigWigAverageOverBed could not be executed. Please install bigWigAverageOverBed and set bigWigAverageOverBed_path.' )
   }
 
   if(is.null(chip_signal_file) || !file.exists(chip_signal_file)){
@@ -220,7 +220,8 @@ add_chip_signals_to_sites <- function(sites.df,
 
   # Take the average signal values in each site
   sites_signals_file <- tempfile('tmp_signals')
-  system( paste(bigWigAverageOverBed_path, chip_signal_file, sites_file, sites_signals_file) )
+  cmd <- paste(bigWigAverageOverBed_path, chip_signal_file, sites_file, sites_signals_file)
+  if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
   sites_signals <- as.data.frame(fread(sites_signals_file))
   colnames(sites_signals) <- c('name', 'size', 'covered', 'sum', 'mean0', 'mean')

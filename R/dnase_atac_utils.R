@@ -301,11 +301,11 @@ count_genome_cuts <- function(bam_file,
 
   # Checking input arguments
   if ( Sys.which(bedtools_path) == "") {
-    stop( 'bedtools could not be executed, set bedtools_path. \n' )
+    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path.' )
   }
 
   if ( Sys.which(bedGraphToBigWig_path) == "" ) {
-    stop( 'bedGraphToBigWig could not be executed, set bedGraphToBigWig_path.\n' )
+    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
   }
 
   if(missing(outdir)){
@@ -332,19 +332,21 @@ count_genome_cuts <- function(bam_file,
     temp_file <- paste0(tools::file_path_sans_ext(out_file), '.bedGraph')
     cmd <- paste(bedtools_path, 'genomecov -bg -5', '-strand', strand,
                  '-ibam', bam_file, '>', temp_file)
-    system(cmd)
+    if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
     # sort .bedGraph file
     cat('Sorting bedGraph ...\n')
     if ( Sys.which(bedSort_path) == "" ) {
-      system( paste("LC_COLLATE=C sort -k1,1 -k2,2n", temp_file, ">", temp_file ))
+      cmd <- paste("LC_COLLATE=C sort -k1,1 -k2,2n", temp_file, ">", temp_file )
     }else{
-      system( paste(bedSort_path, temp_file, temp_file) )
+      cmd <- paste(bedSort_path, temp_file, temp_file)
     }
+    if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
     # Convert bedGraph to Bigwig format
     cat('Converting to Bigwig format ...\n')
-    system(paste(bedGraphToBigWig_path, temp_file, chrom_size_file, out_file))
+    cmd <- paste(bedGraphToBigWig_path, temp_file, chrom_size_file, out_file)
+    if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
     unlink(temp_file)
   }
@@ -378,7 +380,7 @@ get_sites_counts <- function(sites.df,
                              bwtool_path='bwtool') {
 
   if ( Sys.which(bwtool_path) == '' ) {
-    stop( 'bwtool could not be executed, set bwtool_path!' )
+    stop( 'bwtool could not be executed. Please install bwtool and set bwtool_path.' )
   }
 
   genome_fwd_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.fwd.genomecounts.bw'))
@@ -393,11 +395,11 @@ get_sites_counts <- function(sites.df,
   cat('Extract counts around candidate sites ... \n')
   cmd <- paste(bwtool_path, 'extract bed', sites_file,
                genome_fwd_count_file, fwd_matrix_file, '-fill=0 -decimals=0 -tabs')
-  system(cmd)
+  if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
   cmd <- paste(bwtool_path, 'extract bed', sites_file,
                genome_rev_count_file, rev_matrix_file, '-fill=0 -decimals=0 -tabs')
-  system(cmd)
+  if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
   # Flip the counts generated from bwtool for motifs on the reverse strand
   cat('Flip the counts for motifs on the reverse strand ... \n')
