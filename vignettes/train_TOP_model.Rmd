@@ -27,11 +27,26 @@ Prepare training data
 
 TOP jointly fits a Bayesian hierarchical model using available training data 
 from many TFs in many cell types. 
-Thus, it takes a lot of efforts to prepare the entire training data set.
 
-**Step 1: Create a table listing all the training data**
+As we learn the parameters from many TFs in many cell types together, 
+it takes some efforts to prepare the training data. 
 
-First, we create a table (data frame) listing all training TF x cell type 
+**Step 1: Prepare training data for each TF in each cell type**
+
+Firstly, we need to prepare training data
+for each training TF x cell type combination, and save the training data files 
+(as `.rds` files in the `data_file` column in the table below).
+
+This [page](data_preparation.html) shows the procedure to prepare the training data.
+Basically, for each TF in each cell type, 
+we prepare training data for candidate binding sites:
+including: PWM scores of the motif matches, 
+DNase (or ATAC) counts in MILLIPEDE bins, 
+and measured TF occupancy (from ChIP-seq data).
+
+**Step 2: Assemble training data for all TF x cell type combinations**
+
+We create a table (data frame) listing all training TF x cell type 
 combinations. The table should have three columns:
 TF names, cell types, and paths to the training data files, like:
 
@@ -44,43 +59,20 @@ TF names, cell types, and paths to the training data files, like:
 |     MYC      |     K562      |   MYC.K562.data.rds      |
 |     ...      |     ...       |   ...                    |
 
-We will use this table when assembling the training data. 
+In the example below, we split the training data randomly into 10 equal partitions, 
+so that we could run Gibbs sampling on these partitions separately in parallel to
+reduce the running time. 
 
-**Step 2: Prepare training data for each TF in each cell type**
-
-Firstly, we will need to prepare a training set
-for each training TF x cell type combination, and save the training data files 
-(as the `.rds` files listed in the `data_file` column in the table above).
-
-In specific, for each TF in each cell type, 
-we prepare training data for candidate binding sites:
-including: PWM scores, DNase (or ATAC) bins, 
-and measured TF occupancy (from ChIP-seq data).
-
-This [page](data_preparation.html) shows the procedure to prepare the training data.
-
-**Step 3: Assemble training data for all TF x cell type combinations**
-
-Now we will use the above table with all TF x cell type combinations to assemble 
-all the training data prepared in the earlier step. 
-
-When fitting the model, we use the consensus Monte Carlo algorithm 
-(Scott et al., 2016), a parallel technique to reduce the running time of 
-the Gibbs sampler while maintaining predictive performance. 
-
-Use the following `assemble_TOP_training_data` function, 
-we split training data randomly into 10 equal partitions. 
-
-We can choose the training chromosomes by specifying the chromosomes in 
-`training_chrs`, for example the odd chromosomes (as in the example below).
-The chromosome names ("chr...") should match with those in the training data.
+We choose the training chromosomes by specifying the chromosomes in 
+`training_chrs`, for example using odd chromosomes as below.
+(The chromosome names ("chr...") should match with those in the training data.)
 
 ```{r assemble-TOP-training-data, eval=FALSE}
-assembled_training_data <- assemble_TOP_training_data(tf_cell_table,
-                                                      logistic.model = FALSE,
-                                                      chip_colname = 'chip',
-                                                      training_chrs = paste0('chr', seq(1,21,2)), 
-                                                      n.partitions = 10)
+assembled_training_data <- assemble_training_data(tf_cell_table,
+                                                  logistic.model = FALSE, # do not use logistic model
+                                                  chip_colname = 'chip', # name of the column with ChIP occupancy in training data
+                                                  training_chrs = paste0('chr', seq(1,21,2)), 
+                                                  n.partitions = 10)
 ```
 
 Save a table listing all TF and cell type combinations. 
@@ -96,12 +88,14 @@ Here, we fit TOP quantitative occupancy models with ChIP-seq read counts.
 To fit TOP logistic models with ChIP-seq binary labels, 
 please follow this [tutorial](train_TOP_logistic_model.htmll).
 
-As mentioned above, we use the consensus Monte Carlo algorithm, and run 
+We use the consensus Monte Carlo algorithm to run 
 Gibbs sampling on each of the 10 training data partitions separately in parallel.
 
 We fit TOP models using [JAGS](https://mcmc-jags.sourceforge.io), 
-and we uses the [R2jags](https://cran.r-project.org/web/packages/R2jags/) R package to call JAGS from R.
-Please install `R2jags` if you need to fit your own TOP models. 
+and we uses the [R2jags](https://cran.r-project.org/web/packages/R2jags/) 
+R package to call JAGS from R.
+
+Please install `R2jags` if you need to train your own TOP models. 
 ```{r load-R2jags, eval=FALSE}
 library(R2jags)
 ```
@@ -114,7 +108,7 @@ more bins, or other genomic features.
 model_file <- '../model/TOP_M5_model.jags'
 ```
 
-The `fit_TOP_model` function runs Gibbs sampling for each of the 10 partitions 
+The `fit_TOP_model` function below runs Gibbs sampling for each of the 10 partitions 
 in parallel (using the `foreach` R package). 
 
 We first perform "asinh" transform to the training ChIP-seq counts,
@@ -157,7 +151,7 @@ Combine TOP posterior samples from all partitions and extract the posterior mean
 
 After we finished Gibbs sampling for all 10 partitions, 
 we combine the posterior samples from all the partitions.
-```{r combine-TOP-coef, eval=FALSE}
+```{r combine-TOP-samples, eval=FALSE}
 TOP_samples <- combine_TOP_samples(TOP_samples_files)
 dim(TOP_samples)
 ```
