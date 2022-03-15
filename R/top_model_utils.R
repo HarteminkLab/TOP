@@ -16,7 +16,7 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
   }
   TOP_samples <- readRDS(TOP_samples_file)
 
-  # merge multiple MCMC chains
+  # Combine multiple MCMC chains
   if ( is.list(TOP_samples) ){
     TOP_samples <- as.data.frame(do.call(rbind, TOP_samples))
   }

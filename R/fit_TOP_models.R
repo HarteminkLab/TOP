@@ -63,8 +63,8 @@ fit_TOP_M5_model <- function(all_training_data,
   registerDoParallel(cores=n.cores)
   cat('Using', getDoParWorkers(), 'cores. \n')
 
-  # We can also submit jobs for each of the partitions
-  # on separate nodes on compute clusters.
+  # We can also run each of the partitions
+  # on separate compute nodes.
   TOP_samples_files <- foreach(k=partitions, .combine = "rbind") %dopar% {
 
     if(length(all_training_data) == 10){
@@ -160,7 +160,7 @@ fit_TOP_M5_model_jags <- function(data,
                         n_tfs = length(unique(data$tf_id)),
                         n_cell_types = length(unique(data$cell_id)))
 
-  # List parameters to be monitored
+  # List parameters to save
   model.params <- c('A', 'Alpha', 'alpha',
                     'Beta1', 'Beta2', 'Beta3', 'Beta4','Beta5', 'Beta6',
                     'B1', 'B2', 'B3', 'B4', 'B5', 'B6',
@@ -182,8 +182,9 @@ fit_TOP_M5_model_jags <- function(data,
 }
 
 
-#' @title Fit TOP binary (logistic) model with M5 bins
-#' @description Fit TOP binary (logistic) model with M5 bins using JAGS.
+#' @title Fit TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.
+#' @description Fit TOP logistic model with M5 DNase (or ATAC) bins and
+#' binary ChIP labels using JAGS.
 #' The R2jags package \code{\link[R2jags]{R2jags}} is required.
 #' @param data a data frame containing the combined training data.
 #' @param model.file file containing the TOP model written in BUGS code.
@@ -231,13 +232,13 @@ fit_TOP_logistic_M5_model_jags <- function(data,
                         n_tfs = length(unique(data$tf_id)),
                         n_cell_types = length(unique(data$cell_id)))
 
-  # List parameters to be monitored
+  # List parameters to save
   model.params <- c('A', 'Alpha','alpha',
                     'Beta1', 'Beta2', 'Beta3', 'Beta4','Beta5', 'Beta6',
                     'B1', 'B2', 'B3', 'B4', 'B5', 'B6',
                     'beta1', 'beta2', 'beta3', 'beta4','beta5', 'beta6')
 
-  # Fit Top M5 model using R2jags
+  # Fit Top M5 logistic model using R2jags
   jagsfit <- R2jags::jags(data = training.data,
                           parameters.to.save = model.params,
                           model.file = model.file,
