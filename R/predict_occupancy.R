@@ -47,6 +47,10 @@ predict_TOP <- function(data,
   }
 
   selected.model <- select_model_coef_level(tf_name, cell_type, TOP_coef, level)
+  if(anyNA(selected.model$coef)){
+    stop(paste0(level, ' level cefficients are not available for ', tf_name,
+                ' in ', cell_type, '. Try a different "level".'))
+  }
 
   if(logistic.model == FALSE) {
     transform <- match.arg(transform)
@@ -264,12 +268,12 @@ select_model_coef_level <- function(tf_name,
   level <- match.arg(level)
   # convert TF names to upper case (as we use upper case for TF names in training)
   tf_name <- base::toupper(tf_name)
-  cat('Choose model for', tf_name, 'in', cell_type, '...\n')
   bottom_level_mean_coef <- TOP_mean_coef$bottom
   middle_level_mean_coef <- TOP_mean_coef$middle
   top_level_mean_coef <- TOP_mean_coef$top
 
   if(level == 'best'){
+    cat('Find the best available model for', tf_name, 'in', cell_type, '...\n')
     ## load model, using lower level model if available
     tf_cell_name <- paste(tf_name, cell_type, sep = '.')
     if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
@@ -285,14 +289,14 @@ select_model_coef_level <- function(tf_name,
       model_level <- 'top'
       model_name <- 'TF-generic'
     }
-    cat(model_name, model_level, 'level model selected. \n')
+    cat('Choose the', model_level, 'level model...\n')
   }else if (level == 'bottom'){
     tf_cell_name <- paste(tf_name, cell_type, sep = '.')
     if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
       model_coef <- bottom_level_mean_coef[tf_cell_name, ]
       model_level <- 'bottom'
       model_name <- tf_cell_name
-      cat(model_name, model_level, 'level model selected. \n')
+      cat('Choose the', model_level, 'level model for', tf_name, 'in', cell_type, '...\n')
     } else{
       model_coef <- NA
       model_level <- 'bottom'
@@ -304,7 +308,7 @@ select_model_coef_level <- function(tf_name,
       model_coef <- middle_level_mean_coef[tf_name, ]
       model_level <- 'middle'
       model_name <- tf_name
-      cat(model_name, model_level, 'level model selected. \n')
+      cat('Choose the', model_level, 'level model for', tf_name, '...\n')
     } else{
       model_coef <- NA
       model_level <- 'middle'
@@ -315,7 +319,7 @@ select_model_coef_level <- function(tf_name,
     model_coef <- top_level_mean_coef
     model_level <- 'top'
     model_name <- 'TF-generic'
-    cat(model_name, model_level, 'level model selected. \n')
+    cat('Choose the', model_level, 'level model... \n')
   }
 
   return(list(level = model_level,
