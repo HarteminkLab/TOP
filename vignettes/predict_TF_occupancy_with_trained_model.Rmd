@@ -23,12 +23,15 @@ library(ggplot2)
 
 Load data
 -----------
-The input data should be a data frame, including six columns.
 
-Columns from left to right should be PWM scores and 5 DNase (or ATAC) bins. 
+To make predictions using trained TOP models, 
+we first need to prepare the input data as a data frame, with six columns.
+
+Columns from left to right are PWM scores and five DNase (or ATAC) bins. 
 
 You can follow this [page](data_preparation.html) to prepare the input data. 
 
+Let's load an example ATAC-seq dataset to predict CTCF occupancy in K562 cell type. 
 ```{r load-combined-data, eval=TRUE}
 data <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
 head(data,3)
@@ -37,66 +40,127 @@ head(data,3)
 
 Load pre-trained TOP models
 --------------------------------
-We will provide pre-trained models using ENCODE data 
-[here](https://users.cs.duke.edu/~amink/software/).
 
-Load trained TOP model regression coefficients
-```{r load-TOP-posterior-mean-coef, eval=TRUE}
-TOP_coef <- readRDS('../inst/trained_model_coef/ATAC/TOP_M5_posterior_mean_coef.rds')
-summary(TOP_coef)
-```
+We have trained models for DNase-seq and ATAC-seq using ENCODE data. 
+
+The pre-trained model parameters can be downloaded from 
+[here](https://users.cs.duke.edu/~amink/software/).
 
 Predict TF occupancy using trained TOP model
 ------------------------------------------------
 
-Predict CTCF occupancy in K562 cell type using bottom level regression coefficients for CTCF in K562
-```{r predict-TOP-mean-coef, eval=TRUE}
-res <- predict_TOP(data, 
-                   tf_name = 'CTCF',
-                   cell_type = 'K562',
-                   TOP_coef = TOP_coef, 
-                   level = 'bottom',
-                   logistic.model = FALSE, 
-                   transform = 'asinh')
-predictions <- res$predictions
+We can make predictions using the posterior mean of 
+pre-trained TOP model regression coefficients for ATAC-seq. 
+
+```{r load-TOP-posterior-mean-coef, eval=TRUE}
+TOP_coef <- readRDS('../inst/trained_model_coef/ATAC/TOP_M5_posterior_mean_coef.rds')
 ```
 
-Plot predicted occupancy vs. measured occupancy
+Now we can predict CTCF occupancy in K562 cell type using the `predict_TOP` function:
+
+We can choose the "bottom" level regression coefficients 
+as we have CTCF ChIP data from K562 cell type in our training set. 
+```{r predict-TOP-mean-coef-bottom, eval=TRUE}
+TOP_result <- predict_TOP(data, 
+                          tf_name = 'CTCF', # predict CTCF in K562 cell
+                          cell_type = 'K562', 
+                          TOP_coef = TOP_coef, 
+                          level = 'bottom', # use the best available level
+                          logistic.model = FALSE, # use the quantitative occupancy model
+                          transform = 'asinh') # we used asinh transformation on the ChIP data when training the model
+```
+
+Or, we can select the "best" available level of coefficients 
+for the TF and cell type of interest. 
+In this case, the "bottom" level is the best level.
+```{r predict-TOP-mean-coef-best, eval=TRUE}
+TOP_result <- predict_TOP(data, 
+                          tf_name = 'CTCF', # predict CTCF in K562 cell
+                          cell_type = 'K562', 
+                          TOP_coef = TOP_coef, 
+                          level = 'best', # use the best available level
+                          logistic.model = FALSE, # use the quantitative occupancy model
+                          transform = 'asinh') # we used asinh transformation on the ChIP data when training the model
+```
+This result contains a list with the level of model, 
+regression coefficients (posterior mean) used to make predictions, 
+and predictions of TF occupancy. 
+
+The prediction result contains the training data together with predicted 
+TF occupancy for each candidate site:
+```{r}
+TOP_predictions <- TOP_result$predictions
+
+head(TOP_predictions, 5)
+```
+
+We can plot the predicted occupancy vs. measured occupancy
 ```{r plot-predicted-measured, eval=TRUE, fig.width=5, fig.height=5}
 data_chip <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
 
 scatterplot_predictions(x = asinh(data_chip$chip),
-                        y = asinh(predictions$predicted),
+                        y = asinh(TOP_predictions$predicted),
                         title = 'Predicting CTCF occupancy in K562 cell',
                         xlab = 'asinh(measured occupancy)',
-                        ylab = 'asinh(predicted occupancy)',
+                        ylab = 'asinh(predicted occupancy using bottom level coefficients)',
                         xlim = c(0,8),
                         ylim = c(0,8))
 ```
 
+We can also try the "middle" level regression coefficients for CTCF, 
+which are cell-type generic, thus could be used to predict CTCF in any cell types.
+```{r predict-TOP-mean-coef-middle, eval=TRUE}
+TOP_middle_result <- predict_TOP(data, 
+                          tf_name = 'CTCF', # predict CTCF in K562 cell
+                          cell_type = 'K562', 
+                          TOP_coef = TOP_coef, 
+                          level = 'middle', # use the best available level
+                          logistic.model = FALSE, # use the quantitative occupancy model
+                          transform = 'asinh') # we used asinh transformation on the ChIP data when training the model
+
+TOP_middle_predictions <- TOP_middle_result$predictions
+```
+
+We can see the performance of the "middle" level model is very close to the "bottom" level.
+```{r plot-predicted-measured-middle, eval=TRUE, fig.width=5, fig.height=5}
+data_chip <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
+
+scatterplot_predictions(x = asinh(data_chip$chip),
+                        y = asinh(TOP_middle_predictions$predicted),
+                        title = 'Predicting CTCF occupancy in K562 cell',
+                        xlab = 'asinh(measured occupancy)',
+                        ylab = 'asinh(predicted occupancy using middle level coefficients)',
+                        xlim = c(0,8),
+                        ylim = c(0,8))
+```
+
+
 Predict TF binding probability using trained TOP logistic model
 ------------------------------------------------------------------
 
-Load trained TOP model regression coefficients
+We can also predict TF binding probability for these candidate sites using 
+pre-trained TOP logistic model.
+
+Load pre-trained TOP logistic regression coefficients:
 ```{r load-TOP-logistic-posterior-mean-coef, eval=TRUE}
 TOP_logistic_coef <- readRDS('../inst/trained_model_coef/ATAC/TOP_logistic_M5_posterior_mean_coef.rds')
-summary(TOP_logistic_coef)
 ```
 
-Predict CTCF binding probability in K562 cell type using bottom level logistic regression coefficients for CTCF in K562
+Predict CTCF binding probability in K562 cell type using the "bottom" level 
+logistic regression coefficients:
 ```{r predict-TOP-logistic-mean-coef, eval=TRUE}
-res <- predict_TOP(data, 
-                   tf_name = 'CTCF',
-                   cell_type = 'K562',
-                   TOP_coef = TOP_logistic_coef, 
-                   level = 'bottom',
-                   logistic.model = TRUE)
-predicted.prob <- res$predictions
+TOP_result <- predict_TOP(data, 
+                          tf_name = 'CTCF',
+                          cell_type = 'K562',
+                          TOP_coef = TOP_logistic_coef, 
+                          level = 'bottom',
+                          logistic.model = TRUE)
+predicted.prob <- TOP_result$predictions
+
+head(predicted.prob, 5)
 ```
 
-```{r show-TOP-logistic-predictions, eval=TRUE}
-head(predicted.prob, 3)
-
+```{r show-TOP-logistic-predictions, eval=TRUE, fig.height=3, fig.width=5}
 hist(predicted.prob$predicted, main="Distribution of predicted binding probabiliy", xlab="P(bound)")
 ```
 
