@@ -1,5 +1,5 @@
 ---
-title: 'Train TOP model'
+title: 'Train TOP quantitative occupancy model'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Train TOP model}
@@ -25,16 +25,14 @@ library(TOP)
 Prepare training data
 ---------------------
 
-**Step 1: Prepare training data for each TF in each cell type**
+TOP jointly fits a Bayesian hierarchical model using available training data 
+from many TFs in many cell types. 
+Thus, it takes a lot of efforts to prepare the entire training data set.
 
-For each TF in each cell type, prepare training data for candidate binding sites:
-including: PWM scores, DNase (or ATAC) bins, 
-and measured TF occupancy (from ChIP-seq data).
+**Step 1: Create a table listing all the training data**
 
-You can follow this [page](data_preparation.html) to prepare training data.
-
-Create a data frame listing all the TFs and cell types. 
-The data frame should have three columns:
+First, we create a table (data frame) listing all training TF x cell type 
+combinations. The table should have three columns:
 TF names, cell types, and paths to the training data files, like:
 
 |   tf_name    |   cell_type   |        data_file         |
@@ -46,80 +44,130 @@ TF names, cell types, and paths to the training data files, like:
 |     MYC      |     K562      |   MYC.K562.data.rds      |
 |     ...      |     ...       |   ...                    |
 
+We will use this table when assembling the training data. 
 
-**Step 2: Assemble training data for all TF-cell type combinations**
+**Step 2: Prepare training data for each TF in each cell type**
 
-Assemble training data for all training TF-cell type 
-combinations, then split training data into 10 partitions.
+Firstly, we will need to prepare a training set
+for each training TF x cell type combination, and save the training data files 
+(as the `.rds` files listed in the `data_file` column in the table above).
 
-Select the odd chromosomes as training set.
+In specific, for each TF in each cell type, 
+we prepare training data for candidate binding sites:
+including: PWM scores, DNase (or ATAC) bins, 
+and measured TF occupancy (from ChIP-seq data).
+
+This [page](data_preparation.html) shows the procedure to prepare the training data.
+
+**Step 3: Assemble training data for all TF x cell type combinations**
+
+Now we will use the above table with all TF x cell type combinations to assemble 
+all the training data prepared in the earlier step. 
+
+When fitting the model, we use the consensus Monte Carlo algorithm 
+(Scott et al., 2016), a parallel technique to reduce the running time of 
+the Gibbs sampler while maintaining predictive performance. 
+
+Use the following `assemble_TOP_training_data` function, 
+we split training data randomly into 10 equal partitions. 
+
+We can choose the training chromosomes by specifying the chromosomes in 
+`training_chrs`, for example the odd chromosomes (as in the example below).
+The chromosome names ("chr...") should match with those in the training data.
+
 ```{r assemble-TOP-training-data, eval=FALSE}
-all_training_data <- assemble_TOP_training_data(tf_cell_table,
-                                                logistic.model = FALSE,
-                                                chip_colname = 'chip',
-                                                training_chrs = paste0('chr', seq(1,21,2)), 
-                                                n.partitions = 10)
+assembled_training_data <- assemble_TOP_training_data(tf_cell_table,
+                                                      logistic.model = FALSE,
+                                                      chip_colname = 'chip',
+                                                      training_chrs = paste0('chr', seq(1,21,2)), 
+                                                      n.partitions = 10)
 ```
 
 Save a table listing all TF and cell type combinations. 
 This will be used later to extract regression coefficients.
 ```{r tf-cell-combos, eval=FALSE}
-tf_cell_combos <- unique(all_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+tf_cell_combos <- unique(assembled_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
 ```
 
-Train TOP models using assembled training data
-----------------------------------------------
+Fit TOP quantitative occupancy models using assembled training data
+--------------------------------------------------------------------
 
-Fit TOP model for each partition separately, and save the posterior samples.
+Here, we fit TOP quantitative occupancy models with ChIP-seq read counts. 
+To fit TOP logistic models with ChIP-seq binary labels, 
+please follow this [tutorial](train_TOP_logistic_model.htmll).
 
-We can set the following parameters for Gibbs sampling: 
+As mentioned above, we use the consensus Monte Carlo algorithm, and run 
+Gibbs sampling on each of the 10 training data partitions separately in parallel.
+
+We fit TOP models using [JAGS](https://mcmc-jags.sourceforge.io), 
+and we uses the [R2jags](https://cran.r-project.org/web/packages/R2jags/) R package to call JAGS from R.
+Please install `R2jags` if you need to fit your own TOP models. 
+```{r load-R2jags, eval=FALSE}
+library(R2jags)
+```
+
+We provided the TOP model files in JAGS code 
+in the `../model` directory within the package. 
+It is easy to modify the models, e.g. use different priors, 
+more bins, or other genomic features.  
+```{r TOP-model-file, eval=FALSE}
+model_file <- '../model/TOP_M5_model.jags'
+```
+
+The `fit_TOP_model` function runs Gibbs sampling for each of the 10 partitions 
+in parallel (using the `foreach` R package). 
+
+We first perform "asinh" transform to the training ChIP-seq counts,
+then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.
+
+Set the following parameters for Gibbs sampling: 
 
 - n.iter: number of total iterations per chain (including burn-in iterations).
 - n.burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.
 - n.chains: number of Markov chains.
 - n.thin: thinning rate, must be a positive integer.
 
-This step usually takes a long time if we have many TFs and many cell types. 
-To save computation time, we can also run the partitions 
-(choose which partition to run, e.g. `partitions=3`) 
-in parallel on separate compute nodes. 
+The following example runs 10000 iterations of Gibbs sampling in total, 
+with 2000 burn-ins, 3 Markov chains, thinning rate of 2, 
+and save the posterior samples to the `TOP_fit` directory. 
 
-**Note**: need to install `R2jags` package to fit TOP models using JAGS.
+It could take a long time if we have many TFs and many cell types
+in the training data.
 
-```{r train-TOP-model, eval=FALSE}
-library(R2jags)
-
-TOP_samples_files <- fit_TOP_model(all_training_data, 
-                                   model.file = '../jags/TOP_M5_model_jags.bug',
+```{r fit-TOP-model, eval=FALSE}
+TOP_samples_files <- fit_TOP_model(assembled_training_data, 
+                                   model.file = model_file,
                                    logistic.model = FALSE,
                                    out.dir = 'TOP_fit',
-                                   transform = 'asinh', # asinh transform ChIP-seq counts
+                                   transform = 'asinh', 
                                    partitions = 1:10,
                                    n.iter = 10000,
-                                   n.burnin = 5000,
+                                   n.burnin = 2000,
                                    n.chains = 3,
-                                   n.thin = 5,
+                                   n.thin = 2,
                                    quiet = TRUE)
 ```
+
+Alternatively, we can also submit jobs for the partitions
+(choose which partition to run, e.g. `partitions=1`) 
+in parallel to separate compute nodes on a cluster. 
 
 Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients
 ----------------------------------------------------------------------------------------------------------------
 
-After the training is done, we can combine the posterior samples from the partitions,
-and obtain the posterior mean of the regression coefficients.
-
-Combine TOP posterior samples from the 10 partitions.
+After we finished Gibbs sampling for all 10 partitions, 
+we combine the posterior samples from all the partitions.
 ```{r combine-TOP-coef, eval=FALSE}
 TOP_samples <- combine_TOP_samples(TOP_samples_files)
 dim(TOP_samples)
 ```
 
-Extract posterior mean coefficients for all three levels.
+We can extract posterior mean of the coefficients for all three levels.
 ```{r extract-TOP-mean-coef, eval=FALSE}
 TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, tf_cell_combos)
 ```
 
-Save the posterior samples and posterior mean coefficients.
+Save the posterior samples and posterior mean coefficients for predictions.
 ```{r save-samples-coef, eval=FALSE}
 saveRDS(TOP_samples, 'TOP_fit/TOP_M5_combined_posterior_samples.rds')
 saveRDS(TOP_mean_coef, 'TOP_fit/TOP_M5_posterior_mean_coef.rds')
@@ -130,5 +178,5 @@ We will provide pre-trained models using ENCODE data
 
 To make predictions for TF occupancy using new DNase- or ATAC-seq data 
 using trained model coefficients,
-see this [page](predict_TF_occupancy_with_trained_model.html)
+please follow this tutorial ["Predict TF occupancy using trained TOP model"](predict_TF_occupancy_with_trained_model.html).
 
