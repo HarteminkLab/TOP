@@ -6,7 +6,7 @@
 #' @param all_training_data_files A vector of the assembled training data
 #' files of all partitions. If all_training_data is missing,
 #' it will load the training data from all_training_data_files.
-#' @param model.file File name containing the TOP model written in BUGS code.
+#' @param model.file TOP model file written in JAGS.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
 #' @param out.dir Output directory for TOP model posterior samples.
 #' @param transform Type of transformation for ChIP counts.
@@ -102,7 +102,7 @@ fit_TOP_M5_model <- function(all_training_data,
 #' The R2jags package \code{\link[R2jags]{R2jags}} is required.
 
 #' @param data a data frame containing the combined training data.
-#' @param model.file file containing the TOP model written in BUGS code.
+#' @param model.file TOP model file written in JAGS.
 #' @param transform Type of transformation for ChIP counts.
 #' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 #' @param n.iter number of total iterations per chain (including burn in).
@@ -187,7 +187,7 @@ fit_TOP_M5_model_jags <- function(data,
 #' binary ChIP labels using JAGS.
 #' The R2jags package \code{\link[R2jags]{R2jags}} is required.
 #' @param data a data frame containing the combined training data.
-#' @param model.file file containing the TOP model written in BUGS code.
+#' @param model.file TOP model file written in JAGS.
 #' @param n.iter number of total iterations per chain (including burn in).
 #' @param n.burnin length of burn in, i.e. number of iterations to discard at the beginning.
 #' Default is n.iter/2, that is, discarding the first half of the simulations.
