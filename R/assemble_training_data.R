@@ -22,7 +22,6 @@
 #' (default: 50000/n.partitions).
 #' @param seed seed used when sampling sites.
 #' @return A data frame with the training data set with all TF x cell type combos.
-#' @export
 #'
 assemble_partition_training_data <- function(tf_cell_table,
                                              logistic.model=FALSE,
@@ -146,14 +145,14 @@ assemble_partition_training_data <- function(tf_cell_table,
 #'
 #' @export
 #'
-assemble_TOP_training_data <- function(tf_cell_table,
-                                       logistic.model=FALSE,
-                                       chip_colname='chip',
-                                       training_chrs=paste0('chr', seq(1,21,2)),
-                                       n.partitions=10,
-                                       n.cores=n.partitions,
-                                       max.sites=50000,
-                                       seed=1){
+assemble_training_data <- function(tf_cell_table,
+                                   logistic.model=FALSE,
+                                   chip_colname='chip',
+                                   training_chrs=paste0('chr', seq(1,21,2)),
+                                   n.partitions=10,
+                                   n.cores=n.partitions,
+                                   max.sites=50000,
+                                   seed=1){
 
   tf_cell_table <- as.data.frame(tf_cell_table)
 
