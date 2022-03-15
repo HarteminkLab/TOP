@@ -18,7 +18,7 @@ fit_TOP_M5_model_jags(
 \arguments{
 \item{data}{a data frame containing the combined training data.}
 
-\item{model.file}{file containing the TOP model written in BUGS code.}
+\item{model.file}{TOP model file written in JAGS.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).}

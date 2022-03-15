@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_TOP_models.R
 \name{fit_TOP_logistic_M5_model_jags}
 \alias{fit_TOP_logistic_M5_model_jags}
-\title{Fit TOP binary (logistic) model with M5 bins}
+\title{Fit TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.}
 \usage{
 fit_TOP_logistic_M5_model_jags(
   data,
@@ -17,7 +17,7 @@ fit_TOP_logistic_M5_model_jags(
 \arguments{
 \item{data}{a data frame containing the combined training data.}
 
-\item{model.file}{file containing the TOP model written in BUGS code.}
+\item{model.file}{TOP model file written in JAGS.}
 
 \item{n.iter}{number of total iterations per chain (including burn in).}
 
@@ -36,6 +36,7 @@ which will only thin if there are at least 2000 simulations.}
 A jagsfit object from \code{R2jags}.
 }
 \description{
-Fit TOP binary (logistic) model with M5 bins using JAGS.
+Fit TOP logistic model with M5 DNase (or ATAC) bins and
+binary ChIP labels using JAGS.
 The R2jags package \code{\link[R2jags]{R2jags}} is required.
 }

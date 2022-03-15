@@ -2,8 +2,7 @@
 
 export(add_chip_peak_labels_to_sites)
 export(add_chip_signals_to_sites)
-export(assemble_TOP_training_data)
-export(assemble_partition_training_data)
+export(assemble_training_data)
 export(bam_sort_index_stats)
 export(bin_transform_counts)
 export(combine_TOP_samples)

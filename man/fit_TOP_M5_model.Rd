@@ -27,7 +27,7 @@ fit_TOP_M5_model(
 files of all partitions. If all_training_data is missing,
 it will load the training data from all_training_data_files.}
 
-\item{model.file}{File name containing the TOP model written in BUGS code.}
+\item{model.file}{TOP model file written in JAGS.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
 
