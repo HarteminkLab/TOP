@@ -2,7 +2,7 @@
 title: 'Train TOP quantitative occupancy model'
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Train TOP model}
+  %\VignetteIndexEntry{Train TOP quantitative occupancy model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
