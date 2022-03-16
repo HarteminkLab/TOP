@@ -1,6 +1,6 @@
 Package: TOP
 Title: Predict transcription factor occupancy using DNase- or ATAC-seq data 
-Version: 0.1.2
+Version: 0.1.4
 Authors@R: c(
   person("Kaixuan", "Luo", role = c("aut", "cre"), email = "kevinlkx@gmail.com"),
   person("Jianling", "Zhong", role = "aut", email = "jianlingzh@gmail.com"),
