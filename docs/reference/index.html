@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
       </span>
     </div>
 
@@ -75,15 +75,15 @@
         </td>
         <td><p>Add ChIP-seq signals to the candidate sites</p></td>
       </tr><tr><td>
-          <p><code><a href="assemble_TOP_training_data.html">assemble_TOP_training_data()</a></code> </p>
-        </td>
-        <td><p>Assemble TOP training data for all TF x cell type combos,
-then split training data into 10 partitions</p></td>
-      </tr><tr><td>
           <p><code><a href="assemble_partition_training_data.html">assemble_partition_training_data()</a></code> </p>
         </td>
         <td><p>Assemble TOP training data for all TF x cell type combos
 in a selected partition</p></td>
+      </tr><tr><td>
+          <p><code><a href="assemble_training_data.html">assemble_training_data()</a></code> </p>
+        </td>
+        <td><p>Assemble TOP training data for all TF x cell type combos,
+then split training data into 10 partitions</p></td>
       </tr><tr><td>
           <p><code><a href="bam_sort_index_stats.html">bam_sort_index_stats()</a></code> </p>
         </td>
@@ -131,7 +131,7 @@ in a selected partition</p></td>
       </tr><tr><td>
           <p><code><a href="fit_TOP_logistic_M5_model_jags.html">fit_TOP_logistic_M5_model_jags()</a></code> </p>
         </td>
-        <td><p>Fit TOP binary (logistic) model with M5 bins</p></td>
+        <td><p>Fit TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.</p></td>
       </tr><tr><td>
           <p><code><a href="flank_fimo_sites.html">flank_fimo_sites()</a></code> </p>
         </td>
