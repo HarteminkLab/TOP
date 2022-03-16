@@ -17,6 +17,8 @@ experiment. Thus, it allows efficient profiling of quantitative TF
 occupancy landscapes across multiple cell types or conditions using
 DNase- or ATAC-seq experiments.
 
+<img src="man/figures/schematic.png" width="90%" />
+
 ## [TOP R package website](https://kevinlkx.github.io/TOP/)
 
 ### Install R package

@@ -29,6 +29,11 @@ for many TFs using data from a single DNase- or ATAC-seq experiment.
 Thus, it allows efficient profiling of quantitative TF occupancy landscapes 
 across multiple cell types or conditions using DNase- or ATAC-seq experiments.
 
+
+```{r TOP-diagram, echo=FALSE, out.width = '90%'}
+knitr::include_graphics("man/figures/schematic.png")
+```
+
 [TOP R package website](https://kevinlkx.github.io/TOP/) 
 --------------------------------------------------------
 
