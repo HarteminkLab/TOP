@@ -7,79 +7,101 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, setup, include = FALSE}
+```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
+TOP predicts the quantitative TF occupancy from ChIP-seq around 
+candidate TF binding sites using the site-centric approach. 
+
+We first identified candidate binding sites by motif scanning with 
+a permissive threshold (using FIMO) (Grant et al., 2011). 
+
+Then, for each cell type, we considered (normalized) DNase and/or ATAC 
+cleavage events occurring within 100 bp of the candidate binding site. 
+
+Similarly, we quantified TF occupancy in terms of ChIP-seq read counts within 
+100 bp of the candidate binding site, and this served as the target of 
+our regression when training TOP. 
+
+We simplified the chromatin accessibility data into predictive features 
+using five bins that aggregate the number of cleavage events occurring 
+within the motif itself, as well as within two non-overlapping flanking regions
+upstream and downstream, using the same binning scheme used in the 
+MILLIPEDE model (Luo and Hartemink, 2013).
+
 Input data
 --------------
-TOP requires a data frame for each TF and cell type of interest. 
 
-The format of the input data frame (see example data below):
+The input data for TOP is a data frame for each TF x cell type of interest:
+
+The input data frame (see example below) should contains:
 
 - Columns of the candidate binding sites: 
-chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif match scanning. 
+chr, start, end, site name, PWM score, strand, p-value from (FIMO) motif scanning. 
 
 - Columns of DNase-seq or ATAC-seq bins: 
-MILLIPEDE bins around motif matches (default: M5 bins). 
+Five bins (MILLIPEDE M5 bins) around motif matches. 
 
-- optional: one column of ChIP-seq measurement, if you want to train the models.
-It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) or 
-binary TF binding labels (from ChIP-seq peaks).
+- optional: one column of ChIP-seq measurement, if you want to train your own models.
+It could be quantitative TF occupancy (asinh transformed ChIP-seq read counts) 
+or binary TF binding labels (obtained using ChIP-seq peaks).
 
 
 Example procedure
 -----------------
 
-Here are example steps of preparing input data for TOP 
-to predict CTCF occupancy in K562 cell type:
-
+Below is an example procedure for preparing input data for CTCF in 
+K562 cell type using the human genome assembly version hg38:
 
 **Step 1: Find TF motif matches using FIMO software**
 
-To scan for TF motif matches, we use the [FIMO](http://meme-suite.org/doc/fimo.html?man_type=web)
+To scan for TF motif matches, 
+we use the [FIMO](https://meme-suite.org/meme/doc/fimo.html)
 software from the MEME suite.
-
-We use the command line version of FIMO. By default, we used 
-with the threshold `p-value < 1e-5` and uniform background nucleotide frequency. 
-You can use FIMO's default threshold `p-value < 1e-4`
-(which will result in more motif matches), or use other background nucleotide frequency.
 
 FIMO command line: `fimo [options] <motif file> <sequence file>`.
 
 - motif file: The name of a file containing MEME formatted motifs. 
-- sequence file: The name of a file containing a collection of sequences in FASTA format.
+- sequence file: The name of a file containing a collection of sequences 
+in FASTA format.
 
 Download the CTCF motif file `MA0139.1.meme` (in MEME format)
 from [JASPAR](https://jaspar.genereg.net/matrix/MA0139.1/). 
 
-Download hg38 fasta file and save as `hg38.fa`.
+Download hg38 reference genome FASTA file and save as `hg38.fa`.
 ```{bash download-fasta, eval=FALSE}
 wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/analysisSet/hg38.analysisSet.fa.gz
 gunzip hg38.analysisSet.fa.gz
 mv hg38.analysisSet.fa hg38.fa
 ```
 
-Generate the chrom.sizes file which will be needed later.
+Generate the `chrom.sizes` file which will be needed later.
 ```{bash get-chrom-sizes, eval=FALSE}
 samtools faidx hg38.fa
 cut -f 1,2 hg38.fa.fai > hg38.chrom.sizes
 ```
 
-Save FIMO output in text format (`MA0139.1_1e-5.fimo.txt`), 
-which will be used in the next step. 
+We use the command line version of FIMO, with the threshold `p-value < 1e-5`
+in most of our analyses. 
+You can use FIMO's default threshold `p-value < 1e-4`, 
+if you need more motif matches.
 
+You can use the option "--max-strand", which will only report the match 
+for the strand with the higher score, if matches on both strands at a given 
+position satisfy the output threshold. 
+
+Save FIMO output in a text file `MA0139.1_1e-5.fimo.txt`, 
+which will be used in the next step. 
 ```{bash get-motif-matches, eval=FALSE}
 # Find motif matches for CTCF
 fimo --text \
 --skip-matched-sequence \
 --verbosity 2 \
---bgfile --uniform-- \
 --thresh 1e-5 \
---max-stored-scores 1000000 \
 MA0139.1.meme hg38.fa \
 > MA0139.1_1e-5.fimo.txt
 ```
@@ -93,6 +115,7 @@ filter the candidate sites falling in ENCODE blacklist regions.
 We save the candidate sites in a text file (`MA0139.1_1e-5.candidate_sites.txt`)
 
 Download ENCODE blacklist from [ENCODE portal](https://www.encodeproject.org/annotations/ENCSR636HFF/)
+and save as `blacklist.hg38.bed.gz`.
 
 Load TOP R package
 ```{r load-TOP-package, eval=FALSE, message=FALSE, warning=FALSE}
@@ -100,6 +123,10 @@ library(TOP)
 ```
 
 ```{r get-candidate-sites, eval=FALSE}
+# fimo_file: FIMO result .txt file.
+# flank: flanking region (bp) around motif matches (default: 100).
+# thresh_pValue: FIMO p-value threshold (default: 1e-5).
+# blacklist_file: file with ENOCDE blacklist regions.
 sites.df <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt', 
                                     flank=100, 
                                     thresh_pValue=1e-5, 
@@ -108,18 +135,18 @@ sites.df <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt',
 
 **Step 3: Count DNase- or ATAC-seq genome-wide cleavage**
 
-We use ATAC-seq reads in K562 cell line from ENCODE (ID: `ENCSR868FGK`) for example. 
+We use ATAC-seq reads from K562 cell line (ENCODE ID: `ENCSR868FGK`) for example. 
 
 There are three replicate samples in this study.
-Here we only use one replicate sample (`ENCFF534DCE.bam`) as an example, 
-and rename the file as `K562.ATAC.bam`.
+Here we only use one replicate sample 
+(`ENCFF534DCE.bam`, and we renamed it as `K562.ATAC.bam`) as an example. 
 
 We first sort and index the BAM file using `samtools`,
 and then print the stats of the reads, which will be used later 
 when normalizing read counts by library sizes.
 
 ```{bash cmd-sort-index-stats-ATAC-bam, eval=FALSE}
-# rename the bam file
+# Rename the bam file
 mv ENCFF534DCE.bam K562.ATAC.bam
 
 # This bam file is already sorted, so we skip the sorting step. 
@@ -128,70 +155,92 @@ samtools idxstats K562.ATAC.bam > K562.ATAC.bam.idxstats.txt
 ```
 
 Next, we count the cleavages along the genome, 
-and save in Bigwig format. 
-This step takes more time but only needs to be done once, 
-and allows us to efficiently extract the read counts around candidate sites
-for many different motifs.
+and save in BigWig format. 
 
-We need `bedtools` and `bedGraphToBigWig` from UCSC for this step.
+This step takes a little longer but it only needs to be done once. 
+Having the counts ready at all genomic positions 
+makes it easy for us to efficiently extract the read counts
+around candidate sites for many different motifs.
+
+We will need [`bedtools`](https://bedtools.readthedocs.io/en/latest/) 
+and `bedGraphToBigWig` from [UCSC binary utilities](http://hgdownload.soe.ucsc.edu/admin/exe/) 
+for this step.
 ```{r count_genome_coverage, eval=FALSE}
-# bam_file: input BAM filename.
-# chrom_size_file: chrom sizes file.
-# outdir: Save bigWig files of genome counts in this directory.
-count_genome_cuts(bam_file = 'K562.ATAC.bam', 
-                  chrom_size_file = 'hg38.chrom.sizes', 
-                  outdir = "processed_data/")
+# bam_file: sorted BAM file.
+# chrom_size_file: file of genome sizes by chromosomes.
+# outdir: output directory for the BigWig files of genome counts.
+# bedtools_path: path to bedtools executable.
+# bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.
+count_genome_cuts(bam_file='K562.ATAC.bam', 
+                  chrom_size_file='hg38.chrom.sizes', 
+                  outdir="processed_data",
+                  bedtools_path='bedtools',
+                  bedGraphToBigWig_path='bedGraphToBigWig')
 ```
 
 **Step 4: Get DNase- or ATAC-seq count matrices for each motif, then normalize, bin and transform the counts**
 
 Get count matrices around candidate sites.
+
 We need [bwtool](https://pubmed.ncbi.nlm.nih.gov/24489365/) for this step.
 ```{r get-motif-counts, eval=FALSE}
-# sites_file: Candidate sites filename.
-# genomecount_dir: Genome counts directory.
-# genomecount_name: Genome counts prefix.
+# sites.df: data frame containing candidate sites.
+# genomecount_dir: directory for genome counts.
+# genomecount_name: file prefix for genome counts.
+# bwtool_path: path to bwtool executable.
 sites_counts.mat <- get_sites_counts(sites.df, 
                                      genomecount_dir='./processed_data/',
-                                     genomecount_name='K562.ATAC')
+                                     genomecount_name='K562.ATAC',
+                                     bwtool_path='bwtool')
 ```
 
 Normalize, bin and transform counts.
 ```{r normalize-bin-counts, eval=FALSE}
-# count_matrix: ATAC (or DNase) count matrix
-# idxstats_file: The idxstats file generated by samtools
-# ref.size: Scale to reference library size 
+# count_matrix: matrix of DNase (or ATAC) read counts.
+# idxstats_file: the idxstats file generated by samtools.
+# ref.size: scale to reference library size.
 # (default: 50 million for ATAC-seq, 100 million for DNase-seq)
 # bin.method: MILLIPEDE binning scheme (default: 'M5').
-# transform: asinh transform of the counts.
-bins.df <- normalize_bin_transform_counts(sites_counts.mat, 
+# transform: type of transformation for DNase (or ATAC) counts (default: 'asinh').
+bins.df <- normalize_bin_transform_counts(count_matrix, 
                                           idxstats_file='K562.ATAC.bam.idxstats.txt', 
                                           ref.size=5e7,
                                           bin.method='M5',
                                           transform='asinh')
 ```
 
-Make a data frame with PWM scores, and ATAC (or DNase) bins. 
-We can apply TOP model on this data frame to make predictions.
+Make a data frame for candidate sites 
+with motif match information and transformed ATAC (or DNase) counts 
+in five MILLIPEDE bins. 
 ```{r combine-sites-bins, eval=FALSE}
 combined_data.df <- data.frame(sites.df, bins.df)
-colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', paste0('bin', 1:ncol(bins.df)))
+colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', 
+                                paste0('bin', 1:ncol(bins.df)))
 
 saveRDS(combined_data.df, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
 ```
 
-```{r load-combined-data, eval=TRUE}
+```{r load-combined-data, eval=TRUE, include=FALSE}
 combined_data.df <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
+```
+
+```{r show-example-data}
 head(combined_data.df, 3)
 ```
 
-**Step 5: Prepare ChIP-seq data (optional if you want to train your own model)**
+We can apply TOP models to data frames like this to make predictions.
 
-Download CTCF K562 ChIP-seq bam files (ENCODE ID: `ENCSR000EGM`, two replicates: `ENCFF172KOJ` and `ENCFF265ZSP`).
-We again sort and index the BAM files and print the stats of the reads using `samtools`.
+**Prepare ChIP-seq data (optional if you want to train your own model)**
 
+If you want to train your own model, you would also need to prepare ChIP data and
+add those to your input data. 
+
+Download CTCF K562 ChIP-seq bam files (ENCODE ID: `ENCSR000EGM`, 
+two replicates: `ENCFF172KOJ` and `ENCFF265ZSP`).
+
+Sort and index the BAM files and print the stats of the reads using `samtools`.
 ```{bash cmd-sort-index-stats-chip-bam, eval=FALSE}
-# rename the bam files
+# Rename the bam files
 mv ENCFF172KOJ.bam CTCF.K562.ChIPseq.rep1.bam
 mv ENCFF265ZSP.bam CTCF.K562.ChIPseq.rep2.bam
 
@@ -207,53 +256,74 @@ samtools idxstats CTCF.K562.ChIPseq.rep2.bam > CTCF.K562.ChIPseq.rep2.bam.idxsta
 Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates),
 and normalize (scale) to the same reference library size (10 million).
 ```{r count-normalize-chip, eval=FALSE}
-# ref.size: ChIP-Seq reference library size (default: 10 million)
+# sites.df: data frame containing the candidate sites.
+# chip_bam_files: ChIP-seq bam files (may include multiple replicates).
+# chrom_size_file: file of genome sizes by chromosomes.
+# ref.size: ChIP-Seq reference library size (default: 10 million).
 sites_chip.df <- count_normalize_chip(sites.df,
-                                      chip_bam_files = c('CTCF.K562.ChIPseq.rep1.bam', 'CTCF.K562.ChIPseq.rep2.bam'),
-                                      chrom_size_file = 'hg38.chrom.sizes', 
-                                      ref.size = 1e7)
+                                      chip_bam_files=c('CTCF.K562.ChIPseq.rep1.bam',
+                                                       'CTCF.K562.ChIPseq.rep2.bam'),
+                                      chrom_size_file='hg38.chrom.sizes', 
+                                      ref.size=1e7)
 ```
 
-Combine PWM scores, ATAC (or DNase) bins, and ChIP-seq counts into a data frame.
+Combine motif match information, ATAC (or DNase) bins, and ChIP-seq counts into a data frame.
 ```{r combine-sites-bins-chip, eval=FALSE}
 combined_data.df <- data.frame(sites.df, bins.df, sites_chip.df$chip)
-colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', paste0('bin', 1:ncol(bins.df)), 'chip')
+colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', 
+                                paste0('bin', 1:ncol(bins.df)), 'chip')
 saveRDS(combined_data.df, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
 ```
 
-```{r load-combined-data-with-chip, eval=TRUE}
+```{r load-combined-data-with-chip, eval=TRUE, include=FALSE}
 combined_data.df <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
+```
+
+```{r}
 head(combined_data.df, 3)
 ```
 
 Replace ChIP-seq counts with binary ChIP labels (from ChIP-seq peaks) 
 if you want to train TOP logistic version to predict TF binding probability.
 ```{r add-chip-peak-labels, eval=FALSE}
+# sites.df: A data frame containing the candidate sites.
+# You can supply a ChIP-seq peaks file by setting 'chip_peak_file' to 
+# your ChIP-seq peaks filename.
+# Alternatively, you can set the 'chip_peak_sampleID' and it will download the 
+# ChIP-seq peaks file from ENCODE website and save it to 'chip_peak_dir'.
+# chip_peak_sampleID: ENCODE sample ID of ChIP-seq peaks (.bed.gz format).
+# chip_peak_dir: Directory to save the downloaded ChIP-seq peaks.
 sites_chip_labels.df <- add_chip_peak_labels_to_sites(sites.df, 
-                                                      chip_peak_sampleID = 'ENCFF660GHM',
-                                                      chip_peak_dir = './processed_data/')
+                                                      chip_peak_sampleID='ENCFF660GHM',
+                                                      chip_peak_dir='./processed_data')
+
 combined_data.df <- data.frame(sites.df, bins.df, sites_chip_labels.df$chip_label)
 colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', 
                                 paste0('bin', 1:ncol(bins.df)), 'chip_label')
 ```
 
-You can also replace ChIP-seq counts with signal values 
+Similarily, you can also replace ChIP-seq counts with signal values 
 (fold-over control at each position from ENCODE).
 ```{r add-chip-signals, eval=FALSE}
+# sites.df: A data frame containing the candidate sites.
+# You can supply a ChIP-seq signals file by setting 'chip_signal_file' to 
+# your ChIP-seq signals filename.
+# Alternatively, you can set the 'chip_signal_sampleID' and it will download the 
+# ChIP-seq signals file from ENCODE website and save it to 'chip_signal_dir'.
+# chip_signal_file: ENCODE sample ID of ChIP-seq signals. (.bigWig format).
+# chip_signal_dir: Directory to save the downloaded ChIP-seq signals.
 sites_chip_signals.df <- add_chip_signals_to_sites(sites.df, 
-                                                   chip_signal_sampleID = 'ENCFF682MFJ',
-                                                   chip_signal_dir = './processed_data/')
+                                                   chip_signal_sampleID='ENCFF682MFJ',
+                                                   chip_signal_dir='./processed_data')
 
 combined_data.df <- data.frame(sites.df, bins.df, sites_chip_signals.df$chip_signal)
 colnames(combined_data.df) <- c('chr','start','end','name','pwm.score','strand','p.value', 
                                 paste0('bin', 1:ncol(bins.df)), 'chip_signal')
 ```
 
+You can follow the steps above or use your own scripts to prepare the input data. 
 
-Snakemake pipeline
--------------------
-
-We recommend writing a Snakemake pipeline to automate the whole procedure. 
+We recommend using Snakemake to automate the whole procedure. 
 It is especially helpful if you have many TFs and many cell types.
 
 For more details and instructions about Snakemake pipelines, 

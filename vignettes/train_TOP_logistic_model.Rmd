@@ -14,14 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-Load TOP R package
----------------------
-
-```{r load-TOP-package, eval=FALSE}
-library(TOP)
-```
-
-
 Prepare training data
 ---------------------
 
@@ -62,14 +54,18 @@ TF names, cell types, and paths to the training data files, like:
 |     ...      |     ...       |   ...                    |
 
 
-Use the following `assemble_TOP_training_data` function, 
+Use the following `assemble_training_data()` function, 
 we split the training data randomly into 10 equal partitions, 
 so that we could run Gibbs sampling on these partitions in parallel to
 reduce the running time. 
 
 We can choose the training chromosomes by specifying the chromosomes in 
 `training_chrs`, for example using odd chromosomes as below.
-(The chromosome names ("chr...") should match with those in the training data.)
+The chromosome names ("chr...") should match with those in the training data.
+
+```{r load-TOP-package, eval=FALSE}
+library(TOP)
+```
 
 ```{r assemble-TOP-logistic-training-data, eval=FALSE}
 assembled_training_data <- assemble_training_data(tf_cell_table,
@@ -107,7 +103,7 @@ in the `../model` directory within the package.
 model_file <- '../model/TOP_M5_logit_model.jags'
 ```
 
-The `fit_TOP_model` function below runs Gibbs sampling for each of the 10 partitions 
+The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 
 in parallel (using the `foreach` R package). 
 
 We can set the following parameters for Gibbs sampling: 
