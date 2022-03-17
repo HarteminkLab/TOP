@@ -43,20 +43,20 @@ bam_sort_index_stats <- function(bam_file,
     dir.create(outdir)
 
   if( sort ) {
-    # Sort the bam file
+    # Sort BAM file
     if(missing(sorted_bam_file)){
       out_prefix <- gsub('.bam$','',basename(bam_file))
       sorted_bam_file <- file.path(outdir, paste0(out_prefix, 'sorted.bam'))
     }
-    cat('Sorting the bam file...\n')
+    cat('Sort BAM file...\n')
     sortBam(bam_file, sorted_bam_file)
   }else{
     sorted_bam_file <- bam_file
   }
 
   if( index ) {
-    # Index the bam file
-    cat('Index the bam file...\n')
+    # Index BAM file
+    cat('Index BAM file...\n')
     indexBam(sorted_bam_file)
   }
 
