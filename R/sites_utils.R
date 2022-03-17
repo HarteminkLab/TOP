@@ -237,19 +237,19 @@ filter_mapability <- function(sites,
   sites_tmp$name <- paste('site', c(1:nrow(sites_tmp)), sep = '')
   sites_tmp$pwm.score <- 0
 
-  tmp_mapability_filesites <- tempfile('sites')
-  fwrite(sites_tmp, tmp_mapability_filesites, sep = '\t')
+  tmp_mapability_sites <- tempfile('sites')
+  fwrite(sites_tmp, tmp_mapability_sites, sep = '\t', col.names = FALSE, scipen = 999)
 
   cat('Compute mapability ... \n')
   tmp_mapability_file <- tempfile('mapability')
-  cmd <- paste(bigWigAverageOverBed_path, mapability_file, tmp_mapability_filesites, tmp_mapability_file)
+  cmd <- paste(bigWigAverageOverBed_path, mapability_file, tmp_mapability_sites, tmp_mapability_file)
   if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
 
   sites$mapability <- fread(tmp_mapability_file)[,5]
 
   sites <- sites[sites$mapability > thresh_mapability, ]
 
-  file.remove(c(tmp_mapability_filesites, tmp_mapability_file))
+  unlink(c(tmp_mapability_sites, tmp_mapability_file))
 
   return(sites)
 

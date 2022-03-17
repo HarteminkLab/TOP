@@ -50,7 +50,7 @@ count_normalize_chip = function(sites,
   chip_bam_files <- paste(chip_bam_files, collapse = ' ')
   chip_count_file <- tempfile(pattern = 'totalcounts')
   sites_file <- tempfile('tmp_sites')
-  fwrite(sites, sites_file, sep = '\t', col.names = FALSE)
+  fwrite(sites, sites_file, sep = '\t', col.names = FALSE, scipen = 999)
 
   cmd <- paste(bedtools_path, 'coverage -a', sites_file, '-b', chip_bam_files,
                '-counts -sorted -g', chrom_size_file, '>', chip_count_file)
@@ -218,7 +218,7 @@ add_chip_signals_to_sites <- function(sites,
 
   # Add ChIP-seq signal information
   sites_file <- tempfile('tmp_sites')
-  fwrite(sites[,1:4], sites_file, sep = '\t', col.names = FALSE)
+  fwrite(sites[,1:4], sites_file, sep = '\t', col.names = FALSE, scipen = 999)
 
   # Take the average signal values in each site
   sites_signals_file <- tempfile('tmp_signals')
