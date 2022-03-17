@@ -135,7 +135,7 @@ normalize_counts <- function(counts,
   total_readsMapped <- get_total_reads(idxstats_file, select.chr = TRUE)
 
   # Normalize (scale) read counts
-  cat('Normalize (scale) to', ref.size / 1e6, 'million reads. \n')
+  cat('Normalize (scale) reads library to', ref.size / 1e6, 'million reads. \n')
   scaling_factor <- ref.size / total_readsMapped
   normalized_counts <- counts * scaling_factor
 
