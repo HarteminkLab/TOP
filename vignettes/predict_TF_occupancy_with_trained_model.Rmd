@@ -33,7 +33,7 @@ You can follow this [page](data_preparation.html) to prepare the input data.
 
 Let's load an example ATAC-seq dataset to predict CTCF occupancy in K562 cell type. 
 ```{r load-combined-data, eval=TRUE}
-data <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
+data <- readRDS('../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
 head(data,3)
 ```
 
@@ -96,7 +96,7 @@ head(TOP_predictions, 5)
 
 We can plot the predicted occupancy vs. measured occupancy
 ```{r plot-predicted-measured, eval=TRUE, fig.width=5, fig.height=5}
-data_chip <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
+data_chip <- readRDS('../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
 
 scatterplot_predictions(x = asinh(data_chip$chip),
                         y = asinh(TOP_predictions$predicted),
@@ -123,7 +123,7 @@ TOP_middle_predictions <- TOP_middle_result$predictions
 
 We can see the performance of the "middle" level model is very close to the "bottom" level.
 ```{r plot-predicted-measured-middle, eval=TRUE, fig.width=5, fig.height=5}
-data_chip <- readRDS('../inst/example/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
+data_chip <- readRDS('../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
 
 scatterplot_predictions(x = asinh(data_chip$chip),
                         y = asinh(TOP_middle_predictions$predicted),
