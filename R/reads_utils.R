@@ -25,7 +25,7 @@ index_fa <- function(fa_file,
 #' retrieve the idxstats using \code{Rsamtools}.
 #' @param bam_file Input BAM file.
 #' @param outdir Output directory (default: save to the directory of the BAM file).
-#' @param out_prefix Output prefix (default: same prefix from the 'bam_file').
+#' @param sorted_bam_file Output file name for sorted BAM file.
 #' @param sort Logical. If TRUE, sort the BAM file.
 #' @param index Logical. If TRUE, index the BAM file.
 #' @param idxstats Logical. If TRUE, retrieve idxstats from index file.
@@ -34,7 +34,7 @@ index_fa <- function(fa_file,
 #'
 bam_sort_index_stats <- function(bam_file,
                                  outdir=dirname(bam_file),
-                                 out_prefix=gsub('.bam$','',basename(bam_file)),
+                                 sorted_bam_file,
                                  sort=TRUE,
                                  index=TRUE,
                                  idxstats=TRUE) {
@@ -43,23 +43,31 @@ bam_sort_index_stats <- function(bam_file,
     dir.create(outdir)
 
   if( sort ) {
-    # sort and index the bam file
-    cat('Sort the bam file...\n')
-    sorted_bam_file <- paste0(outdir, '/', out_prefix, '.bam')
+    # Sort the bam file
+    if(missing(sorted_bam_file)){
+      out_prefix <- gsub('.bam$','',basename(bam_file))
+      sorted_bam_file <- file.path(outdir, paste0(out_prefix, 'sorted.bam'))
+    }
+    cat('Sorting the bam file...\n')
     sortBam(bam_file, sorted_bam_file)
-    bam_file <- sorted_bam_file
+  }else{
+    sorted_bam_file <- bam_file
   }
 
   if( index ) {
+    # Index the bam file
     cat('Index the bam file...\n')
-    indexBam(bam_file)
+    indexBam(sorted_bam_file)
   }
 
   if( idxstats ){
     # Get index statistics (including the number of mapped reads)
     cat('Retrieve idxstats from the index file...\n')
-    idxstats_file <- paste0(outdir, '/', out_prefix, '.bam.idxstats.txt')
-    idxstatsBam(bam_file, idxstats_file)
+    out_prefix <- gsub('.bam$','',basename(sorted_bam_file))
+    idxstats_file <- file.path(outdir, paste0(out_prefix, '.bam.idxstats.txt'))
+    idxstats <- idxstatsBam(sorted_bam_file)
+    write.table(idxstats, idxstats_file, col.names=TRUE, row.names = FALSE,
+                quote=FALSE, sep='\t')
   }
 
 }
