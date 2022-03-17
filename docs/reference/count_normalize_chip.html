@@ -21,7 +21,7 @@ and transform the ChIP-seq read counts."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
       </span>
     </div>
 
@@ -78,11 +78,11 @@ and transform the ChIP-seq read counts.</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">count_normalize_chip</span><span class="op">(</span>
-  <span class="va">sites.df</span>,
+  <span class="va">sites</span>,
   <span class="va">chip_bam_files</span>,
   <span class="va">chip_idxstats_files</span>,
   <span class="va">chrom_size_file</span>,
-  ref.size <span class="op">=</span> <span class="fl">1e+07</span>,
+  ref.size <span class="op">=</span> <span class="fl">2e+07</span>,
   transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span><span class="op">)</span>,
   bedtools_path <span class="op">=</span> <span class="st">"bedtools"</span>
 <span class="op">)</span></code></pre></div>
@@ -90,7 +90,7 @@ and transform the ChIP-seq read counts.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>sites.df</dt>
+    <dl><dt>sites</dt>
 <dd><p>A data frame containing the candidate sites.</p></dd>
 <dt>chip_bam_files</dt>
 <dd><p>ChIP-seq bam files (may include multiple replicates).</p></dd>
@@ -102,7 +102,8 @@ of the bam files).</p></dd>
 <dt>chrom_size_file</dt>
 <dd><p>Chromosome size file.</p></dd>
 <dt>ref.size</dt>
-<dd><p>Reference ChIP-seq library size (Default: 10 million)</p></dd>
+<dd><p>Normalize to ChIP-seq reference library size
+(Default: 20 million)</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for the ChIP read counts.
 Options are 'none' (no transformation), 'asinh', 'log2', and 'sqrt'.</p></dd>
