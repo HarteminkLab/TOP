@@ -30,6 +30,7 @@ Imports:
     GenomicRanges,
     data.table,
     R.utils,
+    Rsamtools,
     ggplot2,
     doParallel,
     foreach
