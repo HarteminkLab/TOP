@@ -3,18 +3,18 @@
 \name{flip_rev_strand_counts}
 \alias{flip_rev_strand_counts}
 \title{Flip the counts generated from \code{bwtool} for motifs
-on the reverse (minus) strand}
+on the reverse strand}
 \usage{
-flip_rev_strand_counts(sites.df, fwd_matrix_file, rev_matrix_file)
+flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
 }
 \arguments{
-\item{sites.df}{A data frame containing candidate sites}
+\item{sites}{A data frame containing candidate sites}
 
-\item{fwd_matrix_file}{File for count matrix on forward strand}
+\item{fwd_matrix_file}{File for count matrix on the forward strand}
 
-\item{rev_matrix_file}{File for count matrix on reverse strand}
+\item{rev_matrix_file}{File for count matrix on the reverse strand}
 }
 \description{
 Flip the counts generated from \code{bwtool} for motifs
-on the reverse (minus) strand
+on the reverse strand
 }

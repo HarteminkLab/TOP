@@ -2,22 +2,24 @@
 % Please edit documentation in R/dnase_atac_utils.R
 \name{count_genome_cuts}
 \alias{count_genome_cuts}
-\title{Count DNase-seq or ATAC-seq cleavage along the genome}
+\title{Count DNase-seq or ATAC-seq cuts along the genome}
 \usage{
 count_genome_cuts(
   bam_file,
   chrom_size_file,
+  data_type = c("DNase", "ATAC"),
   outdir,
   outname,
   bedtools_path = "bedtools",
-  bedGraphToBigWig_path = "bedGraphToBigWig",
-  bedSort_path = "bedSort"
+  bedGraphToBigWig_path = "bedGraphToBigWig"
 )
 }
 \arguments{
 \item{bam_file}{Sorted BAM file.}
 
 \item{chrom_size_file}{File of genome sizes by chromosomes.}
+
+\item{data_type}{Data type: DNase or ATAC.}
 
 \item{outdir}{Output directory (default: use the directory of bam_file).}
 
@@ -26,13 +28,13 @@ count_genome_cuts(
 \item{bedtools_path}{Path to bedtools executable.}
 
 \item{bedGraphToBigWig_path}{Path to UCSC bedGraphToBigWig executable.}
-
-\item{bedSort_path}{Path to UCSC bedSort executable.}
 }
 \description{
-Count genomic cleavage (5' end) from DNase or ATAC-seq bam files
-using the \code{genomecov} tool from \code{bedtools}.
-Then save the output in Bigwig format using
-the \code{bedGraphToBigWig} tool
-(and \code{bedSort} if available) from UCSC.
+Count genomic cleavage (5' end) from DNase-seq or
+ATAC-seq bam files using the \code{genomecov} tool from \code{bedtools}.
+For ATAC-seq, we shift reads aligned to the + strand by +4 bp, and shift
+reads aligned to the - strand by -5 bp,
+as in Buenrostro et al. 2013.
+Then save the output in BigWig format using
+the \code{bedGraphToBigWig} tool from UCSC.
 }

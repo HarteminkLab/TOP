@@ -5,14 +5,14 @@
 \title{Filter candidate sites by mapability}
 \usage{
 filter_mapability(
-  sites.df,
+  sites,
   mapability_file,
   thresh_mapability = 0.8,
   bigWigAverageOverBed_path = "bigWigAverageOverBed"
 )
 }
 \arguments{
-\item{sites.df}{A data frame of candidate binding sites with the first
+\item{sites}{A data frame of candidate binding sites with the first
 6 columns the same as in the BED format.}
 
 \item{mapability_file}{ENCODE mapability bigWig file.}

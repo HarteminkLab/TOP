@@ -4,10 +4,10 @@
 \alias{filter_blacklist}
 \title{Filter candidate sites in blacklist regions}
 \usage{
-filter_blacklist(sites.df, blacklist_file)
+filter_blacklist(sites, blacklist_file)
 }
 \arguments{
-\item{sites.df}{A data frame of candidate binding sites}
+\item{sites}{A data frame of candidate binding sites}
 
 \item{blacklist_file}{ENCODE blacklist file}
 }

@@ -5,7 +5,7 @@
 \title{Get count matrices around candidate binding sites}
 \usage{
 get_sites_counts(
-  sites.df,
+  sites,
   genomecount_dir,
   genomecount_name,
   tmpdir = genomecount_dir,
@@ -13,7 +13,7 @@ get_sites_counts(
 )
 }
 \arguments{
-\item{sites.df}{A data frame containing candidate sites}
+\item{sites}{A data frame containing candidate sites}
 
 \item{genomecount_dir}{Directory for genome counts}
 

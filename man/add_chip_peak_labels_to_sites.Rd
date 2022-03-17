@@ -5,14 +5,14 @@
 \title{Add ChIP-seq peak labels to the candidate sites}
 \usage{
 add_chip_peak_labels_to_sites(
-  sites.df,
+  sites,
   chip_peak_file = NULL,
   chip_peak_sampleID = NULL,
   chip_peak_dir = "./"
 )
 }
 \arguments{
-\item{sites.df}{A data frame containing the candidate sites}
+\item{sites}{A data frame containing the candidate sites}
 
 \item{chip_peak_file}{ChIP-seq peak file (.bed.gz format)}
 

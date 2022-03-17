@@ -2,14 +2,15 @@
 % Please edit documentation in R/reads_utils.R
 \name{bam_sort_index_stats}
 \alias{bam_sort_index_stats}
-\title{Sort and index the BAM file, and retrieve stats (idxstats)}
+\title{Sort and index the BAM file, and retrieve the idxstats.}
 \usage{
 bam_sort_index_stats(
   bam_file,
-  outdir,
+  outdir = dirname(bam_file),
+  sorted_bam_file,
   sort = TRUE,
-  stats = TRUE,
-  samtools_path = "samtools"
+  index = TRUE,
+  idxstats = TRUE
 )
 }
 \arguments{
@@ -17,14 +18,15 @@ bam_sort_index_stats(
 
 \item{outdir}{Output directory (default: save to the directory of the BAM file).}
 
-\item{sort}{Logical. If TRUE, sort (and index) the BAM file.}
+\item{sorted_bam_file}{Output file name for sorted BAM file.}
 
-\item{stats}{Logical. If TRUE, retrieve stats (idxstats) in the index file.}
+\item{sort}{Logical. If TRUE, sort the BAM file.}
 
-\item{samtools_path}{Path to \code{samtools} executable.}
+\item{index}{Logical. If TRUE, index the BAM file.}
+
+\item{idxstats}{Logical. If TRUE, retrieve idxstats from index file.}
 }
 \description{
-Uses \code{samtools} to sort and index the BAM file, and
-retrieve the number of mapped reads using the \code{idxstats} function from
-\code{samtools}.
+Sort and index the BAM file, and
+retrieve the idxstats using \code{Rsamtools}.
 }

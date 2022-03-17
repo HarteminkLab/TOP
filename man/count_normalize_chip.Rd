@@ -5,17 +5,17 @@
 \title{Count and normalize (and transform) ChIP-seq read coverage}
 \usage{
 count_normalize_chip(
-  sites.df,
+  sites,
   chip_bam_files,
   chip_idxstats_files,
   chrom_size_file,
-  ref.size = 1e+07,
+  ref.size = 2e+07,
   transform = c("none", "asinh", "log2", "sqrt"),
   bedtools_path = "bedtools"
 )
 }
 \arguments{
-\item{sites.df}{A data frame containing the candidate sites.}
+\item{sites}{A data frame containing the candidate sites.}
 
 \item{chip_bam_files}{ChIP-seq bam files (may include multiple replicates).}
 
@@ -26,7 +26,8 @@ of the bam files).}
 
 \item{chrom_size_file}{Chromosome size file.}
 
-\item{ref.size}{Reference ChIP-seq library size (Default: 10 million)}
+\item{ref.size}{Normalize to ChIP-seq reference library size
+(Default: 20 million)}
 
 \item{transform}{Type of transformation for the ChIP read counts.
 Options are 'none' (no transformation), 'asinh', 'log2', and 'sqrt'.}

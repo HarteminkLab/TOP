@@ -5,7 +5,7 @@
 \title{Add ChIP-seq signals to the candidate sites}
 \usage{
 add_chip_signals_to_sites(
-  sites.df,
+  sites,
   chip_signal_file = NULL,
   chip_signal_sampleID = NULL,
   chip_signal_dir = "./",
@@ -13,7 +13,7 @@ add_chip_signals_to_sites(
 )
 }
 \arguments{
-\item{sites.df}{A data frame containing the candidate sites}
+\item{sites}{A data frame containing the candidate sites}
 
 \item{chip_signal_file}{ChIP-seq signal file (BigWig format).}
 
