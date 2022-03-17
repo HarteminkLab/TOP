@@ -1,3 +1,4 @@
+# Functions for processing ChIP-seq data
 
 #' @title Count and normalize (and transform) ChIP-seq read coverage
 #' @description Count ChIP-seq read coverage for each bam file
@@ -5,14 +6,15 @@
 #' Then normalize the read counts
 #' by scaling to the reference ChIP-seq library size,
 #' and transform the ChIP-seq read counts.
-#' @param sites.df A data frame containing the candidate sites.
+#' @param sites A data frame containing the candidate sites.
 #' @param chip_bam_files ChIP-seq bam files (may include multiple replicates).
 #' @param chip_idxstats_files ChIP-seq idxstats files
 #' (may include multiple replicates).
 #' (Default: use the corresponding '.idxstats.txt' files in the same directory
 #' of the bam files).
 #' @param chrom_size_file Chromosome size file.
-#' @param ref.size Reference ChIP-seq library size (Default: 20 million)
+#' @param ref.size Normalize to ChIP-seq reference library size
+#' (Default: 20 million)
 #' @param transform Type of transformation for the ChIP read counts.
 #' Options are 'none' (no transformation), 'asinh', 'log2', and 'sqrt'.
 #' @param bedtools_path Path to \code{bedtools} executable.
@@ -21,7 +23,7 @@
 #' @importFrom data.table fread fwrite
 #' @export
 #'
-count_normalize_chip = function(sites.df,
+count_normalize_chip = function(sites,
                                 chip_bam_files,
                                 chip_idxstats_files,
                                 chrom_size_file,
@@ -48,33 +50,33 @@ count_normalize_chip = function(sites.df,
   chip_bam_files <- paste(chip_bam_files, collapse = ' ')
   chip_count_file <- tempfile(pattern = 'totalcounts')
   sites_file <- tempfile('tmp_sites')
-  fwrite(sites.df, sites_file, sep = '\t', col.names = FALSE)
+  fwrite(sites, sites_file, sep = '\t', col.names = FALSE)
 
   cmd <- paste(bedtools_path, 'coverage -a', sites_file, '-b', chip_bam_files,
                '-counts -sorted -g', chrom_size_file, '>', chip_count_file)
   if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
-  sites_chip.df <- as.data.frame(data.table::fread(chip_count_file))
-  colnames(sites_chip.df) <- c(colnames(sites.df), 'chip')
+  sites_chip <- as.data.frame(data.table::fread(chip_count_file))
+  colnames(sites_chip) <- c(colnames(sites), 'chip')
 
   # Normalize (scale) ChIP-seq read counts to the reference library size
   cat('Normalize (scale) ChIP-seq library to', ref.size / 1e6, 'million reads... \n')
   total_readsMapped <- sum(sapply(chip_idxstats_files, get_total_reads, select.chr = TRUE))
   scaling_factor <- ref.size / total_readsMapped
-  sites_chip.df$chip <- sites_chip.df$chip * scaling_factor
+  sites_chip$chip <- sites_chip$chip * scaling_factor
 
   # Transform ChIP-seq read counts
   if (transform == 'asinh') {
-    sites_chip.df$chip <- asinh(sites_chip.df$chip)
+    sites_chip$chip <- asinh(sites_chip$chip)
   } else if (transform == 'log2') {
-    sites_chip.df$chip <- log2(sites_chip.df$chip + 1)
+    sites_chip$chip <- log2(sites_chip$chip + 1)
   } else if (transform == 'sqrt') {
-    sites_chip.df$chip <- sqrt(sites_chip.df$chip)
+    sites_chip$chip <- sqrt(sites_chip$chip)
   }
 
   unlink(chip_count_file)
 
-  return(sites_chip.df)
+  return(sites_chip)
 
 }
 
@@ -126,7 +128,7 @@ normalize_chip <- function(chip_counts,
 #' ChIP-seq peaks from ENCODE database using
 #' the sample ID provided in \code{chip_peak_sampleID}, and
 #' (and save to the directory \code{chip_peak_dir}).
-#' @param sites.df A data frame containing the candidate sites
+#' @param sites A data frame containing the candidate sites
 #' @param chip_peak_file ChIP-seq peak file (.bed.gz format)
 #' @param chip_peak_sampleID ENCODE sample ID of ChIP-seq peaks (.bed.gz format)
 #' @param chip_peak_dir Directory to save the downloaded ChIP-seq peaks
@@ -136,7 +138,7 @@ normalize_chip <- function(chip_counts,
 #' @importFrom data.table fread
 #' @export
 #'
-add_chip_peak_labels_to_sites <- function(sites.df,
+add_chip_peak_labels_to_sites <- function(sites,
                                           chip_peak_file=NULL,
                                           chip_peak_sampleID=NULL,
                                           chip_peak_dir='./'){
@@ -144,7 +146,7 @@ add_chip_peak_labels_to_sites <- function(sites.df,
   if(is.null(chip_peak_file) || !file.exists(chip_peak_file)){
     if( is.null(chip_peak_sampleID) || is.na(chip_peak_sampleID) || chip_peak_sampleID == '' ){
       cat('No ChIP peak data. \n')
-      return(sites.df)
+      return(sites)
     }else{
       chip_peak_file <- file.path(chip_peak_dir, paste0(chip_peak_sampleID,'.bed.gz'))
       if(!file.exists(chip_peak_file)){
@@ -162,13 +164,13 @@ add_chip_peak_labels_to_sites <- function(sites.df,
   colnames(chip_peaks) <- c('chr', 'start', 'end', 'name', 'score', 'strand',
                             'signalValue', 'pValue', 'qValue', 'peak')
   chip_peaks.gr <- makeGRangesFromDataFrame(chip_peaks, keep.extra.columns = TRUE)
-  sites.gr <- makeGRangesFromDataFrame(sites.df, keep.extra.columns = TRUE)
+  sites.gr <- makeGRangesFromDataFrame(sites, keep.extra.columns = TRUE)
 
-  sites_chip.df <- cbind(sites.df, chip_label = 0)
+  sites_chip <- cbind(sites, chip_label = 0)
   in.peaks <- which(countOverlaps(sites.gr, chip_peaks.gr) > 0)
-  sites_chip.df$chip_label[in.peaks] <- 1
+  sites_chip$chip_label[in.peaks] <- 1
 
-  return(sites_chip.df)
+  return(sites_chip)
 
 }
 
@@ -178,7 +180,7 @@ add_chip_peak_labels_to_sites <- function(sites.df,
 #' If \code{chip_peak_file} is not available, it will download the
 #' ChIP-seq signals from ENCODE database using
 #' the sample ID provided in \code{chip_signal_sampleID}.
-#' @param sites.df A data frame containing the candidate sites
+#' @param sites A data frame containing the candidate sites
 #' @param chip_signal_file ChIP-seq signal file (BigWig format).
 #' @param chip_signal_sampleID ENCODE sample ID of ChIP-seq signals (BigWig format).
 #' @param chip_signal_dir Directory to save the downloaded ChIP-seq signals.
@@ -188,7 +190,7 @@ add_chip_peak_labels_to_sites <- function(sites.df,
 #'
 #' @export
 #'
-add_chip_signals_to_sites <- function(sites.df,
+add_chip_signals_to_sites <- function(sites,
                                       chip_signal_file=NULL,
                                       chip_signal_sampleID=NULL,
                                       chip_signal_dir='./',
@@ -201,7 +203,7 @@ add_chip_signals_to_sites <- function(sites.df,
   if(is.null(chip_signal_file) || !file.exists(chip_signal_file)){
     if( is.null(chip_signal_sampleID) || is.na(chip_signal_sampleID) || chip_signal_sampleID == '' ){
       cat('No ChIP signal data. \n')
-      return(sites.df)
+      return(sites)
     }else{
       chip_signal_file <- file.path(chip_signal_dir, paste0(chip_signal_sampleID, '.bigWig'))
 
@@ -216,7 +218,7 @@ add_chip_signals_to_sites <- function(sites.df,
 
   # Add ChIP-seq signal information
   sites_file <- tempfile('tmp_sites')
-  fwrite(sites.df[,1:4], sites_file, sep = '\t', col.names = FALSE)
+  fwrite(sites[,1:4], sites_file, sep = '\t', col.names = FALSE)
 
   # Take the average signal values in each site
   sites_signals_file <- tempfile('tmp_signals')
@@ -226,12 +228,12 @@ add_chip_signals_to_sites <- function(sites.df,
   sites_signals <- as.data.frame(fread(sites_signals_file))
   colnames(sites_signals) <- c('name', 'size', 'covered', 'sum', 'mean0', 'mean')
 
-  m <- match(sites.df$name, sites_signals$name)
-  sites_chip.df <- cbind(sites.df, chip_signal=sites_signals$mean[m])
+  m <- match(sites$name, sites_signals$name)
+  sites_chip <- cbind(sites, chip_signal=sites_signals$mean[m])
 
   unlink(c(sites_file, sites_signals_file))
 
-  return(sites_chip.df)
+  return(sites_chip)
 
 }
 
