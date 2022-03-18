@@ -83,10 +83,6 @@ software from the MEME suite.
 Download the CTCF motif file `MA0139.1.meme` (in MEME format)
 from [JASPAR](https://jaspar.genereg.net/matrix/MA0139.1/). 
 
-```{r motif-file}
-motif_file <- system.file('example', 'MA0139.1.meme', package='TOP')
-```
-
 Download hg38 reference genome FASTA file and save it as `hg38.fa`.
 ```{bash download-fasta, eval=FALSE}
 wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/analysisSet/hg38.analysisSet.fa.gz
@@ -112,9 +108,10 @@ Save output in a text file `MA0139.1_1e-5.fimo.txt`,
 which will be used in the next step. 
 
 ```{r get-motif-matches, eval=FALSE}
-fimo_motif_scan(motif_file, sequence_file='hg38.fa', thresh='1e-5', 
-                max_strand=TRUE, outname='MA0139.1_1e-5.fimo.txt',
-                fimo_path='fimo')
+fimo_motif_matches(motif_file='MA0139.1.meme', sequence_file='hg38.fa', 
+                   thresh_pValue=1e-5, max_strand=TRUE, 
+                   outname='MA0139.1_1e-5.fimo.txt',
+                   fimo_path='fimo')
 ```
 
 **Step 2: Get candidate TF binding sites**
