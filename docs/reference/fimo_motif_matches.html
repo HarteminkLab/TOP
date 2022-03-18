@@ -18,7 +18,7 @@ This is a wrapper function to run FIMO command line."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -75,6 +75,7 @@ This is a wrapper function to run FIMO command line.</p>
   <span class="va">motif_file</span>,
   <span class="va">sequence_file</span>,
   outname <span class="op">=</span> <span class="st">"fimo.txt"</span>,
+  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">outname</span><span class="op">)</span>,
   thresh_pValue <span class="op">=</span> <span class="fl">1e-04</span>,
   <span class="va">bfile</span>,
   skip_matched_sequence <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -88,11 +89,13 @@ This is a wrapper function to run FIMO command line.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>motif_file</dt>
-<dd><p>Motif file</p></dd>
+<dd><p>Motif file.</p></dd>
 <dt>sequence_file</dt>
-<dd><p>FASTA sequence file</p></dd>
+<dd><p>FASTA sequence file.</p></dd>
 <dt>outname</dt>
-<dd><p>Output file</p></dd>
+<dd><p>Output file name.</p></dd>
+<dt>outdir</dt>
+<dd><p>Output directory.</p></dd>
 <dt>thresh_pValue</dt>
 <dd><p>FIMO option 'thresh' for p-value threshold.</p></dd>
 <dt>bfile</dt>

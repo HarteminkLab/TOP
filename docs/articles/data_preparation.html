@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
       </span>
     </div>
 
@@ -161,7 +161,7 @@
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> ENCFF534DCE.bam K562.ATAC.bam</span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># This BAM file has already been sorted, so we skip the sorting step. </span>
-<span class="fu"><a href="../reference/bam_sort_index_stats.html">bam_sort_index_stats</a></span><span class="op">(</span><span class="st">'K562.ATAC.bam'</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, index<span class="op">=</span><span class="cn">TRUE</span>, idxstats<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/sort_index_idxstats_bam.html">sort_index_idxstats_bam</a></span><span class="op">(</span><span class="st">'K562.ATAC.bam'</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, index<span class="op">=</span><span class="cn">TRUE</span>, idxstats<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Next, we count the cleavages along the genome, and save the genome counts in BigWig format.</p>
 <p>For ATAC-seq, we shift reads aligned to the + strand by +4 bp, and shift reads aligned to the - strand by -5 bp, as in <a href="https://doi.org/10.1038/nmeth.2688" class="external-link">Buenrostro et al. 2013</a>.</p>
 <p>This step takes a little longer but it only needs to be done once. Having the counts ready at all genomic positions makes it easy for us to efficiently extract the read counts around candidate sites for many different motifs.</p>
@@ -237,8 +237,8 @@
 <p>Sort and index the BAM files and obtain the number of mapped reads.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># The BAM files have already been sorted, so we skip the sorting step. </span>
-<span class="fu"><a href="../reference/bam_sort_index_stats.html">bam_sort_index_stats</a></span><span class="op">(</span><span class="st">'CTCF.K562.ChIPseq.rep1.bam'</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, index<span class="op">=</span><span class="cn">TRUE</span>, idxstats<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="../reference/bam_sort_index_stats.html">bam_sort_index_stats</a></span><span class="op">(</span><span class="st">'CTCF.K562.ChIPseq.rep2.bam'</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, index<span class="op">=</span><span class="cn">TRUE</span>, idxstats<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu">bam_sort_index_stats</span><span class="op">(</span><span class="st">'CTCF.K562.ChIPseq.rep1.bam'</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, index<span class="op">=</span><span class="cn">TRUE</span>, idxstats<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu">bam_sort_index_stats</span><span class="op">(</span><span class="st">'CTCF.K562.ChIPseq.rep2.bam'</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, index<span class="op">=</span><span class="cn">TRUE</span>, idxstats<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Count ChIP-seq reads around candidate sites (merge ChIP-seq replicates), and normalize (scale) to the same reference library size (20 million).</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># sites: data frame containing the candidate sites.</span>
