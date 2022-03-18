@@ -8,6 +8,7 @@ fimo_motif_matches(
   motif_file,
   sequence_file,
   outname = "fimo.txt",
+  outdir = dirname(outname),
   thresh_pValue = 1e-04,
   bfile,
   skip_matched_sequence = TRUE,
@@ -18,11 +19,13 @@ fimo_motif_matches(
 )
 }
 \arguments{
-\item{motif_file}{Motif file}
+\item{motif_file}{Motif file.}
 
-\item{sequence_file}{FASTA sequence file}
+\item{sequence_file}{FASTA sequence file.}
 
-\item{outname}{Output file}
+\item{outname}{Output file name.}
+
+\item{outdir}{Output directory.}
 
 \item{thresh_pValue}{FIMO option 'thresh' for p-value threshold.}
 
