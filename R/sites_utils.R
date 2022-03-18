@@ -6,8 +6,8 @@
 #' @param motif_file Motif file
 #' @param sequence_file FASTA sequence file
 #' @param outname Output file
+#' @param thresh_pValue FIMO option 'thresh' for p-value threshold.
 #' @param bfile FIMO option 'bfile' for background file or model.
-#' @param thresh FIMO option 'thresh' for p-value threshold.
 #' @param skip_matched_sequence FIMO option 'skip_matched_sequence'.
 #' Turns off output of the sequence of motif matches.
 #' This speeds up processing considerably.
@@ -23,16 +23,16 @@
 #' @param fimo_path Path to FIMO command line executable.
 #' @export
 #'
-fimo_motif_scan <- function(motif_file,
-                            sequence_file,
-                            outname='fimo.txt',
-                            bfile,
-                            thresh='1e-5',
-                            skip_matched_sequence=TRUE,
-                            max_strand=FALSE,
-                            options='',
-                            verbosity=c(1,2,3,4,5),
-                            fimo_path='fimo') {
+fimo_motif_matches <- function(motif_file,
+                               sequence_file,
+                               outname='fimo.txt',
+                               thresh_pValue=1e-4,
+                               bfile,
+                               skip_matched_sequence=TRUE,
+                               max_strand=FALSE,
+                               options='',
+                               verbosity=c(1,2,3,4,5),
+                               fimo_path='fimo') {
 
   if ( Sys.which(fimo_path) == '' ) {
     stop( 'fimo could not be executed. Please install fimo and set fimo_path.' )
@@ -58,9 +58,9 @@ fimo_motif_scan <- function(motif_file,
 
   cmd <- paste('fimo --text',
                bfile,
+               '--thresh', thresh_pValue,
                skip_matched_sequence,
                max_strand,
-               '--thresh', thresh,
                '--verbosity', verbosity,
                options,
                motif_file, sequence_file,
