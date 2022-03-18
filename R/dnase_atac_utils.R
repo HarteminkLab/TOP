@@ -330,13 +330,15 @@ count_genome_cuts <- function(bam_file,
     }
 
     # Count 5' end cleavage and save as a .bedGraph file
-    cat('Counting genome cleavage for', bam_file, strand, 'strand...\n')
+    cat('Counting genome cleavage for', bam_file, 'on', strand, 'strand...\n')
     bedgraph_file <- paste0(tools::file_path_sans_ext(out_file), '.bedGraph')
     cmd <- paste(bedtools_path, 'genomecov -bg -5', '-strand', strand,
                  '-ibam', bam_file, '>', bedgraph_file)
     if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
-    genome_counts <- data.table::fread(bedgraph_file, showProgress=FALSE)
+    cat('Sort counted genome cleavage on', strand, 'strand...\n')
+    genome_counts <- data.table::fread(bedgraph_file)
+    genome_counts <- genome_counts[with(genome_counts, order(V1, V2)), ]
     # Shift ATAC-seq reads to get the centers of Tn5 binding positions
     # shift reads by +4 bp for + strand and -5 bp for - strand.
     if (data_type == 'ATAC') {
@@ -347,15 +349,13 @@ count_genome_cuts <- function(bam_file,
         genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] - 5
       }
     }
-
     # Sort bedGraph file
     sorted_bedgraph_file <- paste0(tools::file_path_sans_ext(out_file), '.sorted.bedGraph')
-    genome_counts <- genome_counts[with(genome_counts, order(V1, V2)), ]
     data.table::fwrite(genome_counts, sorted_bedgraph_file,
                        sep='\t', col.names = FALSE, scipen = 999)
 
     # Convert bedGraph to BigWig format
-    cat('Saving as BigWig files ...\n')
+    cat('Save as BigWig format ...\n')
     cmd <- paste(bedGraphToBigWig_path, sorted_bedgraph_file, chrom_size_file, out_file)
     if(.Platform$OS.type == "windows") shell(cmd) else system(cmd)
 
