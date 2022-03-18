@@ -32,12 +32,12 @@ index_fa <- function(fa_file,
 #' @importFrom Rsamtools sortBam indexBam idxstatsBam
 #' @export
 #'
-bam_sort_index_stats <- function(bam_file,
-                                 outdir=dirname(bam_file),
-                                 sorted_bam_file,
-                                 sort=TRUE,
-                                 index=TRUE,
-                                 idxstats=TRUE) {
+sort_index_idxstats_bam <- function(bam_file,
+                                    outdir=dirname(bam_file),
+                                    sorted_bam_file,
+                                    sort=TRUE,
+                                    index=TRUE,
+                                    idxstats=TRUE) {
 
   if(!dir.exists(outdir))
     dir.create(outdir)

@@ -160,7 +160,7 @@ mv ENCFF534DCE.bam K562.ATAC.bam
 
 ```{r cmd-sort-index-stats-ATAC-bam, eval=FALSE, message=FALSE, warning=FALSE}
 # This BAM file has already been sorted, so we skip the sorting step. 
-bam_sort_index_stats('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+sort_index_idxstats_bam('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 ```
 
 Next, we count the cleavages along the genome, and save the genome counts 
