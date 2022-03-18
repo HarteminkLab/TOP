@@ -25,7 +25,7 @@ index_fa <- function(fa_file,
 #' retrieve the idxstats using \code{Rsamtools}.
 #' @param bam_file Input BAM file.
 #' @param outdir Output directory (default: save to the directory of the BAM file).
-#' @param sorted_bam_file Output file name for sorted BAM file.
+#' @param sorted_bam_file Output file name for sorted BAM file if 'sort=TRUE'.
 #' @param sort Logical. If TRUE, sort the BAM file.
 #' @param index Logical. If TRUE, index the BAM file.
 #' @param idxstats Logical. If TRUE, retrieve idxstats from index file.
