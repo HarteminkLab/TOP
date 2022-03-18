@@ -3,9 +3,10 @@
 #' @title Run FIMO to scan for motif matches
 #' @description Run FIMO to scan for motif matches along the genome.
 #' This is a wrapper function to run FIMO command line.
-#' @param motif_file Motif file
-#' @param sequence_file FASTA sequence file
-#' @param outname Output file
+#' @param motif_file Motif file.
+#' @param sequence_file FASTA sequence file.
+#' @param outname Output file name.
+#' @param outdir Output directory.
 #' @param thresh_pValue FIMO option 'thresh' for p-value threshold.
 #' @param bfile FIMO option 'bfile' for background file or model.
 #' @param skip_matched_sequence FIMO option 'skip_matched_sequence'.
@@ -26,6 +27,7 @@
 fimo_motif_matches <- function(motif_file,
                                sequence_file,
                                outname='fimo.txt',
+                               outdir=dirname(outname),
                                thresh_pValue=1e-4,
                                bfile,
                                skip_matched_sequence=TRUE,
@@ -56,11 +58,16 @@ fimo_motif_matches <- function(motif_file,
     bfile <- ''
   }
 
+  if(!dir.exists(outdir)){
+    dir.create(outdir)
+  }
+
   cmd <- paste('fimo --text',
                bfile,
                '--thresh', thresh_pValue,
                skip_matched_sequence,
                max_strand,
+               '--oc', outdir,
                '--verbosity', verbosity,
                options,
                motif_file, sequence_file,
