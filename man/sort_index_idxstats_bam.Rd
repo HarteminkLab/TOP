@@ -18,7 +18,7 @@ sort_index_idxstats_bam(
 
 \item{outdir}{Output directory (default: save to the directory of the BAM file).}
 
-\item{sorted_bam_file}{Output file name for sorted BAM file.}
+\item{sorted_bam_file}{Output file name for sorted BAM file if 'sort=TRUE'.}
 
 \item{sort}{Logical. If TRUE, sort the BAM file.}
 

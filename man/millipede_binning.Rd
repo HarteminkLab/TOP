@@ -7,7 +7,7 @@
 millipede_binning(counts, combine_strands = c("vertical", "motif"))
 }
 \arguments{
-\item{counts}{A matrix of read counts around candidate sites,
+\item{counts}{DNase-seq or ATAC-seq read counts matrix,
 rows are candidate sites,
 columns are DNase or ATAC counts with 100bp flanks around motifs
 on the forward and reverse strands.}
