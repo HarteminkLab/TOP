@@ -11,7 +11,7 @@ bin_transform_counts(
 )
 }
 \arguments{
-\item{counts}{A matrix of DNase (or ATAC) read counts.}
+\item{counts}{DNase or ATAC-seq read counts matrix}
 
 \item{bin.method}{MILLIPEDE binning scheme (Default: 'M5').}
 
