@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
       </span>
     </div>
 
@@ -185,16 +185,16 @@
 <p>The following example runs 10000 iterations of Gibbs sampling in total, with 2000 burn-ins, 3 Markov chains, thinning rate of 2, and save the posterior samples to the <code>TOP_logistic_fit</code> directory.</p>
 <p>It could take a long time if we have many TFs and many cell types in the training data.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_samples_files</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_model</span><span class="op">(</span><span class="va">assembled_training_data</span>, 
-                                   model.file <span class="op">=</span> <span class="va">model_file</span>,
-                                   logistic.model <span class="op">=</span> <span class="cn">TRUE</span>,
-                                   out.dir <span class="op">=</span> <span class="st">'TOP_logistic_fit'</span>,
-                                   partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
-                                   n.iter <span class="op">=</span> <span class="fl">5000</span>, 
-                                   n.burnin <span class="op">=</span> <span class="fl">2000</span>,
-                                   n.chains <span class="op">=</span> <span class="fl">3</span>,
-                                   n.thin <span class="op">=</span> <span class="fl">2</span>,
-                                   quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">TOP_samples_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_M5_model.html">fit_TOP_M5_model</a></span><span class="op">(</span><span class="va">assembled_training_data</span>, 
+                                      model.file <span class="op">=</span> <span class="va">model_file</span>,
+                                      logistic.model <span class="op">=</span> <span class="cn">TRUE</span>,
+                                      out.dir <span class="op">=</span> <span class="st">'TOP_logistic_fit'</span>,
+                                      partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
+                                      n.iter <span class="op">=</span> <span class="fl">5000</span>, 
+                                      n.burnin <span class="op">=</span> <span class="fl">2000</span>,
+                                      n.chains <span class="op">=</span> <span class="fl">3</span>,
+                                      n.thin <span class="op">=</span> <span class="fl">2</span>,
+                                      quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Alternatively, we can also submit jobs for the partitions (choose which partition to run, e.g. <code>partitions=1</code>) in parallel to separate compute nodes on a cluster.</p>
 </div>
 <div class="section level2">
