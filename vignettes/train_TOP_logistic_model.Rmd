@@ -121,16 +121,16 @@ It could take a long time if we have many TFs and many cell types
 in the training data.
 
 ```{r fit-TOP-model, eval=FALSE}
-TOP_samples_files <- fit_TOP_model(assembled_training_data, 
-                                   model.file = model_file,
-                                   logistic.model = TRUE,
-                                   out.dir = 'TOP_logistic_fit',
-                                   partitions = 1:10,
-                                   n.iter = 5000, 
-                                   n.burnin = 2000,
-                                   n.chains = 3,
-                                   n.thin = 2,
-                                   quiet = TRUE)
+TOP_samples_files <- fit_TOP_M5_model(assembled_training_data, 
+                                      model.file = model_file,
+                                      logistic.model = TRUE,
+                                      out.dir = 'TOP_logistic_fit',
+                                      partitions = 1:10,
+                                      n.iter = 5000, 
+                                      n.burnin = 2000,
+                                      n.chains = 3,
+                                      n.thin = 2,
+                                      quiet = TRUE)
 ```
 
 Alternatively, we can also submit jobs for the partitions
