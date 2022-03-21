@@ -237,7 +237,7 @@ select_features <- function(data, pwm.name = 'pwm', bin.name = 'bin'){
   pwm.col <- grep(pwm.name, colnames(data), ignore.case = TRUE, value = TRUE)
   bin.cols <- grep(bin.name, colnames(data), ignore.case = TRUE, value = TRUE)
   features.cols <- c(pwm.col, bin.cols)
-  cat('Model features:', features.cols, '\n')
+  cat('Select features:', features.cols, '\n')
   features <- data[, features.cols]
   return(features)
 }
@@ -315,7 +315,6 @@ select_model_coef_level <- function(tf_name,
       cat(model_level, 'level model is not available! \n')
     }
   }else if(level == 'top'){
-    cat('Choose top level model. \n')
     model_coef <- top_level_mean_coef
     model_level <- 'top'
     model_name <- 'TF-generic'
