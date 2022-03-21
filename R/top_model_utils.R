@@ -66,8 +66,11 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 #'
 #' @param TOP_samples TOP samples combined from all partitions using
 #' \code{combine_TOP_samples}.
-#' @param tf_cell_combos A table listing all TF x cell type combinations
-#' used for training TOP model.
+#' @param tf_cell_combos A table with the indices and names of TF and cell type
+#' combinations from the assembled training data. If missing,
+#' will extract from assembled_training_data.
+#' @param assembled_training_data Assembled training data as in the
+#' \code{assemble_training_data} function.
 #' @param tf_name TF name.
 #' @param cell_type Cell type.
 #' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5).
@@ -80,12 +83,21 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 #'
 extract_TOP_coef_samples <- function(TOP_samples,
                                      tf_cell_combos,
+                                     assembled_trainng_data,
                                      tf_name,
                                      cell_type,
                                      n.bins = 5,
                                      level = c('bottom', 'middle', 'top')){
 
   level <- match.arg(level)
+
+  if(missing(tf_cell_combos)){
+    if(!missing(assembled_trainng_data)){
+      tf_cell_combos <- extract_tf_cell_combos(assembled_trainng_data)
+    }else{
+      stop('Please provide tf_cell_combos or assembled_trainng_data!')
+    }
+  }
 
   TOP_samples <- as.data.frame(TOP_samples)
 
@@ -124,13 +136,27 @@ extract_TOP_coef_samples <- function(TOP_samples,
 #' and return the mean of coefficients at each level of TOP model.
 #' @param TOP_samples TOP samples combined from all partitions using
 #' \code{combine_TOP_samples}.
-#' @param tf_cell_combos A table listing all TF x cell type combinations
-#' used for training TOP model.
+#' @param tf_cell_combos A table with the indices and names of TF and cell type
+#' combinations from the assembled training data. If missing,
+#' will extract from assembled_training_data.
+#' @param assembled_training_data Assembled training data as in the
+#' \code{assemble_training_data} function.
 #' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5)
 #' @return A list of posterior mean coefficients at each level of TOP model.
 #' @export
 #'
-extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
+extract_TOP_mean_coef <- function(TOP_samples,
+                                  tf_cell_combos,
+                                  assembled_trainng_data,
+                                  n.bins = 5){
+
+  if(missing(tf_cell_combos)){
+    if(!missing(assembled_trainng_data)){
+      tf_cell_combos <- extract_tf_cell_combos(assembled_trainng_data)
+    }else{
+      stop('Please provide tf_cell_combos or assembled_trainng_data!')
+    }
+  }
 
   # Extract bottom level posterior mean coefficients for all TF x cell type combos
   bottom_level_mean_coef <- matrix(NA, nrow = nrow(tf_cell_combos), ncol = 2+n.bins)
@@ -174,4 +200,23 @@ extract_TOP_mean_coef <- function(TOP_samples, tf_cell_combos, n.bins = 5){
                         bottom = bottom_level_mean_coef)
 
   return(TOP_mean_coef)
+}
+
+#' @title Extract a table listing the indices and names of TF and cell type
+#' combinations from the assembled training data
+#' @description Extract a table listing the indices and names of TF and cell type
+#' combinations from the assembled training data.
+#' This will be used to extract regression coefficients from the TOP fit result.
+#' @param assembled_training_data Assembled training data as in the
+#' \code{assemble_training_data} function
+#'
+#' @return
+#' @export
+extract_tf_cell_combos <- function(assembled_training_data){
+  cat('Extract the table of TF x cell combinations from assembled_trainng_data...\n')
+  if(inherits(assembled_training_data, "list"))
+    assembled_training_data <- assembled_training_data[[1]]
+
+  tf_cell_combos <- unique(assembled_training_data[, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+  return(tf_cell_combos)
 }

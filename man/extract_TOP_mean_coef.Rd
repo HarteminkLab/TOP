@@ -4,16 +4,25 @@
 \alias{extract_TOP_mean_coef}
 \title{Extract the posterior mean coefficients for each level of TOP model}
 \usage{
-extract_TOP_mean_coef(TOP_samples, tf_cell_combos, n.bins = 5)
+extract_TOP_mean_coef(
+  TOP_samples,
+  tf_cell_combos,
+  assembled_trainng_data,
+  n.bins = 5
+)
 }
 \arguments{
 \item{TOP_samples}{TOP samples combined from all partitions using
 \code{combine_TOP_samples}.}
 
-\item{tf_cell_combos}{A table listing all TF x cell type combinations
-used for training TOP model.}
+\item{tf_cell_combos}{A table with the indices and names of TF and cell type
+combinations from the assembled training data. If missing,
+will extract from assembled_training_data.}
 
 \item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
+
+\item{assembled_training_data}{Assembled training data as in the
+\code{assemble_training_data} function.}
 }
 \value{
 A list of posterior mean coefficients at each level of TOP model.

@@ -7,6 +7,7 @@
 extract_TOP_coef_samples(
   TOP_samples,
   tf_cell_combos,
+  assembled_trainng_data,
   tf_name,
   cell_type,
   n.bins = 5,
@@ -17,8 +18,9 @@ extract_TOP_coef_samples(
 \item{TOP_samples}{TOP samples combined from all partitions using
 \code{combine_TOP_samples}.}
 
-\item{tf_cell_combos}{A table listing all TF x cell type combinations
-used for training TOP model.}
+\item{tf_cell_combos}{A table with the indices and names of TF and cell type
+combinations from the assembled training data. If missing,
+will extract from assembled_training_data.}
 
 \item{tf_name}{TF name.}
 
@@ -30,6 +32,9 @@ used for training TOP model.}
 'bottom' level: TF- and cell-type- specific,
 'middle' level: TF-specific, cell-type generic,
 'top' level: TF-generic}
+
+\item{assembled_training_data}{Assembled training data as in the
+\code{assemble_training_data} function.}
 }
 \value{
 A data frame of posterior samples for TOP's alpha and beta coefficients.
