@@ -7,7 +7,7 @@
 extract_TOP_mean_coef(
   TOP_samples,
   tf_cell_combos,
-  assembled_trainng_data,
+  assembled_training_data,
   n.bins = 5
 )
 }
@@ -19,10 +19,10 @@ extract_TOP_mean_coef(
 combinations from the assembled training data. If missing,
 will extract from assembled_training_data.}
 
-\item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
-
 \item{assembled_training_data}{Assembled training data as in the
 \code{assemble_training_data} function.}
+
+\item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
 }
 \value{
 A list of posterior mean coefficients at each level of TOP model.

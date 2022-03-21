@@ -83,7 +83,7 @@ combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
 #'
 extract_TOP_coef_samples <- function(TOP_samples,
                                      tf_cell_combos,
-                                     assembled_trainng_data,
+                                     assembled_training_data,
                                      tf_name,
                                      cell_type,
                                      n.bins = 5,
@@ -92,10 +92,10 @@ extract_TOP_coef_samples <- function(TOP_samples,
   level <- match.arg(level)
 
   if(missing(tf_cell_combos)){
-    if(!missing(assembled_trainng_data)){
-      tf_cell_combos <- extract_tf_cell_combos(assembled_trainng_data)
+    if(!missing(assembled_training_data)){
+      tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
     }else{
-      stop('Please provide tf_cell_combos or assembled_trainng_data!')
+      stop('Please provide tf_cell_combos or assembled_training_data!')
     }
   }
 
@@ -147,14 +147,14 @@ extract_TOP_coef_samples <- function(TOP_samples,
 #'
 extract_TOP_mean_coef <- function(TOP_samples,
                                   tf_cell_combos,
-                                  assembled_trainng_data,
+                                  assembled_training_data,
                                   n.bins = 5){
 
   if(missing(tf_cell_combos)){
-    if(!missing(assembled_trainng_data)){
-      tf_cell_combos <- extract_tf_cell_combos(assembled_trainng_data)
+    if(!missing(assembled_training_data)){
+      tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
     }else{
-      stop('Please provide tf_cell_combos or assembled_trainng_data!')
+      stop('Please provide tf_cell_combos or assembled_training_data!')
     }
   }
 
@@ -213,7 +213,7 @@ extract_TOP_mean_coef <- function(TOP_samples,
 #' @return
 #' @export
 extract_tf_cell_combos <- function(assembled_training_data){
-  cat('Extract the table of TF x cell combinations from assembled_trainng_data...\n')
+  cat('Extract the table of TF x cell combinations from assembled_training_data...\n')
   if(inherits(assembled_training_data, "list"))
     assembled_training_data <- assembled_training_data[[1]]
 
