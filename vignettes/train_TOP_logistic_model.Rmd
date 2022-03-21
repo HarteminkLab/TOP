@@ -75,12 +75,6 @@ assembled_training_data <- assemble_training_data(tf_cell_table,
                                                   n.partitions = 10)
 ```
 
-Save a table listing all TF and cell type combinations. 
-This will be used later to extract regression coefficients.
-```{r tf-cell-combos, eval=FALSE}
-tf_cell_combos <- unique(assembled_training_data[[1]][, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
-```
-
 Fit TOP logistic models using assembled training data
 --------------------------------------------------------
 
@@ -148,7 +142,7 @@ TOP_samples <- combine_TOP_samples(TOP_samples_files)
 
 We can extract posterior mean of the coefficients for all three levels.
 ```{r extract-TOP-mean-coef, eval=FALSE}
-TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, tf_cell_combos)
+TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, assembled_training_data)
 ```
 
 Save posterior samples and posterior mean of the regression coefficients.
