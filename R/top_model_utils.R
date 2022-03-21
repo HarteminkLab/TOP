@@ -4,7 +4,7 @@
 #' @param TOP_samples_file File name of the posterior samples
 #' @param thin Thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
-#' @param n.samples Randomly choose n.samples posterior samples,
+#' @param n.samples Keep n.samples posterior samples (randomly choose),
 #' when the number of posterior samples is greater than \code{n.samples}.
 #' @return A data frame of posterior samples.
 #' @export
@@ -40,8 +40,8 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 #' @param TOP_samples_files File names of the posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
-#' @param n.samples Randomly choose n.samples posterior samples,
-#' when the number of posterior samples is greater than n.samples.
+#' @param n.samples Keep n.samples posterior samples (randomly choose),
+#' when the number of posterior samples is greater than \code{n.samples}.
 #' @return A data frame of combined and averaged posterior samples.
 #' @export
 #'

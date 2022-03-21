@@ -12,7 +12,7 @@ load_TOP_samples(TOP_samples_file, thin = 1, n.samples = 1000)
 \item{thin}{Thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).}
 
-\item{n.samples}{Randomly choose n.samples posterior samples,
+\item{n.samples}{Keep n.samples posterior samples (randomly choose),
 when the number of posterior samples is greater than \code{n.samples}.}
 }
 \value{
