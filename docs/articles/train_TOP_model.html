@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -158,9 +158,6 @@
                                                   chip_colname <span class="op">=</span> <span class="st">'chip'</span>, <span class="co"># name of the column with ChIP occupancy in training data</span>
                                                   training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
                                                   n.partitions <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p>Save a table listing all TF and cell type combinations. This will be used later to extract regression coefficients.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tf_cell_combos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">assembled_training_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'tf_id'</span>, <span class="st">'cell_id'</span>, <span class="st">'tf_name'</span>, <span class="st">'cell_type'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="fit-top-quantitative-occupancy-models-using-assembled-training-data">Fit TOP quantitative occupancy models using assembled training data<a class="anchor" aria-label="anchor" href="#fit-top-quantitative-occupancy-models-using-assembled-training-data"></a>
@@ -169,10 +166,10 @@
 <p>We use the consensus Monte Carlo algorithm to run Gibbs sampling on each of the 10 training data partitions separately in parallel.</p>
 <p>We fit TOP models using <a href="https://mcmc-jags.sourceforge.io" class="external-link">JAGS</a>, and we uses the <a href="https://cran.r-project.org/web/packages/R2jags/" class="external-link">R2jags</a> R package to call JAGS from R.</p>
 <p>Please install <code>R2jags</code> if you need to train your own TOP models.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">R2jags</span><span class="op">)</span></code></pre></div>
 <p>We provided the TOP model files in JAGS code in the <code>../model</code> directory within the package. It is easy to modify the models, e.g. use different priors, more bins, or other genomic features.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_file</span> <span class="op">&lt;-</span> <span class="st">'../model/TOP_M5_model.jags'</span></code></pre></div>
 <p>The <code>fit_TOP_model()</code> function below runs Gibbs sampling for each of the 10 partitions in parallel (using the <code>foreach</code> R package).</p>
 <p>We first perform “asinh” transform to the training ChIP-seq counts, then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.</p>
@@ -185,7 +182,7 @@
 </ul>
 <p>The following example runs 10000 iterations of Gibbs sampling in total, with 2000 burn-ins, 3 Markov chains, thinning rate of 2, and save the posterior samples to the <code>TOP_fit</code> directory.</p>
 <p>It could take a long time if we have many TFs and many cell types in the training data.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_samples_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_M5_model.html">fit_TOP_M5_model</a></span><span class="op">(</span><span class="va">assembled_training_data</span>, 
                                       model.file <span class="op">=</span> <span class="va">model_file</span>,
                                       logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
@@ -203,14 +200,14 @@
 <h2 id="combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients">Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients<a class="anchor" aria-label="anchor" href="#combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients"></a>
 </h2>
 <p>After we finished Gibbs sampling for all 10 partitions, we combine the posterior samples from all the partitions.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combine_TOP_samples.html">combine_TOP_samples</a></span><span class="op">(</span><span class="va">TOP_samples_files</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">TOP_samples</span><span class="op">)</span></code></pre></div>
 <p>We can extract posterior mean of the coefficients for all three levels.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="va">tf_cell_combos</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="va">assembled_training_data</span><span class="op">)</span></code></pre></div>
 <p>Save the posterior samples and posterior mean coefficients for predictions.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="st">'TOP_fit/TOP_M5_combined_posterior_samples.rds'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span>, <span class="st">'TOP_fit/TOP_M5_posterior_mean_coef.rds'</span><span class="op">)</span></code></pre></div>
 <p>We will provide pre-trained models using ENCODE data <a href="https://users.cs.duke.edu/~amink/software/" class="external-link">here</a>.</p>

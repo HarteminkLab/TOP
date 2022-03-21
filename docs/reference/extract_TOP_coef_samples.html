@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -72,6 +72,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extract_TOP_coef_samples</span><span class="op">(</span>
   <span class="va">TOP_samples</span>,
   <span class="va">tf_cell_combos</span>,
+  <span class="va">assembled_training_data</span>,
   <span class="va">tf_name</span>,
   <span class="va">cell_type</span>,
   n.bins <span class="op">=</span> <span class="fl">5</span>,
@@ -85,8 +86,12 @@
 <dd><p>TOP samples combined from all partitions using
 <code>combine_TOP_samples</code>.</p></dd>
 <dt>tf_cell_combos</dt>
-<dd><p>A table listing all TF x cell type combinations
-used for training TOP model.</p></dd>
+<dd><p>A table with the indices and names of TF and cell type
+combinations from the assembled training data. If missing,
+will extract from assembled_training_data.</p></dd>
+<dt>assembled_training_data</dt>
+<dd><p>Assembled training data as in the
+<code>assemble_training_data</code> function.</p></dd>
 <dt>tf_name</dt>
 <dd><p>TF name.</p></dd>
 <dt>cell_type</dt>
