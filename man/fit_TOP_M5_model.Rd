@@ -9,7 +9,6 @@ fit_TOP_M5_model(
   all_training_data_files,
   model.file,
   logistic.model = FALSE,
-  out.dir = "TOP_samples",
   transform = c("asinh", "log2", "sqrt", "none"),
   partitions = 1:10,
   n.iter = 2000,
@@ -17,6 +16,9 @@ fit_TOP_M5_model(
   n.chains = 3,
   n.thin = max(1, floor((n.iter - n.burnin)/1000)),
   n.cores = length(partitions),
+  return.result = c("samples", "jagsfit"),
+  save = TRUE,
+  out.dir = "./TOP_samples",
   quiet = FALSE
 )
 }
@@ -30,8 +32,6 @@ it will load the training data from all_training_data_files.}
 \item{model.file}{TOP model file written in JAGS.}
 
 \item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
-
-\item{out.dir}{Output directory for TOP model posterior samples.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
@@ -55,7 +55,15 @@ which will only thin if there are at least 2000 simulations.}
 \item{n.cores}{Number of cores to use in parallel
 (default: equal to the number of partitions).}
 
+\item{save}{Logical, if TRUE, save posterior samples as .rds files
+in \code{out.dir}.}
+
+\item{out.dir}{Directory to save TOP model posterior samples.}
+
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}
+}
+\value{
+A list of posterior samples for each of the partitions.
 }
 \description{
 Fit TOP model (using M5 bins) for selected partitions in parallel.

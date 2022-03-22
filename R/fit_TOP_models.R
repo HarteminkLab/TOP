@@ -8,7 +8,6 @@
 #' it will load the training data from all_training_data_files.
 #' @param model.file TOP model file written in JAGS.
 #' @param logistic.model Logical; if TRUE, use the logistic version of TOP model.
-#' @param out.dir Output directory for TOP model posterior samples.
 #' @param transform Type of transformation for ChIP counts.
 #' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
 #' Only needed when logistic.model is FALSE.
@@ -24,8 +23,11 @@
 #' which will only thin if there are at least 2000 simulations.
 #' @param n.cores Number of cores to use in parallel
 #' (default: equal to the number of partitions).
+#' @param save Logical, if TRUE, save posterior samples as .rds files
+#' in \code{out.dir}.
+#' @param out.dir Directory to save TOP model posterior samples.
 #' @param quiet Logical, whether to suppress stdout in jags.model().
-#'
+#' @return A list of posterior samples for each of the partitions.
 #' @import doParallel
 #' @import foreach
 #' @importFrom parallel detectCores
@@ -36,7 +38,6 @@ fit_TOP_M5_model <- function(all_training_data,
                              all_training_data_files,
                              model.file,
                              logistic.model=FALSE,
-                             out.dir="TOP_samples",
                              transform=c('asinh', 'log2', 'sqrt', 'none'),
                              partitions=1:10,
                              n.iter=2000,
@@ -44,11 +45,13 @@ fit_TOP_M5_model <- function(all_training_data,
                              n.chains=3,
                              n.thin=max(1, floor((n.iter - n.burnin) / 1000)),
                              n.cores=length(partitions),
+                             return.result=c('samples', 'jagsfit'),
+                             save=TRUE,
+                             out.dir='./TOP_samples',
                              quiet=FALSE){
 
-  if(!dir.exists(out.dir)){
-    dir.create(out.dir, showWarnings = FALSE, recursive = TRUE)
-  }
+  transform <- match.arg(transform)
+  return.result <- match.arg(return.result)
 
   cat('Fitting TOP models for partition:', partitions,'...\n')
 
@@ -65,7 +68,7 @@ fit_TOP_M5_model <- function(all_training_data,
 
   # We can also run each of the partitions
   # on separate compute nodes.
-  TOP_samples_files <- foreach(k=partitions, .combine = "rbind") %dopar% {
+  TOP_samples <- foreach(k=partitions, .combine = "rbind") %dopar% {
 
     if(length(all_training_data) == 10){
       data <- all_training_data[[k]]
@@ -79,22 +82,34 @@ fit_TOP_M5_model <- function(all_training_data,
       # Fit TOP binding probability model (logistic version)
       jagsfit <- fit_TOP_logistic_M5_model_jags(data, model.file, n.iter, n.burnin, n.chains, n.thin, quiet)
       fit_samples <- coda::as.mcmc(jagsfit)
-      saveRDS(jagsfit, file.path(out.dir, paste0('TOP.logistic.M5.partition', k, '.jagsfit.rds')))
-      samples_file <- file.path(out.dir, paste0('TOP.logistic.M5.partition', k, '.posterior.samples.rds'))
-      saveRDS(fit_samples, samples_file)
+      if(save){
+        if(!dir.exists(out.dir)) dir.create(out.dir)
+        saveRDS(jagsfit, file.path(out.dir, paste0('TOP.logistic.M5.partition', k, '.jagsfit.rds')))
+        samples_file <- file.path(out.dir, paste0('TOP.logistic.M5.partition', k, '.posterior.samples.rds'))
+        saveRDS(fit_samples, samples_file)
+      }
+
     }else{
       # Fit TOP quantitative TF occupancy model
       jagsfit <- fit_TOP_M5_model_jags(data, model.file, transform, n.iter, n.burnin, n.chains, n.thin, quiet)
       fit_samples <- coda::as.mcmc(jagsfit)
-      saveRDS(jagsfit, file.path(out.dir, paste0('TOP.M5.partition', k, '.jagsfit.rds')))
-      samples_file <- file.path(out.dir, paste0('TOP.M5.partition', k, '.posterior.samples.rds'))
-      saveRDS(fit_samples, samples_file)
+      if(save){
+        if(!dir.exists(out.dir)) dir.create(out.dir)
+        saveRDS(jagsfit, file.path(out.dir, paste0('TOP.M5.partition', k, '.jagsfit.rds')))
+        samples_file <- file.path(out.dir, paste0('TOP.M5.partition', k, '.posterior.samples.rds'))
+        saveRDS(fit_samples, samples_file)
+      }
     }
-    samples_file
+
+    if(return.result == 'samples'){
+      fit_samples
+    }else if(return.result == 'jagsfit'){
+      jagsfit
+    }
+
   }
 
-  cat("Files of TOP posterior samples: \n")
-  print(TOP_samples_files)
+  return(TOP_samples)
 }
 
 #' @title Fit TOP quantitative occupancy model with M5 bins
