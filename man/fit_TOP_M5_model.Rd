@@ -16,9 +16,9 @@ fit_TOP_M5_model(
   n.chains = 3,
   n.thin = max(1, floor((n.iter - n.burnin)/1000)),
   n.cores = length(partitions),
-  return.result = c("samples", "jagsfit"),
   save = TRUE,
   out.dir = "./TOP_samples",
+  return.type = c("samples", "jagsfit", "samplefiles"),
   quiet = FALSE
 )
 }
@@ -60,10 +60,15 @@ in \code{out.dir}.}
 
 \item{out.dir}{Directory to save TOP model posterior samples.}
 
+\item{return.type}{Type of result to return.
+Options: 'samples' (posterior samples),}
+
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}
 }
 \value{
 A list of posterior samples for each of the partitions.
+
+A list of posterior samples or jagsfit object for each partition.
 }
 \description{
 Fit TOP model (using M5 bins) for selected partitions in parallel.
