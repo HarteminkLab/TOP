@@ -4,16 +4,23 @@
 \alias{combine_TOP_samples}
 \title{Combine and take the average of TOP posterior samples from all partitions}
 \usage{
-combine_TOP_samples(all_TOP_samples, thin = 1, n.samples = 1000)
+combine_TOP_samples(
+  all_TOP_samples,
+  TOP_samples_files,
+  thin = 1,
+  n.samples = 1000
+)
 }
 \arguments{
-\item{all_TOP_samples}{TOP posterior samples from all partitions}
+\item{TOP_samples_files}{Files of TOP posterior samples from all partitions.}
 
 \item{thin}{thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).}
 
 \item{n.samples}{Keep n.samples posterior samples (randomly choose),
 when the number of posterior samples is greater than \code{n.samples}.}
+
+\item{TOP_samples}{TOP posterior samples from all partitions.}
 }
 \value{
 A data frame of combined and averaged posterior samples.

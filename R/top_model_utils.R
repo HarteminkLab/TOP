@@ -32,7 +32,8 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n.samples = 1000) {
 #' @description Combine and take the average of TOP posterior samples
 #' from all partitions. Use \code{select_TOP_samples} to select
 #' posterior samples from each partition.
-#' @param all_TOP_samples TOP posterior samples from all partitions
+#' @param TOP_samples TOP posterior samples from all partitions.
+#' @param TOP_samples_files Files of TOP posterior samples from all partitions.
 #' @param thin thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
 #' @param n.samples Keep n.samples posterior samples (randomly choose),
@@ -41,8 +42,23 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n.samples = 1000) {
 #' @export
 #'
 combine_TOP_samples <- function(all_TOP_samples,
+                                TOP_samples_files,
                                 thin = 1,
                                 n.samples = 1000) {
+
+  if(missing(all_TOP_samples)){
+    if(!missing(TOP_samples_files)){
+      if(any(!file.exists(TOP_samples_files))){
+        stop('Files not available:\n', TOP_samples_files[!file.exists(TOP_samples_files)])
+      }
+      all_TOP_samples <- vector('list', length(TOP_samples_files))
+      for(i in 1:length(TOP_samples_files)){
+        all_TOP_samples[[i]] <- readRDS(TOP_samples_files[i])
+      }
+    }else{
+      stop('Please provide all_TOP_samples or TOP_samples_files!')
+    }
+  }
 
   N <- length(all_TOP_samples)
   cat('Combining samples from', N, 'partitions ... \n')
@@ -201,13 +217,13 @@ extract_TOP_mean_coef <- function(TOP_samples,
 
 #' @title Extract a table listing the indices and names of TF and cell type
 #' combinations from the assembled training data
-#' @description Extract a table listing the indices and names of TF and cell type
+#' @description Extract a table listing the indices and names of TF x cell type
 #' combinations from the assembled training data.
 #' This will be used to extract regression coefficients from the TOP fit result.
 #' @param assembled_training_data Assembled training data as in the
 #' \code{assemble_training_data} function
 #'
-#' @return
+#' @return a data frame of the indices and names of TF x cell type combinations.
 #' @export
 extract_tf_cell_combos <- function(assembled_training_data){
   cat('Extract the table of TF x cell combinations from assembled_training_data...\n')
