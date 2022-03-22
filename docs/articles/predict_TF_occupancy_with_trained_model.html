@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -143,7 +143,7 @@
                           logistic.model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># use the quantitative occupancy model</span>
                           transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># we used asinh transformation on the ChIP data when training the model</span>
 <span class="co">#&gt; Choose the bottom level model for CTCF in K562 ...</span>
-<span class="co">#&gt; Model features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
+<span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span></code></pre></div>
 <p>Or, we can select the “best” available level of coefficients for the TF and cell type of interest. In this case, the “bottom” level is the best level.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -156,7 +156,7 @@
                           transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># we used asinh transformation on the ChIP data when training the model</span>
 <span class="co">#&gt; Find the best available model for CTCF in K562 ...</span>
 <span class="co">#&gt; Choose the bottom level model...</span>
-<span class="co">#&gt; Model features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
+<span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span></code></pre></div>
 <p>This result contains a list with the level of model, regression coefficients (posterior mean) used to make predictions, and predictions of TF occupancy.</p>
 <p>The prediction result contains the training data together with predicted TF occupancy for each candidate site:</p>
@@ -198,7 +198,7 @@
                           logistic.model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># use the quantitative occupancy model</span>
                           transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># we used asinh transformation on the ChIP data when training the model</span>
 <span class="co">#&gt; Choose the middle level model for CTCF ...</span>
-<span class="co">#&gt; Model features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
+<span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span>
 
 <span class="va">TOP_middle_predictions</span> <span class="op">&lt;-</span> <span class="va">TOP_middle_result</span><span class="op">$</span><span class="va">predictions</span></code></pre></div>
@@ -231,7 +231,7 @@
                           level <span class="op">=</span> <span class="st">'bottom'</span>,
                           logistic.model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Choose the bottom level model for CTCF in K562 ...</span>
-<span class="co">#&gt; Model features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
+<span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF binding probability using TOP logistic model...</span>
 <span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="va">TOP_result</span><span class="op">$</span><span class="va">predictions</span>
 
