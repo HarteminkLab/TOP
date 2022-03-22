@@ -152,7 +152,8 @@ dim(TOP_samples)
 
 We can extract posterior mean of the coefficients for all three levels.
 ```{r extract-TOP-mean-coef, eval=FALSE}
-TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, assembled_training_data)
+TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples, 
+                         assembled_training_data = assembled_training_data)
 ```
 
 Save posterior samples and posterior mean of the regression coefficients.
