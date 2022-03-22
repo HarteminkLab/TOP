@@ -69,10 +69,10 @@ library(TOP)
 
 ```{r assemble-TOP-logistic-training-data, eval=FALSE}
 assembled_training_data <- assemble_training_data(tf_cell_table,
-                                                  logistic.model = TRUE, # use logistic model
+                                                  logistic_model = TRUE, # use logistic model
                                                   chip_colname = 'chip_label', # name of the column with ChIP labels in training data
                                                   training_chrs = paste0('chr', seq(1,21,2)), 
-                                                  n.partitions = 10)
+                                                  n_partitions = 10)
 ```
 
 Fit TOP logistic models using assembled training data
@@ -102,10 +102,10 @@ in parallel (using the `foreach` R package).
 
 We can set the following parameters for Gibbs sampling: 
 
-- n.iter: number of total iterations per chain (including burn-in iterations).
-- n.burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.
-- n.chains: number of Markov chains.
-- n.thin: thinning rate, must be a positive integer.
+- n_iter: number of total iterations per chain (including burn-in iterations).
+- n_burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.
+- n_chains: number of Markov chains.
+- n_thin: thinning rate, must be a positive integer.
 
 The following example runs 10000 iterations of Gibbs sampling in total, 
 with 2000 burn-ins, 3 Markov chains, thinning rate of 2.
@@ -115,15 +115,15 @@ in the training data.
 
 ```{r fit-TOP-model, eval=FALSE}
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data, 
-                                    model.file = model_file,
-                                    logistic.model = TRUE,
+                                    model_file = model_file,
+                                    logistic_model = TRUE,
                                     partitions = 1:10,
-                                    n.iter = 5000, 
-                                    n.burnin = 2000,
-                                    n.chains = 3,
-                                    n.thin = 2,
+                                    n_iter = 5000, 
+                                    n_burnin = 2000,
+                                    n_chains = 3,
+                                    n_thin = 2,
                                     save = TRUE,
-                                    out.dir='TOP_logistic_fit',
+                                    out_dir='TOP_logistic_fit',
                                     quiet = TRUE)
 ```
 

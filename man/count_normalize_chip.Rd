@@ -9,7 +9,7 @@ count_normalize_chip(
   chip_bam_files,
   chip_idxstats_files,
   chrom_size_file,
-  ref.size = 2e+07,
+  ref_size = 2e+07,
   transform = c("none", "asinh", "log2", "sqrt"),
   bedtools_path = "bedtools"
 )
@@ -26,7 +26,7 @@ of the bam files).}
 
 \item{chrom_size_file}{Chromosome size file.}
 
-\item{ref.size}{Normalize to ChIP-seq reference library size
+\item{ref_size}{Normalize to ChIP-seq reference library size
 (Default: 20 million)}
 
 \item{transform}{Type of transformation for the ChIP read counts.

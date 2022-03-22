@@ -15,11 +15,11 @@
 #' otherwise, if TF motif (but not cell type) is available in the training data,
 #' choose the middle level (TF-specific model) of that TF motif;
 #' otherwise, use the top level TF-generic model.
-#' @param logistic.model Logical. If TRUE, use the logistic version of TOP model
+#' @param logistic_model Logical. If TRUE, use the logistic version of TOP model
 #' to predict TF binding probability. If FALSE, predict quantitative TF occupancy.
 #' @param transform Type of transformation for ChIP counts.
 #' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-#' Only needed when logistic.model is FALSE.
+#' Only needed when logistic_model is FALSE.
 #' @return A list containing the results, including selected hierarchy level,
 #' TOP model name, regression coefficients (posterior mean),
 #' and prediction results.
@@ -31,7 +31,7 @@ predict_TOP <- function(data,
                         cell_type,
                         TOP_coef,
                         level = c('best', 'bottom', 'middle', 'top'),
-                        logistic.model = FALSE,
+                        logistic_model = FALSE,
                         transform = c('asinh', 'log2', 'log', 'none')){
 
   level <- match.arg(level)
@@ -46,22 +46,22 @@ predict_TOP <- function(data,
     stop("Please provide TOP regression coefficients.")
   }
 
-  selected.model <- select_model_coef_level(tf_name, cell_type, TOP_coef, level)
-  if(anyNA(selected.model$coef)){
+  selected_model <- select_model_coef_level(tf_name, cell_type, TOP_coef, level)
+  if(anyNA(selected_model$coef)){
     stop(paste0(level, ' level cefficients are not available for ', tf_name,
                 ' in ', cell_type, '. Try a different "level".'))
   }
 
-  if(logistic.model == FALSE) {
+  if(logistic_model == FALSE) {
     transform <- match.arg(transform)
-    predictions <- predict_TOP_mean_coef(data, selected.model$coef, transform = transform)
-  }else if (logistic.model == TRUE){
-    predictions <- predict_TOP_logistic_mean_coef(data, selected.model$coef)
+    predictions <- predict_TOP_mean_coef(data, selected_model$coef, transform = transform)
+  }else if (logistic_model == TRUE){
+    predictions <- predict_TOP_logistic_mean_coef(data, selected_model$coef)
   }
 
-  res <- list(model = selected.model$model,
-              level = selected.model$level,
-              coef = selected.model$coef,
+  res <- list(model = selected_model$model,
+              level = selected_model$level,
+              coef = selected_model$coef,
               predictions = predictions)
   return(res)
 
@@ -101,9 +101,9 @@ predict_TOP_mean_coef <- function(data,
 
   coefficients <- as.matrix(mean_coef, ncol = 1)
 
-  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
+  data_matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
-  predictions <- as.numeric(data.matrix %*% coefficients)
+  predictions <- as.numeric(data_matrix %*% coefficients)
 
   # transform back to the original scale
   if(transform == 'asinh'){
@@ -126,9 +126,9 @@ predict_TOP_mean_coef <- function(data,
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param coef_samples TOP posterior samples.
-#' @param use.posterior.mean Logical; if TRUE, uses the posterior mean of
+#' @param use_posterior_mean Logical; if TRUE, uses the posterior mean of
 #' regression coefficients to make predictions.
-#' @param sample.predictions Logical; if TRUE, sample from posterior predictions
+#' @param sample_predictions Logical; if TRUE, sample from posterior predictions
 #' and then take the mean of posterior prediction samples.
 #' @param transform Method used to transform ChIP-seq counts when training
 #' the TOP model. Options: asinh, log2, sqrt, none.
@@ -137,8 +137,8 @@ predict_TOP_mean_coef <- function(data,
 #' @export
 predict_TOP_samples <- function(data,
                                 coef_samples,
-                                use.posterior.mean = FALSE,
-                                sample.predictions = TRUE,
+                                use_posterior_mean = FALSE,
+                                sample_predictions = TRUE,
                                 transform = c('asinh', 'log2', 'sqrt', 'none')){
 
   transform <- match.arg(transform)
@@ -146,23 +146,23 @@ predict_TOP_samples <- function(data,
   features <- select_features(data)
 
   cat('Predicting TF occupancy using TOP occupancy model with posterior samples...\n')
-  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
+  data_matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
   alpha_samples <- coef_samples$alpha_samples
   beta_samples  <- coef_samples$beta_samples
   tau_samples   <- coef_samples$tau_samples
   coefficients  <- t(cbind(alpha_samples, beta_samples))
 
-  if(use.posterior.mean){
+  if(use_posterior_mean){
     coefficients <- apply(coefficients, 1, mean)
-    means <- data.matrix %*% coefficients
+    means <- data_matrix %*% coefficients
     predictions <- as.numeric(means)
   }else{
-    means <- data.matrix %*% coefficients
+    means <- data_matrix %*% coefficients
 
-    if(sample.predictions){
+    if(sample_predictions){
       sds <- 1 / sqrt(tau_samples)
-      n_data <- nrow(data.matrix)
+      n_data <- nrow(data_matrix)
       n_samples <- ncol(coefficients)
       predictions <- sapply(1:n_samples, function(x) stats::rnorm(n_data, mean = means[, x], sd = sds[x]))
       predictions <- apply(predictions, 1, mean)
@@ -215,9 +215,9 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
   coefficients <- as.matrix(mean_coef, ncol = 1)
 
-  data.matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
+  data_matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
-  mu <- as.numeric(data.matrix %*% coefficients)
+  mu <- as.numeric(data_matrix %*% coefficients)
 
   p <- 1 / (1 + exp(-mu)) # inverse logit
 
@@ -229,16 +229,16 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 #' @title Select PWM and DNase (or ATAC) bin features from the input data frame
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param pwm.name name (prefix) of the PMW score column.
-#' @param bin.name name (prefix) of the DNase or ATAC bin columns.
+#' @param pwm_col name (prefix) of the PMW score column.
+#' @param bin_col name (prefix) of the DNase or ATAC bin columns.
 #'
-select_features <- function(data, pwm.name = 'pwm', bin.name = 'bin'){
+select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
   data <- as.data.frame(data)
-  pwm.col <- grep(pwm.name, colnames(data), ignore.case = TRUE, value = TRUE)
-  bin.cols <- grep(bin.name, colnames(data), ignore.case = TRUE, value = TRUE)
-  features.cols <- c(pwm.col, bin.cols)
+  pwm_col <- grep(pwm_col, colnames(data), ignore.case = TRUE, value = TRUE)
+  bin_cols <- grep(bin_col, colnames(data), ignore.case = TRUE, value = TRUE)
+  features_cols <- c(pwm_col, bin_cols)
   cat('Select features:', features.cols, '\n')
-  features <- data[, features.cols]
+  features <- data[, features_cols]
   return(features)
 }
 

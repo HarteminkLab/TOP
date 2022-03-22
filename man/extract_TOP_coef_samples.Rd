@@ -10,7 +10,7 @@ extract_TOP_coef_samples(
   assembled_training_data,
   tf_name,
   cell_type,
-  n.bins = 5,
+  n_bins = 5,
   level = c("bottom", "middle", "top")
 )
 }
@@ -29,7 +29,7 @@ will extract from assembled_training_data.}
 
 \item{cell_type}{Cell type.}
 
-\item{n.bins}{Number of DNase or ATAC bins in TOP model (default = 5).}
+\item{n_bins}{Number of DNase or ATAC bins in TOP model (default = 5).}
 
 \item{level}{The level in the TOP model (options: bottom, middle, or top),
 'bottom' level: TF- and cell-type- specific,

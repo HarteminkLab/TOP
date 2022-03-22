@@ -37,8 +37,8 @@ scatterplot_predictions <- function(x, y,
                 size = 0.5) +
     geom_point(shape=19,      # Use solid circles
                alpha=0.3,     # opacity
-               color = color,
-               size = 0.5) +
+               color=color,
+               size=0.5) +
     scale_x_continuous(breaks=seq(xlim[1],xlim[2],length.out = 5), limits = c(xlim[1],xlim[2])) +
     scale_y_continuous(breaks=seq(ylim[1],ylim[2],length.out = 5), limits = c(ylim[1],ylim[2])) +
     labs(x = xlab, y = ylab, title = title,
@@ -83,8 +83,8 @@ scatterplot <- function(x, y,
   p <- ggplot(df, aes(x=x, y=y)) +
     geom_point(shape=19,      # Use solid circles
                alpha=0.3,     # opacity
-               color = color,
-               size = 0.5) +
+               color=color,
+               size=0.5) +
     labs(x = xlab, y = ylab, title = title) +
     theme_classic()
 

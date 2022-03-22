@@ -85,10 +85,10 @@ library(TOP)
 
 ```{r assemble-TOP-training-data, eval=FALSE}
 assembled_training_data <- assemble_training_data(tf_cell_table,
-                                                  logistic.model = FALSE, # do not use logistic model
+                                                  logistic_model = FALSE, # do not use logistic model
                                                   chip_colname = 'chip', # name of the column with ChIP occupancy in training data
                                                   training_chrs = paste0('chr', seq(1,21,2)), 
-                                                  n.partitions = 10)
+                                                  n_partitions = 10)
 ```
 
 Fit TOP quantitative occupancy models using assembled training data
@@ -126,10 +126,10 @@ then fit the TOP quantitative occupancy model for each of the 10 partitions in p
 
 Set the following parameters for Gibbs sampling: 
 
-- n.iter: number of total iterations per chain (including burn-in iterations).
-- n.burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.
-- n.chains: number of Markov chains.
-- n.thin: thinning rate, must be a positive integer.
+- n_iter: number of total iterations per chain (including burn-in iterations).
+- n_burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.
+- n_chains: number of Markov chains.
+- n_thin: thinning rate, must be a positive integer.
 
 The following example runs 5000 iterations of Gibbs sampling in total, 
 including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2, 
@@ -140,16 +140,16 @@ in the training data.
 
 ```{r fit-TOP-model, eval=FALSE}
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data, 
-                                    model.file = model_file,
-                                    logistic.model = FALSE,
+                                    model_file = model_file,
+                                    logistic_model = FALSE,
                                     transform = 'asinh', 
                                     partitions = 1:10,
-                                    n.iter = 5000,
-                                    n.burnin = 1000,
-                                    n.chains = 3,
-                                    n.thin = 2,
+                                    n_iter = 5000,
+                                    n_burnin = 1000,
+                                    n_chains = 3,
+                                    n_thin = 2,
                                     save = TRUE,
-                                    out.dir='TOP_fit',
+                                    out_dir='TOP_fit',
                                     quiet = TRUE)
 ```
 

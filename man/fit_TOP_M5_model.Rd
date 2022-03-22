@@ -7,18 +7,18 @@
 fit_TOP_M5_model(
   all_training_data,
   all_training_data_files,
-  model.file,
-  logistic.model = FALSE,
+  model_file,
+  logistic_model = FALSE,
   transform = c("asinh", "log2", "sqrt", "none"),
   partitions = 1:10,
-  n.iter = 2000,
-  n.burnin = floor(n.iter/2),
-  n.chains = 3,
-  n.thin = max(1, floor((n.iter - n.burnin)/1000)),
-  n.cores = length(partitions),
+  n_iter = 2000,
+  n_burnin = floor(n_iter/2),
+  n_chains = 3,
+  n_thin = max(1, floor((n_iter - n_burnin)/1000)),
+  n_cores = length(partitions),
   save = TRUE,
-  out.dir = "./TOP_samples",
-  return.type = c("samples", "jagsfit", "samplefiles"),
+  out_dir = "./TOP_samples",
+  return_type = c("samples", "jagsfit", "samplefiles"),
   quiet = FALSE
 )
 }
@@ -29,38 +29,38 @@ fit_TOP_M5_model(
 files of all partitions. If all_training_data is missing,
 it will load the training data from all_training_data_files.}
 
-\item{model.file}{TOP model file written in JAGS.}
+\item{model_file}{TOP model file written in JAGS.}
 
-\item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
+\item{logistic_model}{Logical; if TRUE, use the logistic version of TOP model.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-Only needed when logistic.model is FALSE.}
+Only needed when logistic_model is FALSE.}
 
 \item{partitions}{A vector of selected partition(s) to run.
 (default: all 10 partitions (1:10))}
 
-\item{n.iter}{Number of total iterations per chain (including burn in).}
+\item{n_iter}{Number of total iterations per chain (including burn in).}
 
-\item{n.burnin}{Length of burn in samples,
+\item{n_burnin}{Length of burn in samples,
 i.e. number of iterations to discard at the beginning.
-Default is n.iter/2, that is, discarding the first half of the simulations.}
+Default is n_iter/2, that is, discarding the first half of the simulations.}
 
-\item{n.chains}{Number of Markov chains (default: 3).}
+\item{n_chains}{Number of Markov chains (default: 3).}
 
-\item{n.thin}{Thinning rate, must be a positive integer.
-Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+\item{n_thin}{Thinning rate, must be a positive integer.
+Default is max(1, floor(n_chains * (n_iter-n_burnin) / 1000))
 which will only thin if there are at least 2000 simulations.}
 
-\item{n.cores}{Number of cores to use in parallel
+\item{n_cores}{Number of cores to use in parallel
 (default: equal to the number of partitions).}
 
 \item{save}{Logical, if TRUE, save posterior samples as .rds files
-in \code{out.dir}.}
+in \code{out_dir}.}
 
-\item{out.dir}{Directory to save TOP model posterior samples.}
+\item{out_dir}{Directory to save TOP model posterior samples.}
 
-\item{return.type}{Type of result to return.
+\item{return_type}{Type of result to return.
 Options: 'samples' (posterior samples),}
 
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}

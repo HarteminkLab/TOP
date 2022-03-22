@@ -4,12 +4,12 @@
 #' @param TOP_samples TOP posterior samples.
 #' @param thin Thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
-#' @param n.samples Keep n.samples posterior samples (randomly choose),
-#' when the number of posterior samples is greater than \code{n.samples}.
+#' @param n_samples Keep n_samples posterior samples (randomly choose),
+#' when the number of posterior samples is greater than \code{n_samples}.
 #' @return A data frame of posterior samples.
 #' @export
 #'
-select_TOP_samples <- function(TOP_samples, thin = 1, n.samples = 1000) {
+select_TOP_samples <- function(TOP_samples, thin = 1, n_samples = 1000) {
 
   # If samples are from multiple MCMC chains, combine samples from the chains
   if ( is.list(TOP_samples) ){
@@ -20,8 +20,8 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n.samples = 1000) {
     TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), by = thin), ]
   }
 
-  if (nrow(TOP_samples) > n.samples) {
-    TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), length.out = n.samples),]
+  if (nrow(TOP_samples) > n_samples) {
+    TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), length.out = n_samples),]
   }
 
   return(TOP_samples)
@@ -36,15 +36,15 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n.samples = 1000) {
 #' @param TOP_samples_files Files of TOP posterior samples from all partitions.
 #' @param thin thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
-#' @param n.samples Keep n.samples posterior samples (randomly choose),
-#' when the number of posterior samples is greater than \code{n.samples}.
+#' @param n_samples Keep n_samples posterior samples (randomly choose),
+#' when the number of posterior samples is greater than \code{n_samples}.
 #' @return A data frame of combined and averaged posterior samples.
 #' @export
 #'
 combine_TOP_samples <- function(all_TOP_samples,
                                 TOP_samples_files,
                                 thin = 1,
-                                n.samples = 1000) {
+                                n_samples = 1000) {
 
   if(missing(all_TOP_samples)){
     if(!missing(TOP_samples_files)){
@@ -62,11 +62,11 @@ combine_TOP_samples <- function(all_TOP_samples,
 
   N <- length(all_TOP_samples)
   cat('Combining samples from', N, 'partitions ... \n')
-  combined_TOP_samples <- select_TOP_samples(all_TOP_samples[[1]], thin, n.samples)
+  combined_TOP_samples <- select_TOP_samples(all_TOP_samples[[1]], thin, n_samples)
 
   if(N > 1) {
     for(i in 2:N) {
-      combined_TOP_samples <- combined_TOP_samples + select_TOP_samples(all_TOP_samples[[i]], thin, n.samples)
+      combined_TOP_samples <- combined_TOP_samples + select_TOP_samples(all_TOP_samples[[i]], thin, n_samples)
     }
     combined_TOP_samples <- combined_TOP_samples / N
   }
@@ -86,7 +86,7 @@ combine_TOP_samples <- function(all_TOP_samples,
 #' \code{assemble_training_data} function.
 #' @param tf_name TF name.
 #' @param cell_type Cell type.
-#' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5).
+#' @param n_bins Number of DNase or ATAC bins in TOP model (default = 5).
 #' @param level The level in the TOP model (options: bottom, middle, or top),
 #' 'bottom' level: TF- and cell-type- specific,
 #' 'middle' level: TF-specific, cell-type generic,
@@ -99,7 +99,7 @@ extract_TOP_coef_samples <- function(TOP_samples,
                                      assembled_training_data,
                                      tf_name,
                                      cell_type,
-                                     n.bins = 5,
+                                     n_bins = 5,
                                      level = c('bottom', 'middle', 'top')){
 
   level <- match.arg(level)
@@ -122,7 +122,7 @@ extract_TOP_coef_samples <- function(TOP_samples,
     # alpha's and beta's are TF- and cell-type-specific model coefficients
     # specific for each TF and cell type combination
     data_id <- sprintf('[%s,%s]', tf_id, cell_id)
-    coef_names <- c(paste0('alpha', data_id), paste0('beta', 1:(1+n.bins), data_id))
+    coef_names <- c(paste0('alpha', data_id), paste0('beta', 1:(1+n_bins), data_id))
     TOP_coef_samples <- TOP_samples[, coef_names]
 
   }else if( level == 'middle' && !missing(tf_name) ){
@@ -130,12 +130,12 @@ extract_TOP_coef_samples <- function(TOP_samples,
 
     # Alpha and Beta's are TF specific, cell-type-generic model coefficients
     data_id <- sprintf('[%s]', tf_id)
-    coef_names <- c(paste0('Alpha', data_id), paste0('Beta', 1:(1+n.bins), data_id))
+    coef_names <- c(paste0('Alpha', data_id), paste0('Beta', 1:(1+n_bins), data_id))
     TOP_coef_samples <- TOP_samples[, coef_names]
 
   }else if(level == 'top'){
     # A and B's are TF-generic model coefficients
-    coef_names <- c('A', paste0('B', 1:(1+n.bins)))
+    coef_names <- c('A', paste0('B', 1:(1+n_bins)))
     TOP_coef_samples <- TOP_samples[, coef_names]
 
   }
@@ -154,14 +154,14 @@ extract_TOP_coef_samples <- function(TOP_samples,
 #' will extract from assembled_training_data.
 #' @param assembled_training_data Assembled training data as in the
 #' \code{assemble_training_data} function.
-#' @param n.bins Number of DNase or ATAC bins in TOP model (default = 5)
+#' @param n_bins Number of DNase or ATAC bins in TOP model (default = 5)
 #' @return A list of posterior mean coefficients at each level of TOP model.
 #' @export
 #'
 extract_TOP_mean_coef <- function(TOP_samples,
                                   tf_cell_combos,
                                   assembled_training_data,
-                                  n.bins = 5){
+                                  n_bins = 5){
 
   if(missing(tf_cell_combos)){
     if(!missing(assembled_training_data)){
@@ -172,40 +172,40 @@ extract_TOP_mean_coef <- function(TOP_samples,
   }
 
   # Extract bottom level posterior mean coefficients for all TF x cell type combos
-  bottom_level_mean_coef <- matrix(NA, nrow = nrow(tf_cell_combos), ncol = 2+n.bins)
+  bottom_level_mean_coef <- matrix(NA, nrow = nrow(tf_cell_combos), ncol = 2+n_bins)
   for( i in 1:nrow(tf_cell_combos)){
     bottom_level_coef_samples <- extract_TOP_coef_samples(TOP_samples,
                                                           tf_cell_combos,
                                                           tf_name = tf_cell_combos[i, 'tf_name'],
                                                           cell_type = tf_cell_combos[i, 'cell_type'],
-                                                          n.bins = n.bins,
+                                                          n_bins = n_bins,
                                                           level = 'bottom')
     bottom_level_mean_coef[i, ] <- colMeans(bottom_level_coef_samples)
   }
   rownames(bottom_level_mean_coef) <- paste(tf_cell_combos$tf_name, tf_cell_combos$cell_type, sep = '.')
-  colnames(bottom_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n.bins))
+  colnames(bottom_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n_bins))
 
   # Extract middle level posterior mean coefficients for all TFs
   tf_name_list <- unique(as.character(tf_cell_combos$tf_name))
-  middle_level_mean_coef <- matrix(NA, nrow = length(tf_name_list), ncol = 2+n.bins)
+  middle_level_mean_coef <- matrix(NA, nrow = length(tf_name_list), ncol = 2+n_bins)
   for( i in 1:length(tf_name_list)){
     middle_level_coef_samples <- extract_TOP_coef_samples(TOP_samples,
                                                           tf_cell_combos,
                                                           tf_name = tf_name_list[i],
-                                                          n.bins = n.bins,
+                                                          n_bins = n_bins,
                                                           level = 'middle')
     middle_level_mean_coef[i, ] <- colMeans(middle_level_coef_samples)
   }
   rownames(middle_level_mean_coef) <- tf_name_list
-  colnames(middle_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n.bins))
+  colnames(middle_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n_bins))
 
   # Extract top level posterior mean coefficients
   top_level_coef_samples <- extract_TOP_coef_samples(TOP_samples,
                                                      tf_cell_combos,
-                                                     n.bins = n.bins,
+                                                     n_bins = n_bins,
                                                      level = 'top')
   top_level_mean_coef <- colMeans(top_level_coef_samples)
-  names(top_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n.bins))
+  names(top_level_mean_coef) <- c('Intercept', 'PWM', paste0('Bin', 1:n_bins))
 
   # Combine posterior mean coefficients for all three levels
   TOP_mean_coef <- list(top = top_level_mean_coef,

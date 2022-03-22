@@ -7,12 +7,12 @@ in a selected partition}
 \usage{
 assemble_partition_training_data(
   tf_cell_table,
-  logistic.model = FALSE,
+  logistic_model = FALSE,
   chip_colname = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
-  n.partitions = 10,
+  n_partitions = 10,
   part = 1,
-  max.sites = 50000/n.partitions,
+  max_sites = 50000/n_partitions,
   seed = 1
 )
 }
@@ -22,7 +22,7 @@ the training TFs, cell types and paths of the training data.
 The first three columns should contain TF name, cell type,
 and file name containing the corresponding training data.}
 
-\item{logistic.model}{Logical; if TRUE, use the logistic version of TOP model.}
+\item{logistic_model}{Logical; if TRUE, use the logistic version of TOP model.}
 
 \item{chip_colname}{The column name of ChIP data in the combined data
 (default: "chip").}
@@ -30,14 +30,14 @@ and file name containing the corresponding training data.}
 \item{training_chrs}{Chromosomes used for training the model
 (default: odd chromosomes).}
 
-\item{n.partitions}{Total number of partitions to split the training data
+\item{n_partitions}{Total number of partitions to split the training data
 (default: 10).}
 
-\item{part}{An integer between 1 and \code{n.partitions} to specify the
+\item{part}{An integer between 1 and \code{n_partitions} to specify the
 partition to assemble the training data for.}
 
-\item{max.sites}{Max number of candidate sites in each partition
-(default: 50000/n.partitions).}
+\item{max_sites}{Max number of candidate sites in each partition
+(default: 50000/n_partitions).}
 
 \item{seed}{seed used when sampling sites.}
 }

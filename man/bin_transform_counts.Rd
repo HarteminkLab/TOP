@@ -6,14 +6,14 @@
 \usage{
 bin_transform_counts(
   counts,
-  bin.method = c("M5", "M1", "M2", "M3", "M12", "M24"),
+  bin_method = c("M5", "M1", "M2", "M3", "M12", "M24"),
   transform = c("asinh", "log2")
 )
 }
 \arguments{
 \item{counts}{DNase or ATAC-seq read counts matrix}
 
-\item{bin.method}{MILLIPEDE binning scheme (Default: 'M5').}
+\item{bin_method}{MILLIPEDE binning scheme (Default: 'M5').}
 
 \item{transform}{Type of transformation for DNase (or ATAC) counts.
 Options: asinh and log2.}

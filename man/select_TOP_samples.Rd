@@ -4,7 +4,7 @@
 \alias{select_TOP_samples}
 \title{Select TOP posterior samples}
 \usage{
-select_TOP_samples(TOP_samples, thin = 1, n.samples = 1000)
+select_TOP_samples(TOP_samples, thin = 1, n_samples = 1000)
 }
 \arguments{
 \item{TOP_samples}{TOP posterior samples.}
@@ -12,8 +12,8 @@ select_TOP_samples(TOP_samples, thin = 1, n.samples = 1000)
 \item{thin}{Thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).}
 
-\item{n.samples}{Keep n.samples posterior samples (randomly choose),
-when the number of posterior samples is greater than \code{n.samples}.}
+\item{n_samples}{Keep n_samples posterior samples (randomly choose),
+when the number of posterior samples is greater than \code{n_samples}.}
 }
 \value{
 A data frame of posterior samples.

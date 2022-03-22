@@ -7,8 +7,8 @@
 predict_TOP_samples(
   data,
   coef_samples,
-  use.posterior.mean = FALSE,
-  sample.predictions = TRUE,
+  use_posterior_mean = FALSE,
+  sample_predictions = TRUE,
   transform = c("asinh", "log2", "sqrt", "none")
 )
 }
@@ -17,10 +17,10 @@ predict_TOP_samples(
 
 \item{coef_samples}{TOP posterior samples.}
 
-\item{use.posterior.mean}{Logical; if TRUE, uses the posterior mean of
+\item{use_posterior_mean}{Logical; if TRUE, uses the posterior mean of
 regression coefficients to make predictions.}
 
-\item{sample.predictions}{Logical; if TRUE, sample from posterior predictions
+\item{sample_predictions}{Logical; if TRUE, sample from posterior predictions
 and then take the mean of posterior prediction samples.}
 
 \item{transform}{Method used to transform ChIP-seq counts when training

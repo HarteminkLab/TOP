@@ -8,7 +8,7 @@ combine_TOP_samples(
   all_TOP_samples,
   TOP_samples_files,
   thin = 1,
-  n.samples = 1000
+  n_samples = 1000
 )
 }
 \arguments{
@@ -17,8 +17,8 @@ combine_TOP_samples(
 \item{thin}{thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).}
 
-\item{n.samples}{Keep n.samples posterior samples (randomly choose),
-when the number of posterior samples is greater than \code{n.samples}.}
+\item{n_samples}{Keep n_samples posterior samples (randomly choose),
+when the number of posterior samples is greater than \code{n_samples}.}
 
 \item{TOP_samples}{TOP posterior samples from all partitions.}
 }

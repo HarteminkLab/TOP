@@ -6,14 +6,14 @@
 \usage{
 get_total_reads(
   idxstats_file,
-  select.chr = TRUE,
+  select_chr = TRUE,
   chrs = paste0("chr", c(1:22))
 )
 }
 \arguments{
 \item{idxstats_file}{idxstats file.}
 
-\item{select.chr}{Logitic. If TRUE, count reads in
+\item{select_chr}{Logitic. If TRUE, count reads in
 chromosomes specified in \code{chrs}.
 Otherwise, use all chromosomes in the idxstats file.}
 

@@ -4,14 +4,14 @@
 \alias{select_features}
 \title{Select PWM and DNase (or ATAC) bin features from the input data frame}
 \usage{
-select_features(data, pwm.name = "pwm", bin.name = "bin")
+select_features(data, pwm_col = "pwm", bin_col = "bin")
 }
 \arguments{
 \item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
-\item{pwm.name}{name (prefix) of the PMW score column.}
+\item{pwm_col}{name (prefix) of the PMW score column.}
 
-\item{bin.name}{name (prefix) of the DNase or ATAC bin columns.}
+\item{bin_col}{name (prefix) of the DNase or ATAC bin columns.}
 }
 \description{
 Select PWM and DNase (or ATAC) bin features from the input data frame

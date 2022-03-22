@@ -66,7 +66,7 @@ TOP_result <- predict_TOP(data,
                           cell_type = 'K562', 
                           TOP_coef = TOP_coef, 
                           level = 'bottom', # use the best available level
-                          logistic.model = FALSE, # use the quantitative occupancy model
+                          logistic_model = FALSE, # use the quantitative occupancy model
                           transform = 'asinh') # we used asinh transformation on the ChIP data when training the model
 ```
 
@@ -79,7 +79,7 @@ TOP_result <- predict_TOP(data,
                           cell_type = 'K562', 
                           TOP_coef = TOP_coef, 
                           level = 'best', # use the best available level
-                          logistic.model = FALSE, # use the quantitative occupancy model
+                          logistic_model = FALSE, # use the quantitative occupancy model
                           transform = 'asinh') # we used asinh transformation on the ChIP data when training the model
 ```
 This result contains a list with the level of model, 
@@ -115,7 +115,7 @@ TOP_middle_result <- predict_TOP(data,
                           cell_type = 'K562', 
                           TOP_coef = TOP_coef, 
                           level = 'middle', # use the best available level
-                          logistic.model = FALSE, # use the quantitative occupancy model
+                          logistic_model = FALSE, # use the quantitative occupancy model
                           transform = 'asinh') # we used asinh transformation on the ChIP data when training the model
 
 TOP_middle_predictions <- TOP_middle_result$predictions
@@ -154,7 +154,7 @@ TOP_result <- predict_TOP(data,
                           cell_type = 'K562',
                           TOP_coef = TOP_logistic_coef, 
                           level = 'bottom',
-                          logistic.model = TRUE)
+                          logistic_model = TRUE)
 predicted.prob <- TOP_result$predictions
 
 head(predicted.prob, 5)

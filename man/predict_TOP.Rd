@@ -10,7 +10,7 @@ predict_TOP(
   cell_type,
   TOP_coef,
   level = c("best", "bottom", "middle", "top"),
-  logistic.model = FALSE,
+  logistic_model = FALSE,
   transform = c("asinh", "log2", "log", "none")
 )
 }
@@ -32,12 +32,12 @@ otherwise, if TF motif (but not cell type) is available in the training data,
 choose the middle level (TF-specific model) of that TF motif;
 otherwise, use the top level TF-generic model.}
 
-\item{logistic.model}{Logical. If TRUE, use the logistic version of TOP model
+\item{logistic_model}{Logical. If TRUE, use the logistic version of TOP model
 to predict TF binding probability. If FALSE, predict quantitative TF occupancy.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-Only needed when logistic.model is FALSE.}
+Only needed when logistic_model is FALSE.}
 }
 \value{
 A list containing the results, including selected hierarchy level,

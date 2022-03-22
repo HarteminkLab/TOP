@@ -6,32 +6,32 @@
 \usage{
 fit_TOP_M5_model_jags(
   data,
-  model.file,
+  model_file,
   transform = c("asinh", "log2", "sqrt", "none"),
-  n.iter = 2000,
-  n.burnin = floor(n.iter/2),
-  n.chains = 3,
-  n.thin = max(1, floor((n.iter - n.burnin)/1000)),
+  n_iter = 2000,
+  n_burnin = floor(n_iter/2),
+  n_chains = 3,
+  n_thin = max(1, floor((n_iter - n_burnin)/1000)),
   quiet = FALSE
 )
 }
 \arguments{
 \item{data}{a data frame containing the combined training data.}
 
-\item{model.file}{TOP model file written in JAGS.}
+\item{model_file}{TOP model file written in JAGS.}
 
 \item{transform}{Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).}
 
-\item{n.iter}{number of total iterations per chain (including burn in).}
+\item{n_iter}{number of total iterations per chain (including burn in).}
 
-\item{n.burnin}{length of burn in, i.e. number of iterations to discard at the beginning.
-Default is n.iter/2, that is, discarding the first half of the simulations.}
+\item{n_burnin}{length of burn in, i.e. number of iterations to discard at the beginning.
+Default is n_iter/2, that is, discarding the first half of the simulations.}
 
-\item{n.chains}{number of Markov chains (default: 3).}
+\item{n_chains}{number of Markov chains (default: 3).}
 
-\item{n.thin}{thinning rate, must be a positive integer.
-Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+\item{n_thin}{thinning rate, must be a positive integer.
+Default is max(1, floor(n_chains * (n_iter-n_burnin) / 1000))
 which will only thin if there are at least 2000 simulations.}
 
 \item{quiet}{Logical, whether to suppress stdout in jags.model().}
