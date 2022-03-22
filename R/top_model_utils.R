@@ -1,7 +1,7 @@
-#' @title Load and process TOP posterior samples
-#' @description Load posterior samples in \code{TOP_samples_file},
-#' perform thinning, and sampling of the posterior samples if needed.
-#' @param TOP_samples_file File name of the posterior samples
+#' @title Select TOP posterior samples
+#' @description Select posterior samples and perform thinning and sampling
+#' of the posterior samples if needed.
+#' @param TOP_samples TOP posterior samples.
 #' @param thin Thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
 #' @param n.samples Keep n.samples posterior samples (randomly choose),
@@ -9,14 +9,9 @@
 #' @return A data frame of posterior samples.
 #' @export
 #'
-load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
+select_TOP_samples <- function(TOP_samples, thin = 1, n.samples = 1000) {
 
-  if (!file.exists(TOP_samples_file)) {
-    stop(paste("TOP sample file: ", TOP_samples_file, "is not available!"))
-  }
-  TOP_samples <- readRDS(TOP_samples_file)
-
-  # Combine multiple MCMC chains
+  # If samples are from multiple MCMC chains, combine samples from the chains
   if ( is.list(TOP_samples) ){
     TOP_samples <- as.data.frame(do.call(rbind, TOP_samples))
   }
@@ -35,9 +30,9 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 
 #' @title Combine and take the average of TOP posterior samples from all partitions
 #' @description Combine and take the average of TOP posterior samples
-#' from all partitions. Use \code{load_TOP_samples} to load and process
+#' from all partitions. Use \code{select_TOP_samples} to select
 #' posterior samples from each partition.
-#' @param TOP_samples_files File names of the posterior samples from all partitions
+#' @param all_TOP_samples TOP posterior samples from all partitions
 #' @param thin thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
 #' @param n.samples Keep n.samples posterior samples (randomly choose),
@@ -45,20 +40,22 @@ load_TOP_samples <- function(TOP_samples_file, thin = 1, n.samples = 1000) {
 #' @return A data frame of combined and averaged posterior samples.
 #' @export
 #'
-combine_TOP_samples <- function(TOP_samples_files, thin = 1, n.samples = 1000) {
+combine_TOP_samples <- function(all_TOP_samples,
+                                thin = 1,
+                                n.samples = 1000) {
 
-  N <- length(TOP_samples_files)
-  cat('Combining', N, 'sample partitions ... \n')
-  TOP_samples <- load_TOP_samples(TOP_samples_files[1], thin, n.samples)
+  N <- length(all_TOP_samples)
+  cat('Combining samples from', N, 'partitions ... \n')
+  combined_TOP_samples <- select_TOP_samples(all_TOP_samples[[1]], thin, n.samples)
 
   if(N > 1) {
     for(i in 2:N) {
-      TOP_samples <- TOP_samples + load_TOP_samples(TOP_samples_files[i], thin, n.samples)
+      combined_TOP_samples <- combined_TOP_samples + select_TOP_samples(all_TOP_samples[[i]], thin, n.samples)
     }
-    TOP_samples <- TOP_samples / N
+    combined_TOP_samples <- combined_TOP_samples / N
   }
 
-  return(TOP_samples)
+  return(combined_TOP_samples)
 
 }
 
