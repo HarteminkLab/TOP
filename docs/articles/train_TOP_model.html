@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -206,7 +206,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">TOP_samples</span><span class="op">)</span></code></pre></div>
 <p>We can extract posterior mean of the coefficients for all three levels.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="va">assembled_training_data</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, 
+                         assembled_training_data <span class="op">=</span> <span class="va">assembled_training_data</span><span class="op">)</span></code></pre></div>
 <p>Save the posterior samples and posterior mean coefficients for predictions.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="st">'TOP_fit/TOP_M5_combined_posterior_samples.rds'</span><span class="op">)</span>
