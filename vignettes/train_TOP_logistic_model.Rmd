@@ -108,36 +108,46 @@ We can set the following parameters for Gibbs sampling:
 - n.thin: thinning rate, must be a positive integer.
 
 The following example runs 10000 iterations of Gibbs sampling in total, 
-with 2000 burn-ins, 3 Markov chains, thinning rate of 2, 
-and save the posterior samples to the `TOP_logistic_fit` directory. 
+with 2000 burn-ins, 3 Markov chains, thinning rate of 2.
 
 It could take a long time if we have many TFs and many cell types
 in the training data.
 
 ```{r fit-TOP-model, eval=FALSE}
-TOP_samples_files <- fit_TOP_M5_model(assembled_training_data, 
-                                      model.file = model_file,
-                                      logistic.model = TRUE,
-                                      out.dir = 'TOP_logistic_fit',
-                                      partitions = 1:10,
-                                      n.iter = 5000, 
-                                      n.burnin = 2000,
-                                      n.chains = 3,
-                                      n.thin = 2,
-                                      quiet = TRUE)
+all_TOP_samples <- fit_TOP_M5_model(assembled_training_data, 
+                                    model.file = model_file,
+                                    logistic.model = TRUE,
+                                    partitions = 1:10,
+                                    n.iter = 5000, 
+                                    n.burnin = 2000,
+                                    n.chains = 3,
+                                    n.thin = 2,
+                                    save = TRUE,
+                                    out.dir='TOP_logistic_fit',
+                                    quiet = TRUE)
 ```
 
-Alternatively, we can also submit jobs for the partitions
-(choose which partition to run, e.g. `partitions=1`) 
-in parallel to separate compute nodes on a cluster. 
+This fits a TOP model on all 10 partitions in parallel on 10 CPU cores, 
+and returns a list of posterior samples of the coefficients 
+for each of the 10 partitions.
+It requires a compute node/machine with 10 cores and 
+may require a big memory if you have training data from 
+many TFs and cell types. 
+Alternatively, if you have limited computing resource, 
+you may fit model for each of the 10
+the partitions on separate machines, by
+specifying the partition to run. 
+For example, setting argument `partitions=3` 
+will fit TOP model for training data in the 3rd partition.  
 
 Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients
 ----------------------------------------------------------------------------------------------------------------
 
 After we finished Gibbs sampling for all 10 partitions, 
-we combine the posterior samples from all the partitions.
+we select and combine the posterior samples from all the partitions.
 ```{r combine-TOP-samples, eval=FALSE}
-TOP_samples <- combine_TOP_samples(TOP_samples_files)
+TOP_samples <- combine_TOP_samples(all_TOP_samples)
+dim(TOP_samples)
 ```
 
 We can extract posterior mean of the coefficients for all three levels.
