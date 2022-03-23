@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -72,18 +72,18 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fit_TOP_M5_model</span><span class="op">(</span>
   <span class="va">all_training_data</span>,
   <span class="va">all_training_data_files</span>,
-  <span class="va">model.file</span>,
-  logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
+  <span class="va">model_file</span>,
+  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
   transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span>,
   partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
-  n.iter <span class="op">=</span> <span class="fl">2000</span>,
-  n.burnin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n.iter</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,
-  n.chains <span class="op">=</span> <span class="fl">3</span>,
-  n.thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">n.iter</span> <span class="op">-</span> <span class="va">n.burnin</span><span class="op">)</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,
-  n.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">partitions</span><span class="op">)</span>,
-  return.result <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"samples"</span>, <span class="st">"jagsfit"</span><span class="op">)</span>,
+  n_iter <span class="op">=</span> <span class="fl">2000</span>,
+  n_burnin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_iter</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,
+  n_chains <span class="op">=</span> <span class="fl">3</span>,
+  n_thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_iter</span> <span class="op">-</span> <span class="va">n_burnin</span><span class="op">)</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,
+  n_cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">partitions</span><span class="op">)</span>,
   save <span class="op">=</span> <span class="cn">TRUE</span>,
-  out.dir <span class="op">=</span> <span class="st">"./TOP_samples"</span>,
+  outdir <span class="op">=</span> <span class="st">"./TOP_samples"</span>,
+  return_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"samples"</span>, <span class="st">"jagsfit"</span>, <span class="st">"samplefiles"</span><span class="op">)</span>,
   quiet <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -96,43 +96,47 @@
 <dd><p>A vector of the assembled training data
 files of all partitions. If all_training_data is missing,
 it will load the training data from all_training_data_files.</p></dd>
-<dt>model.file</dt>
+<dt>model_file</dt>
 <dd><p>TOP model file written in JAGS.</p></dd>
-<dt>logistic.model</dt>
+<dt>logistic_model</dt>
 <dd><p>Logical; if TRUE, use the logistic version of TOP model.</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-Only needed when logistic.model is FALSE.</p></dd>
+Only needed when logistic_model is FALSE.</p></dd>
 <dt>partitions</dt>
 <dd><p>A vector of selected partition(s) to run.
 (default: all 10 partitions (1:10))</p></dd>
-<dt>n.iter</dt>
+<dt>n_iter</dt>
 <dd><p>Number of total iterations per chain (including burn in).</p></dd>
-<dt>n.burnin</dt>
+<dt>n_burnin</dt>
 <dd><p>Length of burn in samples,
 i.e. number of iterations to discard at the beginning.
-Default is n.iter/2, that is, discarding the first half of the simulations.</p></dd>
-<dt>n.chains</dt>
+Default is n_iter/2, that is, discarding the first half of the simulations.</p></dd>
+<dt>n_chains</dt>
 <dd><p>Number of Markov chains (default: 3).</p></dd>
-<dt>n.thin</dt>
+<dt>n_thin</dt>
 <dd><p>Thinning rate, must be a positive integer.
-Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+Default is max(1, floor(n_chains * (n_iter-n_burnin) / 1000))
 which will only thin if there are at least 2000 simulations.</p></dd>
-<dt>n.cores</dt>
+<dt>n_cores</dt>
 <dd><p>Number of cores to use in parallel
 (default: equal to the number of partitions).</p></dd>
 <dt>save</dt>
 <dd><p>Logical, if TRUE, save posterior samples as .rds files
-in <code>out.dir</code>.</p></dd>
-<dt>out.dir</dt>
+in <code>outdir</code>.</p></dd>
+<dt>outdir</dt>
 <dd><p>Directory to save TOP model posterior samples.</p></dd>
+<dt>return_type</dt>
+<dd><p>Type of result to return.
+Options: 'samples' (posterior samples),</p></dd>
 <dt>quiet</dt>
 <dd><p>Logical, whether to suppress stdout in jags.model().</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of posterior samples for each of the partitions.</p>
+    <p>A list of posterior samples for each of the partitions.
+A list of posterior samples or jagsfit object for each partition.</p>
     </div>
 
   </div>

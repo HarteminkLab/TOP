@@ -18,7 +18,7 @@ using MILLIPEDE binning and then take asinh (or log2) transform"><!-- mathjax --
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@ using MILLIPEDE binning and then take asinh (or log2) transform</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bin_transform_counts</span><span class="op">(</span>
   <span class="va">counts</span>,
-  bin.method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M5"</span>, <span class="st">"M1"</span>, <span class="st">"M2"</span>, <span class="st">"M3"</span>, <span class="st">"M12"</span>, <span class="st">"M24"</span><span class="op">)</span>,
+  bin_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M5"</span>, <span class="st">"M1"</span>, <span class="st">"M2"</span>, <span class="st">"M3"</span>, <span class="st">"M12"</span>, <span class="st">"M24"</span><span class="op">)</span>,
   transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -82,7 +82,7 @@ using MILLIPEDE binning and then take asinh (or log2) transform</p>
     <h2>Arguments</h2>
     <dl><dt>counts</dt>
 <dd><p>DNase or ATAC-seq read counts matrix</p></dd>
-<dt>bin.method</dt>
+<dt>bin_method</dt>
 <dd><p>MILLIPEDE binning scheme (Default: 'M5').</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for DNase (or ATAC) counts.

@@ -18,7 +18,7 @@ of the posterior samples if needed."><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -71,7 +71,7 @@ of the posterior samples if needed.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">select_TOP_samples</span><span class="op">(</span><span class="va">TOP_samples</span>, thin <span class="op">=</span> <span class="fl">1</span>, n.samples <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">select_TOP_samples</span><span class="op">(</span><span class="va">TOP_samples</span>, thin <span class="op">=</span> <span class="fl">1</span>, n_samples <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,9 +81,9 @@ of the posterior samples if needed.</p>
 <dt>thin</dt>
 <dd><p>Thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).</p></dd>
-<dt>n.samples</dt>
-<dd><p>Keep n.samples posterior samples (randomly choose),
-when the number of posterior samples is greater than <code>n.samples</code>.</p></dd>
+<dt>n_samples</dt>
+<dd><p>Keep n_samples posterior samples (randomly choose),
+when the number of posterior samples is greater than <code>n_samples</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

@@ -18,7 +18,7 @@ The R2jags package R2jags is required."><!-- mathjax --><script src="https://cdn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -73,12 +73,12 @@ The R2jags package <code>R2jags</code> is required.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fit_TOP_M5_model_jags</span><span class="op">(</span>
   <span class="va">data</span>,
-  <span class="va">model.file</span>,
+  <span class="va">model_file</span>,
   transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span>,
-  n.iter <span class="op">=</span> <span class="fl">2000</span>,
-  n.burnin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n.iter</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,
-  n.chains <span class="op">=</span> <span class="fl">3</span>,
-  n.thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">n.iter</span> <span class="op">-</span> <span class="va">n.burnin</span><span class="op">)</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,
+  n_iter <span class="op">=</span> <span class="fl">2000</span>,
+  n_burnin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_iter</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,
+  n_chains <span class="op">=</span> <span class="fl">3</span>,
+  n_thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_iter</span> <span class="op">-</span> <span class="va">n_burnin</span><span class="op">)</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,
   quiet <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -87,21 +87,21 @@ The R2jags package <code>R2jags</code> is required.</p>
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing the combined training data.</p></dd>
-<dt>model.file</dt>
+<dt>model_file</dt>
 <dd><p>TOP model file written in JAGS.</p></dd>
 <dt>transform</dt>
 <dd><p>Type of transformation for ChIP counts.
 Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).</p></dd>
-<dt>n.iter</dt>
+<dt>n_iter</dt>
 <dd><p>number of total iterations per chain (including burn in).</p></dd>
-<dt>n.burnin</dt>
+<dt>n_burnin</dt>
 <dd><p>length of burn in, i.e. number of iterations to discard at the beginning.
-Default is n.iter/2, that is, discarding the first half of the simulations.</p></dd>
-<dt>n.chains</dt>
+Default is n_iter/2, that is, discarding the first half of the simulations.</p></dd>
+<dt>n_chains</dt>
 <dd><p>number of Markov chains (default: 3).</p></dd>
-<dt>n.thin</dt>
+<dt>n_thin</dt>
 <dd><p>thinning rate, must be a positive integer.
-Default is max(1, floor(n.chains * (n.iter-n.burnin) / 1000))
+Default is max(1, floor(n_chains * (n_iter-n_burnin) / 1000))
 which will only thin if there are at least 2000 simulations.</p></dd>
 <dt>quiet</dt>
 <dd><p>Logical, whether to suppress stdout in jags.model().</p></dd>

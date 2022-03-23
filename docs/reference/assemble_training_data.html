@@ -22,7 +22,7 @@ using the function assemble_partition_training_data."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -80,12 +80,12 @@ using the function <code>assemble_partition_training_data</code>.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">assemble_training_data</span><span class="op">(</span>
   <span class="va">tf_cell_table</span>,
-  logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
+  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
   chip_colname <span class="op">=</span> <span class="st">"chip"</span>,
   training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
-  n.partitions <span class="op">=</span> <span class="fl">10</span>,
-  n.cores <span class="op">=</span> <span class="va">n.partitions</span>,
-  max.sites <span class="op">=</span> <span class="fl">50000</span>,
+  n_partitions <span class="op">=</span> <span class="fl">10</span>,
+  n_cores <span class="op">=</span> <span class="va">n_partitions</span>,
+  max_sites <span class="op">=</span> <span class="fl">50000</span>,
   seed <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -95,7 +95,7 @@ using the function <code>assemble_partition_training_data</code>.</p>
     <dl><dt>tf_cell_table</dt>
 <dd><p>a data frame with the first three columns as:
 TF name, cell type, and file name containing the corresponding training data.</p></dd>
-<dt>logistic.model</dt>
+<dt>logistic_model</dt>
 <dd><p>Logical; if TRUE, use the logistic version of TOP model.</p></dd>
 <dt>chip_colname</dt>
 <dd><p>The column name of ChIP data in the combined data
@@ -103,14 +103,14 @@ TF name, cell type, and file name containing the corresponding training data.</p
 <dt>training_chrs</dt>
 <dd><p>Chromosomes used for training the model
 (default: odd chromosomes)</p></dd>
-<dt>n.partitions</dt>
+<dt>n_partitions</dt>
 <dd><p>Total number of partitions to split the training data (default: 10).</p></dd>
-<dt>n.cores</dt>
+<dt>n_cores</dt>
 <dd><p>Number of cores to use in parallel
 (default: equal to the number of partitions).</p></dd>
-<dt>max.sites</dt>
+<dt>max_sites</dt>
 <dd><p>Max number of candidate sites in each partition
-(default: 50000/n.partitions).</p></dd>
+(default: 50000/n_partitions).</p></dd>
 <dt>seed</dt>
 <dd><p>seed used when sampling sites.</p></dd>
 </dl></div>

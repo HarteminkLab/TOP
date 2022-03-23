@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -154,10 +154,10 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assemble_training_data.html">assemble_training_data</a></span><span class="op">(</span><span class="va">tf_cell_table</span>,
-                                                  logistic.model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># do not use logistic model</span>
+                                                  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># do not use logistic model</span>
                                                   chip_colname <span class="op">=</span> <span class="st">'chip'</span>, <span class="co"># name of the column with ChIP occupancy in training data</span>
                                                   training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
-                                                  n.partitions <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+                                                  n_partitions <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="fit-top-quantitative-occupancy-models-using-assembled-training-data">Fit TOP quantitative occupancy models using assembled training data<a class="anchor" aria-label="anchor" href="#fit-top-quantitative-occupancy-models-using-assembled-training-data"></a>
@@ -175,25 +175,25 @@
 <p>We first perform “asinh” transform to the training ChIP-seq counts, then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.</p>
 <p>Set the following parameters for Gibbs sampling:</p>
 <ul>
-<li>n.iter: number of total iterations per chain (including burn-in iterations).</li>
-<li>n.burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.</li>
-<li>n.chains: number of Markov chains.</li>
-<li>n.thin: thinning rate, must be a positive integer.</li>
+<li>n_iter: number of total iterations per chain (including burn-in iterations).</li>
+<li>n_burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.</li>
+<li>n_chains: number of Markov chains.</li>
+<li>n_thin: thinning rate, must be a positive integer.</li>
 </ul>
 <p>The following example runs 5000 iterations of Gibbs sampling in total, including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2, and save the posterior samples to the <code>TOP_fit</code> directory.</p>
 <p>It could take a long time if we have many TFs and many cell types in the training data.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_M5_model.html">fit_TOP_M5_model</a></span><span class="op">(</span><span class="va">assembled_training_data</span>, 
-                                    model.file <span class="op">=</span> <span class="va">model_file</span>,
-                                    logistic.model <span class="op">=</span> <span class="cn">FALSE</span>,
+                                    model_file <span class="op">=</span> <span class="va">model_file</span>,
+                                    logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
                                     transform <span class="op">=</span> <span class="st">'asinh'</span>, 
                                     partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
-                                    n.iter <span class="op">=</span> <span class="fl">5000</span>,
-                                    n.burnin <span class="op">=</span> <span class="fl">1000</span>,
-                                    n.chains <span class="op">=</span> <span class="fl">3</span>,
-                                    n.thin <span class="op">=</span> <span class="fl">2</span>,
+                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,
+                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,
+                                    n_chains <span class="op">=</span> <span class="fl">3</span>,
+                                    n_thin <span class="op">=</span> <span class="fl">2</span>,
                                     save <span class="op">=</span> <span class="cn">TRUE</span>,
-                                    out.dir<span class="op">=</span><span class="st">'TOP_fit'</span>,
+                                    out_dir<span class="op">=</span><span class="st">'TOP_fit'</span>,
                                     quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>This fits a TOP model on all 10 partitions in parallel on 10 CPU cores, and returns a list of posterior samples of the coefficients for each of the 10 partitions. It requires a compute node/machine with 10 cores and may require a big memory if you have training data from many TFs and cell types. Alternatively, if you have limited computing resource, you may fit model for each of the 10 the partitions on separate machines, by specifying the partition to run. For example, setting argument <code>partitions=3</code> will fit TOP model for training data in the 3rd partition.</p>
 </div>
