@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_occupancy.R
 \name{select_features}
 \alias{select_features}
-\title{Select PWM and DNase (or ATAC) bin features from the input data frame}
+\title{Select PWM and DNase (or ATAC) bin features from the input data}
 \usage{
 select_features(data, pwm_col = "pwm", bin_col = "bin")
 }
@@ -14,5 +14,5 @@ select_features(data, pwm_col = "pwm", bin_col = "bin")
 \item{bin_col}{name (prefix) of the DNase or ATAC bin columns.}
 }
 \description{
-Select PWM and DNase (or ATAC) bin features from the input data frame
+Select PWM and DNase (or ATAC) bin features from the input data
 }

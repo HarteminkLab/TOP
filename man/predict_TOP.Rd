@@ -37,9 +37,9 @@ When \code{level = 'middle'}, use the middle level (TF-specific model) of that T
 When \code{level = 'top'}, use the top level TF-generic model.}
 
 \item{logistic_model}{Logical. Whether to use the logistic version of TOP model.
-When \code{logistic_model = TRUE},
+If \code{logistic_model = TRUE},
 use the logistic version of TOP model to predict TF binding probability.
-When \code{logistic_model = FALSE} (default), predict quantitative TF occupancy.}
+If \code{logistic_model = FALSE}, use the quantitative occupancy model (default).}
 
 \item{transform}{Type of transformation performed for ChIP-seq read counts
 when preparing the input training data.
@@ -66,33 +66,38 @@ using TOP model trained from ChIP-seq read counts or binary labels.
 # with columns of PWM scores and five DNase (or ATAC) bins.
 # 'TOP_coef' is pretrained posterior mean of TOP regression coefficients.
 
-# Predict using the quantitative occupancy model:
-# We used asinh transformation on the ChIP data when training the model.
+# Predict CTCF occupancy in K562 using the quantitative occupancy model:
 
-# Predict using the 'bottom' model to predict CTCF in K562
+# Predict using the 'bottom' level model
 result <- predict_TOP(data, TOP_coef,
-                      tf_name = 'CTCF', cell_type = 'K562', level = 'bottom',
-                      logistic_model = FALSE, transform = 'asinh')
+                      tf_name = 'CTCF', cell_type = 'K562',
+                      level = 'bottom',
+                      logistic_model = FALSE,
+                      transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
 
-Predict using the 'best' model. i.e. using the best (lowest available)
-level of the hierarchy for the TF x cell type combination.)
-Since CTCF in K562 cell type is included in training,
-the 'best' model is the 'bottom' level model.
+# Predict using the 'best' model
+# Since CTCF in K562 cell type is included in training,
+# the 'best' model is the 'bottom' level model.
 result <- predict_TOP(data, TOP_coef,
                       tf_name = 'CTCF', cell_type = 'K562', level = 'best',
                       logistic_model = FALSE, transform = 'asinh')
 
 # We can use the 'middle' model to predict CTCF in K562
-or any other cell types or conditions
+# or other cell types or conditions
 result <- predict_TOP(data, TOP_coef,
                       tf_name = 'CTCF', level = 'middle',
                       logistic_model = FALSE, transform = 'asinh')
 
-# Predict using the logistic version of the model:
+# Predict CTCF binding probability using the logistic version of the model:
 # No need to set the argument for 'transform' for the logistic model.
 
-# Predict using the 'best' model. i.e. using the best (lowest available)
-level of the hierarchy for the TF x cell type combination.)
+# Predict using the 'bottom' level model
+result <- predict_TOP(data, TOP_coef,
+                      tf_name = 'CTCF', cell_type = 'K562',
+                      level = 'best',
+                      logistic_model = TRUE)
+
+# Predict using the 'middle' level model
 result <- predict_TOP(data, TOP_coef,
                       tf_name = 'CTCF', level = 'middle',
                       logistic_model = TRUE)

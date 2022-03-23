@@ -20,9 +20,9 @@
 #' When \code{level = 'middle'}, use the middle level (TF-specific model) of that TF.
 #' When \code{level = 'top'}, use the top level TF-generic model.
 #' @param logistic_model Logical. Whether to use the logistic version of TOP model.
-#' When \code{logistic_model = TRUE},
+#' If \code{logistic_model = TRUE},
 #' use the logistic version of TOP model to predict TF binding probability.
-#' When \code{logistic_model = FALSE} (default), predict quantitative TF occupancy.
+#' If \code{logistic_model = FALSE}, use the quantitative occupancy model (default).
 #' @param transform Type of transformation performed for ChIP-seq read counts
 #' when preparing the input training data.
 #' Options are: \sQuote{asinh}(asinh transformation),
@@ -41,33 +41,38 @@
 #' # with columns of PWM scores and five DNase (or ATAC) bins.
 #' # 'TOP_coef' is pretrained posterior mean of TOP regression coefficients.
 #'
-#' # Predict using the quantitative occupancy model:
-#' # We used asinh transformation on the ChIP data when training the model.
+#' # Predict CTCF occupancy in K562 using the quantitative occupancy model:
 #'
-#' # Predict using the 'bottom' model to predict CTCF in K562
+#' # Predict using the 'bottom' level model
 #' result <- predict_TOP(data, TOP_coef,
-#'                       tf_name = 'CTCF', cell_type = 'K562', level = 'bottom',
-#'                       logistic_model = FALSE, transform = 'asinh')
+#'                       tf_name = 'CTCF', cell_type = 'K562',
+#'                       level = 'bottom',
+#'                       logistic_model = FALSE,
+#'                       transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
 #'
-#' Predict using the 'best' model. i.e. using the best (lowest available)
-#' level of the hierarchy for the TF x cell type combination.)
-#' Since CTCF in K562 cell type is included in training,
-#' the 'best' model is the 'bottom' level model.
+#' # Predict using the 'best' model
+#' # Since CTCF in K562 cell type is included in training,
+#' # the 'best' model is the 'bottom' level model.
 #' result <- predict_TOP(data, TOP_coef,
 #'                       tf_name = 'CTCF', cell_type = 'K562', level = 'best',
 #'                       logistic_model = FALSE, transform = 'asinh')
 #'
 #' # We can use the 'middle' model to predict CTCF in K562
-#' or any other cell types or conditions
+#' # or other cell types or conditions
 #' result <- predict_TOP(data, TOP_coef,
 #'                       tf_name = 'CTCF', level = 'middle',
 #'                       logistic_model = FALSE, transform = 'asinh')
 #'
-#' # Predict using the logistic version of the model:
+#' # Predict CTCF binding probability using the logistic version of the model:
 #' # No need to set the argument for 'transform' for the logistic model.
 #'
-#' # Predict using the 'best' model. i.e. using the best (lowest available)
-#' level of the hierarchy for the TF x cell type combination.)
+#' # Predict using the 'bottom' level model
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', cell_type = 'K562',
+#'                       level = 'best',
+#'                       logistic_model = TRUE)
+#'
+#' # Predict using the 'middle' level model
 #' result <- predict_TOP(data, TOP_coef,
 #'                       tf_name = 'CTCF', level = 'middle',
 #'                       logistic_model = TRUE)
@@ -159,6 +164,45 @@ predict_TOP_mean_coef <- function(data,
 
 }
 
+#' @title Predict TF binding probability by TOP logistic model
+#' @description Predict TF binding probability using posterior mean of the regression
+#' coefficients trained from TOP logistic model.
+#'
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
+#' @param mean_coef A numeric vector. The posterior mean of trained regression
+#' coefficients, including the intercept and coefficients for PWM score and
+#' DNase (or ATAC) bins.
+#' length(mean_coef) should be equal to 1+ncol(data).
+#'
+#' @return A data frame of input data and predicted TF binding probability.
+#'
+#' @export
+#'
+predict_TOP_logistic_mean_coef <- function(data, mean_coef){
+
+  features <- select_features(data)
+
+  if((ncol(features)+1) != length(mean_coef)){
+    stop('The number of coefficients not equal to
+         the number of features + intercept! Check input data!')
+  }
+
+  cat('Predicting TF binding probability using TOP logistic model...\n')
+
+  coefficients <- as.matrix(mean_coef, ncol = 1)
+
+  data_matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
+
+  mu <- as.numeric(data_matrix %*% coefficients)
+
+  p <- 1 / (1 + exp(-mu)) # inverse logit
+
+  return(data.frame(data, predicted = p))
+
+
+}
+
+
 #' @title Predict TF occupancy using posterior samples of regression coefficients
 #' @description Predict TF occupancy using posterior samples of TOP regression
 #' coefficients.
@@ -227,50 +271,11 @@ predict_TOP_samples <- function(data,
 }
 
 
-#' @title Predict TF binding probability by TOP logistic model
-#' @description Predict TF binding probability using posterior mean of the regression
-#' coefficients trained from TOP logistic model.
-#'
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param mean_coef A numeric vector. The posterior mean of trained regression
-#' coefficients, including the intercept and coefficients for PWM score and
-#' DNase (or ATAC) bins.
-#' length(mean_coef) should be equal to 1+ncol(data).
-#'
-#' @return A data frame of input data and predicted TF binding probability.
-#'
-#' @export
-#'
-predict_TOP_logistic_mean_coef <- function(data, mean_coef){
-
-  features <- select_features(data)
-
-  if((ncol(features)+1) != length(mean_coef)){
-    stop('The number of coefficients not equal to
-         the number of features + intercept! Check input data!')
-  }
-
-  cat('Predicting TF binding probability using TOP logistic model...\n')
-
-  coefficients <- as.matrix(mean_coef, ncol = 1)
-
-  data_matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
-
-  mu <- as.numeric(data_matrix %*% coefficients)
-
-  p <- 1 / (1 + exp(-mu)) # inverse logit
-
-  return(data.frame(data, predicted = p))
-
-
-}
-
-#' @title Select PWM and DNase (or ATAC) bin features from the input data frame
+#' @title Select PWM and DNase (or ATAC) bin features from the input data
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param pwm_col name (prefix) of the PMW score column.
 #' @param bin_col name (prefix) of the DNase or ATAC bin columns.
-#'
 select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
   data <- as.data.frame(data)
   pwm_col <- grep(pwm_col, colnames(data), ignore.case = TRUE, value = TRUE)
@@ -298,7 +303,6 @@ select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
 #' @return A list containing the results, including selected hierarchy level,
 #' TOP model, regression coefficients (posterior mean).
 #' @export
-#'
 select_model_coef_level <- function(TOP_mean_coef,
                                     tf_name,
                                     cell_type,
