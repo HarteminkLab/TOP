@@ -1,41 +1,112 @@
 
-#' @title Fit TOP model
-#' @description Fit TOP model (using M5 bins) for selected partitions in parallel.
-#'
+#' @title Fit TOP model with M5 bins
+#' @description Fit TOP model with M5 bins for selected partitions in parallel.
+#' By default, it runs Gibbs sampling for all 10 partitions
+#' in parallel on 10 CPU cores, and returns a list of posterior samples
+#' for each of the 10 partitions.
+#' Alternatively, you may fit model for each of the 10
+#' the partitions on separate machines by specifying the partition(s) to run.
 #' @param all_training_data A list of the assembled training data of all partitions.
 #' @param all_training_data_files A vector of the assembled training data
-#' files of all partitions. If all_training_data is missing,
-#' it will load the training data from all_training_data_files.
+#' files of all partitions. If \code{all_training_data} is missing,
+#' it will load the training data from \code{all_training_data_files}.
 #' @param model_file TOP model file written in JAGS.
-#' @param logistic_model Logical; if TRUE, use the logistic version of TOP model.
-#' @param transform Type of transformation for ChIP counts.
-#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-#' Only needed when logistic_model is FALSE.
+#' @param logistic_model Logical; whether to use the logistic version of TOP model.
+#' If \code{logistic_model = TRUE}, use the logistic version of TOP model.
+#' If \code{logistic_model = FALSE}, use the quantitative occupancy model (default).
+#' @param transform Type of transformation for ChIP-seq read counts.
+#' Options are: \sQuote{asinh}(asinh transformation),
+#' \sQuote{log2} (log2 transformation),
+#' \sQuote{sqrt} (square root transformation),
+#' and \sQuote{none}(no transformation).
+#' This only applies when \code{logistic_model = FALSE}.
 #' @param partitions A vector of selected partition(s) to run.
-#' (default: all 10 partitions (1:10))
-#' @param n_iter Number of total iterations per chain (including burn in).
-#' @param n_burnin Length of burn in samples,
-#' i.e. number of iterations to discard at the beginning.
-#' Default is n_iter/2, that is, discarding the first half of the simulations.
+#' Default: all 10 partitions. If you specify a few partitions,
+#' it will only fit models to data in those selected partitions.
+#' @param n_iter Number of total iterations per chain, including burn-in iterations.
+#' @param n_burnin Length of burn-in iterations,
+#' i.e. number of samples to discard at the beginning.
+#' Default is \code{n_iter/2}, discarding the first half of the samples.
 #' @param n_chains Number of Markov chains (default: 3).
 #' @param n_thin Thinning rate, must be a positive integer.
-#' Default is max(1, floor(n_chains * (n_iter-n_burnin) / 1000))
+#' Default is \code{max(1, floor(n_chains * (n_iter-n_burnin) / 1000))}
 #' which will only thin if there are at least 2000 simulations.
+#' No thinning will be performed if \code{n_thin = 1}.
 #' @param n_cores Number of cores to use in parallel
-#' (default: equal to the number of partitions).
-#' @param save Logical, if TRUE, save posterior samples as .rds files
+#' (default: equal to the number of partitions, i.e. \code{length(partitions)}).
+#' @param save Logical, if TRUE, save posterior samples as \sQuote{.rds} files
 #' in \code{outdir}.
 #' @param outdir Directory to save TOP model posterior samples.
-#' @param return_type Type of result to return.
-#' Options: 'samples' (posterior samples),
-# 'jagsfit' (jagsfit object), or 'none' (no return values).
-#' @param quiet Logical, whether to suppress stdout in jags.model().
+#' @param return_type Specify the type of result to return.
+#' Options: \sQuote{samples}(posterior samples),
+#' \sQuote{jagsfit} (\code{jagsfit} object),
+#' or \sQuote{samplefiles} (file names of posterior samples).
+#' @param quiet Logical, if TRUE, suppress model fitting messages.
+#' Otherwise, only show progress bars.
 #' @return A list of posterior samples for each of the partitions.
 #' @import doParallel
 #' @import foreach
 #' @importFrom parallel detectCores
-#' @return A list of posterior samples or jagsfit object for each partition.
+#' @return A list of posterior samples or \code{jagsfit} object for each partition.
 #' @export
+#' @examples
+#'
+#' # We can train the TOP model after we got the training data assembled.
+#' # Please read the data preparation tutorial to
+#' # prepare the 'assembled_training_data'.
+#'
+#' # Example to train TOP quantitative occupancy model:
+#' model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
+#'
+#' # The example below first performs "asinh" transform to the ChIP-seq counts
+#' # in 'assembled_training_data', then runs Gibbs sampling
+#' # for each of the 10 partitions in parallel.
+#'
+#' # The following example runs 5000 iterations of Gibbs sampling in total,
+#' # including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
+#' # and save the posterior samples to the \sQuote{TOP_fit} directory.
+#' all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+#'                                     model_file = model_file,
+#'                                     logistic_model = FALSE,
+#'                                     transform = 'asinh',
+#'                                     partitions = 1:10,
+#'                                     n_iter = 5000,
+#'                                     n_burnin = 1000,
+#'                                     n_chains = 3,
+#'                                     n_thin = 2,
+#'                                     save = TRUE,
+#'                                     out_dir='TOP_fit',
+#'                                     quiet = TRUE)
+#'
+#' # We can also obtain the posterior samples separately for each partition,
+#' # For example, to obtain the posterior samples for partition 3 only:
+#' TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
+#'                                       model_file = model_file,
+#'                                       logistic_model = FALSE,
+#'                                       transform = 'asinh',
+#'                                       partitions = 3,
+#'                                       n_iter = 5000,
+#'                                       n_burnin = 1000,
+#'                                       n_chains = 3,
+#'                                       n_thin = 2,
+#'                                       save = TRUE,
+#'                                       out_dir='TOP_fit',
+#'                                       quiet = TRUE)
+#'
+#' # Example to train TOP logistic (binary) model:
+#' model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
+#'
+#' all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+#'                                     model_file = model_file,
+#'                                     logistic_model = TRUE,
+#'                                     partitions = 1:10,
+#'                                     n_iter = 5000,
+#'                                     n_burnin = 1000,
+#'                                     n_chains = 3,
+#'                                     n_thin = 2,
+#'                                     save = TRUE,
+#'                                     out_dir='TOP_fit',
+#'                                     quiet = TRUE)
 #'
 fit_TOP_M5_model <- function(all_training_data,
                              all_training_data_files,
@@ -78,7 +149,7 @@ fit_TOP_M5_model <- function(all_training_data,
     }else if (length(all_training_data_files) == 10) {
       data <- readRDS(all_training_data_files[k])
     }else{
-      stop('Check training data!')
+      stop('Training data must contain 10 partitions!')
     }
 
     if(logistic_model){
@@ -92,8 +163,8 @@ fit_TOP_M5_model <- function(all_training_data,
       }
 
     }else{
-      # Fit TOP quantitative TF occupancy model
-      jagsfit <- fit_TOP_M5_model_jags(data, model_file, transform, n_iter, n_burnin, n_chains, n_thin, quiet)
+      # Fit TOP quantitative occupancy model
+      jagsfit <- fit_TOP_occupancy_M5_model_jags(data, model_file, transform, n_iter, n_burnin, n_chains, n_thin, quiet)
       if(save){
         if(!dir.exists(outdir)) dir.create(outdir)
         saveRDS(jagsfit, file.path(outdir, paste0('TOP.M5.partition', k, '.jagsfit.rds')))
@@ -133,14 +204,14 @@ fit_TOP_M5_model <- function(all_training_data,
 #' @param quiet Logical, whether to suppress stdout in jags.model().
 #' @return A jagsfit object from \code{R2jags}.
 #' @export
-fit_TOP_M5_model_jags <- function(data,
-                                  model_file,
-                                  transform=c('asinh', 'log2', 'sqrt', 'none'),
-                                  n_iter=2000,
-                                  n_burnin=floor(n_iter/2),
-                                  n_chains=3,
-                                  n_thin=max(1, floor((n_iter - n_burnin) / 1000)),
-                                  quiet=FALSE) {
+fit_TOP_occupancy_M5_model_jags <- function(data,
+                                            model_file,
+                                            transform=c('asinh', 'log2', 'sqrt', 'none'),
+                                            n_iter=2000,
+                                            n_burnin=floor(n_iter/2),
+                                            n_chains=3,
+                                            n_thin=max(1, floor((n_iter - n_burnin) / 1000)),
+                                            quiet=FALSE) {
 
   if (!requireNamespace("R2jags", quietly = TRUE)) {
     stop(

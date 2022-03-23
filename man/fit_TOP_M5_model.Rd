@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_TOP_models.R
 \name{fit_TOP_M5_model}
 \alias{fit_TOP_M5_model}
-\title{Fit TOP model}
+\title{Fit TOP model with M5 bins}
 \usage{
 fit_TOP_M5_model(
   all_training_data,
@@ -26,50 +26,125 @@ fit_TOP_M5_model(
 \item{all_training_data}{A list of the assembled training data of all partitions.}
 
 \item{all_training_data_files}{A vector of the assembled training data
-files of all partitions. If all_training_data is missing,
-it will load the training data from all_training_data_files.}
+files of all partitions. If \code{all_training_data} is missing,
+it will load the training data from \code{all_training_data_files}.}
 
 \item{model_file}{TOP model file written in JAGS.}
 
-\item{logistic_model}{Logical; if TRUE, use the logistic version of TOP model.}
+\item{logistic_model}{Logical; whether to use the logistic version of TOP model.
+If \code{logistic_model = TRUE}, use the logistic version of TOP model.
+If \code{logistic_model = FALSE}, use the quantitative occupancy model (default).}
 
-\item{transform}{Type of transformation for ChIP counts.
-Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-Only needed when logistic_model is FALSE.}
+\item{transform}{Type of transformation for ChIP-seq read counts.
+Options are: \sQuote{asinh}(asinh transformation),
+\sQuote{log2} (log2 transformation),
+\sQuote{sqrt} (square root transformation),
+and \sQuote{none}(no transformation).
+This only applies when \code{logistic_model = FALSE}.}
 
 \item{partitions}{A vector of selected partition(s) to run.
-(default: all 10 partitions (1:10))}
+Default: all 10 partitions. If you specify a few partitions,
+it will only fit models to data in those selected partitions.}
 
-\item{n_iter}{Number of total iterations per chain (including burn in).}
+\item{n_iter}{Number of total iterations per chain, including burn-in iterations.}
 
-\item{n_burnin}{Length of burn in samples,
-i.e. number of iterations to discard at the beginning.
-Default is n_iter/2, that is, discarding the first half of the simulations.}
+\item{n_burnin}{Length of burn-in iterations,
+i.e. number of samples to discard at the beginning.
+Default is \code{n_iter/2}, discarding the first half of the samples.}
 
 \item{n_chains}{Number of Markov chains (default: 3).}
 
 \item{n_thin}{Thinning rate, must be a positive integer.
-Default is max(1, floor(n_chains * (n_iter-n_burnin) / 1000))
-which will only thin if there are at least 2000 simulations.}
+Default is \code{max(1, floor(n_chains * (n_iter-n_burnin) / 1000))}
+which will only thin if there are at least 2000 simulations.
+No thinning will be performed if \code{n_thin = 1}.}
 
 \item{n_cores}{Number of cores to use in parallel
-(default: equal to the number of partitions).}
+(default: equal to the number of partitions, i.e. \code{length(partitions)}).}
 
-\item{save}{Logical, if TRUE, save posterior samples as .rds files
+\item{save}{Logical, if TRUE, save posterior samples as \sQuote{.rds} files
 in \code{outdir}.}
 
 \item{outdir}{Directory to save TOP model posterior samples.}
 
-\item{return_type}{Type of result to return.
-Options: 'samples' (posterior samples),}
+\item{return_type}{Specify the type of result to return.
+Options: \sQuote{samples}(posterior samples),
+\sQuote{jagsfit} (\code{jagsfit} object),
+or \sQuote{samplefiles} (file names of posterior samples).}
 
-\item{quiet}{Logical, whether to suppress stdout in jags.model().}
+\item{quiet}{Logical, if TRUE, suppress model fitting messages.
+Otherwise, only show progress bars.}
 }
 \value{
 A list of posterior samples for each of the partitions.
 
-A list of posterior samples or jagsfit object for each partition.
+A list of posterior samples or \code{jagsfit} object for each partition.
 }
 \description{
-Fit TOP model (using M5 bins) for selected partitions in parallel.
+Fit TOP model with M5 bins for selected partitions in parallel.
+By default, it runs Gibbs sampling for all 10 partitions
+in parallel on 10 CPU cores, and returns a list of posterior samples
+for each of the 10 partitions.
+Alternatively, you may fit model for each of the 10
+the partitions on separate machines by specifying the partition(s) to run.
+}
+\examples{
+
+# We can train the TOP model after we got the training data assembled.
+# Please read the data preparation tutorial to
+# prepare the 'assembled_training_data'.
+
+# Example to train TOP quantitative occupancy model:
+model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
+
+# The example below first performs "asinh" transform to the ChIP-seq counts
+# in 'assembled_training_data', then runs Gibbs sampling
+# for each of the 10 partitions in parallel.
+
+# The following example runs 5000 iterations of Gibbs sampling in total,
+# including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
+# and save the posterior samples to the \sQuote{TOP_fit} directory.
+all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+                                    model_file = model_file,
+                                    logistic_model = FALSE,
+                                    transform = 'asinh',
+                                    partitions = 1:10,
+                                    n_iter = 5000,
+                                    n_burnin = 1000,
+                                    n_chains = 3,
+                                    n_thin = 2,
+                                    save = TRUE,
+                                    out_dir='TOP_fit',
+                                    quiet = TRUE)
+
+# We can also obtain the posterior samples separately for each partition,
+# For example, to obtain the posterior samples for partition 3 only:
+TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
+                                      model_file = model_file,
+                                      logistic_model = FALSE,
+                                      transform = 'asinh',
+                                      partitions = 3,
+                                      n_iter = 5000,
+                                      n_burnin = 1000,
+                                      n_chains = 3,
+                                      n_thin = 2,
+                                      save = TRUE,
+                                      out_dir='TOP_fit',
+                                      quiet = TRUE)
+
+# Example to train TOP logistic (binary) model:
+model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
+
+all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+                                    model_file = model_file,
+                                    logistic_model = TRUE,
+                                    partitions = 1:10,
+                                    n_iter = 5000,
+                                    n_burnin = 1000,
+                                    n_chains = 3,
+                                    n_thin = 2,
+                                    save = TRUE,
+                                    out_dir='TOP_fit',
+                                    quiet = TRUE)
+
 }
