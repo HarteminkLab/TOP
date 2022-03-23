@@ -92,9 +92,9 @@ library(R2jags)
 ```
 
 We provided the TOP model files in JAGS code 
-in the `../model` directory within the package. 
+in the `model` directory within the package. 
 ```{r TOP-model-file, eval=FALSE}
-model_file <- '../model/TOP_M5_logit_model.jags'
+model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
 ```
 
 The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 

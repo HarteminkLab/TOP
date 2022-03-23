@@ -111,11 +111,14 @@ library(R2jags)
 ```
 
 We provided the TOP model files in JAGS code 
-in the `../model` directory within the package. 
-It is easy to modify the models, e.g. use different priors, 
-more bins, or other genomic features.  
+in the `model` directory within the package. 
+It is flexible (and easy) to modify the models, 
+e.g. use different priors, different bins, or other genomic features.  
 ```{r TOP-model-file, eval=FALSE}
-model_file <- '../model/TOP_M5_model.jags'
+model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
+
+# show the model
+file.show(model_file)
 ```
 
 The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 
