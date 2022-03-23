@@ -5,18 +5,18 @@
 \title{Select regression coefficients by the TOP hierarchy level}
 \usage{
 select_model_coef_level(
+  TOP_mean_coef,
   tf_name,
   cell_type,
-  TOP_mean_coef,
   level = c("best", "bottom", "middle", "top")
 )
 }
 \arguments{
+\item{TOP_mean_coef}{Trained TOP posterior mean regression coefficients.}
+
 \item{tf_name}{specifies TF name.}
 
 \item{cell_type}{specifies the cell type.}
-
-\item{TOP_mean_coef}{Trained TOP posterior mean regression coefficients.}
 
 \item{level}{Specific the TOP model hierarchy level to use.
 Options: 'best', 'bottom', 'middle', or 'top'.

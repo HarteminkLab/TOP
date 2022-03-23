@@ -6,9 +6,9 @@
 \usage{
 predict_TOP(
   data,
+  TOP_coef,
   tf_name,
   cell_type,
-  TOP_coef,
   level = c("best", "bottom", "middle", "top"),
   logistic_model = FALSE,
   transform = c("asinh", "log2", "log", "none")
@@ -17,35 +17,83 @@ predict_TOP(
 \arguments{
 \item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
 
-\item{tf_name}{specifies TF name.}
-
-\item{cell_type}{specifies the cell type.}
-
 \item{TOP_coef}{A list containing the posterior mean of TOP regression coefficients.}
 
+\item{tf_name}{specifies the TF name to make predictions.
+It will find the model parameters trained for this TF.
+This is not needed (not used) when \code{level = 'top'}.}
+
+\item{cell_type}{specifies the cell type to make predictions.
+It will find the model parameters trained for this cell type.
+This is not needed (not used) when \code{level = 'middle'} or \code{level = 'top'}.}
+
 \item{level}{Specific the TOP model hierarchy level to use.
-Options: 'best', 'bottom', 'middle', or 'top'.
-Default: 'best' -- choose the best model (lowest level of the hierarchy available):
-If the TF motif and cell type is available in the training data,
-then use the bottom level (TF- and cell-type-specific model).
-otherwise, if TF motif (but not cell type) is available in the training data,
-choose the middle level (TF-specific model) of that TF motif;
-otherwise, use the top level TF-generic model.}
+Options: \sQuote{best}, \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}.
+When \code{level = 'best'}, use the best (lowest available) level of the
+hierarchy for the TF x cell type combination.
+When \code{level = 'bottom'}, use the bottom level (TF- and cell-type-specific model),
+if the TF motif and cell type is available in the training data.
+When \code{level = 'middle'}, use the middle level (TF-specific model) of that TF.
+When \code{level = 'top'}, use the top level TF-generic model.}
 
-\item{logistic_model}{Logical. If TRUE, use the logistic version of TOP model
-to predict TF binding probability. If FALSE, predict quantitative TF occupancy.}
+\item{logistic_model}{Logical. Whether to use the logistic version of TOP model.
+When \code{logistic_model = TRUE},
+use the logistic version of TOP model to predict TF binding probability.
+When \code{logistic_model = FALSE} (default), predict quantitative TF occupancy.}
 
-\item{transform}{Type of transformation for ChIP counts.
-Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-Only needed when logistic_model is FALSE.}
+\item{transform}{Type of transformation performed for ChIP-seq read counts
+when preparing the input training data.
+Options are: \sQuote{asinh}(asinh transformation),
+\sQuote{log2} (log2 transformation),
+\sQuote{sqrt} (square root transformation),
+and \sQuote{none}(no transformation).
+This only applies when \code{logistic_model = FALSE}.}
 }
 \value{
-A list containing the results, including selected hierarchy level,
-TOP model name, regression coefficients (posterior mean),
-and prediction results.
-Predicted values are in the same order as the input data.
+Returns a list with the following elements,
+
+\item{model}{TOP model name.}
+\item{level}{selected hierarchy level.}
+\item{coef}{posterior mean of regression coefficients.}
+\item{predictions}{a data frame with the data and predicted values.}
 }
 \description{
 Predict quantitative TF occupancy or TF binding probability
 using TOP model trained from ChIP-seq read counts or binary labels.
+}
+\examples{
+# 'data' is a data frame of input data,
+# with columns of PWM scores and five DNase (or ATAC) bins.
+# 'TOP_coef' is pretrained posterior mean of TOP regression coefficients.
+
+# Predict using the quantitative occupancy model:
+# We used asinh transformation on the ChIP data when training the model.
+
+# Predict using the 'bottom' model to predict CTCF in K562
+result <- predict_TOP(data, TOP_coef,
+                      tf_name = 'CTCF', cell_type = 'K562', level = 'bottom',
+                      logistic_model = FALSE, transform = 'asinh')
+
+Predict using the 'best' model. i.e. using the best (lowest available)
+level of the hierarchy for the TF x cell type combination.)
+Since CTCF in K562 cell type is included in training,
+the 'best' model is the 'bottom' level model.
+result <- predict_TOP(data, TOP_coef,
+                      tf_name = 'CTCF', cell_type = 'K562', level = 'best',
+                      logistic_model = FALSE, transform = 'asinh')
+
+# We can use the 'middle' model to predict CTCF in K562
+or any other cell types or conditions
+result <- predict_TOP(data, TOP_coef,
+                      tf_name = 'CTCF', level = 'middle',
+                      logistic_model = FALSE, transform = 'asinh')
+
+# Predict using the logistic version of the model:
+# No need to set the argument for 'transform' for the logistic model.
+
+# Predict using the 'best' model. i.e. using the best (lowest available)
+level of the hierarchy for the TF x cell type combination.)
+result <- predict_TOP(data, TOP_coef,
+                      tf_name = 'CTCF', level = 'middle',
+                      logistic_model = TRUE)
 }

@@ -4,66 +4,105 @@
 #' using TOP model trained from ChIP-seq read counts or binary labels.
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param tf_name specifies TF name.
-#' @param cell_type specifies the cell type.
 #' @param TOP_coef A list containing the posterior mean of TOP regression coefficients.
+#' @param tf_name specifies the TF name to make predictions.
+#' It will find the model parameters trained for this TF.
+#' This is not needed (not used) when \code{level = 'top'}.
+#' @param cell_type specifies the cell type to make predictions.
+#' It will find the model parameters trained for this cell type.
+#' This is not needed (not used) when \code{level = 'middle'} or \code{level = 'top'}.
 #' @param level Specific the TOP model hierarchy level to use.
-#' Options: 'best', 'bottom', 'middle', or 'top'.
-#' Default: 'best' -- choose the best model (lowest level of the hierarchy available):
-#' If the TF motif and cell type is available in the training data,
-#' then use the bottom level (TF- and cell-type-specific model).
-#' otherwise, if TF motif (but not cell type) is available in the training data,
-#' choose the middle level (TF-specific model) of that TF motif;
-#' otherwise, use the top level TF-generic model.
-#' @param logistic_model Logical. If TRUE, use the logistic version of TOP model
-#' to predict TF binding probability. If FALSE, predict quantitative TF occupancy.
-#' @param transform Type of transformation for ChIP counts.
-#' Possible values are "asinh", "log2", "sqrt", and "none" (no transformation).
-#' Only needed when logistic_model is FALSE.
-#' @return A list containing the results, including selected hierarchy level,
-#' TOP model name, regression coefficients (posterior mean),
-#' and prediction results.
-#' Predicted values are in the same order as the input data.
+#' Options: \sQuote{best}, \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}.
+#' When \code{level = 'best'}, use the best (lowest available) level of the
+#' hierarchy for the TF x cell type combination.
+#' When \code{level = 'bottom'}, use the bottom level (TF- and cell-type-specific model),
+#' if the TF motif and cell type is available in the training data.
+#' When \code{level = 'middle'}, use the middle level (TF-specific model) of that TF.
+#' When \code{level = 'top'}, use the top level TF-generic model.
+#' @param logistic_model Logical. Whether to use the logistic version of TOP model.
+#' When \code{logistic_model = TRUE},
+#' use the logistic version of TOP model to predict TF binding probability.
+#' When \code{logistic_model = FALSE} (default), predict quantitative TF occupancy.
+#' @param transform Type of transformation performed for ChIP-seq read counts
+#' when preparing the input training data.
+#' Options are: \sQuote{asinh}(asinh transformation),
+#' \sQuote{log2} (log2 transformation),
+#' \sQuote{sqrt} (square root transformation),
+#' and \sQuote{none}(no transformation).
+#' This only applies when \code{logistic_model = FALSE}.
+#' @return Returns a list with the following elements,
+#'
+#' \item{model}{TOP model name.}
+#' \item{level}{selected hierarchy level.}
+#' \item{coef}{posterior mean of regression coefficients.}
+#' \item{predictions}{a data frame with the data and predicted values.}
+#' @examples
+#' # 'data' is a data frame of input data,
+#' # with columns of PWM scores and five DNase (or ATAC) bins.
+#' # 'TOP_coef' is pretrained posterior mean of TOP regression coefficients.
+#'
+#' # Predict using the quantitative occupancy model:
+#' # We used asinh transformation on the ChIP data when training the model.
+#'
+#' # Predict using the 'bottom' model to predict CTCF in K562
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', cell_type = 'K562', level = 'bottom',
+#'                       logistic_model = FALSE, transform = 'asinh')
+#'
+#' Predict using the 'best' model. i.e. using the best (lowest available)
+#' level of the hierarchy for the TF x cell type combination.)
+#' Since CTCF in K562 cell type is included in training,
+#' the 'best' model is the 'bottom' level model.
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', cell_type = 'K562', level = 'best',
+#'                       logistic_model = FALSE, transform = 'asinh')
+#'
+#' # We can use the 'middle' model to predict CTCF in K562
+#' or any other cell types or conditions
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', level = 'middle',
+#'                       logistic_model = FALSE, transform = 'asinh')
+#'
+#' # Predict using the logistic version of the model:
+#' # No need to set the argument for 'transform' for the logistic model.
+#'
+#' # Predict using the 'best' model. i.e. using the best (lowest available)
+#' level of the hierarchy for the TF x cell type combination.)
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', level = 'middle',
+#'                       logistic_model = TRUE)
 #' @export
 #'
 predict_TOP <- function(data,
+                        TOP_coef,
                         tf_name,
                         cell_type,
-                        TOP_coef,
                         level = c('best', 'bottom', 'middle', 'top'),
                         logistic_model = FALSE,
                         transform = c('asinh', 'log2', 'log', 'none')){
 
   level <- match.arg(level)
 
-  if(missing(tf_name)){
-    stop("Please specify TF name.")
-  }
-  if(missing(cell_type)){
-    stop("Please specify cell type.")
-  }
-  if(missing(TOP_coef)){
-    stop("Please provide TOP regression coefficients.")
+  if (missing(TOP_coef)){
+    stop("Please provide TOP regression coefficients in 'TOP_coef'.")
   }
 
-  selected_model <- select_model_coef_level(tf_name, cell_type, TOP_coef, level)
-  if(anyNA(selected_model$coef)){
-    stop(paste0(level, ' level cefficients are not available for ', tf_name,
-                ' in ', cell_type, '. Try a different "level".'))
+  selected_model <- select_model_coef_level(TOP_coef, tf_name, cell_type, level)
+  if (anyNA(selected_model$coef)){
+    stop(sprintf("%s level cefficients are not available.\n", level))
   }
 
-  if(logistic_model == FALSE) {
+  if (logistic_model == FALSE ) {
     transform <- match.arg(transform)
     predictions <- predict_TOP_mean_coef(data, selected_model$coef, transform = transform)
   }else if (logistic_model == TRUE){
     predictions <- predict_TOP_logistic_mean_coef(data, selected_model$coef)
   }
 
-  res <- list(model = selected_model$model,
+  return(list(model = selected_model$model,
               level = selected_model$level,
               coef = selected_model$coef,
-              predictions = predictions)
-  return(res)
+              predictions = predictions))
 
 }
 
@@ -245,9 +284,9 @@ select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
 
 #' @title Select regression coefficients by the TOP hierarchy level
 #'
+#' @param TOP_mean_coef Trained TOP posterior mean regression coefficients.
 #' @param tf_name specifies TF name.
 #' @param cell_type specifies the cell type.
-#' @param TOP_mean_coef Trained TOP posterior mean regression coefficients.
 #' @param level Specific the TOP model hierarchy level to use.
 #' Options: 'best', 'bottom', 'middle', or 'top'.
 #' Default: 'best' -- choose the best model (lowest level of the hierarchy available):
@@ -260,20 +299,31 @@ select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
 #' TOP model, regression coefficients (posterior mean).
 #' @export
 #'
-select_model_coef_level <- function(tf_name,
+select_model_coef_level <- function(TOP_mean_coef,
+                                    tf_name,
                                     cell_type,
-                                    TOP_mean_coef,
                                     level = c('best', 'bottom', 'middle', 'top')) {
 
   level <- match.arg(level)
-  # convert TF names to upper case (as we use upper case for TF names in training)
-  tf_name <- base::toupper(tf_name)
+
+  if( missing(tf_name) && level %in% c('best', 'bottom', 'middle') ){
+    stop(sprintf("Please specify 'tf_name' when 'level = %s'.", level))
+  }
+
+  if( missing(cell_type) && level %in% c('best', 'bottom')){
+    stop(sprintf("Please specify 'cell_type' when 'level = %s'.", level))
+  }
+
+  # convert TF name to upper case (as we use upper case for TF names in training)
+  if ( level %in% c('best', 'bottom', 'middle') ){
+    tf_name <- base::toupper(tf_name)
+  }
+
   bottom_level_mean_coef <- TOP_mean_coef$bottom
   middle_level_mean_coef <- TOP_mean_coef$middle
   top_level_mean_coef <- TOP_mean_coef$top
 
   if(level == 'best'){
-    cat('Find the best available model for', tf_name, 'in', cell_type, '...\n')
     ## load model, using lower level model if available
     tf_cell_name <- paste(tf_name, cell_type, sep = '.')
     if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
@@ -289,14 +339,14 @@ select_model_coef_level <- function(tf_name,
       model_level <- 'top'
       model_name <- 'TF-generic'
     }
-    cat('Choose the', model_level, 'level model...\n')
+    cat('Use the', model_level, 'level model.\n')
   }else if (level == 'bottom'){
     tf_cell_name <- paste(tf_name, cell_type, sep = '.')
     if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
       model_coef <- bottom_level_mean_coef[tf_cell_name, ]
       model_level <- 'bottom'
       model_name <- tf_cell_name
-      cat('Choose the', model_level, 'level model for', tf_name, 'in', cell_type, '...\n')
+      cat('Use the', model_level, 'level model for', tf_name, 'in', cell_type, '.\n')
     } else{
       model_coef <- NA
       model_level <- 'bottom'
@@ -308,7 +358,7 @@ select_model_coef_level <- function(tf_name,
       model_coef <- middle_level_mean_coef[tf_name, ]
       model_level <- 'middle'
       model_name <- tf_name
-      cat('Choose the', model_level, 'level model for', tf_name, '...\n')
+      cat('Use the', model_level, 'level model for', tf_name, '.\n')
     } else{
       model_coef <- NA
       model_level <- 'middle'
@@ -318,7 +368,7 @@ select_model_coef_level <- function(tf_name,
     model_coef <- top_level_mean_coef
     model_level <- 'top'
     model_name <- 'TF-generic'
-    cat('Choose the', model_level, 'level model... \n')
+    cat('Use the', model_level, 'level model. \n')
   }
 
   return(list(level = model_level,
