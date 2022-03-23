@@ -237,7 +237,7 @@ select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
   pwm_col <- grep(pwm_col, colnames(data), ignore.case = TRUE, value = TRUE)
   bin_cols <- grep(bin_col, colnames(data), ignore.case = TRUE, value = TRUE)
   features_cols <- c(pwm_col, bin_cols)
-  cat('Select features:', features.cols, '\n')
+  cat('Select features:', features_cols, '\n')
   features <- data[, features_cols]
   return(features)
 }
