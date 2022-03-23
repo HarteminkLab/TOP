@@ -17,7 +17,7 @@ fit_TOP_M5_model(
   n_thin = max(1, floor((n_iter - n_burnin)/1000)),
   n_cores = length(partitions),
   save = TRUE,
-  out_dir = "./TOP_samples",
+  outdir = "./TOP_samples",
   return_type = c("samples", "jagsfit", "samplefiles"),
   quiet = FALSE
 )
@@ -56,9 +56,9 @@ which will only thin if there are at least 2000 simulations.}
 (default: equal to the number of partitions).}
 
 \item{save}{Logical, if TRUE, save posterior samples as .rds files
-in \code{out_dir}.}
+in \code{outdir}.}
 
-\item{out_dir}{Directory to save TOP model posterior samples.}
+\item{outdir}{Directory to save TOP model posterior samples.}
 
 \item{return_type}{Type of result to return.
 Options: 'samples' (posterior samples),}

@@ -24,8 +24,8 @@
 #' @param n_cores Number of cores to use in parallel
 #' (default: equal to the number of partitions).
 #' @param save Logical, if TRUE, save posterior samples as .rds files
-#' in \code{out_dir}.
-#' @param out_dir Directory to save TOP model posterior samples.
+#' in \code{outdir}.
+#' @param outdir Directory to save TOP model posterior samples.
 #' @param return_type Type of result to return.
 #' Options: 'samples' (posterior samples),
 # 'jagsfit' (jagsfit object), or 'none' (no return values).
@@ -49,7 +49,7 @@ fit_TOP_M5_model <- function(all_training_data,
                              n_thin=max(1, floor((n_iter - n_burnin) / 1000)),
                              n_cores=length(partitions),
                              save=TRUE,
-                             out_dir='./TOP_samples',
+                             outdir='./TOP_samples',
                              return_type=c('samples', 'jagsfit', 'samplefiles'),
                              quiet=FALSE){
 
@@ -85,9 +85,9 @@ fit_TOP_M5_model <- function(all_training_data,
       # Fit TOP binding probability model (logistic version)
       jagsfit <- fit_TOP_logistic_M5_model_jags(data, model_file, n_iter, n_burnin, n_chains, n_thin, quiet)
       if(save){
-        if(!dir.exists(out_dir)) dir.create(out_dir)
-        saveRDS(jagsfit, file.path(out_dir, paste0('TOP.logistic.M5.partition', k, '.jagsfit.rds')))
-        samples_file <- file.path(out_dir, paste0('TOP.logistic.M5.partition', k, '.posterior.samples.rds'))
+        if(!dir.exists(outdir)) dir.create(outdir)
+        saveRDS(jagsfit, file.path(outdir, paste0('TOP.logistic.M5.partition', k, '.jagsfit.rds')))
+        samples_file <- file.path(outdir, paste0('TOP.logistic.M5.partition', k, '.posterior.samples.rds'))
         saveRDS(coda::as.mcmc(jagsfit), samples_file)
       }
 
@@ -95,9 +95,9 @@ fit_TOP_M5_model <- function(all_training_data,
       # Fit TOP quantitative TF occupancy model
       jagsfit <- fit_TOP_M5_model_jags(data, model_file, transform, n_iter, n_burnin, n_chains, n_thin, quiet)
       if(save){
-        if(!dir.exists(out_dir)) dir.create(out_dir)
-        saveRDS(jagsfit, file.path(out_dir, paste0('TOP.M5.partition', k, '.jagsfit.rds')))
-        samples_file <- file.path(out_dir, paste0('TOP.M5.partition', k, '.posterior.samples.rds'))
+        if(!dir.exists(outdir)) dir.create(outdir)
+        saveRDS(jagsfit, file.path(outdir, paste0('TOP.M5.partition', k, '.jagsfit.rds')))
+        samples_file <- file.path(outdir, paste0('TOP.M5.partition', k, '.posterior.samples.rds'))
         saveRDS(coda::as.mcmc(jagsfit), samples_file)
       }
     }
