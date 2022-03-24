@@ -2,13 +2,13 @@
 % Please edit documentation in R/assemble_training_data.R
 \name{assemble_training_data}
 \alias{assemble_training_data}
-\title{Assemble TOP training data for all TF x cell type combos,
+\title{Assemble TOP training data for all TF x cell type combinations,
 then split training data into 10 partitions}
 \usage{
 assemble_training_data(
   tf_cell_table,
   logistic_model = FALSE,
-  chip_colname = "chip",
+  chip_col = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
   n_partitions = 10,
   n_cores = n_partitions,
@@ -17,34 +17,76 @@ assemble_training_data(
 )
 }
 \arguments{
-\item{tf_cell_table}{a data frame with the first three columns as:
-TF name, cell type, and file name containing the corresponding training data.}
+\item{tf_cell_table}{a data frame listing all TF x cell type combinations
+and the training data for each combination.
+It should have at least three columns, with:
+TF names, cell types, and file names of the individual training data for
+each TF x cell type combination. The individual training data
+should be in .rds or text (.txt, or .csv) format.}
 
-\item{logistic_model}{Logical; if TRUE, use the logistic version of TOP model.}
+\item{logistic_model}{Logical. If \code{logistic_model = TRUE},
+prepare assembled data for the logistic version of TOP model.
+If \code{logistic_model = FALSE}, prepare assembled data for the
+quantitative occupancy model (default).}
 
-\item{chip_colname}{The column name of ChIP data in the combined data
-(default: "chip").}
+\item{chip_col}{The column name of ChIP data in the individual training data
+(default: \dQuote{chip}).}
 
 \item{training_chrs}{Chromosomes used for training the model
-(default: odd chromosomes)}
+(default: odd chromosomes, chr1, chr3, ..., chr21)}
 
-\item{n_partitions}{Total number of partitions to split the training data (default: 10).}
+\item{n_partitions}{Number of partitions to split the training data (default: 10).}
 
-\item{n_cores}{Number of cores to use in parallel
-(default: equal to the number of partitions).}
+\item{n_cores}{Number of cores to run in parallel
+(default: equal to \code{n_partitions}).}
 
-\item{max_sites}{Max number of candidate sites in each partition
-(default: 50000/n_partitions).}
+\item{max_sites}{Max number of candidate sites to keep for
+each TF x cell type combination (default: 50000). To reduce computation time,
+randomly select \code{max_sites} candidate sites for
+each TF x cell type combination, if the number of candidate sites
+exceeds \code{max_sites}.}
 
-\item{seed}{seed used when sampling sites.}
+\item{seed}{Set seed when sampling sites.}
 }
 \value{
-A list of data frames, each containing one partition of the
-training data set with all TF x cell type combos.
+A list of data frames (default: 10),
+each containing one partition of the
+training data with all TF x cell type combinations.
 }
 \description{
 Prepare the training data for fitting TOP models.
 It split training data into 10 partitions and
-assemble training data for all TF x cell type combos for each of the partitions
+assemble training data for all TF x cell type combinations
+for each of the partitions
 using the function \code{assemble_partition_training_data}.
+}
+\examples{
+
+# 'tf_cell_table' should have three columns with:
+# TF names, cell types, and paths to the training data files, like:
+#  |   tf_name    |   cell_type   |        data_file         |
+#  |:------------:|:-------------:|:------------------------:|
+#  |     CTCF     |     K562      |   CTCF.K562.data.rds     |
+#  |     CTCF     |     A549      |   CTCF.A549.data.rds     |
+#  |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |
+#  |     ...      |     ...       |   ...                    |
+
+# Assemble training data for the quantitative occupancy model,
+# use odd chromosomes for training, keep at most 50000 candidate sites for
+# each TF x cell type combination, and split training data into 10 partitions.
+assembled_training_data <- assemble_training_data(tf_cell_table,
+                                                  logistic_model = FALSE,
+                                                  chip_col = 'chip',
+                                                  training_chrs = paste0('chr', seq(1,21,2)),
+                                                  n_partitions=10,
+                                                  max_sites = 50000)
+
+# Assemble training data for the logistic version of the model
+assembled_training_data <- assemble_training_data(tf_cell_table,
+                                                  logistic_model = TRUE,
+                                                  chip_col = 'chip_label',
+                                                  training_chrs = paste0('chr', seq(1,21,2)),
+                                                  n_partitions=10,
+                                                  max_sites = 50000)
+
 }

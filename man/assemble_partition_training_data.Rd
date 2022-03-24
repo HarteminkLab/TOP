@@ -2,17 +2,17 @@
 % Please edit documentation in R/assemble_training_data.R
 \name{assemble_partition_training_data}
 \alias{assemble_partition_training_data}
-\title{Assemble TOP training data for all TF x cell type combos
+\title{Assemble TOP training data for all TF x cell type combinations
 in a selected partition}
 \usage{
 assemble_partition_training_data(
   tf_cell_table,
   logistic_model = FALSE,
-  chip_colname = "chip",
+  chip_col = "chip",
   training_chrs = paste0("chr", seq(1, 21, 2)),
   n_partitions = 10,
   part = 1,
-  max_sites = 50000/n_partitions,
+  max_sites = 5000,
   seed = 1
 )
 }
@@ -24,30 +24,32 @@ and file name containing the corresponding training data.}
 
 \item{logistic_model}{Logical; if TRUE, use the logistic version of TOP model.}
 
-\item{chip_colname}{The column name of ChIP data in the combined data
-(default: "chip").}
+\item{chip_col}{The column name of ChIP data in the combined data
+(default: \dQuote{chip}).}
 
 \item{training_chrs}{Chromosomes used for training the model
-(default: odd chromosomes).}
+Default: odd chromosomes.}
 
-\item{n_partitions}{Total number of partitions to split the training data
+\item{n_partitions}{Number of partitions to split the training data
 (default: 10).}
 
 \item{part}{An integer between 1 and \code{n_partitions} to specify the
 partition to assemble the training data for.}
 
-\item{max_sites}{Max number of candidate sites in each partition
-(default: 50000/n_partitions).}
+\item{max_sites}{Max number of candidate sites to keep in each partition
+(default: 5000). Randomly sample \code{max_sites} sites in each partition
+if the number of candidate sites in each partition exceeds \code{max_sites}.}
 
 \item{seed}{seed used when sampling sites.}
 }
 \value{
-A data frame with the training data set with all TF x cell type combos.
+A data frame of the training data
+with all TF x cell type combinations in the selected partition.
 }
 \description{
 Prepare the training data for fitting TOP models. It first loads
-the training data for each of the training TF x cell type combos from
+the training data for each of the training TF x cell type combinations from
 \code{tf_cell_table}, then select the candidate sites in training chromosomes,
 and split the selected candidate sites into partitions (default: 10), and
-assemble training data for all TF x cell type combos for a selected partition.
+assemble training data for all TF x cell type combinations for a selected partition.
 }
