@@ -85,8 +85,6 @@ library(TOP)
 
 ```{r assemble-TOP-training-data, eval=FALSE}
 assembled_training_data <- assemble_training_data(tf_cell_table,
-                                                  logistic_model = FALSE, # do not use logistic model
-                                                  chip_colname = 'chip', # name of the column with ChIP occupancy in training data
                                                   training_chrs = paste0('chr', seq(1,21,2)), 
                                                   n_partitions = 10)
 ```

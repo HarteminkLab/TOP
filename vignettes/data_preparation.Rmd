@@ -195,7 +195,7 @@ count_genome_cuts(bam_file='K562.ATAC.bam',
                   bedGraphToBigWig_path='bedGraphToBigWig')
 ```
 
-**Step 4: Get DNase- or ATAC-seq count matrices for each motif, then normalize, bin and transform the counts**
+**Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts**
 
 Get DNase- or ATAC-seq read counts matrix around candidate sites:
 
@@ -239,7 +239,7 @@ saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.
 ```
 
 ```{r load-combined-data, eval=TRUE, include=FALSE}
-combined_data <- readRDS('../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds')
+combined_data <- readRDS(system.file("extdata", "CTCF.K562.ATAC.example.data.rds", package = "TOP"))
 ```
 
 ```{r show-example-data}
@@ -298,7 +298,7 @@ saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.comb
 ```
 
 ```{r load-combined-data-with-chip, eval=TRUE, include=FALSE}
-combined_data <- readRDS('../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds')
+combined_data <- readRDS(system.file("extdata", "CTCF.K562.ATAC.chip.example.data.rds", package = "TOP"))
 ```
 
 ```{r}
