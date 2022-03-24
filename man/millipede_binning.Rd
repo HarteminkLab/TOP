@@ -4,7 +4,11 @@
 \alias{millipede_binning}
 \title{Perform MILLIPEDE binning on count matrix}
 \usage{
-millipede_binning(counts, combine_strands = c("vertical", "motif"))
+millipede_binning(
+  counts,
+  bin_method = c("M5", "M24", "M12", "M3", "M2", "M1"),
+  combine_strands = c("vertical", "motif")
+)
 }
 \arguments{
 \item{counts}{DNase-seq or ATAC-seq read counts matrix,
@@ -12,9 +16,12 @@ rows are candidate sites,
 columns are DNase or ATAC counts with 100bp flanks around motifs
 on the forward and reverse strands.}
 
-\item{combine_strands}{Method to combine counts from M24 bins
-on both strands to M12 bins:
-'vertical' (default) or 'motif'.}
+\item{bin_method}{MILLIPEDE binning scheme. Options:
+\dQuote{M5} (default), \dQuote{M24}, \dQuote{M12}, \dQuote{M3}, \dQuote{M2},
+and \dQuote{M1}.}
+
+\item{combine_strands}{Method to combine counts on both strands from M24 bins
+to M12 bins: vertical' (default) or 'motif'.}
 }
 \value{
 A list containing binning results (data frames) using different
@@ -22,5 +29,19 @@ binning schemes.
 }
 \description{
 Perform binning using different MILLIPEDE binning schemes
-(M24, M12, M5, M3, M2, M1) on the input count matrix.
+(M5, M24, M12, M3, M2, M1) on the input count matrix.
+}
+\examples{
+
+# Perform MILLIPEDE binning with different binning schemes.
+
+# M5 binning
+ M5_bins <- millipede_binning(counts, bin_method = 'M5')
+
+# M12 binning
+ M12_bins <- millipede_binning(counts, bin_method = 'M12')
+
+# M3 binning
+ M3_bins <- millipede_binning(counts, bin_method = 'M3')
+
 }

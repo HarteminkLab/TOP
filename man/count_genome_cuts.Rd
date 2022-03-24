@@ -19,22 +19,44 @@ count_genome_cuts(
 
 \item{chrom_size_file}{File of genome sizes by chromosomes.}
 
-\item{data_type}{Data type: DNase or ATAC.}
+\item{data_type}{Data type: \dQuote{DNase} or \dQuote{ATAC}}
 
-\item{outdir}{Output directory (default: use the directory of bam_file).}
+\item{outdir}{Output directory (default: use the directory of \code{bam_file}).}
 
-\item{outname}{Output prefix (default: use the prefix of bam_file).}
+\item{outname}{Output prefix (default: use the prefix of \code{bam_file}).}
 
-\item{bedtools_path}{Path to bedtools executable.}
+\item{bedtools_path}{Path to \code{bedtools} executable.}
 
-\item{bedGraphToBigWig_path}{Path to UCSC bedGraphToBigWig executable.}
+\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.}
 }
 \description{
 Count genomic cleavage (5' end) from DNase-seq or
 ATAC-seq bam files using the \code{genomecov} tool from \code{bedtools}.
 For ATAC-seq, we shift reads aligned to the + strand by +4 bp, and shift
-reads aligned to the - strand by -5 bp,
-as in Buenrostro et al. 2013.
+reads aligned to the - strand by -5 bp (Buenrostro et al. 2013).
 Then save the output in BigWig format using
 the \code{bedGraphToBigWig} tool from UCSC.
+}
+\examples{
+
+# Obtain DNase-seq counts along the genome
+count_genome_cuts(bam_file='K562.DNase.bam',
+                  chrom_size_file='hg38.chrom.sizes',
+                  data_type='DNase',
+                  outdir='processed_data',
+                  outname='K562.DNase',
+                  bedtools_path='bedtools',
+                  bedGraphToBigWig_path='bedGraphToBigWig')
+
+# Obtain ATAC-seq counts along the genome
+count_genome_cuts(bam_file='K562.ATAC.bam',
+                  chrom_size_file='hg38.chrom.sizes',
+                  data_type='ATAC',
+                  outdir='processed_data',
+                  outname='K562.ATAC',
+                  bedtools_path='bedtools',
+                  bedGraphToBigWig_path='bedGraphToBigWig')
+
+# See more examples in \code{get_sites_counts()}.
+
 }

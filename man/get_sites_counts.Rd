@@ -13,13 +13,13 @@ get_sites_counts(
 )
 }
 \arguments{
-\item{sites}{A data frame containing candidate sites}
+\item{sites}{A data frame containing the candidate sites.}
 
-\item{genomecount_dir}{Directory for genome counts}
+\item{genomecount_dir}{Directory for genome counts.}
 
-\item{genomecount_name}{File prefix for genome counts}
+\item{genomecount_name}{File prefix for genome counts.}
 
-\item{tmpdir}{Temporary directory to save intermediate files}
+\item{tmpdir}{Temporary directory to save intermediate files.}
 
 \item{bwtool_path}{Path to \code{bwtool} executable.}
 }
@@ -37,4 +37,52 @@ Then combine the counts into one matrix, with the first half of the columns
 representing the read counts on the forward strand,
 and the second half of the columns representing the read counts
 on the reverse strand.
+}
+\examples{
+
+# Example: Obtain the ATAC-seq count matrices around
+# candidate binding sites of CTCF (using JASPAR motif: MA0139.1)
+
+# 1. Find TF motif matches using FIMO
+fimo_motif_matches(motif_file='MA0139.1.meme', sequence_file='hg38.fa',
+                   thresh_pValue=1e-5, max_strand=TRUE,
+                   outname='MA0139.1_1e-5.fimo.txt',
+                   fimo_path='fimo')
+
+# 2. Get candidate TF binding sites
+sites <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt',
+                                 thresh_pValue=1e-5,
+                                 blacklist_file='blacklist.hg38.bed.gz')
+
+# 3. Get ATAC-seq counts along the genome
+# Download the BAM file, (sort if the BAM file is unsorted),
+# index the BAM file, and
+# obtain the total number of mapped reads from the idxstats file.
+sort_index_idxstats_bam('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+
+# Obtain ATAC-seq counts along the genome
+count_genome_cuts(bam_file='K562.ATAC.bam',
+                  chrom_size_file='hg38.chrom.sizes',
+                  data_type='ATAC',
+                  outdir='processed_data',
+                  outname='K562.ATAC',
+                  bedtools_path='bedtools',
+                  bedGraphToBigWig_path='bedGraphToBigWig')
+
+# 4. Get ATAC-seq count matrices around candidate sites,
+# then normalize, bin and transform the counts
+
+# Get ATAC-seq count matrices
+sites_counts.mat <- get_sites_counts(sites,
+                                     genomecount_dir='processed_data',
+                                     genomecount_name='K562.ATAC',
+                                     bwtool_path='bwtool')
+
+# Normalize, bin and transform the counts
+bins <- normalize_bin_transform_counts(sites_counts.mat,
+                                       idxstats_file='K562.ATAC.bam.idxstats.txt',
+                                       ref_size=5e7,
+                                       bin_method='M5',
+                                       transform='asinh')
+
 }
