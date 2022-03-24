@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -77,12 +77,12 @@
       </tr><tr><td>
           <p><code><a href="assemble_partition_training_data.html">assemble_partition_training_data()</a></code> </p>
         </td>
-        <td><p>Assemble TOP training data for all TF x cell type combos
+        <td><p>Assemble TOP training data for all TF x cell type combinations
 in a selected partition</p></td>
       </tr><tr><td>
           <p><code><a href="assemble_training_data.html">assemble_training_data()</a></code> </p>
         </td>
-        <td><p>Assemble TOP training data for all TF x cell type combos,
+        <td><p>Assemble TOP training data for all TF x cell type combinations,
 then split training data into 10 partitions</p></td>
       </tr><tr><td>
           <p><code><a href="bin_transform_counts.html">bin_transform_counts()</a></code> </p>
@@ -128,15 +128,15 @@ combinations from the assembled training data</p></td>
       </tr><tr><td>
           <p><code><a href="fit_TOP_M5_model.html">fit_TOP_M5_model()</a></code> </p>
         </td>
-        <td><p>Fit TOP model</p></td>
-      </tr><tr><td>
-          <p><code><a href="fit_TOP_M5_model_jags.html">fit_TOP_M5_model_jags()</a></code> </p>
-        </td>
-        <td><p>Fit TOP quantitative occupancy model with M5 bins</p></td>
+        <td><p>Fit TOP model with M5 bins</p></td>
       </tr><tr><td>
           <p><code><a href="fit_TOP_logistic_M5_model_jags.html">fit_TOP_logistic_M5_model_jags()</a></code> </p>
         </td>
         <td><p>Fit TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.</p></td>
+      </tr><tr><td>
+          <p><code><a href="fit_TOP_occupancy_M5_model_jags.html">fit_TOP_occupancy_M5_model_jags()</a></code> </p>
+        </td>
+        <td><p>Fit TOP quantitative occupancy model with M5 bins</p></td>
       </tr><tr><td>
           <p><code><a href="flank_fimo_sites.html">flank_fimo_sites()</a></code> </p>
         </td>
@@ -161,12 +161,13 @@ on the reverse strand</p></td>
       </tr><tr><td>
           <p><code><a href="merge_normalize_bin_transform_counts.html">merge_normalize_bin_transform_counts()</a></code> </p>
         </td>
-        <td><p>Merge counts from multiple replicates, then normalize,
-bin and transform the merged counts</p></td>
+        <td><p>Merge DNase or ATAC-seq counts from multiple replicates,
+then normalize, bin and transform the merged counts</p></td>
       </tr><tr><td>
           <p><code><a href="merge_normalize_counts.html">merge_normalize_counts()</a></code> </p>
         </td>
-        <td><p>Merge counts from multiple replicates, then normalize merged counts</p></td>
+        <td><p>Merge DNase or ATAC-seq counts from multiple replicates,
+then normalize merged counts.</p></td>
       </tr><tr><td>
           <p><code><a href="millipede_binning.html">millipede_binning()</a></code> </p>
         </td>
@@ -218,7 +219,7 @@ bin and transform the merged counts</p></td>
       </tr><tr><td>
           <p><code><a href="select_features.html">select_features()</a></code> </p>
         </td>
-        <td><p>Select PWM and DNase (or ATAC) bin features from the input data frame</p></td>
+        <td><p>Select PWM and DNase (or ATAC) bin features from the input data</p></td>
       </tr><tr><td>
           <p><code><a href="select_model_coef_level.html">select_model_coef_level()</a></code> </p>
         </td>

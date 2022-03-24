@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -107,9 +107,11 @@
 <p>To make predictions using trained TOP models, we first need to prepare the input data as a data frame, with six columns.</p>
 <p>Columns from left to right are PWM scores and five DNase (or ATAC) bins.</p>
 <p>You can follow this <a href="data_preparation.html">page</a> to prepare the input data.</p>
-<p>Let’s load an example ATAC-seq dataset to predict CTCF occupancy in K562 cell type.</p>
+<p>Let’s load an example ATAC-seq data to predict CTCF occupancy in K562 cell type.</p>
+<p>This data contains binned ATAC-seq counts around CTCF motif matches in chr1.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.data.rds'</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CTCF.K562.ATAC.example.data.rds"</span>, package <span class="op">=</span> <span class="st">"TOP"</span><span class="op">)</span><span class="op">)</span>
+
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>,<span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt;    chr start   end  name pwm.score strand  p.value      bin1      bin2 bin3</span>
 <span class="co">#&gt; 1 chr1 11122 11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000    0</span>
@@ -131,31 +133,30 @@
 </h2>
 <p>We can make predictions using the posterior mean of pre-trained TOP model regression coefficients for ATAC-seq.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/trained_model_coef/ATAC/TOP_M5_posterior_mean_coef.rds'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">TOP_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"trained_model_coef/ATAC"</span>, <span class="st">"TOP_M5_posterior_mean_coef.rds"</span>, package <span class="op">=</span> <span class="st">"TOP"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Now we can predict CTCF occupancy in K562 cell type using the <code>predict_TOP</code> function:</p>
 <p>We can choose the “bottom” level regression coefficients as we have CTCF ChIP data from K562 cell type in our training set.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, 
-                          tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, <span class="co"># predict CTCF in K562 cell</span>
-                          cell_type <span class="op">=</span> <span class="st">'K562'</span>, 
                           TOP_coef <span class="op">=</span> <span class="va">TOP_coef</span>, 
-                          level <span class="op">=</span> <span class="st">'bottom'</span>, <span class="co"># use the best available level</span>
-                          logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># use the quantitative occupancy model</span>
-                          transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># we used asinh transformation on the ChIP data when training the model</span>
-<span class="co">#&gt; Choose the bottom level model for CTCF in K562 ...</span>
+                          tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, 
+                          cell_type <span class="op">=</span> <span class="st">'K562'</span>, 
+                          level <span class="op">=</span> <span class="st">'bottom'</span>, 
+                          logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
+                          transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> 
+<span class="co">#&gt; Use the bottom level model for CTCF in K562 .</span>
 <span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span></code></pre></div>
 <p>Or, we can select the “best” available level of coefficients for the TF and cell type of interest. In this case, the “bottom” level is the best level.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, 
-                          tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, <span class="co"># predict CTCF in K562 cell</span>
-                          cell_type <span class="op">=</span> <span class="st">'K562'</span>, 
                           TOP_coef <span class="op">=</span> <span class="va">TOP_coef</span>, 
-                          level <span class="op">=</span> <span class="st">'best'</span>, <span class="co"># use the best available level</span>
-                          logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># use the quantitative occupancy model</span>
-                          transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># we used asinh transformation on the ChIP data when training the model</span>
-<span class="co">#&gt; Find the best available model for CTCF in K562 ...</span>
-<span class="co">#&gt; Choose the bottom level model...</span>
+                          tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, 
+                          cell_type <span class="op">=</span> <span class="st">'K562'</span>, 
+                          level <span class="op">=</span> <span class="st">'best'</span>, 
+                          logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, 
+                          transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span>
+<span class="co">#&gt; Use the bottom level model.</span>
 <span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span></code></pre></div>
 <p>This result contains a list with the level of model, regression coefficients (posterior mean) used to make predictions, and predictions of TF occupancy.</p>
@@ -178,7 +179,7 @@
 <span class="co">#&gt; 5 0.2232134 0.0000000 0.0000000 0.8549006</span></code></pre></div>
 <p>We can plot the predicted occupancy vs. measured occupancy</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data_chip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds'</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">data_chip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/extdata/CTCF.K562.ATAC.chip.example.data.rds'</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/scatterplot_predictions.html">scatterplot_predictions</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data_chip</span><span class="op">$</span><span class="va">chip</span><span class="op">)</span>,
                         y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">TOP_predictions</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span>,
@@ -191,22 +192,19 @@
 <p>We can also try the “middle” level regression coefficients for CTCF, which are cell-type generic, thus could be used to predict CTCF in any cell types.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_middle_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, 
-                          tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, <span class="co"># predict CTCF in K562 cell</span>
-                          cell_type <span class="op">=</span> <span class="st">'K562'</span>, 
-                          TOP_coef <span class="op">=</span> <span class="va">TOP_coef</span>, 
-                          level <span class="op">=</span> <span class="st">'middle'</span>, <span class="co"># use the best available level</span>
-                          logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># use the quantitative occupancy model</span>
-                          transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># we used asinh transformation on the ChIP data when training the model</span>
-<span class="co">#&gt; Choose the middle level model for CTCF ...</span>
+                                 TOP_coef <span class="op">=</span> <span class="va">TOP_coef</span>, 
+                                 tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, 
+                                 level <span class="op">=</span> <span class="st">'middle'</span>, 
+                                 logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, 
+                                 transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> 
+<span class="co">#&gt; Use the middle level model for CTCF .</span>
 <span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF occupancy using TOP occupancy model...</span>
 
 <span class="va">TOP_middle_predictions</span> <span class="op">&lt;-</span> <span class="va">TOP_middle_result</span><span class="op">$</span><span class="va">predictions</span></code></pre></div>
 <p>We can see the performance of the “middle” level model is very close to the “bottom” level.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data_chip</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/extdata/processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.combined.data.rds'</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/scatterplot_predictions.html">scatterplot_predictions</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data_chip</span><span class="op">$</span><span class="va">chip</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/scatterplot_predictions.html">scatterplot_predictions</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">data_chip</span><span class="op">$</span><span class="va">chip</span><span class="op">)</span>,
                         y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">TOP_middle_predictions</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span>,
                         title <span class="op">=</span> <span class="st">'Predicting CTCF occupancy in K562 cell'</span>,
                         xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,
@@ -222,15 +220,15 @@
 <p>Load pre-trained TOP logistic regression coefficients:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_logistic_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'../inst/trained_model_coef/ATAC/TOP_logistic_M5_posterior_mean_coef.rds'</span><span class="op">)</span></code></pre></div>
-<p>Predict CTCF binding probability in K562 cell type using the “bottom” level logistic regression coefficients:</p>
+<p>Predict CTCF binding probability in K562 using the “bottom” level logistic model:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_TOP.html">predict_TOP</a></span><span class="op">(</span><span class="va">data</span>, 
+                          TOP_coef <span class="op">=</span> <span class="va">TOP_logistic_coef</span>, 
                           tf_name <span class="op">=</span> <span class="st">'CTCF'</span>,
                           cell_type <span class="op">=</span> <span class="st">'K562'</span>,
-                          TOP_coef <span class="op">=</span> <span class="va">TOP_logistic_coef</span>, 
                           level <span class="op">=</span> <span class="st">'bottom'</span>,
                           logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Choose the bottom level model for CTCF in K562 ...</span>
+<span class="co">#&gt; Use the bottom level model for CTCF in K562 .</span>
 <span class="co">#&gt; Select features: pwm.score bin1 bin2 bin3 bin4 bin5 </span>
 <span class="co">#&gt; Predicting TF binding probability using TOP logistic model...</span>
 <span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="va">TOP_result</span><span class="op">$</span><span class="va">predictions</span>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -154,8 +154,6 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinlkx/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assemble_training_data.html">assemble_training_data</a></span><span class="op">(</span><span class="va">tf_cell_table</span>,
-                                                  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># do not use logistic model</span>
-                                                  chip_colname <span class="op">=</span> <span class="st">'chip'</span>, <span class="co"># name of the column with ChIP occupancy in training data</span>
                                                   training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
                                                   n_partitions <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 </div>
@@ -168,9 +166,12 @@
 <p>Please install <code>R2jags</code> if you need to train your own TOP models.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">R2jags</span><span class="op">)</span></code></pre></div>
-<p>We provided the TOP model files in JAGS code in the <code>../model</code> directory within the package. It is easy to modify the models, e.g. use different priors, more bins, or other genomic features.</p>
+<p>We provided the TOP model files in JAGS code in the <code>model</code> directory within the package. It is flexible (and easy) to modify the models, e.g. use different priors, different bins, or other genomic features.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_file</span> <span class="op">&lt;-</span> <span class="st">'../model/TOP_M5_model.jags'</span></code></pre></div>
+<code class="sourceCode R"><span class="va">model_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"model"</span>, <span class="st">"TOP_M5_model.jags"</span>, package <span class="op">=</span> <span class="st">"TOP"</span><span class="op">)</span>
+
+<span class="co"># show the model</span>
+<span class="fu"><a href="https://rdrr.io/r/base/file.show.html" class="external-link">file.show</a></span><span class="op">(</span><span class="va">model_file</span><span class="op">)</span></code></pre></div>
 <p>The <code>fit_TOP_model()</code> function below runs Gibbs sampling for each of the 10 partitions in parallel (using the <code>foreach</code> R package).</p>
 <p>We first perform “asinh” transform to the training ChIP-seq counts, then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.</p>
 <p>Set the following parameters for Gibbs sampling:</p>
