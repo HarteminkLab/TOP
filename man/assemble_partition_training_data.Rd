@@ -49,7 +49,7 @@ with all TF x cell type combinations in the selected partition.
 \description{
 Prepare the training data for fitting TOP models. It first loads
 the training data for each of the training TF x cell type combinations from
-\code{tf_cell_table}, then select the candidate sites in training chromosomes,
-and split the selected candidate sites into partitions (default: 10), and
-assemble training data for all TF x cell type combinations for a selected partition.
+\code{tf_cell_table}, then selects the candidate sites in training chromosomes,
+and splits the selected candidate sites into partitions (default: 10), and
+assembles training data for all TF x cell type combinations for a selected partition.
 }

@@ -32,9 +32,9 @@ count_genome_cuts(
 \description{
 Count genomic cleavage (5' end) from DNase-seq or
 ATAC-seq bam files using the \code{genomecov} tool from \code{bedtools}.
-For ATAC-seq, we shift reads aligned to the + strand by +4 bp, and shift
+For ATAC-seq, it shifts reads aligned to the + strand by +4 bp, and shifts
 reads aligned to the - strand by -5 bp (Buenrostro et al. 2013).
-Then save the output in BigWig format using
+Save counts result in BigWig format using
 the \code{bedGraphToBigWig} tool from UCSC.
 }
 \examples{

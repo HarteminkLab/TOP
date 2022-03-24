@@ -55,8 +55,8 @@ training data with all TF x cell type combinations.
 }
 \description{
 Prepare the training data for fitting TOP models.
-It split training data into 10 partitions and
-assemble training data for all TF x cell type combinations
+It splits training data into 10 partitions and
+assembles training data for all TF x cell type combinations
 for each of the partitions
 using the function \code{assemble_partition_training_data}.
 }

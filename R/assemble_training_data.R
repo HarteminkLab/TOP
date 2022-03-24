@@ -2,8 +2,8 @@
 #' @title Assemble TOP training data for all TF x cell type combinations,
 #' then split training data into 10 partitions
 #' @description Prepare the training data for fitting TOP models.
-#' It split training data into 10 partitions and
-#' assemble training data for all TF x cell type combinations
+#' It splits training data into 10 partitions and
+#' assembles training data for all TF x cell type combinations
 #' for each of the partitions
 #' using the function \code{assemble_partition_training_data}.
 #'
@@ -129,9 +129,9 @@ assemble_training_data <- function(tf_cell_table,
 #' in a selected partition
 #' @description Prepare the training data for fitting TOP models. It first loads
 #' the training data for each of the training TF x cell type combinations from
-#' \code{tf_cell_table}, then select the candidate sites in training chromosomes,
-#' and split the selected candidate sites into partitions (default: 10), and
-#' assemble training data for all TF x cell type combinations for a selected partition.
+#' \code{tf_cell_table}, then selects the candidate sites in training chromosomes,
+#' and splits the selected candidate sites into partitions (default: 10), and
+#' assembles training data for all TF x cell type combinations for a selected partition.
 #' @param tf_cell_table A data frame containing the information about
 #' the training TFs, cell types and paths of the training data.
 #' The first three columns should contain TF name, cell type,
