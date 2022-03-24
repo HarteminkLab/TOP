@@ -4,7 +4,7 @@
 \alias{select_features}
 \title{Select PWM and DNase (or ATAC) bin features from the input data}
 \usage{
-select_features(data, pwm_col = "pwm", bin_col = "bin")
+select_features(data, pwm_col = "pwm", bin_col = "bin", quiet = FALSE)
 }
 \arguments{
 \item{data}{A data frame containing motif PWM score and DNase (or ATAC) bins.}
@@ -12,6 +12,8 @@ select_features(data, pwm_col = "pwm", bin_col = "bin")
 \item{pwm_col}{name (prefix) of the PMW score column.}
 
 \item{bin_col}{name (prefix) of the DNase or ATAC bin columns.}
+
+\item{quiet}{Logical. If TRUE, disable messages.}
 }
 \description{
 Select PWM and DNase (or ATAC) bin features from the input data

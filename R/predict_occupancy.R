@@ -127,6 +127,10 @@ predict_TOP <- function(data,
 #' @return A data frame of input data and predicted TF occupancy (posterior mean).
 #'
 #' @export
+#' @examples
+#' predictions <- predict_TOP_mean_coef(data, # data frame of input data.
+#'                                      mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
+#'                                      transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
 #'
 predict_TOP_mean_coef <- function(data,
                                   mean_coef,
@@ -177,6 +181,9 @@ predict_TOP_mean_coef <- function(data,
 #' @return A data frame of input data and predicted TF binding probability.
 #'
 #' @export
+#' @examples
+#' predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
+#'                                               mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
 #'
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
@@ -218,6 +225,13 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 #'
 #' @return A data frame of input data and predicted TF occupancy (posterior mean).
 #' @export
+#' @examples
+#' predictions <- predict_TOP_samples(data,
+#'                                    coef_samples = TOP_samples,
+#'                                    use_posterior_mean = FALSE,
+#'                                    sample_predictions = TRUE,
+#'                                    transform = "asinh")
+#'
 predict_TOP_samples <- function(data,
                                 coef_samples,
                                 use_posterior_mean = FALSE,
@@ -228,7 +242,7 @@ predict_TOP_samples <- function(data,
 
   features <- select_features(data)
 
-  cat('Predicting TF occupancy using TOP occupancy model with posterior samples...\n')
+  cat('Predicting TF occupancy using TOP occupancy model...\n')
   data_matrix <- as.matrix(data.frame(intercept = 1, features, check.names = FALSE))
 
   alpha_samples <- coef_samples$alpha_samples
@@ -252,7 +266,6 @@ predict_TOP_samples <- function(data,
     }else{
       predictions <- as.numeric(apply(means, 1, mean))
     }
-
   }
 
   # transform back to the original scale
@@ -268,22 +281,6 @@ predict_TOP_samples <- function(data,
 
   return(data.frame(data, predicted = predictions))
 
-}
-
-
-#' @title Select PWM and DNase (or ATAC) bin features from the input data
-#'
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param pwm_col name (prefix) of the PMW score column.
-#' @param bin_col name (prefix) of the DNase or ATAC bin columns.
-select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin'){
-  data <- as.data.frame(data)
-  pwm_col <- grep(pwm_col, colnames(data), ignore.case = TRUE, value = TRUE)
-  bin_cols <- grep(bin_col, colnames(data), ignore.case = TRUE, value = TRUE)
-  features_cols <- c(pwm_col, bin_cols)
-  cat('Select features:', features_cols, '\n')
-  features <- data[, features_cols]
-  return(features)
 }
 
 
@@ -334,23 +331,25 @@ select_model_coef_level <- function(TOP_mean_coef,
       model_coef <- bottom_level_mean_coef[tf_cell_name, ]
       model_level <- 'bottom'
       model_name <- tf_cell_name
+      cat(sprintf('Use the bottom level model for %s in %s cell type.\n', tf_name, cell_type))
     } else if (tf_name %in% rownames(middle_level_mean_coef)) {
       model_coef <- middle_level_mean_coef[tf_name, ]
       model_level <- 'middle'
       model_name <- tf_name
+      cat(sprintf('Use the middle level model for %s.\n', tf_name))
     } else {
       model_coef <- top_level_mean_coef
       model_level <- 'top'
       model_name <- 'TF-generic'
+      cat('Use the top level model.\n')
     }
-    cat('Use the', model_level, 'level model.\n')
   }else if (level == 'bottom'){
     tf_cell_name <- paste(tf_name, cell_type, sep = '.')
     if (tf_cell_name %in% rownames(bottom_level_mean_coef)) {
       model_coef <- bottom_level_mean_coef[tf_cell_name, ]
       model_level <- 'bottom'
       model_name <- tf_cell_name
-      cat('Use the', model_level, 'level model for', tf_name, 'in', cell_type, '.\n')
+      cat(sprintf('Use the bottom level model for %s in %s cell type.\n', tf_name, cell_type))
     } else{
       model_coef <- NA
       model_level <- 'bottom'
@@ -362,7 +361,7 @@ select_model_coef_level <- function(TOP_mean_coef,
       model_coef <- middle_level_mean_coef[tf_name, ]
       model_level <- 'middle'
       model_name <- tf_name
-      cat('Use the', model_level, 'level model for', tf_name, '.\n')
+      cat(sprintf('Use the middle level model for %s.\n', tf_name))
     } else{
       model_coef <- NA
       model_level <- 'middle'
@@ -372,7 +371,7 @@ select_model_coef_level <- function(TOP_mean_coef,
     model_coef <- top_level_mean_coef
     model_level <- 'top'
     model_name <- 'TF-generic'
-    cat('Use the', model_level, 'level model. \n')
+    cat('Use the top level model.\n')
   }
 
   return(list(level = model_level,
@@ -380,3 +379,23 @@ select_model_coef_level <- function(TOP_mean_coef,
               coef = model_coef))
 
 }
+
+
+#' @title Select PWM and DNase (or ATAC) bin features from the input data
+#'
+#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
+#' @param pwm_col name (prefix) of the PMW score column.
+#' @param bin_col name (prefix) of the DNase or ATAC bin columns.
+#' @param quiet Logical. If TRUE, disable messages.
+select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin', quiet=FALSE){
+  data <- as.data.frame(data)
+  pwm_col <- grep(pwm_col, colnames(data), ignore.case = TRUE, value = TRUE)
+  bin_cols <- grep(bin_col, colnames(data), ignore.case = TRUE, value = TRUE)
+  features_cols <- c(pwm_col, bin_cols)
+  if(!quiet){
+    cat('Select features:', features_cols, '\n')
+  }
+  features <- data[, features_cols]
+  return(features)
+}
+

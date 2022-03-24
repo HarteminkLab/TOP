@@ -33,3 +33,11 @@ A data frame of input data and predicted TF occupancy (posterior mean).
 Predict TF occupancy using posterior samples of TOP regression
 coefficients.
 }
+\examples{
+predictions <- predict_TOP_samples(data,
+                                   coef_samples = TOP_samples,
+                                   use_posterior_mean = FALSE,
+                                   sample_predictions = TRUE,
+                                   transform = "asinh")
+
+}
