@@ -86,7 +86,7 @@ By default, it runs Gibbs sampling for all 10 partitions
 in parallel on 10 CPU cores, and returns a list of posterior samples
 for each of the 10 partitions.
 Alternatively, you may fit model for each of the 10
-the partitions on separate machines by specifying the partition(s) to run.
+the partitions on separate machines by specifying the partition to run.
 }
 \examples{
 

@@ -5,7 +5,7 @@
 #' in parallel on 10 CPU cores, and returns a list of posterior samples
 #' for each of the 10 partitions.
 #' Alternatively, you may fit model for each of the 10
-#' the partitions on separate machines by specifying the partition(s) to run.
+#' the partitions on separate machines by specifying the partition to run.
 #' @param all_training_data A list of the assembled training data of all partitions.
 #' @param all_training_data_files A vector of the assembled training data
 #' files of all partitions. If \code{all_training_data} is missing,
