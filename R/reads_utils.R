@@ -12,7 +12,7 @@ index_fa <- function(fa_file,
                      chromsize_file='chrom.sizes',
                      outdir=dirname(fa_file)){
 
-  cat('Index', fa_file, 'file and generate chrom.sizes file ...\n')
+  cat('Indexing FASTA file and generating chrom.sizes file ...\n')
   faidx_file <- indexFa(fa_file)
   faidx <- read.table(faidx_file, sep='\t')
   write.table(faidx[,1:2], chromsize_file, quote=FALSE,
