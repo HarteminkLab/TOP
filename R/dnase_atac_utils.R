@@ -1,14 +1,17 @@
 
 #' @title Count DNase-seq or ATAC-seq cuts along the genome
 #' @description Count genomic cleavage (5' end) from DNase-seq or
-#' ATAC-seq bam files using the \code{genomecov} tool from \code{bedtools}.
-#' For ATAC-seq, it shifts reads aligned to the + strand by +4 bp, and shifts
-#' reads aligned to the - strand by -5 bp (Buenrostro et al. 2013).
+#' ATAC-seq BAM files using the \code{genomecov} tool from \code{bedtools}.
 #' Save counts result in BigWig format using
 #' the \code{bedGraphToBigWig} tool from UCSC.
+#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
+#' the + strand by +4 bp, and shifts reads aligned to the - strand
+#' by -5 bp (Buenrostro et al. 2013).
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param data_type Data type: \dQuote{DNase} or \dQuote{ATAC}
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
 #' @param bedtools_path Path to \code{bedtools} executable.
@@ -18,18 +21,29 @@
 #' @examples
 #'
 #' # Obtain DNase-seq counts along the genome
-#' count_genome_cuts(bam_file='K562.DNase.bam',
+#' count_genome_cuts(bam_file='DNase.bam',
 #'                   chrom_size_file='hg38.chrom.sizes',
-#'                   data_type='DNase',
 #'                   outdir='processed_data',
 #'                   outname='K562.DNase',
 #'                   bedtools_path='bedtools',
 #'                   bedGraphToBigWig_path='bedGraphToBigWig')
 #'
 #' # Obtain ATAC-seq counts along the genome
-#' count_genome_cuts(bam_file='K562.ATAC.bam',
+#' # We recommend using ATAC-seq reads that are pre-shifted and filtered.
+#' # By default, shift_ATAC = FALSE, assuming ATAC-seq reads have been shifted.
+#' count_genome_cuts(bam_file='ATAC.shifted.bam',
 #'                   chrom_size_file='hg38.chrom.sizes',
-#'                   data_type='ATAC',
+#'                   shift_ATAC = FALSE,
+#'                   outdir='processed_data',
+#'                   outname='K562.ATAC',
+#'                   bedtools_path='bedtools',
+#'                   bedGraphToBigWig_path='bedGraphToBigWig')
+#'
+#' # When shift_ATAC = TRUE, it shifts reads aligned to the + strand by +4 bp,
+#' # and shifts reads aligned to the - strand by -5 bp.
+#' count_genome_cuts(bam_file='ATAC.bam',
+#'                   chrom_size_file='hg38.chrom.sizes',
+#'                   shift_ATAC=TRUE,
 #'                   outdir='processed_data',
 #'                   outname='K562.ATAC',
 #'                   bedtools_path='bedtools',
@@ -39,7 +53,7 @@
 #'
 count_genome_cuts <- function(bam_file,
                               chrom_size_file,
-                              data_type=c('DNase', 'ATAC'),
+                              shift_ATAC=FALSE,
                               outdir,
                               outname,
                               bedtools_path='bedtools',
@@ -81,8 +95,8 @@ count_genome_cuts <- function(bam_file,
     genome_counts <- data.table::fread(bedgraph_file)
     genome_counts <- genome_counts[with(genome_counts, order(V1, V2)), ]
     # Shift ATAC-seq reads to get the centers of Tn5 binding positions
-    # shift reads by +4 bp for + strand and -5 bp for - strand.
-    if (data_type == 'ATAC') {
+    # Shift +4 bp for + strand and -5 bp for - strand.
+    if (shift_ATAC) {
       cat('Shifting ATAC-seq reads ...\n')
       if (strand == '+') {
         genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + 4
@@ -140,22 +154,22 @@ count_genome_cuts <- function(bam_file,
 #'                                  thresh_pValue=1e-5,
 #'                                  blacklist_file='blacklist.hg38.bed.gz')
 #'
-#' # 3. Get ATAC-seq counts along the genome
-#' # Download the BAM file, (sort if the BAM file is unsorted),
+#' # 3. Sort, index (and shift) ATAC-seq reads
+#' # Download the BAM file, sort the reads if unsorted,
+#' # shift ATAC-seq reads if needed,
 #' # index the BAM file, and
 #' # obtain the total number of mapped reads from the idxstats file.
-#' sort_index_idxstats_bam('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 #'
+#'  # 4. Get ATAC-seq counts along the genome
 #' # Obtain ATAC-seq counts along the genome
-#' count_genome_cuts(bam_file='K562.ATAC.bam',
+#' count_genome_cuts(bam_file='K562.ATAC.shifted.bam',
 #'                   chrom_size_file='hg38.chrom.sizes',
-#'                   data_type='ATAC',
 #'                   outdir='processed_data',
 #'                   outname='K562.ATAC',
 #'                   bedtools_path='bedtools',
 #'                   bedGraphToBigWig_path='bedGraphToBigWig')
 #'
-#' # 4. Get ATAC-seq count matrices around candidate sites,
+#' # 5. Get ATAC-seq count matrices around candidate sites,
 #' # then normalize, bin and transform the counts
 #'
 #' # Get ATAC-seq count matrices

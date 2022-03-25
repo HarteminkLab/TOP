@@ -54,22 +54,22 @@ sites <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt',
                                  thresh_pValue=1e-5,
                                  blacklist_file='blacklist.hg38.bed.gz')
 
-# 3. Get ATAC-seq counts along the genome
-# Download the BAM file, (sort if the BAM file is unsorted),
+# 3. Sort, index (and shift) ATAC-seq reads
+# Download the BAM file, sort the reads if unsorted,
+# shift ATAC-seq reads if needed,
 # index the BAM file, and
 # obtain the total number of mapped reads from the idxstats file.
-sort_index_idxstats_bam('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 
+ # 4. Get ATAC-seq counts along the genome
 # Obtain ATAC-seq counts along the genome
-count_genome_cuts(bam_file='K562.ATAC.bam',
+count_genome_cuts(bam_file='K562.ATAC.shifted.bam',
                   chrom_size_file='hg38.chrom.sizes',
-                  data_type='ATAC',
                   outdir='processed_data',
                   outname='K562.ATAC',
                   bedtools_path='bedtools',
                   bedGraphToBigWig_path='bedGraphToBigWig')
 
-# 4. Get ATAC-seq count matrices around candidate sites,
+# 5. Get ATAC-seq count matrices around candidate sites,
 # then normalize, bin and transform the counts
 
 # Get ATAC-seq count matrices
