@@ -181,14 +181,13 @@ installed for this step.
 ```{r count_genome_coverage, eval=FALSE}
 # bam_file: sorted BAM file.
 # chrom_size_file: file of genome sizes by chromosomes.
-# data_type: DNase or ATAC.
 # outdir: directory for saving the BigWig files of genome counts.
 # outname: prefix for the BigWig files, same as genomecount_name in get_sites_counts().
 # bedtools_path: path to bedtools executable.
 # bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.
 count_genome_cuts(bam_file='K562.ATAC.bam', 
                   chrom_size_file='hg38.chrom.sizes', 
-                  data_type='ATAC',
+                  shift_ATAC='ATAC',
                   outdir='processed_data',
                   outname='K562.ATAC',
                   bedtools_path='bedtools',
