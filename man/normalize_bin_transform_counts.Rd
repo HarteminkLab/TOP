@@ -39,7 +39,7 @@ bin using MILLIPEDE binning method and then take asinh or log2 transform
 bins <- normalize_bin_transform_counts(count_matrix,
                                        idxstats_file,
                                        ref_size = 1e8,
-                                       bin_method = "M5",
-                                       transform = "asinh")
+                                       bin_method = 'M5',
+                                       transform = 'asinh')
 
 }
