@@ -1,4 +1,26 @@
 
+#' @title Retrieve FASTA genome file
+#' @param BSgenome BSgenome object. For example,
+#' \code{BSgenome.Hsapiens.UCSC.hg19}, \code{BSgenome.Hsapiens.UCSC.hg38}, etc.
+#' @param outfile Output FASTA (\code{.fa}) file
+#' @importFrom Biostrings DNAStringSet writeXStringSet
+#' @export
+get_genome_fasta <- function(BSgenome,
+                             outfile = 'genome.fa',
+                             chr_list = paste0('chr',c(1:22,'X','Y','M'))){
+
+  cat('Get FASTA genome sequences for chromosomes: \n', chr_list,'...\n')
+  genome_chrs <- lapply(chr_list, function(x)BSgenome[[x]])
+  names(genome_chrs) <- chr_list
+  chr_seq_set <- Biostrings::DNAStringSet(genome_chrs)
+
+  outdir <- dirname(outfile)
+  if(!dir.exists(outdir)) dir.create(outdir)
+
+  Biostrings::writeXStringSet(chr_seq_set, outfile)
+}
+
+
 #' @title Index the FASTA file, and generate a 'chrom.sizes' file
 #' @description Index the FASTA file, and generate a 'chrom.sizes' file
 #' with chromosomes and genome size of each chromosome.
@@ -22,34 +44,31 @@ index_fa <- function(fa_file,
 
 #' @title Sort and index the BAM file, and retrieve the idxstats.
 #' @description Sort and index the BAM file, and
-#' retrieve the idxstats using \code{Rsamtools}.
+#' retrieve the idxstats (summary of
+#' the number of mapped reads on every chromosome) using \code{Rsamtools}.
 #' @param bam_file Input BAM file.
-#' @param outdir Output directory (default: save to the directory of the BAM file).
 #' @param sorted_bam_file Output file name for sorted BAM file if 'sort=TRUE'.
 #' @param sort Logical. If TRUE, sort the BAM file.
 #' @param index Logical. If TRUE, index the BAM file.
-#' @param idxstats Logical. If TRUE, retrieve idxstats from index file.
+#' @param idxstats Logical. If TRUE, retrieve idxstats summary of
+#' the number of mapped reads on every chromosome
 #' @importFrom Rsamtools sortBam indexBam idxstatsBam
 #' @export
 #'
 sort_index_idxstats_bam <- function(bam_file,
-                                    outdir=dirname(bam_file),
                                     sorted_bam_file,
                                     sort=TRUE,
                                     index=TRUE,
                                     idxstats=TRUE) {
 
-  if(!dir.exists(outdir))
-    dir.create(outdir)
-
   if( sort ) {
     # Sort BAM file
     if(missing(sorted_bam_file)){
-      out_prefix <- gsub('.bam$','',basename(bam_file))
-      sorted_bam_file <- file.path(outdir, paste0(out_prefix, 'sorted.bam'))
+      bam_prefix <- gsub('\\.bam','',basename(bam_file))
+      sorted_bam_file <- file.path(dirname(bam_file), paste0(bam_prefix, '.sorted.bam'))
     }
     cat('Sort BAM file...\n')
-    sortBam(bam_file, sorted_bam_file)
+    sortBam(bam_file, gsub('\\.bam','',basename(sorted_bam_file)))
   }else{
     sorted_bam_file <- bam_file
   }
@@ -61,9 +80,9 @@ sort_index_idxstats_bam <- function(bam_file,
   }
 
   if( idxstats ){
-    # Get index statistics (including the number of mapped reads)
-    cat('Retrieve idxstats from the index file...\n')
-    out_prefix <- gsub('.bam$','',basename(sorted_bam_file))
+    # Get idxstats (number of mapped reads on every chromosomes)
+    cat('Retrieve idxstats ...\n')
+    out_prefix <- gsub('\\.bam','',basename(sorted_bam_file))
     idxstats_file <- file.path(outdir, paste0(out_prefix, '.bam.idxstats.txt'))
     idxstats <- idxstatsBam(sorted_bam_file)
     write.table(idxstats, idxstats_file, col.names=TRUE, row.names = FALSE,

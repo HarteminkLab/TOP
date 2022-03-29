@@ -6,7 +6,6 @@
 \usage{
 sort_index_idxstats_bam(
   bam_file,
-  outdir = dirname(bam_file),
   sorted_bam_file,
   sort = TRUE,
   index = TRUE,
@@ -16,17 +15,17 @@ sort_index_idxstats_bam(
 \arguments{
 \item{bam_file}{Input BAM file.}
 
-\item{outdir}{Output directory (default: save to the directory of the BAM file).}
-
 \item{sorted_bam_file}{Output file name for sorted BAM file if 'sort=TRUE'.}
 
 \item{sort}{Logical. If TRUE, sort the BAM file.}
 
 \item{index}{Logical. If TRUE, index the BAM file.}
 
-\item{idxstats}{Logical. If TRUE, retrieve idxstats from index file.}
+\item{idxstats}{Logical. If TRUE, retrieve idxstats summary of
+the number of mapped reads on every chromosome}
 }
 \description{
 Sort and index the BAM file, and
-retrieve the idxstats using \code{Rsamtools}.
+retrieve the idxstats (summary of
+the number of mapped reads on every chromosome) using \code{Rsamtools}.
 }
