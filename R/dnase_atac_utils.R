@@ -164,6 +164,7 @@ get_sites_counts_bwtool <- function(sites,
 #' @importFrom GenomicAlignments readGAlignments
 #' @import GenomicRanges
 #' @importFrom data.table fwrite
+#' @export
 count_genome_cuts_bw <- function(bam_file,
                                  chrom_size_file,
                                  shift_ATAC = FALSE,
@@ -208,6 +209,29 @@ count_genome_cuts_bw <- function(bam_file,
 
 }
 
+#' @title Count DNase-seq or ATAC-seq cuts along the genome
+#' @description Count genomic cleavage (5' end) from DNase-seq or
+#' ATAC-seq BAM alignment files using \code{bedtools}
+#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
+#' the + strand by +4 bp, and shifts reads aligned to the - strand
+#' by -5 bp (Buenrostro et al. 2013).
+#' This function treats paired end reads as independent.
+#' If you have paired-end ATAC-seq reads and want to select the fragments
+#' within NFR regions, please refer to the
+#' \code{count_ATAC_genome_cuts_readpairs()} function.
+#' @param bam_file Sorted BAM file.
+#' @param chrom_size_file File of genome sizes by chromosomes.
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
+#' @param outdir Output directory (default: use the directory of \code{bam_file}).
+#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
+#' @param bedtools_path Path to \code{bedtools} executable.
+#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
+#' @importFrom GenomicAlignments readGAlignments
+#' @import GenomicRanges
+#' @importFrom data.table fwrite
+#' @export
 count_genome_cuts_bedtools <- function(bam_file,
                                        chrom_size_file,
                                        shift_ATAC=FALSE,
