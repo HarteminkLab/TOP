@@ -31,6 +31,7 @@ count_sites_cuts <- function(sites,
                              site_0base = TRUE,
                              ncores = 10){
 
+  # read cuts from BAM file
   cuts.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'cuts')
 
   if(site_0base)
@@ -40,6 +41,14 @@ count_sites_cuts <- function(sites,
 
   cuts.gr <- subsetByOverlaps(cuts.gr, sites.gr, ignore.strand = TRUE)
 
+  n_available_cores <- detectCores(logical = FALSE) - 1
+  if(missing(ncores)){
+    ncores <- n_available_cores
+  }else{
+    ncores <- min(n_available_cores, ncores)
+  }
+
+  cat(sprintf('Counting cuts using %d cores...\n', ncores))
   registerDoParallel(cores=ncores)
 
   fwd_counts.mat <- foreach(i=1:length(sites.gr), .combine=rbind) %dopar% {
@@ -174,6 +183,8 @@ count_genome_cuts_bw <- function(bam_file,
 
   cat('Counting genome cuts for', bam_file, '...\n')
   coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'coverage')
+  pos_coverage.gr <- coverage.gr$pos
+  neg_coverage.gr <- coverage.gr$neg
 
   if(!dir.exists(outdir))
     dir.create(outdir)
