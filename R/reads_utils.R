@@ -5,6 +5,11 @@
 #' @param outfile Output FASTA (\code{.fa}) file
 #' @importFrom Biostrings DNAStringSet writeXStringSet
 #' @export
+#' @examples
+#'
+#' library(BSgenome.Hsapiens.UCSC.hg38)
+#' get_genome_fasta(BSgenome.Hsapiens.UCSC.hg38,
+#'                  outfile = 'UCSC.hg38.fa')
 get_genome_fasta <- function(BSgenome,
                              outfile = 'genome.fa',
                              chr_list = paste0('chr',c(1:22,'X','Y','M'))){
