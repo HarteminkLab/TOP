@@ -33,7 +33,7 @@ fimo_motif_matches <- function(motif_file,
                                skip_matched_sequence=TRUE,
                                max_strand=FALSE,
                                options='',
-                               verbosity=c(1,2,3,4,5),
+                               verbosity=1,
                                fimo_path='fimo') {
 
   if ( Sys.which(fimo_path) == '' ) {
