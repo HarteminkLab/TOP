@@ -19,3 +19,9 @@ get_genome_fasta(
 \description{
 Retrieve FASTA genome file
 }
+\examples{
+
+library(BSgenome.Hsapiens.UCSC.hg38)
+get_genome_fasta(BSgenome.Hsapiens.UCSC.hg38,
+                 outfile = 'UCSC.hg38.fa')
+}

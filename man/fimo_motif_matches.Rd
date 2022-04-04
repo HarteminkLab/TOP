@@ -14,7 +14,7 @@ fimo_motif_matches(
   skip_matched_sequence = TRUE,
   max_strand = FALSE,
   options = "",
-  verbosity = c(1, 2, 3, 4, 5),
+  verbosity = 1,
   fimo_path = "fimo"
 )
 }
