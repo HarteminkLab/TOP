@@ -107,6 +107,10 @@ get_sites_counts <- function(sites,
 #' @return A count matrix. The first half of the columns
 #' are the read counts on the forward strand, and the second half of the
 #' columns are the read counts on the reverse strand.
+#' @importFrom GenomicRanges makeGRangesFromDataFrame subsetByOverlaps
+#' @import doParallel
+#' @import foreach
+#' @importFrom parallel detectCores
 #' @export
 #' @examples
 #' # Count DNase or ATAC cuts around candidate sites
@@ -209,12 +213,14 @@ count_genome_cuts <- function(bam_file,
     outname <- tools::file_path_sans_ext(basename(bam_file))
 
   # + strand counts
-  cat('Counting genome cuts on + strand ...\n')
+  cat('Counting genome cuts on - strand ...\n')
   pos_coverage.df <- data.frame(chr = seqnames(pos_coverage.gr),
                                 start = start(pos_coverage.gr) - 1,
                                 end = end(pos_coverage.gr),
                                 count = pos_coverage.gr$score)
   pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
+  cat('Sorting counted genome cuts on + strand...\n')
+  pos_coverage.df <- pos_coverage.df[with(pos_coverage.df, order(chr, start)), ]
   bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
   data.table::fwrite(pos_coverage.df, bedgraph_file,
                      sep='\t', col.names = FALSE, scipen = 999)
@@ -228,6 +234,8 @@ count_genome_cuts <- function(bam_file,
                                 end = end(neg_coverage.gr),
                                 count = neg_coverage.gr$score)
   neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
+  cat('Sorting counted genome cuts on - strand...\n')
+  neg_coverage.df <- neg_coverage.df[with(neg_coverage.df, order(chr, start)), ]
   bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
   data.table::fwrite(neg_coverage.df, bedgraph_file,
                      sep='\t', col.names = FALSE, scipen = 999)
@@ -496,6 +504,7 @@ read_bam_cuts <- function(bam_file,
   }
 
   if(return_type == 'coverage'){
+    cat('Counting genome cuts coverage .. \n')
     pos_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '+']), strand = '+')
     pos_coverage.gr <- sort(pos_coverage.gr)
     neg_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '-']), strand = '-')
