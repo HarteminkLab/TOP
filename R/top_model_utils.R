@@ -32,7 +32,6 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n_samples = 1000) {
 #' @description Combine and take the average of TOP posterior samples
 #' from all partitions. Use \code{select_TOP_samples} to select
 #' posterior samples from each partition.
-#' @param TOP_samples TOP posterior samples from all partitions.
 #' @param TOP_samples_files Files of TOP posterior samples from all partitions.
 #' @param thin thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
@@ -40,39 +39,27 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n_samples = 1000) {
 #' when the number of posterior samples is greater than \code{n_samples}.
 #' @return A data frame of combined and averaged posterior samples.
 #' @export
-#'
-combine_TOP_samples <- function(all_TOP_samples,
-                                TOP_samples_files,
+#' @examples
+#' TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
+combine_TOP_samples <- function(TOP_samples_files,
                                 thin = 1,
                                 n_samples = 1000) {
-
-  if(missing(all_TOP_samples)){
-    if(!missing(TOP_samples_files)){
-      if(any(!file.exists(TOP_samples_files))){
-        stop('Files not available:\n', TOP_samples_files[!file.exists(TOP_samples_files)])
-      }
-      all_TOP_samples <- vector('list', length(TOP_samples_files))
-      for(i in 1:length(TOP_samples_files)){
-        all_TOP_samples[[i]] <- readRDS(TOP_samples_files[i])
-      }
-    }else{
-      stop('Please provide all_TOP_samples or TOP_samples_files!')
-    }
+  if(any(!file.exists(TOP_samples_files))){
+    stop('Files not available:\n', TOP_samples_files[!file.exists(TOP_samples_files)])
   }
-
   N <- length(all_TOP_samples)
-  cat('Combining samples from', N, 'partitions ... \n')
+  cat('Loading samples from partition 1 ...\n')
+  TOP_samples <- readRDS(TOP_samples_files[1])
   combined_TOP_samples <- select_TOP_samples(all_TOP_samples[[1]], thin, n_samples)
-
   if(N > 1) {
     for(i in 2:N) {
-      combined_TOP_samples <- combined_TOP_samples + select_TOP_samples(all_TOP_samples[[i]], thin, n_samples)
+      cat('Loading samples from partition', i, '...\n')
+      TOP_samples <- readRDS(TOP_samples_files[i])
+      combined_TOP_samples <- combined_TOP_samples + select_TOP_samples(TOP_samples, thin, n_samples)
     }
     combined_TOP_samples <- combined_TOP_samples / N
   }
-
   return(combined_TOP_samples)
-
 }
 
 #' @title Extract alpha and beta coefficients from TOP posterior samples
@@ -163,6 +150,7 @@ extract_TOP_mean_coef <- function(TOP_samples,
                                   assembled_training_data,
                                   n_bins = 5){
 
+  # Extract the indices and names of TF and cell type combos
   if(missing(tf_cell_combos)){
     if(!missing(assembled_training_data)){
       tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
