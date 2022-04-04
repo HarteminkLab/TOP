@@ -87,8 +87,8 @@ sort_index_idxstats_bam <- function(bam_file,
   if( idxstats ){
     # Get idxstats (number of mapped reads on every chromosomes)
     cat('Retrieve idxstats ...\n')
-    out_prefix <- gsub('\\.bam','',basename(sorted_bam_file))
-    idxstats_file <- file.path(outdir, paste0(out_prefix, '.bam.idxstats.txt'))
+    bam_prefix <- gsub('\\.bam','',basename(sorted_bam_file))
+    idxstats_file <- file.path(dirname(bam_file), paste0(bam_prefix, '.bam.idxstats.txt'))
     idxstats <- idxstatsBam(sorted_bam_file)
     write.table(idxstats, idxstats_file, col.names=TRUE, row.names = FALSE,
                 quote=FALSE, sep='\t')
