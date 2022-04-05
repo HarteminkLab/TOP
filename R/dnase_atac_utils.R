@@ -1,3 +1,164 @@
+#' @title Count DNase-seq or ATAC-seq cuts along the genome
+#' @description Count genomic cleavage (5' end) from DNase-seq or
+#' ATAC-seq BAM alignment files.
+#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
+#' the + strand by +4 bp, and shifts reads aligned to the - strand
+#' by -5 bp (Buenrostro et al. 2013).
+#' This function treats paired end reads as independent.
+#' If you have paired-end ATAC-seq reads and want to select the fragments
+#' within NFR regions, please refer to the
+#' \code{count_ATAC_genome_cuts_readpairs()} function.
+#' @param bam_file Sorted BAM file.
+#' @param chrom_size_file File of genome sizes by chromosomes.
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
+#' @param outdir Output directory (default: use the directory of \code{bam_file}).
+#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
+#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
+#' @importFrom GenomicAlignments readGAlignments
+#' @import GenomicRanges
+#' @importFrom data.table fwrite
+#' @export
+count_genome_cuts <- function(bam_file,
+                              chrom_size_file,
+                              shift_ATAC = FALSE,
+                              outdir = dirname(bam_file),
+                              outname,
+                              bedGraphToBigWig_path='bedGraphToBigWig'){
+
+  # Checking input arguments
+  if ( Sys.which(bedGraphToBigWig_path) == '' )
+    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
+
+  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'coverage')
+  pos_coverage.gr <- coverage.gr$pos
+  neg_coverage.gr <- coverage.gr$neg
+
+  rm(coverage.gr)
+
+  if(!dir.exists(outdir))
+    dir.create(outdir, recursive = TRUE)
+
+  if(missing(outname))
+    outname <- tools::file_path_sans_ext(basename(bam_file))
+
+  # + strand counts
+  cat('Processing genome cuts on + strand ...\n')
+  pos_coverage.df <- data.frame(chr = as.character(seqnames(pos_coverage.gr)),
+                                start = start(pos_coverage.gr) - 1,
+                                end = end(pos_coverage.gr),
+                                count = pos_coverage.gr$score)
+  pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
+  pos_coverage.df <- pos_coverage.df[with(pos_coverage.df, order(chr, start)), ]
+  bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
+  data.table::fwrite(pos_coverage.df, bedgraph_file,
+                     sep='\t', col.names = FALSE, scipen = 999)
+  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
+  unlink(bedgraph_file)
+
+  # - strand counts
+  cat('Processing genome cuts on - strand ...\n')
+  neg_coverage.df <- data.frame(chr = as.character(seqnames(neg_coverage.gr)),
+                                start = start(neg_coverage.gr) - 1,
+                                end = end(neg_coverage.gr),
+                                count = neg_coverage.gr$score)
+  neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
+  neg_coverage.df <- neg_coverage.df[with(neg_coverage.df, order(chr, start)), ]
+  bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
+  data.table::fwrite(neg_coverage.df, bedgraph_file,
+                     sep='\t', col.names = FALSE, scipen = 999)
+  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
+  unlink(bedgraph_file)
+
+}
+
+
+#' @title Count DNase-seq or ATAC-seq cuts along the genome
+#' @description Count genomic cleavage (5' end) from DNase-seq or
+#' ATAC-seq BAM alignment files using \code{bedtools}
+#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
+#' the + strand by +4 bp, and shifts reads aligned to the - strand
+#' by -5 bp (Buenrostro et al. 2013).
+#' This function treats paired end reads as independent.
+#' If you have paired-end ATAC-seq reads and want to select the fragments
+#' within NFR regions, please refer to the
+#' \code{count_ATAC_genome_cuts_readpairs()} function.
+#' @param bam_file Sorted BAM file.
+#' @param chrom_size_file File of genome sizes by chromosomes.
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
+#' @param outdir Output directory (default: use the directory of \code{bam_file}).
+#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
+#' @param bedtools_path Path to \code{bedtools} executable.
+#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
+#' @importFrom GenomicAlignments readGAlignments
+#' @import GenomicRanges
+#' @importFrom data.table fwrite
+#' @export
+count_genome_cuts_bedtools <- function(bam_file,
+                                       chrom_size_file,
+                                       shift_ATAC=FALSE,
+                                       outdir=dirname(bam_file),
+                                       outname,
+                                       bedtools_path='bedtools',
+                                       bedGraphToBigWig_path='bedGraphToBigWig'){
+
+  # Checking input arguments
+  if ( Sys.which(bedtools_path) == '')
+    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path.' )
+
+  # Checking input arguments
+  if ( Sys.which(bedGraphToBigWig_path) == '' )
+    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
+
+  if(missing(outdir))
+    outdir <- dirname(bam_file)
+
+  if(!dir.exists(outdir))
+    dir.create(outdir, recursive = TRUE)
+
+  if(missing(outname))
+    outname <- tools::file_path_sans_ext(basename(bam_file))
+
+  for (strand in c('+', '-')) {
+    if (strand == '+') {
+      bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
+    } else {
+      bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
+    }
+
+    # Count 5' end cleavage and save as a .bedGraph file
+    cat('Counting genome cleavage for', bam_file, 'on', strand, 'strand...\n')
+    cmd <- paste(bedtools_path, 'genomecov -bg -5', '-strand', strand,
+                 '-ibam', bam_file, '>', bedgraph_file)
+    if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
+
+    cat('Sorting counted genome cleavage on', strand, 'strand...\n')
+    genome_counts <- data.table::fread(bedgraph_file)
+    genome_counts <- genome_counts[with(genome_counts, order(V1, V2)), ]
+    # Shift ATAC-seq reads to get the centers of Tn5 binding positions
+    # Shift +4 bp for + strand and -5 bp for - strand.
+    if (shift_ATAC) {
+      cat('Shifting ATAC-seq reads ...\n')
+      if (strand == '+') {
+        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + 4
+      } else {
+        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] - 5
+      }
+    }
+
+    data.table::fwrite(genome_counts, bedgraph_file,
+                       sep='\t', col.names = FALSE, scipen = 999)
+
+    # save to bigwig file
+    bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
+    unlink(bedgraph_file)
+  }
+
+}
+
 
 #' @title Get count matrices around candidate binding sites
 #' @description Extract counts around candidate binding sites on both strands
@@ -20,14 +181,14 @@
 #' @export
 #' @examples
 #' # Get ATAC-seq count matrices around candidate sites
-#' sites_counts.mat <- get_sites_counts_bwtool(sites,
-#'                                             bam_file='K562.ATAC.bam',
-#'                                             chrom_size_file,
-#'                                             shift_ATAC=TRUE,
-#'                                             genomecount_dir='processed_data',
-#'                                             genomecount_name='K562.ATAC',
-#'                                             bedGraphToBigWig_path='bedGraphToBigWig',
-#'                                             bwtool_path='bwtool')
+#' sites_counts.mat <- get_sites_counts(sites,
+#'                                      bam_file='K562.ATAC.bam',
+#'                                      chrom_size_file,
+#'                                      shift_ATAC=TRUE,
+#'                                      genomecount_dir='processed_data',
+#'                                      genomecount_name='K562.ATAC',
+#'                                      bedGraphToBigWig_path='bedGraphToBigWig',
+#'                                      bwtool_path='bwtool')
 get_sites_counts <- function(sites,
                              bam_file,
                              chrom_size_file,
@@ -87,353 +248,6 @@ get_sites_counts <- function(sites,
   unlink(c(sites_file, fwd_matrix_file, rev_matrix_file))
   return(sites_counts.mat)
 }
-
-
-#' @title Count DNase or ATAC cuts around candidate sites
-#' @description Count DNase or ATAC cuts around candidate sites on both strands.
-#' Then combine the counts into one matrix, with the first half of the columns
-#' representing the read counts on the forward strand,
-#' and the second half of the columns representing the read counts
-#' on the reverse strand with respect to the motif match location and strand.
-#' @param sites A data frame containing the candidate sites.
-#' @param bam_file BAM file of DNase or ATAC-seq reads alignment
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
-#' and shifts reads aligned to the - strand by -5 bp.
-#' @param site_0base Logical. If TRUE,
-#' the coordinates of sites are 0-based as in BED format. Otherwise,
-#' the coordinates of sites are 1-based.
-#' @param ncores Number of cores available to parallel computing.
-#' @return A count matrix. The first half of the columns
-#' are the read counts on the forward strand, and the second half of the
-#' columns are the read counts on the reverse strand.
-#' @importFrom GenomicRanges makeGRangesFromDataFrame subsetByOverlaps
-#' @import doParallel
-#' @import foreach
-#' @importFrom parallel detectCores
-#' @export
-#' @examples
-#' # Count DNase or ATAC cuts around candidate sites
-#' sites_counts.mat <- get_sites_counts_slower(sites,
-#'                                             bam_file = "ATAC_example.bam",
-#'                                             shift_ATAC = TRUE,
-#'                                             site_0base = TRUE,
-#'                                             ncores = 10)
-get_sites_counts_slower <- function(sites,
-                                    bam_file,
-                                    shift_ATAC = FALSE,
-                                    site_0base = TRUE,
-                                    ncores = 10){
-
-  # read cuts from BAM file
-  cuts.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'cuts')
-
-  if(site_0base)
-    sites$start <- sites$start  + 1
-
-  sites.gr <- makeGRangesFromDataFrame(sites)
-
-  cuts.gr <- subsetByOverlaps(cuts.gr, sites.gr, ignore.strand = TRUE)
-
-  n_available_cores <- detectCores(logical = FALSE) - 1
-  if(missing(ncores)){
-    ncores <- n_available_cores
-  }else{
-    ncores <- min(n_available_cores, ncores)
-  }
-
-  cat(sprintf('Counting cuts using %d cores...\n', ncores))
-  registerDoParallel(cores=ncores)
-
-  fwd_counts.mat <- foreach(i=1:length(sites.gr), .combine=rbind) %dopar% {
-    countOverlaps(query = GPos(sites.gr[i]), subject = cuts.gr[strand(cuts.gr) == '+'],
-                  ignore.strand = TRUE)
-  }
-
-  rev_counts.mat <- foreach(i=1:length(sites.gr), .combine=rbind) %dopar% {
-    countOverlaps(query = GPos(sites.gr[i]), subject = cuts.gr[strand(cuts.gr) == '-'],
-                  ignore.strand = TRUE)
-  }
-
-  sites_counts.l <- list(fwd = fwd_counts.mat, rev = rev_counts.mat)
-  neg_strand <- (sites$strand == '-')
-  sites_counts.l$fwd[neg_strand, ] <- t(apply(rev_counts.mat[neg_strand, ], 1, rev))
-  sites_counts.l$rev[neg_strand, ] <- t(apply(fwd_counts.mat[neg_strand, ], 1, rev))
-
-  sites_counts.mat <- as.matrix(cbind(sites_counts.l$fwd, sites_counts.l$rev))
-  rownames(sites_counts.mat) <- sites$name
-  colnames(sites_counts.mat) <- c(paste0('F', c(1:ncol(fwd_counts.mat))),
-                                  paste0('R', c(1:ncol(rev_counts.mat))))
-
-  return(sites_counts.mat)
-}
-
-
-#' @title Count DNase-seq or ATAC-seq cuts along the genome
-#' @description Count genomic cleavage (5' end) from DNase-seq or
-#' ATAC-seq BAM alignment files.
-#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
-#' the + strand by +4 bp, and shifts reads aligned to the - strand
-#' by -5 bp (Buenrostro et al. 2013).
-#' This function treats paired end reads as independent.
-#' If you have paired-end ATAC-seq reads and want to select the fragments
-#' within NFR regions, please refer to the
-#' \code{count_ATAC_genome_cuts_readpairs()} function.
-#' @param bam_file Sorted BAM file.
-#' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
-#' and shifts reads aligned to the - strand by -5 bp.
-#' @param outdir Output directory (default: use the directory of \code{bam_file}).
-#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
-#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
-#' @importFrom GenomicAlignments readGAlignments
-#' @import GenomicRanges
-#' @importFrom data.table fwrite
-#' @export
-count_genome_cuts <- function(bam_file,
-                              chrom_size_file,
-                              shift_ATAC = FALSE,
-                              outdir = dirname(bam_file),
-                              outname,
-                              bedGraphToBigWig_path='bedGraphToBigWig'){
-
-  # Checking input arguments
-  if ( Sys.which(bedGraphToBigWig_path) == '' )
-    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
-
-  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'coverage')
-  pos_coverage.gr <- coverage.gr$pos
-  neg_coverage.gr <- coverage.gr$neg
-
-  if(!dir.exists(outdir))
-    dir.create(outdir)
-
-  if(missing(outname))
-    outname <- tools::file_path_sans_ext(basename(bam_file))
-
-  # + strand counts
-  cat('Counting genome cuts on - strand ...\n')
-  pos_coverage.df <- data.frame(chr = seqnames(pos_coverage.gr),
-                                start = start(pos_coverage.gr) - 1,
-                                end = end(pos_coverage.gr),
-                                count = pos_coverage.gr$score)
-  pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
-  cat('Sorting counted genome cuts on + strand...\n')
-  pos_coverage.df <- pos_coverage.df[with(pos_coverage.df, order(chr, start)), ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
-  data.table::fwrite(pos_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-  # - strand counts
-  cat('Counting genome cuts on - strand ...\n')
-  neg_coverage.df <- data.frame(chr = seqnames(neg_coverage.gr),
-                                start = start(neg_coverage.gr) - 1,
-                                end = end(neg_coverage.gr),
-                                count = neg_coverage.gr$score)
-  neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
-  cat('Sorting counted genome cuts on - strand...\n')
-  neg_coverage.df <- neg_coverage.df[with(neg_coverage.df, order(chr, start)), ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
-  data.table::fwrite(neg_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-}
-
-
-#' @title Count DNase-seq or ATAC-seq cuts along the genome
-#' @description Count genomic cleavage (5' end) from DNase-seq or
-#' ATAC-seq BAM alignment files using \code{bedtools}
-#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
-#' the + strand by +4 bp, and shifts reads aligned to the - strand
-#' by -5 bp (Buenrostro et al. 2013).
-#' This function treats paired end reads as independent.
-#' If you have paired-end ATAC-seq reads and want to select the fragments
-#' within NFR regions, please refer to the
-#' \code{count_ATAC_genome_cuts_readpairs()} function.
-#' @param bam_file Sorted BAM file.
-#' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
-#' and shifts reads aligned to the - strand by -5 bp.
-#' @param outdir Output directory (default: use the directory of \code{bam_file}).
-#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
-#' @param bedtools_path Path to \code{bedtools} executable.
-#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
-#' @importFrom GenomicAlignments readGAlignments
-#' @import GenomicRanges
-#' @importFrom data.table fwrite
-#' @export
-count_genome_cuts_bedtools <- function(bam_file,
-                                       chrom_size_file,
-                                       shift_ATAC=FALSE,
-                                       outdir=dirname(bam_file),
-                                       outname,
-                                       bedtools_path='bedtools',
-                                       bedGraphToBigWig_path='bedGraphToBigWig'){
-
-  # Checking input arguments
-  if ( Sys.which(bedtools_path) == '')
-    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path.' )
-
-  # Checking input arguments
-  if ( Sys.which(bedGraphToBigWig_path) == '' )
-    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
-
-  if(missing(outdir))
-    outdir <- dirname(bam_file)
-
-  if(!dir.exists(outdir))
-    dir.create(outdir)
-
-  if(missing(outname))
-    outname <- tools::file_path_sans_ext(basename(bam_file))
-
-  for (strand in c('+', '-')) {
-    if (strand == '+') {
-      bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
-    } else {
-      bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
-    }
-
-    # Count 5' end cleavage and save as a .bedGraph file
-    cat('Counting genome cleavage for', bam_file, 'on', strand, 'strand...\n')
-    cmd <- paste(bedtools_path, 'genomecov -bg -5', '-strand', strand,
-                 '-ibam', bam_file, '>', bedgraph_file)
-    if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
-
-    cat('Sorting counted genome cleavage on', strand, 'strand...\n')
-    genome_counts <- data.table::fread(bedgraph_file)
-    genome_counts <- genome_counts[with(genome_counts, order(V1, V2)), ]
-    # Shift ATAC-seq reads to get the centers of Tn5 binding positions
-    # Shift +4 bp for + strand and -5 bp for - strand.
-    if (shift_ATAC) {
-      cat('Shifting ATAC-seq reads ...\n')
-      if (strand == '+') {
-        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + 4
-      } else {
-        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] - 5
-      }
-    }
-
-    data.table::fwrite(genome_counts, bedgraph_file,
-                       sep='\t', col.names = FALSE, scipen = 999)
-
-    # save to bigwig file
-    bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-    unlink(bedgraph_file)
-  }
-
-}
-
-
-#' @title Count genome coverage of shifted ATAC 5' cuts for ATAC-seq paired-end reads
-#' @param bam_file BAM file of ATAC-seq paired-end reads
-#' @param select_NFR_fragments Select NRF size fragments
-#' @param shift_ATAC If TRUE, shift ATAC-seq reads
-#' @param outdir Output directory (default: use the directory of \code{bam_file}).
-#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
-#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
-#' @importFrom Rsamtools scanBamFlag ScanBamParam
-#' @importFrom GenomicAlignments readGAlignmentPairs
-#' @importFrom rtracklayer export
-#' @import GenomicRanges
-#' @importFrom data.table fwrite
-count_genome_cuts_ATACreadpairs <- function(bam_file,
-                                            select_NFR_fragments = FALSE,
-                                            shift_ATAC = FALSE,
-                                            outdir = dirname(bam_file),
-                                            outname,
-                                            bedGraphToBigWig_path='bedGraphToBigWig'){
-
-  cat('Counting genome cuts for', bam_file, '...\n')
-
-  # Load only properly paired reads
-  flags <- Rsamtools::scanBamFlag(isProperPair = TRUE)
-  param <- Rsamtools::ScanBamParam(flag = flags,
-                                   what = c('qname', 'flag', 'mapq', 'isize'))
-  # Read ATAC-seq alignment pairs
-  readpairs <- GenomicAlignments::readGAlignmentPairs(bam_file, param = param)
-
-  # Separate read pairs
-  read1 <- first(readpairs)
-  read2 <- second(readpairs)
-
-  if(select_NFR_fragments){
-    # Fragment insert sizes
-    insert_sizes <- abs(elementMetadata(read1)$isize)
-    # Select fragments < 100bp (within nucleosome free regions)
-    cat('Select ATAC-seq fragments < 100bp (within nucleosome free regions) \n')
-    selected_readpairs <- readpairs[insert_sizes < 100, ]
-    selected_bam_file <- file.path(outdir, gsub('\\.bam', '_NFR.bam', basename(bam_file)))
-
-    cat('Save filtered bam file to:', selected_bam_file, '\n')
-    rtracklayer::export(selected_readpairs, selected_bam_file, format = 'bam')
-
-  }
-
-  # Extract 5' end position and shift based on strand
-  if(shift_ATAC){
-    cat('Shift ATAC-seq reads... \n')
-    read1_5ends <- resize(granges(read1), fix = 'start', 1)
-    read1_pos_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '+']), 4)
-    read1_neg_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '-']), -5)
-
-    read2_5ends <- resize(granges(read2), fix = 'start', 1)
-    read2_pos_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '+']), 4)
-    read2_neg_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '-']), -5)
-
-    combined_cuts <- c(read1_pos_cuts, read1_neg_cuts,
-                       read2_pos_cuts, read2_neg_cuts)
-  }else{
-    read1_5ends <- resize(granges(read1), fix = 'start', 1)
-    read2_5ends <- resize(granges(read2), fix = 'start', 1)
-    combined_cuts <- c(read1_5ends, read2_5ends)
-  }
-
-  pos_coverage.gr <- GRanges(coverage(combined_cuts[strand(combined_cuts) == '+']), strand = '+')
-  pos_coverage.gr <- sort(pos_coverage.gr)
-  neg_coverage.gr <- GRanges(coverage(combined_cuts[strand(combined_cuts) == '-']), strand = '-')
-  neg_coverage.gr <- sort(neg_coverage.gr)
-  cuts_coverage.gr <- GRangesList(pos = pos_coverage.gr, neg = neg_coverage.gr)
-
-  if(!dir.exists(outdir))
-    dir.create(outdir)
-
-  if(missing(outname))
-    outname <- tools::file_path_sans_ext(basename(bam_file))
-
-  # + strand counts
-  pos_coverage.df <- data.frame(chr = seqnames(pos_coverage.gr),
-                                start = start(pos_coverage.gr) - 1,
-                                end = end(pos_coverage.gr),
-                                count = pos_coverage.gr$score)
-  pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.pos.genomecounts.bedGraph'))
-  data.table::fwrite(pos_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-  # - strand counts
-  neg_coverage.df <- data.frame(chr = seqnames(neg_coverage.gr),
-                                start = start(neg_coverage.gr) - 1,
-                                end = end(neg_coverage.gr),
-                                count = neg_coverage.gr$score)
-  neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.neg.genomecounts.bedGraph'))
-  data.table::fwrite(neg_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-}
-
-
 
 #' @title Flip the counts generated from \code{bwtool} for motifs
 #' on the reverse strand
@@ -506,10 +320,7 @@ read_bam_cuts <- function(bam_file,
   if(return_type == 'coverage'){
     cat('Counting genome cuts coverage .. \n')
     pos_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '+']), strand = '+')
-    pos_coverage.gr <- sort(pos_coverage.gr)
     neg_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '-']), strand = '-')
-    neg_coverage.gr <- sort(neg_coverage.gr)
-
     cuts_coverage.gr <- GRangesList(pos = pos_coverage.gr,
                                     neg = neg_coverage.gr)
     return(cuts_coverage.gr)
@@ -518,6 +329,84 @@ read_bam_cuts <- function(bam_file,
   }
 
 }
+
+#' Read ATAC cuts for ATAC-seq paired-end reads
+#'
+#' @param bam_file BAM file of ATAC-seq paired-end reads
+#' @param select_NFR_fragments Select NRF size fragments
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
+#' @param return_type Options for the returned data:
+#' \dQuote{cuts} or \dQuote{coverage}.
+#' @return A GRange object of cuts or coverage
+#' @importFrom Rsamtools scanBamFlag ScanBamParam
+#' @importFrom GenomicAlignments readGAlignmentPairs
+#' @importFrom rtracklayer export
+read_bam_cuts_ATACreadpairs <- function(bam_file,
+                                        select_NFR_fragments = FALSE,
+                                        shift_ATAC = FALSE,
+                                        return_type = c('cuts', 'coverage')){
+
+  return_type <- match.arg(return_type)
+  cat('Reading genome cuts for', bam_file, '...\n')
+
+  # Load only properly paired reads
+  flags <- Rsamtools::scanBamFlag(isProperPair = TRUE)
+  param <- Rsamtools::ScanBamParam(flag = flags,
+                                   what = c('qname', 'flag', 'mapq', 'isize'))
+  # Read ATAC-seq alignment pairs
+  readpairs <- GenomicAlignments::readGAlignmentPairs(bam_file, param = param)
+
+  # Separate read pairs
+  read1 <- first(readpairs)
+  read2 <- second(readpairs)
+
+  if(select_NFR_fragments){
+    # Fragment insert sizes
+    insert_sizes <- abs(elementMetadata(read1)$isize)
+    # Select fragments < 100bp (within nucleosome free regions)
+    cat('Select ATAC-seq fragments < 100bp (within nucleosome free regions) \n')
+    selected_readpairs <- readpairs[insert_sizes < 100, ]
+    selected_bam_file <- file.path(outdir, gsub('\\.bam', '_NFR.bam', basename(bam_file)))
+
+    cat('Save filtered bam file to:', selected_bam_file, '\n')
+    rtracklayer::export(selected_readpairs, selected_bam_file, format = 'bam')
+  }
+
+  # Extract 5' end position and shift reads
+  if(shift_ATAC){
+    cat('Shifting ATAC-seq reads... \n')
+    read1_5ends <- resize(granges(read1), fix = 'start', 1)
+    read1_pos_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '+']), 4)
+    read1_neg_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '-']), -5)
+
+    read2_5ends <- resize(granges(read2), fix = 'start', 1)
+    read2_pos_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '+']), 4)
+    read2_neg_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '-']), -5)
+
+    cuts <- c(read1_pos_cuts, read1_neg_cuts,
+                       read2_pos_cuts, read2_neg_cuts)
+  }else{
+    read1_5ends <- resize(granges(read1), fix = 'start', 1)
+    read2_5ends <- resize(granges(read2), fix = 'start', 1)
+    cuts <- c(read1_5ends, read2_5ends)
+  }
+
+  if(return_type == 'coverage'){
+    cat('Counting genome cuts coverage .. \n')
+    pos_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '+']), strand = '+')
+    neg_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '-']), strand = '-')
+    cuts_coverage.gr <- GRangesList(pos = pos_coverage.gr,
+                                    neg = neg_coverage.gr)
+    return(cuts_coverage.gr)
+  }else if(return_type == 'cuts'){
+    return(cuts)
+  }
+
+}
+
+
 
 #' @title Perform MILLIPEDE binning on count matrix
 #' @description Perform binning using different MILLIPEDE binning schemes
@@ -833,7 +722,7 @@ merge_normalize_bin_transform_counts <- function(counts_files,
 # Convert bedGraph to BigWig format
 bedGraphToBigWig <- function(bedgraph_file,
                              chrom_size_file,
-                             bedGraphToBigWig_path){
+                             bedGraphToBigWig_path='bedGraphToBigWig'){
 
   # Checking input arguments
   if ( Sys.which(bedGraphToBigWig_path) == '' )
