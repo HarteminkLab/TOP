@@ -85,6 +85,9 @@
     <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts.html</loc>
   </url>
   <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts_bedtools.html</loc>
+  </url>
+  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/count_normalize_chip.html</loc>
   </url>
   <url>
@@ -203,6 +206,12 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/process_candidate_sites.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/read_bam_cuts.html</loc>
+  </url>
+  <url>
+    <loc>https://kevinlkx.github.io/TOP/reference/read_bam_cuts_ATACreadpairs.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/readstats_total.html</loc>

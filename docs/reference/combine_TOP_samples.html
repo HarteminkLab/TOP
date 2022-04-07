@@ -19,7 +19,7 @@ posterior samples from each partition."><!-- mathjax --><script src="https://cdn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -73,12 +73,7 @@ posterior samples from each partition.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">combine_TOP_samples</span><span class="op">(</span>
-  <span class="va">all_TOP_samples</span>,
-  <span class="va">TOP_samples_files</span>,
-  thin <span class="op">=</span> <span class="fl">1</span>,
-  n_samples <span class="op">=</span> <span class="fl">1000</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">combine_TOP_samples</span><span class="op">(</span><span class="va">TOP_samples_files</span>, thin <span class="op">=</span> <span class="fl">1</span>, n_samples <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,14 +86,18 @@ must be a positive integer (default = 1, no thinning performed).</p></dd>
 <dt>n_samples</dt>
 <dd><p>Keep n_samples posterior samples (randomly choose),
 when the number of posterior samples is greater than <code>n_samples</code>.</p></dd>
-<dt>TOP_samples</dt>
-<dd><p>TOP posterior samples from all partitions.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A data frame of combined and averaged posterior samples.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">combine_TOP_samples</span><span class="op">(</span><span class="va">TOP_samples_files</span>, n_samples <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in file.exists(TOP_samples_files):</span> object 'TOP_samples_files' not found</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

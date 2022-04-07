@@ -18,7 +18,7 @@ coefficients."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -96,6 +96,15 @@ the TOP model. Options: asinh, log2, sqrt, none.</p></dd>
     <p>A data frame of input data and predicted TF occupancy (posterior mean).</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP_mean_coef</span><span class="op">(</span><span class="va">data</span>, <span class="co"># data frame of input data.</span></span>
+<span class="r-in">                                     <span class="va">mean_coef</span>, <span class="co"># (selected) pretrained posterior mean of TOP regression coefficients</span></span>
+<span class="r-in">                                     transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># We used 'asinh' transformation on ChIP counts when training the model</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.data.frame.default(data):</span> cannot coerce class ‘"function"’ to a data.frame</span>
+<span class="r-in"></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

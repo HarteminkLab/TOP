@@ -18,7 +18,7 @@ bin using MILLIPEDE binning method and then take asinh or log2 transform"><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -108,9 +108,9 @@ Options: “asinh”, “log2”, “sqrt”, “none”.</p></dd>
 <span class="r-in"><span class="va">bins</span> <span class="op">&lt;-</span> <span class="fu">normalize_bin_transform_counts</span><span class="op">(</span><span class="va">count_matrix</span>,</span>
 <span class="r-in">                                       <span class="va">idxstats_file</span>,</span>
 <span class="r-in">                                       ref_size <span class="op">=</span> <span class="fl">1e8</span>,</span>
-<span class="r-in">                                       bin_method <span class="op">=</span> <span class="st">"M5"</span>,</span>
-<span class="r-in">                                       transform <span class="op">=</span> <span class="st">"asinh"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in data.table::fread(idxstats_file, sep = "\t"):</span> object 'idxstats_file' not found</span>
+<span class="r-in">                                       bin_method <span class="op">=</span> <span class="st">'M5'</span>,</span>
+<span class="r-in">                                       transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': object 'idxstats_file' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
