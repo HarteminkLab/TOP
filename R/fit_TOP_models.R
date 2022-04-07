@@ -224,6 +224,10 @@ fit_TOP_occupancy_M5_model_jags <- function(data,
     stop('Check colnames of the data! \n')
   }
 
+  if(anyNA(data)){
+    stop('Data contains missing values! \n')
+  }
+
   transform <- match.arg(transform)
 
   # Transform ChIP counts
@@ -305,6 +309,10 @@ fit_TOP_logistic_M5_model_jags <- function(data,
 
   if(!all(c('pwm',paste0('bin', 1:5),'chip_label','tf_id','cell_id') %in% colnames(data))){
     stop('Check colnames of the data! \n')
+  }
+
+  if(anyNA(data)){
+    stop('Data contains missing values! \n')
   }
 
   # Training data
