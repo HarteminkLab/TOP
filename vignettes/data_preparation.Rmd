@@ -171,52 +171,49 @@ mv ENCFF534DCE.bam K562.ATAC.bam
 sort_index_idxstats_bam('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 ```
 
-Next, we count the cleavages along the genome, and save the genome counts 
-in BigWig format. 
+Next, we count the DNase or ATAC cuts along the genome, and save the genome counts 
+in BigWig files. 
+This step could take a long time, but it only needs to be done once. 
+The BigWig files will be used later for extracting the cuts 
+around the candidate sites.
 
-For ATAC-seq, we shift reads aligned to the + strand by +4 bp, and shift
-reads aligned to the - strand by -5 bp,
-as in [Buenrostro et al. 2013](https://doi.org/10.1038/nmeth.2688).
-
-This step takes a little longer but it only needs to be done once. 
-Having the counts ready at all genomic positions 
-makes it easy for us to efficiently extract the read counts
-around candidate sites for many different motifs.
-
-We need [`bedtools`](https://bedtools.readthedocs.io/en/latest/) 
+We need the command line tools: 
+[`bedtools`](https://bedtools.readthedocs.io/en/latest/) 
 and `bedGraphToBigWig` from [UCSC binary utilities](http://hgdownload.soe.ucsc.edu/admin/exe/) 
-installed for this step.
+for this step.
+
+You can shift ATAC-seq reads by setting `shift_ATAC=TRUE`. 
+This will shift the reads aligned to the + strand by +4 bp, and shift
+reads aligned to the - strand by -5 bp,
+as in [Buenrostro et al. 2013](https://doi.org/10.1038/nmeth.2688). 
+Yet, we found the shifting of ATAC-seq reads have little impact on the results, 
+mostly due to our binning approach being robust to 
+the small-scale positional shifts or digestion bias. 
+
 ```{r count_genome_coverage, eval=FALSE}
 # bam_file: sorted BAM file.
 # chrom_size_file: file of genome sizes by chromosomes.
+# shift_ATAC: If TRUE, shift ATAC-sesq reads aligned to the + strand by +4 bp, 
+# and shift reads aligned to the - strand by -5 bp. 
 # outdir: directory for saving the BigWig files of genome counts.
 # outname: prefix for the BigWig files, same as genomecount_name in get_sites_counts().
-# bedtools_path: path to bedtools executable.
+# bedtools_path: Path to bedtools executable.
 # bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.
-system.time(
-  count_genome_cuts_bedtools(bam_file='A549.ATAC.chr21.bam', 
+count_genome_cuts(bam_file='K562.ATAC.bam', 
+                  chrom_size_file='hg38.chrom.sizes', 
+                  shift_ATAC=TRUE,
+                  outdir='processed_data',
+                  outname='K562.ATAC.bam',
+                  bedGraphToBigWig_path='bedGraphToBigWig')
+
+# or use count_genome_cuts_bedtools() if you have bedtools installed (this is often faster).
+count_genome_cuts_bedtools(bam_file='K562.ATAC.bam', 
                            chrom_size_file='hg38.chrom.sizes', 
                            shift_ATAC=TRUE,
                            outdir='processed_data',
-                           outname='A549.ATAC.chr21.v1',
+                           outname='K562.ATAC.bam',
                            bedtools_path='bedtools',
                            bedGraphToBigWig_path='bedGraphToBigWig'))
-```
-
-```{r count_genome_coverage_2, eval=FALSE}
-# bam_file: sorted BAM file.
-# chrom_size_file: file of genome sizes by chromosomes.
-# outdir: directory for saving the BigWig files of genome counts.
-# outname: prefix for the BigWig files, same as genomecount_name in get_sites_counts().
-# bedtools_path: path to bedtools executable.
-# bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.
-system.time(
-  count_genome_cuts_bw(bam_file='A549.ATAC.chr21.bam', 
-                       chrom_size_file='hg38.chrom.sizes', 
-                       shift_ATAC=TRUE,
-                       outdir='processed_data',
-                       outname='A549.ATAC.chr21.v2',
-                       bedGraphToBigWig_path='bedGraphToBigWig'))
 ```
 
 **Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts**
@@ -230,37 +227,13 @@ extract read counts from the BigWig files generated earlier.
 # genomecount_dir: directory for genome counts, same as outdir in count_genome_cuts().
 # genomecount_name: file prefix for genome counts, same as outname in count_genome_cuts().
 # bwtool_path: path to bwtool executable.
-# sites_counts.mat <- get_sites_counts(sites, 
-#                                      genomecount_dir='processed_data',
-#                                      genomecount_name='K562.ATAC',
-#                                      bwtool_path='bwtool')
-system.time(
-  sites_counts.mat1 <- get_sites_counts_bwtool(sites,
-                                              bam_file='A549.ATAC.chr21.bam',
-                                              chrom_size_file='hg38.chrom.sizes', 
-                                              shift_ATAC=TRUE,
-                                              genomecount_dir='processed_data',
-                                              genomecount_name='A549.ATAC.chr21.v1'))
+sites_counts.mat <- get_sites_counts(sites,
+                                     bam_file='K562.ATAC.bam',
+                                     chrom_size_file='hg38.chrom.sizes', 
+                                     shift_ATAC=TRUE,
+                                     genomecount_dir='processed_data',
+                                     genomecount_name='K562.ATAC')
 
-system.time(
-  sites_counts.mat3 <- get_sites_counts_bwtool(sites,
-                                              bam_file='A549.ATAC.chr21.bam',
-                                              chrom_size_file='hg38.chrom.sizes', 
-                                              shift_ATAC=TRUE,
-                                              genomecount_dir='processed_data',
-                                              genomecount_name='A549.ATAC.chr21.v3'))
-
-#' sites_counts.mat <- count_sites_cuts(sites,
-#'                                      bam_file = "ATAC_example.bam",
-#'                                      shift_ATAC = TRUE,
-#'                                      site_0base = TRUE,
-#'                                      ncores = 10)
-#'                                      
-system.time(
-  sites_counts.mat2 <- count_sites_cuts(sites,
-                                       bam_file='A549.ATAC.chr21.bam',
-                                       shift_ATAC=TRUE,
-                                       ncores=10))
 ```
 
 Normalize, bin and transform counts:
