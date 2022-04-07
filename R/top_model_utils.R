@@ -218,6 +218,14 @@ extract_tf_cell_combos <- function(assembled_training_data){
   if(inherits(assembled_training_data, "list"))
     assembled_training_data <- assembled_training_data[[1]]
 
+  # Remove TF x cell combos with missing values in training data
+  if(anyNA(assembled_training_data)){
+    filter_rows <- which(rowSums(is.na(assembled_training_data)) > 0)
+    cat('Remove TF x cell combos with missing values ...\n')
+    unique(assembled_training_data[filter_rows, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+    assembled_training_data <- assembled_training_data[-filter_rows, ]
+  }
+
   tf_cell_combos <- unique(assembled_training_data[, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
   return(tf_cell_combos)
 }
