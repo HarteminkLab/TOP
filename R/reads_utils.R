@@ -1,31 +1,4 @@
 
-#' @title Retrieve FASTA genome file
-#' @param BSgenome BSgenome object. For example,
-#' \code{BSgenome.Hsapiens.UCSC.hg19}, \code{BSgenome.Hsapiens.UCSC.hg38}, etc.
-#' @param outfile Output FASTA (\code{.fa}) file
-#' @importFrom Biostrings DNAStringSet writeXStringSet
-#' @export
-#' @examples
-#'
-#' library(BSgenome.Hsapiens.UCSC.hg38)
-#' get_genome_fasta(BSgenome.Hsapiens.UCSC.hg38,
-#'                  outfile = 'UCSC.hg38.fa')
-get_genome_fasta <- function(BSgenome,
-                             outfile = 'genome.fa',
-                             chr_list = paste0('chr',c(1:22,'X','Y','M'))){
-
-  cat('Get FASTA genome sequences for chromosomes: \n', chr_list,'...\n')
-  genome_chrs <- lapply(chr_list, function(x)BSgenome[[x]])
-  names(genome_chrs) <- chr_list
-  chr_seq_set <- Biostrings::DNAStringSet(genome_chrs)
-
-  outdir <- dirname(outfile)
-  if(!dir.exists(outdir)) dir.create(outdir)
-
-  Biostrings::writeXStringSet(chr_seq_set, outfile)
-}
-
-
 #' @title Index the FASTA file, and generate a 'chrom.sizes' file
 #' @description Index the FASTA file, and generate a 'chrom.sizes' file
 #' with chromosomes and genome size of each chromosome.
