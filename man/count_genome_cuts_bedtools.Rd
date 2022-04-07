@@ -38,7 +38,4 @@ For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
 the + strand by +4 bp, and shifts reads aligned to the - strand
 by -5 bp (Buenrostro et al. 2013).
 This function treats paired end reads as independent.
-If you have paired-end ATAC-seq reads and want to select the fragments
-within NFR regions, please refer to the
-\code{count_ATAC_genome_cuts_readpairs()} function.
 }

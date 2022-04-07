@@ -19,11 +19,21 @@ get_sites_counts(
 \arguments{
 \item{sites}{A data frame containing the candidate sites.}
 
+\item{bam_file}{Sorted BAM file.}
+
+\item{chrom_size_file}{File of genome sizes by chromosomes.}
+
+\item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
+it shifts reads aligned to the + strand by +4 bp,
+and shifts reads aligned to the - strand by -5 bp.}
+
 \item{genomecount_dir}{Directory for genome counts.}
 
 \item{genomecount_name}{File prefix for genome counts.}
 
 \item{tmpdir}{Temporary directory to save intermediate files.}
+
+\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.#'}
 
 \item{bwtool_path}{Path to \code{bwtool} executable.}
 }
@@ -44,12 +54,12 @@ on the reverse strand.
 }
 \examples{
 # Get ATAC-seq count matrices around candidate sites
-sites_counts.mat <- get_sites_counts_bwtool(sites,
-                                            bam_file='K562.ATAC.bam',
-                                            chrom_size_file,
-                                            shift_ATAC=TRUE,
-                                            genomecount_dir='processed_data',
-                                            genomecount_name='K562.ATAC',
-                                            bedGraphToBigWig_path='bedGraphToBigWig',
-                                            bwtool_path='bwtool')
+sites_counts.mat <- get_sites_counts(sites,
+                                     bam_file='K562.ATAC.bam',
+                                     chrom_size_file,
+                                     shift_ATAC=TRUE,
+                                     genomecount_dir='processed_data',
+                                     genomecount_name='K562.ATAC',
+                                     bedGraphToBigWig_path='bedGraphToBigWig',
+                                     bwtool_path='bwtool')
 }

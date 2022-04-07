@@ -5,9 +5,6 @@
 #' the + strand by +4 bp, and shifts reads aligned to the - strand
 #' by -5 bp (Buenrostro et al. 2013).
 #' This function treats paired end reads as independent.
-#' If you have paired-end ATAC-seq reads and want to select the fragments
-#' within NFR regions, please refer to the
-#' \code{count_ATAC_genome_cuts_readpairs()} function.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
@@ -81,9 +78,6 @@ count_genome_cuts <- function(bam_file,
 #' the + strand by +4 bp, and shifts reads aligned to the - strand
 #' by -5 bp (Buenrostro et al. 2013).
 #' This function treats paired end reads as independent.
-#' If you have paired-end ATAC-seq reads and want to select the fragments
-#' within NFR regions, please refer to the
-#' \code{count_ATAC_genome_cuts_readpairs()} function.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
@@ -170,9 +164,15 @@ count_genome_cuts_bedtools <- function(bam_file,
 #' and the second half of the columns representing the read counts
 #' on the reverse strand.
 #' @param sites A data frame containing the candidate sites.
+#' @param bam_file Sorted BAM file.
+#' @param chrom_size_file File of genome sizes by chromosomes.
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
 #' @param genomecount_dir Directory for genome counts.
 #' @param genomecount_name File prefix for genome counts.
 #' @param tmpdir Temporary directory to save intermediate files.
+#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
 #' @param bwtool_path Path to \code{bwtool} executable.
 #' @return A count matrix. The first half of the columns
 #' are the read counts on the forward strand, and the second half of the
