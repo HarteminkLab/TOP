@@ -221,8 +221,8 @@ extract_tf_cell_combos <- function(assembled_training_data){
   # Remove TF x cell combos with missing values in training data
   if(anyNA(assembled_training_data)){
     filter_rows <- which(rowSums(is.na(assembled_training_data)) > 0)
-    cat('Remove TF x cell combos with missing values ...\n')
-    unique(assembled_training_data[filter_rows, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
+    cat('Remove the following TF x cell combos with missing values ...\n')
+    print(unique(assembled_training_data[filter_rows, c('tf_id', 'cell_id', 'tf_name', 'cell_type')]))
     assembled_training_data <- assembled_training_data[-filter_rows, ]
   }
 
