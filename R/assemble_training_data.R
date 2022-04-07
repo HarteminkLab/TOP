@@ -183,7 +183,7 @@ assemble_partition_training_data <- function(tf_cell_table,
 
     if(!file.exists(data_file)){
       if(part == 1){
-        message(sprintf('Warning: data of %s in %s cell is not available!\n', tf_name, cell_type))
+        message(sprintf('Warning: data of %s in %s cell is not available! Skipped. \n', tf_name, cell_type))
         cat('Check data file:', data_file, '\n')
       }
       next
@@ -196,7 +196,11 @@ assemble_partition_training_data <- function(tf_cell_table,
     }
 
     if(!chip_col %in% colnames(data)){
-      message(sprintf('Warning: data of %s in %s cell does not have %s column!\n',
+      message(sprintf('Warning: data of %s in %s cell does not have %s column! Skipped. \n',
+                      tf_name, cell_type, chip_col))
+      next
+    }else if(anyNA(data[,chip_col])){
+      message(sprintf('Warning: data of %s in %s cell contains missing values in %s column! Skipped. \n',
                       tf_name, cell_type, chip_col))
       next
     }
