@@ -78,7 +78,7 @@ fimo_motif_matches <- function(motif_file,
                max_strand,
                '--oc', outdir,
                '--verbosity', verbosity,
-               '--max_stored_scores', max_stored_scores,
+               '--max-stored-scores', max_stored_scores,
                options,
                motif_file, sequence_file,
                '>', outname)
