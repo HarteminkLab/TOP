@@ -141,8 +141,7 @@ predict_TOP_mean_coef <- function(data,
   features <- select_features(data)
 
   if((ncol(features)+1) != length(mean_coef)){
-    stop('The number of coefficients not equal to
-         the number of features + intercept! Check input data!')
+    stop('Number of coefficients != Number of features and intercept! Check input data!')
   }
 
   cat('Predicting TF occupancy using TOP occupancy model...\n')
@@ -190,8 +189,7 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
   features <- select_features(data)
 
   if((ncol(features)+1) != length(mean_coef)){
-    stop('The number of coefficients not equal to
-         the number of features + intercept! Check input data!')
+    stop('Number of coefficients != Number of features and intercept! Check input data!')
   }
 
   cat('Predicting TF binding probability using TOP logistic model...\n')
