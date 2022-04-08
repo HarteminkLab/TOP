@@ -16,6 +16,7 @@
 #' given position satisfy the output threshold,
 #' only report the match for the strand with the higher score.
 #' If the scores are tied, the matching strand is chosen at random.
+#' @param max_stored_scores The maximum number of stored matches.
 #' @param options Other options for FIMO.
 #' @param verbosity A number that regulates the verbosity level of the output
 #' information messages.
@@ -23,15 +24,21 @@
 #' other extreme 5 (dump) outputs lots of mostly useless information.
 #' @param fimo_path Path to FIMO command line executable.
 #' @export
-#'
+#' @examples
+#' fimo_motif_matches(motif_file='MA0139.1.meme',
+#'                    sequence_file='hg38.fa',
+#'                    thresh_pValue=1e-5,
+#'                    outname='MA0139.1_1e-5.fimo.txt',
+#'                    fimo_path='fimo')
 fimo_motif_matches <- function(motif_file,
                                sequence_file,
                                outname='fimo.txt',
                                outdir=dirname(outname),
                                thresh_pValue=1e-4,
-                               bfile,
+                               bfile='--uniform--',
                                skip_matched_sequence=TRUE,
                                max_strand=FALSE,
+                               max_stored_scores=100000,
                                options='',
                                verbosity=1,
                                fimo_path='fimo') {
@@ -52,23 +59,26 @@ fimo_motif_matches <- function(motif_file,
     skip_matched_sequence <- ''
   }
 
-  if(!missing(bfile)) {
-    bfile <- paste('--bfile', bfile)
-  }else{
-    bfile <- ''
+  if(missing(bfile)){
+    bfile <- '--uniform--'
+  }
+
+  if(missing(max_stored_scores)){
+    max_stored_scores <- 100000
   }
 
   if(!dir.exists(outdir)){
-    dir.create(outdir)
+    dir.create(outdir, recursive = TRUE)
   }
 
   cmd <- paste('fimo --text',
-               bfile,
+               '--bfile', bfile,
                '--thresh', thresh_pValue,
                skip_matched_sequence,
                max_strand,
                '--oc', outdir,
                '--verbosity', verbosity,
+               '--max_stored_scores', max_stored_scores,
                options,
                motif_file, sequence_file,
                '>', outname)

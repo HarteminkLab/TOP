@@ -13,6 +13,7 @@ fimo_motif_matches(
   bfile,
   skip_matched_sequence = TRUE,
   max_strand = FALSE,
+  max_stored_scores = 1e+05,
   options = "",
   verbosity = 1,
   fimo_path = "fimo"
@@ -40,6 +41,8 @@ given position satisfy the output threshold,
 only report the match for the strand with the higher score.
 If the scores are tied, the matching strand is chosen at random.}
 
+\item{max_stored_scores}{The maximum number of stored matches.}
+
 \item{options}{Other options for FIMO.}
 
 \item{verbosity}{A number that regulates the verbosity level of the output
@@ -52,4 +55,11 @@ other extreme 5 (dump) outputs lots of mostly useless information.}
 \description{
 Run FIMO to scan for motif matches along the genome.
 This is a wrapper function to run FIMO command line.
+}
+\examples{
+fimo_motif_matches(motif_file='MA0139.1.meme',
+                   sequence_file='hg38.fa',
+                   thresh_pValue=1e-5,
+                   outname='MA0139.1_1e-5.fimo.txt',
+                   fimo_path='fimo')
 }
