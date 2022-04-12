@@ -47,10 +47,10 @@ combine_TOP_samples <- function(TOP_samples_files,
   if(any(!file.exists(TOP_samples_files))){
     stop('Files not available:\n', TOP_samples_files[!file.exists(TOP_samples_files)])
   }
-  N <- length(all_TOP_samples)
+  N <- length(TOP_samples_files)
   cat('Loading samples from partition 1 ...\n')
   TOP_samples <- readRDS(TOP_samples_files[1])
-  combined_TOP_samples <- select_TOP_samples(all_TOP_samples[[1]], thin, n_samples)
+  combined_TOP_samples <- select_TOP_samples(TOP_samples, thin, n_samples)
   if(N > 1) {
     for(i in 2:N) {
       cat('Loading samples from partition', i, '...\n')
