@@ -32,7 +32,7 @@ and shifts reads aligned to the - strand by -5 bp.}
 \item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.}
 }
 \description{
-Count genomic cleavage (5' end) from DNase-seq or
+Count genomic cuts (5' end) from DNase-seq or
 ATAC-seq BAM alignment files using \code{bedtools}
 For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
 the + strand by +4 bp, and shifts reads aligned to the - strand

@@ -9,6 +9,7 @@ get_sites_counts(
   bam_file,
   chrom_size_file,
   shift_ATAC = FALSE,
+  adjust_shift = TRUE,
   genomecount_dir,
   genomecount_name,
   tmpdir = genomecount_dir,
@@ -23,9 +24,12 @@ get_sites_counts(
 
 \item{chrom_size_file}{File of genome sizes by chromosomes.}
 
-\item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
+\item{shift_ATAC}{Logical. If TRUE,
 it shifts reads aligned to the + strand by +4 bp,
 and shifts reads aligned to the - strand by -5 bp.}
+
+\item{adjust_shift}{Logical. If TRUE, adjust the candidate site windows (by 1bp)
+for motif matches on the - strand due to the shift of ATAC-seq reads.}
 
 \item{genomecount_dir}{Directory for genome counts.}
 

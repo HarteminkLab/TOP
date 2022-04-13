@@ -172,9 +172,11 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #' @param sites A data frame containing the candidate sites.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' @param shift_ATAC Logical. If TRUE,
 #' it shifts reads aligned to the + strand by +4 bp,
 #' and shifts reads aligned to the - strand by -5 bp.
+#' @param adjust_shift Logical. If TRUE, adjust the candidate site windows (by 1bp)
+#' for motif matches on the - strand due to the shift of ATAC-seq reads.
 #' @param genomecount_dir Directory for genome counts.
 #' @param genomecount_name File prefix for genome counts.
 #' @param tmpdir Temporary directory to save intermediate files.
@@ -198,6 +200,7 @@ get_sites_counts <- function(sites,
                              bam_file,
                              chrom_size_file,
                              shift_ATAC=FALSE,
+                             adjust_shift=TRUE,
                              genomecount_dir,
                              genomecount_name,
                              tmpdir=genomecount_dir,
@@ -231,7 +234,7 @@ get_sites_counts <- function(sites,
   cat('Extract counts around candidate sites ... \n')
 
   # Expand by 1bp to adjust the windows due to shift ATAC
-  if(shift_ATAC){
+  if(shift_ATAC && adjust_shift){
     sites[,3] <- sites[,3] + 1
   }
 
@@ -253,7 +256,7 @@ get_sites_counts <- function(sites,
   sites_counts.mat <- flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
 
   # Adjust the windows by 1bp for motif matches on the - strand due to shift ATAC
-  if(shift_ATAC){
+  if(shift_ATAC && adjust_shift){
     sites_counts.mat <- adjust_ATACshift(sites_counts.mat, sites)
   }
 
@@ -302,7 +305,7 @@ flip_rev_strand_counts <- function(sites,
 
 # Adjust the candidate site windows (by 1bp) for motif matches on the - strand due to the shift of ATAC-seq reads
 adjust_ATACshift <- function(ATAC_counts_mat, sites){
-  cat('Adjust windows for motif matches on the - strand due to ATAC shift ...\n')
+  cat('Adjust count windows for motif matches on the - strand...\n')
   pos_strand <- which(sites$strand == '+')
   neg_strand <- which(sites$strand == '-')
   fwd_cols <- 1:(ncol(ATAC_counts_mat)/2)
