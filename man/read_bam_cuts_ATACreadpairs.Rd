@@ -8,6 +8,7 @@ read_bam_cuts_ATACreadpairs(
   bam_file,
   select_NFR_fragments = FALSE,
   shift_ATAC = FALSE,
+  shift_ATAC_bases = c(4L, -5L),
   return_type = c("cuts", "coverage")
 )
 }
@@ -17,7 +18,10 @@ read_bam_cuts_ATACreadpairs(
 \item{select_NFR_fragments}{Select NRF size fragments}
 
 \item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
-it shifts reads aligned to the + strand by +4 bp,
+it shifts reads according to \code{shift_ATAC_bases}.}
+
+\item{shift_ATAC_bases}{Number of bases to shift. Default: c(4,-5),
+shifts reads aligned to the + strand by +4 bp,
 and shifts reads aligned to the - strand by -5 bp.}
 
 \item{return_type}{Options for the returned data:

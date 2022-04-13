@@ -9,7 +9,9 @@
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
+#' it shifts reads according to \code{shift_ATAC_bases}.
+#' @param shift_ATAC_bases Number of bases to shift. Default: c(4,-5),
+#' shifts reads aligned to the + strand by +4 bp,
 #' and shifts reads aligned to the - strand by -5 bp.
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
@@ -20,6 +22,7 @@
 #' count_genome_cuts(bam_file='K562.ATAC.bam',
 #'                   chrom_size_file='hg38.chrom.sizes',
 #'                   shift_ATAC=TRUE,
+#'                   shift_ATAC_bases=c(4L,-5L),
 #'                   outdir='processed_data',
 #'                   outname='K562.ATAC.bam',
 #'                   bedtools_path='bedtools',
@@ -27,6 +30,7 @@
 count_genome_cuts <- function(bam_file,
                               chrom_size_file,
                               shift_ATAC=FALSE,
+                              shift_ATAC_bases=c(4L,-5L),
                               outdir=dirname(bam_file),
                               outname,
                               bedtools_path='bedtools',
@@ -68,11 +72,12 @@ count_genome_cuts <- function(bam_file,
     # Shift ATAC-seq reads to get the centers of Tn5 binding positions
     # Shift +4 bp for + strand and -5 bp for - strand.
     if (shift_ATAC) {
-      cat('Shifting ATAC-seq reads ...\n')
+      cat(sprintf('Shifting ATAC-seq reads by %d and %d bp...\n',
+                  shift_ATAC_bases[1], shift_ATAC_bases[2]))
       if (strand == '+') {
-        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + 4
+        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + shift_ATAC_bases[1]
       } else {
-        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] - 5
+        genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + shift_ATAC_bases[2]
       }
     }
 
@@ -93,7 +98,9 @@ count_genome_cuts <- function(bam_file,
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
+#' it shifts reads according to \code{shift_ATAC_bases}.
+#' @param shift_ATAC_bases Number of bases to shift. Default: c(4,-5),
+#' shifts reads aligned to the + strand by +4 bp,
 #' and shifts reads aligned to the - strand by -5 bp.
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
@@ -104,12 +111,14 @@ count_genome_cuts <- function(bam_file,
 #' count_genome_cuts_nobedtools(bam_file='K562.ATAC.bam',
 #'                              chrom_size_file='hg38.chrom.sizes',
 #'                              shift_ATAC=TRUE,
+#'                              shift_ATAC_bases=c(4L,-5L),
 #'                              outdir='processed_data',
 #'                              outname='K562.ATAC.bam',
 #'                              bedGraphToBigWig_path='bedGraphToBigWig')
 count_genome_cuts_nobedtools <- function(bam_file,
                                          chrom_size_file,
                                          shift_ATAC = FALSE,
+                                         shift_ATAC_bases=c(4L,-5L),
                                          outdir = dirname(bam_file),
                                          outname,
                                          bedGraphToBigWig_path='bedGraphToBigWig'){
@@ -118,7 +127,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
   if ( Sys.which(bedGraphToBigWig_path) == '' )
     stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
 
-  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'coverage')
+  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, shift_ATAC_bases, return_type = 'coverage')
   pos_coverage.gr <- coverage.gr$pos
   neg_coverage.gr <- coverage.gr$neg
 
@@ -172,9 +181,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #' @param sites A data frame containing the candidate sites.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. If TRUE,
-#' it shifts reads aligned to the + strand by +4 bp,
-#' and shifts reads aligned to the - strand by -5 bp.
+#' @param shift_ATAC Logical. If TRUE, it shifts ATAC-seq reads.
 #' @param adjust_shift Logical. If TRUE, adjust the candidate site windows (by 1bp)
 #' for motif matches on the - strand due to the shift of ATAC-seq reads.
 #' @param genomecount_dir Directory for genome counts.
@@ -192,6 +199,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #'                                      bam_file='K562.ATAC.bam',
 #'                                      chrom_size_file,
 #'                                      shift_ATAC=TRUE,
+#'                                      adjust_shift=TRUE,
 #'                                      genomecount_dir='processed_data',
 #'                                      genomecount_name='K562.ATAC',
 #'                                      bedGraphToBigWig_path='bedGraphToBigWig',
@@ -227,15 +235,16 @@ get_sites_counts <- function(sites,
   genome_rev_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.rev.genomecounts.bw'))
 
   if( !(file.exists(genome_fwd_count_file) & file.exists(genome_rev_count_file)) ){
-    count_genome_cuts(bam_file, chrom_size_file, shift_ATAC,
-                      genomecount_dir, genomecount_name, bedGraphToBigWig_path)
+    stop( 'genome counts cannot be located. Please run count_genome_cuts() first.' )
   }
 
   cat('Extract counts around candidate sites ... \n')
 
-  # Expand by 1bp to adjust the windows due to shift ATAC
+  # Adjust the site windows due to shift ATAC
   if(shift_ATAC && adjust_shift){
-    sites[,3] <- sites[,3] + 1
+    cat('Adjust site windows for motif matches on the - strand...\n')
+    neg_strand <- which(sites$strand == '-')
+    sites[neg_strand, 2:3] <- sites[neg_strand, 2:3] - 1
   }
 
   sites_file <- tempfile(pattern = 'sites.', tmpdir = tmpdir, fileext = '.txt')
@@ -254,11 +263,6 @@ get_sites_counts <- function(sites,
 
   # Flip the counts generated from bwtool for motifs on the reverse strand and combine counts on both strands
   sites_counts.mat <- flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
-
-  # Adjust the windows by 1bp for motif matches on the - strand due to shift ATAC
-  if(shift_ATAC && adjust_shift){
-    sites_counts.mat <- adjust_ATACshift(sites_counts.mat, sites)
-  }
 
   unlink(c(sites_file, fwd_matrix_file, rev_matrix_file))
   return(sites_counts.mat)
@@ -303,28 +307,13 @@ flip_rev_strand_counts <- function(sites,
   return(sites_counts.mat)
 }
 
-# Adjust the candidate site windows (by 1bp) for motif matches on the - strand due to the shift of ATAC-seq reads
-adjust_ATACshift <- function(ATAC_counts_mat, sites){
-  cat('Adjust count windows for motif matches on the - strand...\n')
-  pos_strand <- which(sites$strand == '+')
-  neg_strand <- which(sites$strand == '-')
-  fwd_cols <- 1:(ncol(ATAC_counts_mat)/2)
-  rev_cols <- (ncol(ATAC_counts_mat)/2+1):ncol(ATAC_counts_mat)
-  pos_strand_cols <- c(fwd_cols[1:(length(fwd_cols)-1)], rev_cols[1:(length(fwd_cols)-1)])
-  neg_strand_cols <- c(fwd_cols[2:length(fwd_cols)], rev_cols[2:length(rev_cols)])
-  pos_ATAC_counts_mat <- ATAC_counts_mat[pos_strand, pos_strand_cols]
-  neg_ATAC_counts_mat <- ATAC_counts_mat[neg_strand, neg_strand_cols]
-  adjusted_ATAC_counts_mat <- rbind(pos_ATAC_counts_mat, neg_ATAC_counts_mat)
-  m <- match(rownames(ATAC_counts_mat), rownames(adjusted_ATAC_counts_mat))
-  adjusted_ATAC_counts_mat <- adjusted_ATAC_counts_mat[m, ]
-  return(adjusted_ATAC_counts_mat)
-}
-
 #' Read DNase or ATAC cuts or coverage of cuts from BAM file
 #'
 #' @param bam_file BAM file of DNase or ATAC-seq reads alignment
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
+#' it shifts reads according to \code{shift_ATAC_bases}.
+#' @param shift_ATAC_bases Number of bases to shift. Default: c(4,-5),
+#' shifts reads aligned to the + strand by +4 bp,
 #' and shifts reads aligned to the - strand by -5 bp.
 #' @param return_type Options for the returned data:
 #' \dQuote{cuts} or \dQuote{coverage}.
@@ -332,6 +321,7 @@ adjust_ATACshift <- function(ATAC_counts_mat, sites){
 #' @return A GRange object of cuts or coverage
 read_bam_cuts <- function(bam_file,
                           shift_ATAC = FALSE,
+                          shift_ATAC_bases=c(4L,-5L),
                           return_type = c('cuts', 'coverage')){
 
   return_type <- match.arg(return_type)
@@ -342,10 +332,11 @@ read_bam_cuts <- function(bam_file,
 
   # Extract 5' end position and shift based on strand
   if(shift_ATAC){
-    cat('Shift ATAC-seq reads... \n')
+    cat(sprintf('Shifting ATAC-seq reads by %d and %d bp...\n',
+                shift_ATAC_bases[1], shift_ATAC_bases[2]))
     cuts <- GenomicRanges::resize(GenomicRanges::granges(reads), fix = 'start', 1)
-    pos_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '+']), 4)
-    neg_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '-']), -5)
+    pos_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '+']), shift_ATAC_bases[1])
+    neg_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '-']), shift_ATAC_bases[2])
     cuts <- c(pos_cuts, neg_cuts)
   }else{
     cuts <- GenomicRanges::resize(GenomicRanges::granges(reads), fix = 'start', 1)
@@ -369,7 +360,9 @@ read_bam_cuts <- function(bam_file,
 #' @param bam_file BAM file of ATAC-seq paired-end reads
 #' @param select_NFR_fragments Select NRF size fragments
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
+#' it shifts reads according to \code{shift_ATAC_bases}.
+#' @param shift_ATAC_bases Number of bases to shift. Default: c(4,-5),
+#' shifts reads aligned to the + strand by +4 bp,
 #' and shifts reads aligned to the - strand by -5 bp.
 #' @param return_type Options for the returned data:
 #' \dQuote{cuts} or \dQuote{coverage}.
@@ -378,6 +371,7 @@ read_bam_cuts <- function(bam_file,
 read_bam_cuts_ATACreadpairs <- function(bam_file,
                                         select_NFR_fragments = FALSE,
                                         shift_ATAC = FALSE,
+                                        shift_ATAC_bases=c(4L,-5L),
                                         return_type = c('cuts', 'coverage')){
 
   return_type <- match.arg(return_type)
@@ -408,14 +402,16 @@ read_bam_cuts_ATACreadpairs <- function(bam_file,
 
   # Extract 5' end position and shift reads
   if(shift_ATAC){
-    cat('Shifting ATAC-seq reads... \n')
+    cat(sprintf('Shifting ATAC-seq reads by %d and %d bp...\n',
+                shift_ATAC_bases[1], shift_ATAC_bases[2]))
+
     read1_5ends <- resize(granges(read1), fix = 'start', 1)
-    read1_pos_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '+']), 4)
-    read1_neg_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '-']), -5)
+    read1_pos_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '+']), shift_ATAC_bases[1])
+    read1_neg_cuts <- shift(granges(read1_5ends[strand(read1_5ends) == '-']), shift_ATAC_bases[2])
 
     read2_5ends <- resize(granges(read2), fix = 'start', 1)
-    read2_pos_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '+']), 4)
-    read2_neg_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '-']), -5)
+    read2_pos_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '+']), shift_ATAC_bases[1])
+    read2_neg_cuts <- shift(granges(read2_5ends[strand(read2_5ends) == '-']), shift_ATAC_bases[2])
 
     cuts <- c(read1_pos_cuts, read1_neg_cuts,
                        read2_pos_cuts, read2_neg_cuts)
@@ -769,4 +765,21 @@ bedGraphToBigWig <- function(bedgraph_file,
 }
 
 
+
+# Adjust the candidate site windows (by 1bp) for motif matches on the - strand due to the shift of ATAC-seq reads
+adjust_ATACshift <- function(ATAC_counts_mat, sites){
+  cat('Adjust count windows for motif matches on the - strand...\n')
+  pos_strand <- which(sites$strand == '+')
+  neg_strand <- which(sites$strand == '-')
+  fwd_cols <- 1:(ncol(ATAC_counts_mat)/2)
+  rev_cols <- (ncol(ATAC_counts_mat)/2+1):ncol(ATAC_counts_mat)
+  pos_strand_cols <- c(fwd_cols[1:(length(fwd_cols)-1)], rev_cols[1:(length(fwd_cols)-1)])
+  neg_strand_cols <- c(fwd_cols[2:length(fwd_cols)], rev_cols[2:length(rev_cols)])
+  pos_ATAC_counts_mat <- ATAC_counts_mat[pos_strand, pos_strand_cols]
+  neg_ATAC_counts_mat <- ATAC_counts_mat[neg_strand, neg_strand_cols]
+  adjusted_ATAC_counts_mat <- rbind(pos_ATAC_counts_mat, neg_ATAC_counts_mat)
+  m <- match(rownames(ATAC_counts_mat), rownames(adjusted_ATAC_counts_mat))
+  adjusted_ATAC_counts_mat <- adjusted_ATAC_counts_mat[m, ]
+  return(adjusted_ATAC_counts_mat)
+}
 
