@@ -4,7 +4,13 @@
 \alias{plot_profile_strands}
 \title{Plot DNase or ATAC profiles separately by strands}
 \usage{
-plot_profile_strands(cuts, sites, mlen = 10, title = "")
+plot_profile_strands(
+  cuts,
+  sites,
+  mlen = 10,
+  title = "",
+  strand = c("both", "+", "-")
+)
 }
 \arguments{
 \item{cuts}{DNase or ATAC cuts}
