@@ -204,16 +204,8 @@ count_genome_cuts(bam_file='K562.ATAC.bam',
                   shift_ATAC=TRUE,
                   outdir='processed_data',
                   outname='K562.ATAC.bam',
+                  bedtools_path='bedtools',
                   bedGraphToBigWig_path='bedGraphToBigWig')
-
-# or use count_genome_cuts_bedtools() if you have bedtools installed (this is often faster).
-count_genome_cuts_bedtools(bam_file='K562.ATAC.bam', 
-                           chrom_size_file='hg38.chrom.sizes', 
-                           shift_ATAC=TRUE,
-                           outdir='processed_data',
-                           outname='K562.ATAC.bam',
-                           bedtools_path='bedtools',
-                           bedGraphToBigWig_path='bedGraphToBigWig'))
 ```
 
 **Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts**

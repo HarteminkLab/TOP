@@ -1,73 +1,3 @@
-#' @title Count DNase-seq or ATAC-seq cuts along the genome
-#' @description Count genomic cleavage (5' end) from DNase-seq or
-#' ATAC-seq BAM alignment files.
-#' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
-#' the + strand by +4 bp, and shifts reads aligned to the - strand
-#' by -5 bp (Buenrostro et al. 2013).
-#' This function treats paired end reads as independent.
-#' @param bam_file Sorted BAM file.
-#' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads aligned to the + strand by +4 bp,
-#' and shifts reads aligned to the - strand by -5 bp.
-#' @param outdir Output directory (default: use the directory of \code{bam_file}).
-#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
-#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
-#' @importFrom data.table fwrite
-#' @export
-count_genome_cuts <- function(bam_file,
-                              chrom_size_file,
-                              shift_ATAC = FALSE,
-                              outdir = dirname(bam_file),
-                              outname,
-                              bedGraphToBigWig_path='bedGraphToBigWig'){
-
-  # Checking input arguments
-  if ( Sys.which(bedGraphToBigWig_path) == '' )
-    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
-
-  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'coverage')
-  pos_coverage.gr <- coverage.gr$pos
-  neg_coverage.gr <- coverage.gr$neg
-
-  rm(coverage.gr)
-
-  if(!dir.exists(outdir))
-    dir.create(outdir, recursive = TRUE)
-
-  if(missing(outname))
-    outname <- tools::file_path_sans_ext(basename(bam_file))
-
-  # + strand counts
-  cat('Processing genome cuts on + strand ...\n')
-  pos_coverage.df <- data.frame(chr = as.character(seqnames(pos_coverage.gr)),
-                                start = start(pos_coverage.gr) - 1,
-                                end = end(pos_coverage.gr),
-                                count = pos_coverage.gr$score)
-  pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
-  pos_coverage.df <- pos_coverage.df[with(pos_coverage.df, order(chr, start)), ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
-  data.table::fwrite(pos_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-  # - strand counts
-  cat('Processing genome cuts on - strand ...\n')
-  neg_coverage.df <- data.frame(chr = as.character(seqnames(neg_coverage.gr)),
-                                start = start(neg_coverage.gr) - 1,
-                                end = end(neg_coverage.gr),
-                                count = neg_coverage.gr$score)
-  neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
-  neg_coverage.df <- neg_coverage.df[with(neg_coverage.df, order(chr, start)), ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
-  data.table::fwrite(neg_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-}
-
 
 #' @title Count DNase-seq or ATAC-seq cuts along the genome
 #' @description Count genomic cleavage (5' end) from DNase-seq or
@@ -85,20 +15,26 @@ count_genome_cuts <- function(bam_file,
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
 #' @param bedtools_path Path to \code{bedtools} executable.
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
-#' @importFrom GenomicAlignments readGAlignments
-#' @import GenomicRanges
 #' @export
-count_genome_cuts_bedtools <- function(bam_file,
-                                       chrom_size_file,
-                                       shift_ATAC=FALSE,
-                                       outdir=dirname(bam_file),
-                                       outname,
-                                       bedtools_path='bedtools',
-                                       bedGraphToBigWig_path='bedGraphToBigWig'){
+#' @examples
+#' count_genome_cuts(bam_file='K562.ATAC.bam',
+#'                   chrom_size_file='hg38.chrom.sizes',
+#'                   shift_ATAC=TRUE,
+#'                   outdir='processed_data',
+#'                   outname='K562.ATAC.bam',
+#'                   bedtools_path='bedtools',
+#'                   bedGraphToBigWig_path='bedGraphToBigWig')
+count_genome_cuts <- function(bam_file,
+                              chrom_size_file,
+                              shift_ATAC=FALSE,
+                              outdir=dirname(bam_file),
+                              outname,
+                              bedtools_path='bedtools',
+                              bedGraphToBigWig_path='bedGraphToBigWig'){
 
   # Checking input arguments
   if ( Sys.which(bedtools_path) == '')
-    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path.' )
+    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path. Or use count_genome_cuts_nobedtools().' )
 
   # Checking input arguments
   if ( Sys.which(bedGraphToBigWig_path) == '' )
@@ -150,6 +86,79 @@ count_genome_cuts_bedtools <- function(bam_file,
 
 }
 
+#' @title Count DNase-seq or ATAC-seq cuts along the genome (without using bedtools)
+#' @description This is an alternative function to the count_genome_cuts(),
+#' but without using \code{bedtools}.
+#' This may be slower than count_genome_cuts() for large BAM files.
+#' @param bam_file Sorted BAM file.
+#' @param chrom_size_file File of genome sizes by chromosomes.
+#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' it shifts reads aligned to the + strand by +4 bp,
+#' and shifts reads aligned to the - strand by -5 bp.
+#' @param outdir Output directory (default: use the directory of \code{bam_file}).
+#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
+#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
+#' @import GenomicRanges
+#' @export
+#' @examples
+#' count_genome_cuts_nobedtools(bam_file='K562.ATAC.bam',
+#'                              chrom_size_file='hg38.chrom.sizes',
+#'                              shift_ATAC=TRUE,
+#'                              outdir='processed_data',
+#'                              outname='K562.ATAC.bam',
+#'                              bedGraphToBigWig_path='bedGraphToBigWig')
+count_genome_cuts_nobedtools <- function(bam_file,
+                                         chrom_size_file,
+                                         shift_ATAC = FALSE,
+                                         outdir = dirname(bam_file),
+                                         outname,
+                                         bedGraphToBigWig_path='bedGraphToBigWig'){
+
+  # Checking input arguments
+  if ( Sys.which(bedGraphToBigWig_path) == '' )
+    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
+
+  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, return_type = 'coverage')
+  pos_coverage.gr <- coverage.gr$pos
+  neg_coverage.gr <- coverage.gr$neg
+
+  rm(coverage.gr)
+
+  if(!dir.exists(outdir))
+    dir.create(outdir, recursive = TRUE)
+
+  if(missing(outname))
+    outname <- tools::file_path_sans_ext(basename(bam_file))
+
+  # cuts coverage on + strand counts
+  cat('Processing genome cuts on + strand ...\n')
+  pos_coverage.df <- data.frame(chr = as.character(seqnames(pos_coverage.gr)),
+                                start = start(pos_coverage.gr) - 1,
+                                end = end(pos_coverage.gr),
+                                count = pos_coverage.gr$score)
+  pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
+  pos_coverage.df <- pos_coverage.df[with(pos_coverage.df, order(chr, start)), ]
+  bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
+  data.table::fwrite(pos_coverage.df, bedgraph_file,
+                     sep='\t', col.names = FALSE, scipen = 999)
+  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
+  unlink(bedgraph_file)
+
+  # cuts coverage on - strand counts
+  cat('Processing genome cuts on - strand ...\n')
+  neg_coverage.df <- data.frame(chr = as.character(seqnames(neg_coverage.gr)),
+                                start = start(neg_coverage.gr) - 1,
+                                end = end(neg_coverage.gr),
+                                count = neg_coverage.gr$score)
+  neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
+  neg_coverage.df <- neg_coverage.df[with(neg_coverage.df, order(chr, start)), ]
+  bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
+  data.table::fwrite(neg_coverage.df, bedgraph_file,
+                     sep='\t', col.names = FALSE, scipen = 999)
+  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
+  unlink(bedgraph_file)
+
+}
 
 #' @title Get count matrices around candidate binding sites
 #' @description Extract counts around candidate binding sites on both strands
@@ -221,6 +230,7 @@ get_sites_counts <- function(sites,
 
   cat('Extract counts around candidate sites ... \n')
 
+  # Expand by 1bp to adjust the windows due to shift ATAC
   if(shift_ATAC){
     sites[,3] <- sites[,3] + 1
   }
@@ -242,7 +252,7 @@ get_sites_counts <- function(sites,
   # Flip the counts generated from bwtool for motifs on the reverse strand and combine counts on both strands
   sites_counts.mat <- flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
 
-  # Adjust the window by 1bp for motif matches on the - strand due to shift ATAC
+  # Adjust the windows by 1bp for motif matches on the - strand due to shift ATAC
   if(shift_ATAC){
     sites_counts.mat <- adjust_ATACshift(sites_counts.mat, sites)
   }
@@ -259,7 +269,7 @@ get_sites_counts <- function(sites,
 flip_rev_strand_counts <- function(sites,
                                    fwd_matrix_file,
                                    rev_matrix_file,
-                                   update_matrix_files = FALSE) {
+                                   write_updated_matrix_files = FALSE) {
 
   fwd_count <- as.data.frame(data.table::fread(fwd_matrix_file))
   rev_count <- as.data.frame(data.table::fread(rev_matrix_file))
@@ -283,7 +293,8 @@ flip_rev_strand_counts <- function(sites,
   sites_counts.mat <- as.matrix(cbind(sites_counts.l$fwd, sites_counts.l$rev))
   rownames(sites_counts.mat) <- sites$name
 
-  if(update_matrix_files){
+  if(write_updated_matrix_files){
+    # write the updated the matrix counts files
     fwd_count <- cbind(sites[,c(1:3,6)], sites_counts.l$fwd)
     rev_count <- cbind(sites[,c(1:3,6)], sites_counts.l$rev)
     data.table::fwrite(fwd_count, fwd_matrix_file, sep = ' ', scipen = 999)
@@ -317,6 +328,7 @@ adjust_ATACshift <- function(ATAC_counts_mat, sites){
 #' and shifts reads aligned to the - strand by -5 bp.
 #' @param return_type Options for the returned data:
 #' \dQuote{cuts} or \dQuote{coverage}.
+#' @import GenomicRanges
 #' @return A GRange object of cuts or coverage
 read_bam_cuts <- function(bam_file,
                           shift_ATAC = FALSE,
@@ -361,6 +373,7 @@ read_bam_cuts <- function(bam_file,
 #' and shifts reads aligned to the - strand by -5 bp.
 #' @param return_type Options for the returned data:
 #' \dQuote{cuts} or \dQuote{coverage}.
+#' @import GenomicRanges
 #' @return A GRange object of cuts or coverage
 read_bam_cuts_ATACreadpairs <- function(bam_file,
                                         select_NFR_fragments = FALSE,
@@ -647,7 +660,7 @@ bin_transform_counts <- function(counts,
   bin_method <- match.arg(bin_method)
   transform <- match.arg(transform)
 
-  cat('Perform MILLIPEDE', bin_method, 'binning... \n')
+  cat('Perform', bin_method, 'binning... \n')
   bins <- millipede_binning(counts, bin_method)
 
   if (transform == 'asinh') {

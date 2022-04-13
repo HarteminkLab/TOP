@@ -10,6 +10,7 @@ count_genome_cuts(
   shift_ATAC = FALSE,
   outdir = dirname(bam_file),
   outname,
+  bedtools_path = "bedtools",
   bedGraphToBigWig_path = "bedGraphToBigWig"
 )
 }
@@ -26,13 +27,24 @@ and shifts reads aligned to the - strand by -5 bp.}
 
 \item{outname}{Output prefix (default: use the prefix of \code{bam_file}).}
 
-\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.#'}
+\item{bedtools_path}{Path to \code{bedtools} executable.}
+
+\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.}
 }
 \description{
 Count genomic cleavage (5' end) from DNase-seq or
-ATAC-seq BAM alignment files.
+ATAC-seq BAM alignment files using \code{bedtools}
 For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
 the + strand by +4 bp, and shifts reads aligned to the - strand
 by -5 bp (Buenrostro et al. 2013).
 This function treats paired end reads as independent.
+}
+\examples{
+count_genome_cuts(bam_file='K562.ATAC.bam',
+                  chrom_size_file='hg38.chrom.sizes',
+                  shift_ATAC=TRUE,
+                  outdir='processed_data',
+                  outname='K562.ATAC.bam',
+                  bedtools_path='bedtools',
+                  bedGraphToBigWig_path='bedGraphToBigWig')
 }
