@@ -10,7 +10,7 @@ fimo_motif_matches(
   outname = "fimo.txt",
   outdir = dirname(outname),
   thresh_pValue = 1e-04,
-  bfile,
+  bfile = "--uniform--",
   skip_matched_sequence = TRUE,
   max_strand = FALSE,
   max_stored_scores = 1e+05,
