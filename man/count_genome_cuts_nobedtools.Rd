@@ -8,7 +8,7 @@ count_genome_cuts_nobedtools(
   bam_file,
   chrom_size_file,
   shift_ATAC = FALSE,
-  shift_ATAC_bases = c(4L, -5L),
+  shift_ATAC_bases = c(4L, -4L),
   outdir = dirname(bam_file),
   outname,
   bedGraphToBigWig_path = "bedGraphToBigWig"
@@ -22,9 +22,7 @@ count_genome_cuts_nobedtools(
 \item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
 it shifts reads according to \code{shift_ATAC_bases}.}
 
-\item{shift_ATAC_bases}{Number of bases to shift. Default: c(4,-5),
-shifts reads aligned to the + strand by +4 bp,
-and shifts reads aligned to the - strand by -5 bp.}
+\item{shift_ATAC_bases}{Number of bases to shift.}
 
 \item{outdir}{Output directory (default: use the directory of \code{bam_file}).}
 
@@ -41,7 +39,6 @@ This may be slower than count_genome_cuts() for large BAM files.
 count_genome_cuts_nobedtools(bam_file='K562.ATAC.bam',
                              chrom_size_file='hg38.chrom.sizes',
                              shift_ATAC=TRUE,
-                             shift_ATAC_bases=c(4L,-5L),
                              outdir='processed_data',
                              outname='K562.ATAC.bam',
                              bedGraphToBigWig_path='bedGraphToBigWig')

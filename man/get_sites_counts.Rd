@@ -8,7 +8,6 @@ get_sites_counts(
   sites,
   genomecount_dir,
   genomecount_name,
-  adjust_ATACshift = FALSE,
   tmpdir = genomecount_dir,
   bedGraphToBigWig_path = "bedGraphToBigWig",
   bwtool_path = "bwtool"
@@ -20,9 +19,6 @@ get_sites_counts(
 \item{genomecount_dir}{Directory for genome counts.}
 
 \item{genomecount_name}{File prefix for genome counts.}
-
-\item{adjust_ATACshift}{Logical. If TRUE, adjust the candidate site windows (by 1bp)
-for motif matches on the - strand due to the shift of ATAC-seq reads.}
 
 \item{tmpdir}{Temporary directory to save intermediate files.}
 

@@ -7,7 +7,7 @@
 read_bam_cuts(
   bam_file,
   shift_ATAC = FALSE,
-  shift_ATAC_bases = c(4L, -5L),
+  shift_ATAC_bases = c(4L, -4L),
   return_type = c("cuts", "coverage")
 )
 }
@@ -17,9 +17,7 @@ read_bam_cuts(
 \item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
 it shifts reads according to \code{shift_ATAC_bases}.}
 
-\item{shift_ATAC_bases}{Number of bases to shift. Default: c(4,-5),
-shifts reads aligned to the + strand by +4 bp,
-and shifts reads aligned to the - strand by -5 bp.}
+\item{shift_ATAC_bases}{Number of bases to shift.}
 
 \item{return_type}{Options for the returned data:
 \dQuote{cuts} or \dQuote{coverage}.}

@@ -8,7 +8,7 @@ count_genome_cuts(
   bam_file,
   chrom_size_file,
   shift_ATAC = FALSE,
-  shift_ATAC_bases = c(4L, -5L),
+  shift_ATAC_bases = c(4L, -4L),
   outdir = dirname(bam_file),
   outname,
   bedtools_path = "bedtools",
@@ -23,9 +23,7 @@ count_genome_cuts(
 \item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
 it shifts reads according to \code{shift_ATAC_bases}.}
 
-\item{shift_ATAC_bases}{Number of bases to shift. Default: c(4,-5),
-shifts reads aligned to the + strand by +4 bp,
-and shifts reads aligned to the - strand by -5 bp.}
+\item{shift_ATAC_bases}{Number of bases to shift on + and - strands.}
 
 \item{outdir}{Output directory (default: use the directory of \code{bam_file}).}
 
@@ -38,16 +36,13 @@ and shifts reads aligned to the - strand by -5 bp.}
 \description{
 Count genomic cuts (5' end) from DNase-seq or
 ATAC-seq BAM alignment files using \code{bedtools}
-For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
-the + strand by +4 bp, and shifts reads aligned to the - strand
-by -5 bp (Buenrostro et al. 2013).
-This function treats paired end reads as independent.
+For ATAC-seq, when \code{shift_ATAC = TRUE}, reads
+were shifted so as to address offsets and align the signal across strands.
 }
 \examples{
 count_genome_cuts(bam_file='K562.ATAC.bam',
                   chrom_size_file='hg38.chrom.sizes',
                   shift_ATAC=TRUE,
-                  shift_ATAC_bases=c(4L,-5L),
                   outdir='processed_data',
                   outname='K562.ATAC.bam',
                   bedtools_path='bedtools',
