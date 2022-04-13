@@ -304,8 +304,9 @@ flip_rev_strand_counts <- function(sites,
   return(sites_counts.mat)
 }
 
-# adjust the window by 1bp for motif matches on the - strand due to the shift of ATAC-seq reads
+# adjust the candidate site window (by 1bp) for motif matches on the - strand due to the shift of ATAC-seq reads
 adjust_ATACshift <- function(ATAC_counts_mat, sites){
+  cat('Adjust windows for motif matches on the - strand due to ATAC shift ...\n')
   pos_strand <- which(sites$strand == '+')
   neg_strand <- which(sites$strand == '-')
   fwd_cols <- 1:(ncol(ATAC_counts_mat)/2)
