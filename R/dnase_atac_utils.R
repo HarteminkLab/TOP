@@ -1,6 +1,6 @@
 
 #' @title Count DNase-seq or ATAC-seq cuts along the genome
-#' @description Count genomic cleavage (5' end) from DNase-seq or
+#' @description Count genomic cuts (5' end) from DNase-seq or
 #' ATAC-seq BAM alignment files using \code{bedtools}
 #' For ATAC-seq, when \code{shift_ATAC = TRUE}, it shifts reads aligned to
 #' the + strand by +4 bp, and shifts reads aligned to the - strand
@@ -56,13 +56,13 @@ count_genome_cuts <- function(bam_file,
       bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
     }
 
-    # Count 5' end cleavage and save as a .bedGraph file
-    cat('Counting genome cleavage for', bam_file, 'on', strand, 'strand...\n')
+    # Count 5' end cuts and save as a .bedGraph file
+    cat('Counting genome cuts for', bam_file, 'on', strand, 'strand...\n')
     cmd <- paste(bedtools_path, 'genomecov -bg -5', '-strand', strand,
                  '-ibam', bam_file, '>', bedgraph_file)
     if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
 
-    cat('Sorting counted genome cleavage on', strand, 'strand...\n')
+    cat('Sorting counted genome cuts on', strand, 'strand...\n')
     genome_counts <- data.table::fread(bedgraph_file)
     genome_counts <- genome_counts[with(genome_counts, order(V1, V2)), ]
     # Shift ATAC-seq reads to get the centers of Tn5 binding positions
