@@ -8,8 +8,7 @@ get_sites_counts(
   sites,
   bam_file,
   chrom_size_file,
-  shift_ATAC = FALSE,
-  adjust_shift = TRUE,
+  adjust_ATACshift = FALSE,
   genomecount_dir,
   genomecount_name,
   tmpdir = genomecount_dir,
@@ -24,9 +23,7 @@ get_sites_counts(
 
 \item{chrom_size_file}{File of genome sizes by chromosomes.}
 
-\item{shift_ATAC}{Logical. If TRUE, it shifts ATAC-seq reads.}
-
-\item{adjust_shift}{Logical. If TRUE, adjust the candidate site windows (by 1bp)
+\item{adjust_ATACshift}{Logical. If TRUE, adjust the candidate site windows (by 1bp)
 for motif matches on the - strand due to the shift of ATAC-seq reads.}
 
 \item{genomecount_dir}{Directory for genome counts.}
@@ -59,8 +56,7 @@ on the reverse strand.
 sites_counts.mat <- get_sites_counts(sites,
                                      bam_file='K562.ATAC.bam',
                                      chrom_size_file,
-                                     shift_ATAC=TRUE,
-                                     adjust_shift=TRUE,
+                                     adjust_ATACshift=TRUE,
                                      genomecount_dir='processed_data',
                                      genomecount_name='K562.ATAC',
                                      bedGraphToBigWig_path='bedGraphToBigWig',

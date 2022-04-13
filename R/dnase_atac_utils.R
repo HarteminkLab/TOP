@@ -181,8 +181,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #' @param sites A data frame containing the candidate sites.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. If TRUE, it shifts ATAC-seq reads.
-#' @param adjust_shift Logical. If TRUE, adjust the candidate site windows (by 1bp)
+#' @param adjust_ATACshift Logical. If TRUE, adjust the candidate site windows (by 1bp)
 #' for motif matches on the - strand due to the shift of ATAC-seq reads.
 #' @param genomecount_dir Directory for genome counts.
 #' @param genomecount_name File prefix for genome counts.
@@ -198,8 +197,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #' sites_counts.mat <- get_sites_counts(sites,
 #'                                      bam_file='K562.ATAC.bam',
 #'                                      chrom_size_file,
-#'                                      shift_ATAC=TRUE,
-#'                                      adjust_shift=TRUE,
+#'                                      adjust_ATACshift=TRUE,
 #'                                      genomecount_dir='processed_data',
 #'                                      genomecount_name='K562.ATAC',
 #'                                      bedGraphToBigWig_path='bedGraphToBigWig',
@@ -207,8 +205,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
 get_sites_counts <- function(sites,
                              bam_file,
                              chrom_size_file,
-                             shift_ATAC=FALSE,
-                             adjust_shift=TRUE,
+                             adjust_ATACshift=FALSE,
                              genomecount_dir,
                              genomecount_name,
                              tmpdir=genomecount_dir,
@@ -241,7 +238,7 @@ get_sites_counts <- function(sites,
   cat('Extract counts around candidate sites ... \n')
 
   # Adjust the site windows due to shift ATAC
-  if(shift_ATAC && adjust_shift){
+  if(adjust_ATACshift){
     cat('Adjust site windows for motif matches on the - strand...\n')
     neg_strand <- which(sites$strand == '-')
     sites[neg_strand, 2:3] <- sites[neg_strand, 2:3] - 1
