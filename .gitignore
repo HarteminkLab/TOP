@@ -3,4 +3,6 @@
 .RData
 .DS_Store
 data/
+R/unused.R
+
 
