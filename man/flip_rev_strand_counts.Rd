@@ -9,7 +9,7 @@ flip_rev_strand_counts(
   sites,
   fwd_matrix_file,
   rev_matrix_file,
-  update_matrix_files = FALSE
+  write_updated_matrix_files = FALSE
 )
 }
 \arguments{
