@@ -13,8 +13,6 @@
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
-#' @importFrom GenomicAlignments readGAlignments
-#' @import GenomicRanges
 #' @importFrom data.table fwrite
 #' @export
 count_genome_cuts <- function(bam_file,
@@ -89,7 +87,6 @@ count_genome_cuts <- function(bam_file,
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
 #' @importFrom GenomicAlignments readGAlignments
 #' @import GenomicRanges
-#' @importFrom data.table fwrite
 #' @export
 count_genome_cuts_bedtools <- function(bam_file,
                                        chrom_size_file,
@@ -177,7 +174,6 @@ count_genome_cuts_bedtools <- function(bam_file,
 #' @return A count matrix. The first half of the columns
 #' are the read counts on the forward strand, and the second half of the
 #' columns are the read counts on the reverse strand.
-#' @importFrom data.table fwrite
 #' @export
 #' @examples
 #' # Get ATAC-seq count matrices around candidate sites
@@ -223,13 +219,18 @@ get_sites_counts <- function(sites,
                       genomecount_dir, genomecount_name, bedGraphToBigWig_path)
   }
 
+  cat('Extract counts around candidate sites ... \n')
+
+  if(shift_ATAC){
+    sites[,3] <- sites[,3] + 1
+  }
+
+  sites_file <- tempfile(pattern = 'sites.', tmpdir = tmpdir, fileext = '.txt')
+  data.table::fwrite(sites[,1:4], sites_file, sep = '\t', col.names = FALSE, scipen = 999)
+
   fwd_matrix_file <- tempfile(pattern = 'sitescounts.', tmpdir = tmpdir, fileext = '.fwd.matrix')
   rev_matrix_file <- tempfile(pattern = 'sitescounts.', tmpdir = tmpdir, fileext = '.rev.matrix')
 
-  sites_file <- tempfile(pattern = 'sites.', tmpdir = tmpdir, fileext = '.txt')
-  fwrite(sites[,1:4], sites_file, sep = '\t', col.names = FALSE, scipen = 999)
-
-  cat('Extract counts around candidate sites ... \n')
   cmd <- paste(bwtool_path, 'extract bed', sites_file,
                genome_fwd_count_file, fwd_matrix_file, '-fill=0 -decimals=0 -tabs')
   if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
@@ -238,28 +239,30 @@ get_sites_counts <- function(sites,
                genome_rev_count_file, rev_matrix_file, '-fill=0 -decimals=0 -tabs')
   if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
 
-  # Flip the counts generated from bwtool for motifs on the reverse strand
-  sites_counts.l <- flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
+  # Flip the counts generated from bwtool for motifs on the reverse strand and combine counts on both strands
+  sites_counts.mat <- flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
 
-  # Combine counts on both strands
-  sites_counts.mat <- as.matrix(cbind(sites_counts.l$fwd, sites_counts.l$rev))
-  rownames(sites_counts.mat) <- sites$name
+  # Adjust the window by 1bp for motif matches on the - strand due to shift ATAC
+  if(shift_ATAC){
+    sites_counts.mat <- adjust_ATACshift(sites_counts.mat, sites)
+  }
 
   unlink(c(sites_file, fwd_matrix_file, rev_matrix_file))
   return(sites_counts.mat)
 }
 
-#' @title Flip the counts generated from \code{bwtool} for motifs
+#' Flip the counts generated from \code{bwtool} for motifs
 #' on the reverse strand
-#'
 #' @param sites A data frame containing candidate sites
 #' @param fwd_matrix_file File for count matrix on the forward strand
 #' @param rev_matrix_file File for count matrix on the reverse strand
-#' @importFrom  data.table fread fwrite
-flip_rev_strand_counts <- function(sites, fwd_matrix_file, rev_matrix_file) {
+flip_rev_strand_counts <- function(sites,
+                                   fwd_matrix_file,
+                                   rev_matrix_file,
+                                   update_matrix_files = FALSE) {
 
-  fwd_count <- as.data.frame(fread(fwd_matrix_file))
-  rev_count <- as.data.frame(fread(rev_matrix_file))
+  fwd_count <- as.data.frame(data.table::fread(fwd_matrix_file))
+  rev_count <- as.data.frame(data.table::fread(rev_matrix_file))
 
   if(sum(sites[,2] != fwd_count[,2]) != 0) {
     stop('Sites do not match!')
@@ -273,19 +276,38 @@ flip_rev_strand_counts <- function(sites, fwd_matrix_file, rev_matrix_file) {
 
   # For motifs match to the - strand, flip the fwd and rev counts, and reverse the counts
   sites_counts.l <- list(fwd = fwd_count.m, rev = rev_count.m)
-  minusStrand <- (sites$strand == '-')
-  sites_counts.l$fwd[minusStrand, ] <- t(apply(rev_count.m[minusStrand, ], 1, rev))
-  sites_counts.l$rev[minusStrand, ] <- t(apply(fwd_count.m[minusStrand, ], 1, rev))
+  neg_strand <- which(sites$strand == '-')
+  sites_counts.l$fwd[neg_strand, ] <- t(apply(rev_count.m[neg_strand, ], 1, rev))
+  sites_counts.l$rev[neg_strand, ] <- t(apply(fwd_count.m[neg_strand, ], 1, rev))
 
-  fwd_count <- cbind(sites[,c(1:3,6)], sites_counts.l$fwd)
-  rev_count <- cbind(sites[,c(1:3,6)], sites_counts.l$rev)
+  sites_counts.mat <- as.matrix(cbind(sites_counts.l$fwd, sites_counts.l$rev))
+  rownames(sites_counts.mat) <- sites$name
 
-  fwrite(fwd_count, fwd_matrix_file, sep = ' ', scipen = 999)
-  fwrite(rev_count, rev_matrix_file, sep = ' ', scipen = 999)
+  if(update_matrix_files){
+    fwd_count <- cbind(sites[,c(1:3,6)], sites_counts.l$fwd)
+    rev_count <- cbind(sites[,c(1:3,6)], sites_counts.l$rev)
+    data.table::fwrite(fwd_count, fwd_matrix_file, sep = ' ', scipen = 999)
+    data.table::fwrite(rev_count, rev_matrix_file, sep = ' ', scipen = 999)
+  }
 
-  return(sites_counts.l)
+  return(sites_counts.mat)
 }
 
+# adjust the window by 1bp for motif matches on the - strand due to the shift of ATAC-seq reads
+adjust_ATACshift <- function(ATAC_counts_mat, sites){
+  pos_strand <- which(sites$strand == '+')
+  neg_strand <- which(sites$strand == '-')
+  fwd_cols <- 1:(ncol(ATAC_counts_mat)/2)
+  rev_cols <- (ncol(ATAC_counts_mat)/2+1):ncol(ATAC_counts_mat)
+  pos_strand_cols <- c(fwd_cols[1:(length(fwd_cols)-1)], rev_cols[1:(length(fwd_cols)-1)])
+  neg_strand_cols <- c(fwd_cols[2:length(fwd_cols)], rev_cols[2:length(rev_cols)])
+  pos_ATAC_counts_mat <- ATAC_counts_mat[pos_strand, pos_strand_cols]
+  neg_ATAC_counts_mat <- ATAC_counts_mat[neg_strand, neg_strand_cols]
+  adjusted_ATAC_counts_mat <- rbind(pos_ATAC_counts_mat, neg_ATAC_counts_mat)
+  m <- match(rownames(ATAC_counts_mat), rownames(adjusted_ATAC_counts_mat))
+  adjusted_ATAC_counts_mat <- adjusted_ATAC_counts_mat[m, ]
+  return(adjusted_ATAC_counts_mat)
+}
 
 #' Read DNase or ATAC cuts or coverage of cuts from BAM file
 #'
@@ -340,9 +362,6 @@ read_bam_cuts <- function(bam_file,
 #' @param return_type Options for the returned data:
 #' \dQuote{cuts} or \dQuote{coverage}.
 #' @return A GRange object of cuts or coverage
-#' @importFrom Rsamtools scanBamFlag ScanBamParam
-#' @importFrom GenomicAlignments readGAlignmentPairs
-#' @importFrom rtracklayer export
 read_bam_cuts_ATACreadpairs <- function(bam_file,
                                         select_NFR_fragments = FALSE,
                                         shift_ATAC = FALSE,
@@ -586,7 +605,7 @@ normalize_bin_transform_counts <- function(count_matrix,
 }
 
 
-#' @title Normalize read counts
+#' Normalize read counts
 #'
 #' @description Normalize DNase or ATAC-seq read counts by library sizes.
 #' It first obtain the total mapped reads from the current sample, and
@@ -595,7 +614,6 @@ normalize_bin_transform_counts <- function(count_matrix,
 #' @param idxstats_file The \code{idxstats} file generated by samtools.
 #' @param ref_size Normalize to reference library size (default: 1e8).
 #' @return A matrix of normalize read counts.
-#'
 normalize_counts <- function(counts,
                              idxstats_file,
                              ref_size=1e8) {
@@ -613,7 +631,7 @@ normalize_counts <- function(counts,
 }
 
 
-#' @title Bin and transform count matrix
+#' Bin and transform count matrix
 #'
 #' @description Binning DNase or ATAC count matrix
 #' using MILLIPEDE binning and then take asinh or log2 transform
@@ -622,7 +640,6 @@ normalize_counts <- function(counts,
 #' @param transform Type of transformation for DNase or ATAC counts.
 #' Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.
 #' @return A data frame of binned and transformed counts.
-#'
 bin_transform_counts <- function(counts,
                                  bin_method = c('M5','M24','M12','M3','M2','M1'),
                                  transform = c('asinh','log2', 'sqrt', 'none')) {
@@ -659,7 +676,6 @@ bin_transform_counts <- function(counts,
 #' @param ref_size Scale to reference library size (default: 1e8).
 #' @return A matrix of merged and normalized counts.
 #' @export
-#'
 merge_normalize_counts <- function(counts_files, idxstats_files, ref_size = 1e8){
 
   ## Load raw counts and merge the replicates
@@ -700,7 +716,6 @@ merge_normalize_counts <- function(counts_files, idxstats_files, ref_size = 1e8)
 #' Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.
 #' @return A data frame of merged, normalized, binned, and transformed counts.
 #' @export
-#'
 merge_normalize_bin_transform_counts <- function(counts_files,
                                                  idxstats_files,
                                                  ref_size = 1e8,

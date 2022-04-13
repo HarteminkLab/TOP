@@ -5,7 +5,12 @@
 \title{Flip the counts generated from \code{bwtool} for motifs
 on the reverse strand}
 \usage{
-flip_rev_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
+flip_rev_strand_counts(
+  sites,
+  fwd_matrix_file,
+  rev_matrix_file,
+  update_matrix_files = FALSE
+)
 }
 \arguments{
 \item{sites}{A data frame containing candidate sites}
