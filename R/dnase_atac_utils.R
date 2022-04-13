@@ -179,12 +179,10 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #' and the second half of the columns representing the read counts
 #' on the reverse strand.
 #' @param sites A data frame containing the candidate sites.
-#' @param bam_file Sorted BAM file.
-#' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param adjust_ATACshift Logical. If TRUE, adjust the candidate site windows (by 1bp)
-#' for motif matches on the - strand due to the shift of ATAC-seq reads.
 #' @param genomecount_dir Directory for genome counts.
 #' @param genomecount_name File prefix for genome counts.
+#' @param adjust_ATACshift Logical. If TRUE, adjust the candidate site windows (by 1bp)
+#' for motif matches on the - strand due to the shift of ATAC-seq reads.
 #' @param tmpdir Temporary directory to save intermediate files.
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
 #' @param bwtool_path Path to \code{bwtool} executable.
@@ -195,19 +193,14 @@ count_genome_cuts_nobedtools <- function(bam_file,
 #' @examples
 #' # Get ATAC-seq count matrices around candidate sites
 #' sites_counts.mat <- get_sites_counts(sites,
-#'                                      bam_file='K562.ATAC.bam',
-#'                                      chrom_size_file,
-#'                                      adjust_ATACshift=TRUE,
 #'                                      genomecount_dir='processed_data',
 #'                                      genomecount_name='K562.ATAC',
 #'                                      bedGraphToBigWig_path='bedGraphToBigWig',
 #'                                      bwtool_path='bwtool')
 get_sites_counts <- function(sites,
-                             bam_file,
-                             chrom_size_file,
-                             adjust_ATACshift=FALSE,
                              genomecount_dir,
                              genomecount_name,
+                             adjust_ATACshift=FALSE,
                              tmpdir=genomecount_dir,
                              bedGraphToBigWig_path='bedGraphToBigWig',
                              bwtool_path='bwtool') {
@@ -220,19 +213,11 @@ get_sites_counts <- function(sites,
     stop( 'bwtool could not be executed. Please install bwtool and set bwtool_path.' )
   }
 
-  if(missing(genomecount_dir)){
-    genomecount_dir <- dirname(bam_file)
-  }
-
-  if(missing(genomecount_name)){
-    genomecount_name <- tools::file_path_sans_ext(basename(bam_file))
-  }
-
   genome_fwd_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.fwd.genomecounts.bw'))
   genome_rev_count_file <- file.path(genomecount_dir, paste0(genomecount_name, '.rev.genomecounts.bw'))
 
   if( !(file.exists(genome_fwd_count_file) & file.exists(genome_rev_count_file)) ){
-    stop( 'genome counts cannot be located. Please run count_genome_cuts() first.' )
+    stop( 'Genome count files cannot be located. Please run count_genome_cuts() first.' )
   }
 
   cat('Extract counts around candidate sites ... \n')

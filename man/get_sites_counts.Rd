@@ -6,11 +6,9 @@
 \usage{
 get_sites_counts(
   sites,
-  bam_file,
-  chrom_size_file,
-  adjust_ATACshift = FALSE,
   genomecount_dir,
   genomecount_name,
+  adjust_ATACshift = FALSE,
   tmpdir = genomecount_dir,
   bedGraphToBigWig_path = "bedGraphToBigWig",
   bwtool_path = "bwtool"
@@ -19,16 +17,12 @@ get_sites_counts(
 \arguments{
 \item{sites}{A data frame containing the candidate sites.}
 
-\item{bam_file}{Sorted BAM file.}
-
-\item{chrom_size_file}{File of genome sizes by chromosomes.}
-
-\item{adjust_ATACshift}{Logical. If TRUE, adjust the candidate site windows (by 1bp)
-for motif matches on the - strand due to the shift of ATAC-seq reads.}
-
 \item{genomecount_dir}{Directory for genome counts.}
 
 \item{genomecount_name}{File prefix for genome counts.}
+
+\item{adjust_ATACshift}{Logical. If TRUE, adjust the candidate site windows (by 1bp)
+for motif matches on the - strand due to the shift of ATAC-seq reads.}
 
 \item{tmpdir}{Temporary directory to save intermediate files.}
 
@@ -54,9 +48,6 @@ on the reverse strand.
 \examples{
 # Get ATAC-seq count matrices around candidate sites
 sites_counts.mat <- get_sites_counts(sites,
-                                     bam_file='K562.ATAC.bam',
-                                     chrom_size_file,
-                                     adjust_ATACshift=TRUE,
                                      genomecount_dir='processed_data',
                                      genomecount_name='K562.ATAC',
                                      bedGraphToBigWig_path='bedGraphToBigWig',
