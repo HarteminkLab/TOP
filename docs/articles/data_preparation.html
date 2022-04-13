@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -170,29 +170,22 @@
 <p>Next, we count the DNase or ATAC cuts along the genome, and save the genome counts in BigWig files. This step could take a long time, but it only needs to be done once. The BigWig files will be used later for extracting the cuts around the candidate sites.</p>
 <p>We need the command line tools: <a href="https://bedtools.readthedocs.io/en/latest/" class="external-link"><code>bedtools</code></a> and <code>bedGraphToBigWig</code> from <a href="http://hgdownload.soe.ucsc.edu/admin/exe/" class="external-link">UCSC binary utilities</a> for this step.</p>
 <p>You can shift ATAC-seq reads by setting <code>shift_ATAC=TRUE</code>. This will shift the reads aligned to the + strand by +4 bp, and shift reads aligned to the - strand by -5 bp, as in <a href="https://doi.org/10.1038/nmeth.2688" class="external-link">Buenrostro et al. 2013</a>. Yet, we found the shifting of ATAC-seq reads have little impact on the results, mostly due to our binning approach being robust to the small-scale positional shifts or digestion bias.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bam_file: sorted BAM file.</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># chrom_size_file: file of genome sizes by chromosomes.</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># shift_ATAC: If TRUE, shift ATAC-sesq reads aligned to the + strand by +4 bp, </span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># and shift reads aligned to the - strand by -5 bp. </span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># outdir: directory for saving the BigWig files of genome counts.</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># outname: prefix for the BigWig files, same as genomecount_name in get_sites_counts().</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># bedtools_path: Path to bedtools executable.</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">count_genome_cuts</span>(<span class="at">bam_file=</span><span class="st">'K562.ATAC.bam'</span>, </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">chrom_size_file=</span><span class="st">'hg38.chrom.sizes'</span>, </span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">shift_ATAC=</span><span class="cn">TRUE</span>,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outdir=</span><span class="st">'processed_data'</span>,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outname=</span><span class="st">'K562.ATAC.bam'</span>,</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">bedGraphToBigWig_path=</span><span class="st">'bedGraphToBigWig'</span>)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># or use count_genome_cuts_bedtools() if you have bedtools installed (this is often faster).</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="fu">count_genome_cuts_bedtools</span>(<span class="at">bam_file=</span><span class="st">'K562.ATAC.bam'</span>, </span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                           <span class="at">chrom_size_file=</span><span class="st">'hg38.chrom.sizes'</span>, </span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                           <span class="at">shift_ATAC=</span><span class="cn">TRUE</span>,</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                           <span class="at">outdir=</span><span class="st">'processed_data'</span>,</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>                           <span class="at">outname=</span><span class="st">'K562.ATAC.bam'</span>,</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                           <span class="at">bedtools_path=</span><span class="st">'bedtools'</span>,</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>                           <span class="at">bedGraphToBigWig_path=</span><span class="st">'bedGraphToBigWig'</span>)<span class="er">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># bam_file: sorted BAM file.</span>
+<span class="co"># chrom_size_file: file of genome sizes by chromosomes.</span>
+<span class="co"># shift_ATAC: If TRUE, shift ATAC-sesq reads aligned to the + strand by +4 bp, </span>
+<span class="co"># and shift reads aligned to the - strand by -5 bp. </span>
+<span class="co"># outdir: directory for saving the BigWig files of genome counts.</span>
+<span class="co"># outname: prefix for the BigWig files, same as genomecount_name in get_sites_counts().</span>
+<span class="co"># bedtools_path: Path to bedtools executable.</span>
+<span class="co"># bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.</span>
+<span class="fu"><a href="../reference/count_genome_cuts.html">count_genome_cuts</a></span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>, 
+                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>, 
+                  shift_ATAC<span class="op">=</span><span class="cn">TRUE</span>,
+                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,
+                  outname<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,
+                  bedtools_path<span class="op">=</span><span class="st">'bedtools'</span>,
+                  bedGraphToBigWig_path<span class="op">=</span><span class="st">'bedGraphToBigWig'</span><span class="op">)</span></code></pre></div>
 <p><strong>Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts</strong></p>
 <p>Get DNase- or ATAC-seq read counts matrix around candidate sites:</p>
 <p>We utilize <a href="https://pubmed.ncbi.nlm.nih.gov/24489365/" class="external-link">bwtool</a> to extract read counts from the BigWig files generated earlier.</p>
