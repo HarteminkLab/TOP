@@ -21,7 +21,7 @@ scatterplot_predictions <- function(x, y,
                                     title = '',
                                     xlim = c(0,10),
                                     ylim = c(0,10),
-                                    color = "black"){
+                                    color = 'black'){
 
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop(
@@ -33,7 +33,7 @@ scatterplot_predictions <- function(x, y,
   df <- data.frame(x=x, y=y)
 
   p <- ggplot(df, aes(x=x, y=y)) +
-    geom_abline(intercept = 0, slope = 1, color="darkgray",
+    geom_abline(intercept = 0, slope = 1, color='darkgray',
                 size = 0.5) +
     geom_point(shape=19,      # Use solid circles
                alpha=0.3,     # opacity
@@ -68,7 +68,7 @@ scatterplot <- function(x, y,
                         title = '',
                         xlim = NULL,
                         ylim = NULL,
-                        color = "black"){
+                        color = 'black'){
 
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop(
@@ -97,4 +97,30 @@ scatterplot <- function(x, y,
   }
 
   return(p)
+}
+
+# Plot DNase or ATAC profiles
+plot_profile <- function(cuts, mlen=10, title=''){
+  profile <- colMeans(cuts)
+  ylim <- c(0, max(pos_profile, neg_profile))
+  plot(profile[1:(length(profile)/2)], type = 'l', col = 'darkblue', xaxt='n',
+       xlab = 'position', ylab = 'average cuts', lwd = 1, ylim = ylim, main = title)
+  lines(profile[(length(profile)/2+1):length(profile)], type = 'l', col = 'darkred', lwd = 1)
+  axis(1, at = c(1, round(length(profile)/4-mlen/2), round(length(profile)/4+mlen/2), length(profile)/2), labels = c('-100bp', '', '','100bp'))
+  legend('topright', legend = c('fwd direction', 'rev direction'), lty = 1, col = c('darkblue', 'darkred'), bty = 'n', lwd = 2)
+}
+
+# Plot DNase or ATAC profiles separately by strands
+plot_profile_strands <- function(cuts, sites, mlen=10, flip = FALSE, title = ''){
+  pos_profile <- colMeans(cuts[sites$strand == '+', ])
+  neg_profile <- colMeans(cuts[sites$strand == '-', ])
+  plot(pos_profile[1:(length(pos_profile)/2)], type = 'l', col = 'darkblue', xaxt='n',
+       xlab = 'position', ylab = 'average cuts', lwd = 1, ylim = c(0, max(pos_profile, neg_profile)), main = title)
+  lines(pos_profile[(length(pos_profile)/2+1):length(pos_profile)], type = 'l', col = 'darkred', lwd = 1)
+  lines(neg_profile[1:(length(neg_profile)/2)], type = 'l', col = 'cyan', lwd = 1)
+  lines(neg_profile[(length(neg_profile)/2+1):length(neg_profile)], type = 'l', col = 'yellow', lwd = 1)
+  axis(1, at = c(1, round(length(pos_profile)/4-mlen/2), round(length(pos_profile)/4+mlen/2), length(pos_profile)/2), labels = c('-100bp', '', '','100bp'))
+  legend('topright',
+         legend = c('+ strand sites fwd direction', '+ strand sites rev direction', '- strand sites fwd direction', '- strand sites rev direction'),
+         lty = 1, col = c('darkblue', 'darkred', 'cyan', 'yellow'), bty = 'n', lwd = 2, cex = 0.6)
 }
