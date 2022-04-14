@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -112,7 +112,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CTCF.K562.ATAC.example.data.rds"</span>, package <span class="op">=</span> <span class="st">"TOP"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>,<span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>,<span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt;    chr start   end  name pwm.score strand  p.value      bin1      bin2 bin3</span>
 <span class="co">#&gt; 1 chr1 11122 11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000    0</span>
 <span class="co">#&gt; 2 chr1 11180 11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134    0</span>
@@ -164,7 +164,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">TOP_predictions</span> <span class="op">&lt;-</span> <span class="va">TOP_result</span><span class="op">$</span><span class="va">predictions</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_predictions</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">TOP_predictions</span>, <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt;    chr  start    end  name pwm.score strand  p.value      bin1      bin2</span>
 <span class="co">#&gt; 1 chr1  11122  11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000</span>
 <span class="co">#&gt; 2 chr1  11180  11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134</span>
@@ -186,8 +186,8 @@
                         title <span class="op">=</span> <span class="st">'Predicting CTCF occupancy in K562 cell'</span>,
                         xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,
                         ylab <span class="op">=</span> <span class="st">'asinh(predicted occupancy using bottom level coefficients)'</span>,
-                        xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>,
-                        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+                        xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>,
+                        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="predict_TF_occupancy_with_trained_model_files/figure-html/plot-predicted-measured-1.png" width="480"></p>
 <p>We can also try the “middle” level regression coefficients for CTCF, which are cell-type generic, thus could be used to predict CTCF in any cell types.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -209,8 +209,8 @@
                         title <span class="op">=</span> <span class="st">'Predicting CTCF occupancy in K562 cell'</span>,
                         xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,
                         ylab <span class="op">=</span> <span class="st">'asinh(predicted occupancy using middle level coefficients)'</span>,
-                        xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>,
-                        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+                        xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span>,
+                        ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="predict_TF_occupancy_with_trained_model_files/figure-html/plot-predicted-measured-middle-1.png" width="480"></p>
 </div>
 <div class="section level2">
@@ -233,7 +233,7 @@
 <span class="co">#&gt; Predicting TF binding probability using TOP logistic model...</span>
 <span class="va">predicted.prob</span> <span class="op">&lt;-</span> <span class="va">TOP_result</span><span class="op">$</span><span class="va">predictions</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predicted.prob</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predicted.prob</span>, <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt;    chr  start    end  name pwm.score strand  p.value      bin1      bin2</span>
 <span class="co">#&gt; 1 chr1  11122  11341 site1   22.4839      - 9.17e-09 0.2232134 0.0000000</span>
 <span class="co">#&gt; 2 chr1  11180  11399 site2   20.7581      - 5.22e-08 0.0000000 0.2232134</span>

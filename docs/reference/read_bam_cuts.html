@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -72,6 +72,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">read_bam_cuts</span><span class="op">(</span>
   <span class="va">bam_file</span>,
   shift_ATAC <span class="op">=</span> <span class="cn">FALSE</span>,
+  shift_ATAC_bases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4L</span>, <span class="op">-</span><span class="fl">4L</span><span class="op">)</span>,
   return_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cuts"</span>, <span class="st">"coverage"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -82,8 +83,9 @@
 <dd><p>BAM file of DNase or ATAC-seq reads alignment</p></dd>
 <dt>shift_ATAC</dt>
 <dd><p>Logical. When <code>shift_ATAC = TRUE</code>,
-it shifts reads aligned to the + strand by +4 bp,
-and shifts reads aligned to the - strand by -5 bp.</p></dd>
+it shifts reads according to <code>shift_ATAC_bases</code>.</p></dd>
+<dt>shift_ATAC_bases</dt>
+<dd><p>Number of bases to shift.</p></dd>
 <dt>return_type</dt>
 <dd><p>Options for the returned data:
 “cuts” or “coverage”.</p></dd>

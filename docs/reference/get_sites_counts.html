@@ -24,7 +24,7 @@ on the reverse strand."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -85,9 +85,6 @@ on the reverse strand.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_sites_counts</span><span class="op">(</span>
   <span class="va">sites</span>,
-  <span class="va">bam_file</span>,
-  <span class="va">chrom_size_file</span>,
-  shift_ATAC <span class="op">=</span> <span class="cn">FALSE</span>,
   <span class="va">genomecount_dir</span>,
   <span class="va">genomecount_name</span>,
   tmpdir <span class="op">=</span> <span class="va">genomecount_dir</span>,
@@ -100,14 +97,6 @@ on the reverse strand.</p>
     <h2>Arguments</h2>
     <dl><dt>sites</dt>
 <dd><p>A data frame containing the candidate sites.</p></dd>
-<dt>bam_file</dt>
-<dd><p>Sorted BAM file.</p></dd>
-<dt>chrom_size_file</dt>
-<dd><p>File of genome sizes by chromosomes.</p></dd>
-<dt>shift_ATAC</dt>
-<dd><p>Logical. When <code>shift_ATAC = TRUE</code>,
-it shifts reads aligned to the + strand by +4 bp,
-and shifts reads aligned to the - strand by -5 bp.</p></dd>
 <dt>genomecount_dir</dt>
 <dd><p>Directory for genome counts.</p></dd>
 <dt>genomecount_name</dt>
@@ -130,14 +119,11 @@ columns are the read counts on the reverse strand.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Get ATAC-seq count matrices around candidate sites</span></span>
 <span class="r-in"><span class="va">sites_counts.mat</span> <span class="op">&lt;-</span> <span class="fu">get_sites_counts</span><span class="op">(</span><span class="va">sites</span>,</span>
-<span class="r-in">                                     bam_file<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,</span>
-<span class="r-in">                                     <span class="va">chrom_size_file</span>,</span>
-<span class="r-in">                                     shift_ATAC<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span class="r-in">                                     genomecount_dir<span class="op">=</span><span class="st">'processed_data'</span>,</span>
 <span class="r-in">                                     genomecount_name<span class="op">=</span><span class="st">'K562.ATAC'</span>,</span>
 <span class="r-in">                                     bedGraphToBigWig_path<span class="op">=</span><span class="st">'bedGraphToBigWig'</span>,</span>
 <span class="r-in">                                     bwtool_path<span class="op">=</span><span class="st">'bwtool'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_sites_counts(sites, bam_file = "K562.ATAC.bam", chrom_size_file,     shift_ATAC = TRUE, genomecount_dir = "processed_data", genomecount_name = "K562.ATAC",     bedGraphToBigWig_path = "bedGraphToBigWig", bwtool_path = "bwtool"):</span> bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_sites_counts(sites, genomecount_dir = "processed_data", genomecount_name = "K562.ATAC",     bedGraphToBigWig_path = "bedGraphToBigWig", bwtool_path = "bwtool"):</span> bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.</span>
 </code></pre></div>
     </div>
   </div>
