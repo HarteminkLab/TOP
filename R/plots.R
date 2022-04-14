@@ -104,7 +104,7 @@ scatterplot <- function(x, y,
 #' @param mlen motif length
 #' @param title Title of the plot
 #' @export
-plot_profile <- function(cuts, mlen=10, title=''){
+plot_profile <- function(cuts, mlen=ncol(cuts)/2-200, title=''){
   profile <- colMeans(cuts)
   fwd_profile <- profile[1:(length(profile)/2)]
   fwd_profile <- fwd_profile/max(fwd_profile)
@@ -117,26 +117,27 @@ plot_profile <- function(cuts, mlen=10, title=''){
   legend('topright', legend = c('Forward strand', 'Reverse strand'), lty = 1, col = c('darkblue', 'darkred'), bty = 'n', lwd = 2)
 }
 
-#' @title Plot DNase or ATAC profiles separately by strands
+#' @title Plot DNase or ATAC profiles by strands of motif matches
 #' @param cuts DNase or ATAC cuts
 #' @param sites candidate sites
 #' @param mlen motif length
 #' @param title Title of the plot
 #' @export
-plot_profile_strands <- function(cuts, sites, mlen=10, title = '', strand = c('both', '+', '-')){
+plot_profile_strands <- function(cuts, sites, mlen=ncol(cuts)/2-200, title = '', strand = c('both', '+', '-')){
   if(nrow(cuts) != nrow(sites)){
     stop("Number of sites do not match between cuts and sites!")
   }
 
   strand <- match.arg(strand)
-  pos_profile <- colMeans(cuts[sites$strand == '+', ])
+  cuts <- as.matrix(cuts)
+  pos_profile <- colMeans(cuts[which(sites$strand == '+'), ])
   pos_profile <- pos_profile/max(pos_profile)
-  neg_profile <- colMeans(cuts[sites$strand == '-', ])
+  neg_profile <- colMeans(cuts[which(sites$strand == '-'), ])
   neg_profile <- neg_profile/max(neg_profile)
 
   if(strand == '+'){
     plot(pos_profile[1:(length(pos_profile)/2)], type = 'l', col = 'darkblue', xaxt='n',
-         xlab = 'Relative position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, max(pos_profile)), main = title)
+         xlab = 'Relative position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, 1), main = title)
     lines(pos_profile[(length(pos_profile)/2+1):length(pos_profile)], type = 'l', col = 'darkred', lwd = 2)
     axis(1, at = c(1, round(length(pos_profile)/4-mlen/2), round(length(pos_profile)/4+mlen/2), length(pos_profile)/2), labels = c('-100bp', '', '','100bp'))
     legend('topright',
@@ -144,22 +145,22 @@ plot_profile_strands <- function(cuts, sites, mlen=10, title = '', strand = c('b
            lty = 1, col = c('darkblue', 'darkred'), bty = 'n', lwd = 2, cex = 0.6)
   }else if (strand == '-'){
     plot(neg_profile[1:(length(neg_profile)/2)], type = 'l', col = 'cyan', xaxt='n',
-         xlab = 'position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, max(neg_profile)), main = title)
+         xlab = 'position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, 1), main = title)
     lines(neg_profile[(length(neg_profile)/2+1):length(neg_profile)], type = 'l', col = 'purple', lwd = 2)
     axis(1, at = c(1, round(length(pos_profile)/4-mlen/2), round(length(pos_profile)/4+mlen/2), length(pos_profile)/2), labels = c('-100bp', '', '','100bp'))
     legend('topright',
-           legend = c('Fwd profile of + strand sites', 'Rev profile of + strand sites'),
+           legend = c('Fwd profile of - strand sites', 'Rev profile of - strand sites'),
            lty = 1, col = c( 'cyan', 'purple'), bty = 'n', lwd = 2, cex = 0.6)
   }else{
     plot(pos_profile[1:(length(pos_profile)/2)], type = 'l', col = 'darkblue', xaxt='n',
-         xlab = 'position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, max(pos_profile, neg_profile)), main = title)
+         xlab = 'position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, 1), main = title)
     lines(pos_profile[(length(pos_profile)/2+1):length(pos_profile)], type = 'l', col = 'darkred', lwd = 2)
     lines(neg_profile[1:(length(neg_profile)/2)], type = 'l', col = 'cyan', lwd = 1)
     lines(neg_profile[(length(neg_profile)/2+1):length(neg_profile)], type = 'l', col = 'purple', lwd = 2)
     axis(1, at = c(1, round(length(pos_profile)/4-mlen/2), round(length(pos_profile)/4+mlen/2), length(pos_profile)/2), labels = c('-100bp', '', '','100bp'))
     legend('topright',
            legend = c('Fwd profile of + strand sites', 'Rev profile of + strand sites', 'Fwd profile of - strand sites', 'Rev profile of - strand sites'),
-           lty = 1, col = c('darkblue', 'darkred', 'cyan', 'purple'), bty = 'n', lwd = 2, cex = 0.8)
+           lty = 1, col = c('darkblue', 'darkred', 'cyan', 'purple'), bty = 'n', lwd = 2, cex = 0.7)
   }
 
 }

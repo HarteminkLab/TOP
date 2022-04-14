@@ -2,12 +2,12 @@
 % Please edit documentation in R/plots.R
 \name{plot_profile_strands}
 \alias{plot_profile_strands}
-\title{Plot DNase or ATAC profiles separately by strands}
+\title{Plot DNase or ATAC profiles by strands of motif matches}
 \usage{
 plot_profile_strands(
   cuts,
   sites,
-  mlen = 10,
+  mlen = ncol(cuts)/2 - 200,
   title = "",
   strand = c("both", "+", "-")
 )
@@ -22,5 +22,5 @@ plot_profile_strands(
 \item{title}{Title of the plot}
 }
 \description{
-Plot DNase or ATAC profiles separately by strands
+Plot DNase or ATAC profiles by strands of motif matches
 }

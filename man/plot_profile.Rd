@@ -4,7 +4,7 @@
 \alias{plot_profile}
 \title{Plot DNase or ATAC profiles}
 \usage{
-plot_profile(cuts, mlen = 10, title = "")
+plot_profile(cuts, mlen = ncol(cuts)/2 - 200, title = "")
 }
 \arguments{
 \item{cuts}{DNase or ATAC cuts}
