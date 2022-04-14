@@ -33,7 +33,8 @@ it shifts reads according to \code{shift_ATAC_bases}.}
 \description{
 This is an alternative function to the count_genome_cuts(),
 but without using \code{bedtools}.
-This may be slower than count_genome_cuts() for large BAM files.
+This is often slower than count_genome_cuts() and may require more memory
+for large BAM files.
 }
 \examples{
 count_genome_cuts_nobedtools(bam_file='K562.ATAC.bam',
