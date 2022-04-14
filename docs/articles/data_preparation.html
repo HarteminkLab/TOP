@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
       </span>
     </div>
 
@@ -284,9 +284,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">combined_data</span>, <span class="st">'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIPlabels.combined.data.rds'</span><span class="op">)</span></code></pre></div>
 <p>We can plot the footprint profiles around the motif matches</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bound_cuts_matrix</span> <span class="op">&lt;-</span> <span class="va">sites_counts.mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">combined_data</span><span class="op">$</span><span class="va">chip_label</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">]</span>
-<span class="va">mlen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sites_counts.mat</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">-</span><span class="fl">200</span>
-<span class="fu"><a href="../reference/plot_profile.html">plot_profile</a></span><span class="op">(</span><span class="va">bound_cuts_matrix</span>, <span class="va">mlen</span>, title<span class="op">=</span><span class="st">'ATAC-seq profiles around CTCF binding sites'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">bound_sites_counts.mat</span> <span class="op">&lt;-</span> <span class="va">sites_counts.mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">combined_data</span><span class="op">$</span><span class="va">chip_label</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">]</span>
+<span class="fu"><a href="../reference/plot_profile.html">plot_profile</a></span><span class="op">(</span><span class="va">bound_sites_counts.mat</span>, title<span class="op">=</span><span class="st">'ATAC-seq profiles around CTCF binding sites'</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 

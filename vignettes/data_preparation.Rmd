@@ -329,7 +329,6 @@ saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIPlabel
 
 We can plot the footprint profiles around the motif matches
 ```{r plot-profile, eval=FALSE}
-bound_cuts_matrix <- sites_counts.mat[which(combined_data$chip_label == 1), ]
-mlen <- ncol(sites_counts.mat)/2-200
-plot_profile(bound_cuts_matrix, mlen, title='ATAC-seq profiles around CTCF binding sites')
+bound_sites_counts.mat <- sites_counts.mat[which(combined_data$chip_label == 1), ]
+plot_profile(bound_sites_counts.mat, title='ATAC-seq profiles around CTCF binding sites')
 ```

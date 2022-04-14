@@ -23,7 +23,7 @@ using the function assemble_partition_training_data."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@ training data with all TF x cell type combinations.</p>
 <span class="r-in">                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span>
 <span class="r-in">                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': object 'tf_cell_table' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.data.frame(tf_cell_table):</span> object 'tf_cell_table' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Assemble training data for the logistic version of the model</span></span>
 <span class="r-in"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu">assemble_training_data</span><span class="op">(</span><span class="va">tf_cell_table</span>,</span>
@@ -163,7 +163,7 @@ training data with all TF x cell type combinations.</p>
 <span class="r-in">                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span>
 <span class="r-in">                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': object 'tf_cell_table' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.data.frame(tf_cell_table):</span> object 'tf_cell_table' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
