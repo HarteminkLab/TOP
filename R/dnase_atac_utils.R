@@ -33,7 +33,7 @@ count_genome_cuts <- function(bam_file,
 
   # Checking input arguments
   if ( Sys.which(bedtools_path) == '')
-    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path. Or use count_genome_cuts_nobedtools().' )
+    stop( 'bedtools could not be executed. Please install bedtools and set bedtools_path.' )
 
   # Checking input arguments
   if ( Sys.which(bedGraphToBigWig_path) == '' )
@@ -67,10 +67,11 @@ count_genome_cuts <- function(bam_file,
 
     # Shift ATAC-seq reads to get the centers of Tn5 binding positions
     if (shift_ATAC) {
-      cat('Shifting ATAC-seq reads ...\n')
       if (strand == '+') {
+        cat(sprintf('Shifting ATAC-seq reads by %d bp ...\n', shift_ATAC_bases[1]))
         genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + shift_ATAC_bases[1]
       } else if (strand == '-'){
+        cat(sprintf('Shifting ATAC-seq reads by %d bp ...\n', shift_ATAC_bases[2]))
         genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + shift_ATAC_bases[2]
       }
     }
@@ -82,82 +83,6 @@ count_genome_cuts <- function(bam_file,
     bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
     unlink(bedgraph_file)
   }
-
-}
-
-#' @title Count DNase-seq or ATAC-seq cuts along the genome (without using bedtools)
-#' @description This is an alternative function to the count_genome_cuts(),
-#' but without using \code{bedtools}.
-#' This is often slower than count_genome_cuts() and may require more memory
-#' for large BAM files.
-#' @param bam_file Sorted BAM file.
-#' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads according to \code{shift_ATAC_bases}.
-#' @param shift_ATAC_bases Number of bases to shift.
-#' @param outdir Output directory (default: use the directory of \code{bam_file}).
-#' @param outname Output prefix (default: use the prefix of \code{bam_file}).
-#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
-#' @import GenomicRanges
-#' @export
-#' @examples
-#' count_genome_cuts_nobedtools(bam_file='K562.ATAC.bam',
-#'                              chrom_size_file='hg38.chrom.sizes',
-#'                              shift_ATAC=TRUE,
-#'                              outdir='processed_data',
-#'                              outname='K562.ATAC.bam',
-#'                              bedGraphToBigWig_path='bedGraphToBigWig')
-count_genome_cuts_nobedtools <- function(bam_file,
-                                         chrom_size_file,
-                                         shift_ATAC = FALSE,
-                                         shift_ATAC_bases=c(4L,-4L),
-                                         outdir = dirname(bam_file),
-                                         outname,
-                                         bedGraphToBigWig_path='bedGraphToBigWig'){
-
-  # Checking input arguments
-  if ( Sys.which(bedGraphToBigWig_path) == '' )
-    stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
-
-  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, shift_ATAC_bases, return_type = 'coverage')
-  pos_coverage.gr <- coverage.gr$pos
-  neg_coverage.gr <- coverage.gr$neg
-
-  rm(coverage.gr)
-
-  if(!dir.exists(outdir))
-    dir.create(outdir, recursive = TRUE)
-
-  if(missing(outname))
-    outname <- tools::file_path_sans_ext(basename(bam_file))
-
-  # cuts coverage on + strand counts
-  cat('Processing genome cuts on + strand ...\n')
-  pos_coverage.df <- data.frame(chr = as.character(seqnames(pos_coverage.gr)),
-                                start = start(pos_coverage.gr) - 1,
-                                end = end(pos_coverage.gr),
-                                count = pos_coverage.gr$score)
-  pos_coverage.df <- pos_coverage.df[pos_coverage.df$count > 0, ]
-  pos_coverage.df <- pos_coverage.df[with(pos_coverage.df, order(chr, start)), ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.fwd.genomecounts.bedGraph'))
-  data.table::fwrite(pos_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
-
-  # cuts coverage on - strand counts
-  cat('Processing genome cuts on - strand ...\n')
-  neg_coverage.df <- data.frame(chr = as.character(seqnames(neg_coverage.gr)),
-                                start = start(neg_coverage.gr) - 1,
-                                end = end(neg_coverage.gr),
-                                count = neg_coverage.gr$score)
-  neg_coverage.df <- neg_coverage.df[neg_coverage.df$count > 0, ]
-  neg_coverage.df <- neg_coverage.df[with(neg_coverage.df, order(chr, start)), ]
-  bedgraph_file <- file.path(outdir, paste0(outname, '.rev.genomecounts.bedGraph'))
-  data.table::fwrite(neg_coverage.df, bedgraph_file,
-                     sep='\t', col.names = FALSE, scipen = 999)
-  bedGraphToBigWig(bedgraph_file, chrom_size_file, bedGraphToBigWig_path)
-  unlink(bedgraph_file)
 
 }
 
@@ -269,52 +194,6 @@ flip_neg_strand_counts <- function(sites,
 
   return(sites_counts.mat)
 }
-
-#' Read DNase or ATAC cuts or coverage of cuts from BAM file
-#'
-#' @param bam_file BAM file of DNase or ATAC-seq reads alignment
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
-#' it shifts reads according to \code{shift_ATAC_bases}.
-#' @param shift_ATAC_bases Number of bases to shift.
-#' @param return_type Options for the returned data:
-#' \dQuote{cuts} or \dQuote{coverage}.
-#' @import GenomicRanges
-#' @return A GRange object of cuts or coverage
-read_bam_cuts <- function(bam_file,
-                          shift_ATAC = FALSE,
-                          shift_ATAC_bases=c(4L,-4L),
-                          return_type = c('cuts', 'coverage')){
-
-  return_type <- match.arg(return_type)
-  cat('Reading genome cuts for', bam_file, '...\n')
-
-  # Read ATAC-seq alignments
-  reads <- GenomicAlignments::readGAlignments(bam_file)
-
-  # Extract 5' end position and shift based on strand
-  if(shift_ATAC){
-    cat('Shifting ATAC-seq reads ...\n')
-    cuts <- GenomicRanges::resize(GenomicRanges::granges(reads), fix = 'start', 1)
-    pos_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '+']), shift_ATAC_bases[1])
-    neg_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '-']), shift_ATAC_bases[2])
-    cuts <- c(pos_cuts, neg_cuts)
-  }else{
-    cuts <- GenomicRanges::resize(GenomicRanges::granges(reads), fix = 'start', 1)
-  }
-
-  if(return_type == 'coverage'){
-    cat('Counting genome cuts coverage .. \n')
-    pos_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '+']), strand = '+')
-    neg_coverage.gr <- GRanges(coverage(cuts[strand(cuts) == '-']), strand = '-')
-    cuts_coverage.gr <- GRangesList(pos = pos_coverage.gr,
-                                    neg = neg_coverage.gr)
-    return(cuts_coverage.gr)
-  }else if(return_type == 'cuts'){
-    return(cuts)
-  }
-
-}
-
 
 #' @title Perform MILLIPEDE binning on count matrix
 #' @description Perform binning using different MILLIPEDE binning schemes
