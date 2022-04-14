@@ -67,8 +67,7 @@ count_genome_cuts <- function(bam_file,
 
     # Shift ATAC-seq reads to get the centers of Tn5 binding positions
     if (shift_ATAC) {
-      cat(sprintf('Shifting ATAC-seq reads by %d and %d bp...\n',
-                  shift_ATAC_bases[1], shift_ATAC_bases[2]))
+      cat('Shifting ATAC-seq reads ...\n')
       if (strand == '+') {
         genome_counts[,c(2:3)] <- genome_counts[,c(2:3)] + shift_ATAC_bases[1]
       } else if (strand == '-'){
@@ -89,7 +88,8 @@ count_genome_cuts <- function(bam_file,
 #' @title Count DNase-seq or ATAC-seq cuts along the genome (without using bedtools)
 #' @description This is an alternative function to the count_genome_cuts(),
 #' but without using \code{bedtools}.
-#' This may be slower than count_genome_cuts() for large BAM files.
+#' This is often slower than count_genome_cuts() and may require more memory
+#' for large BAM files.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
 #' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
@@ -210,7 +210,6 @@ get_sites_counts <- function(sites,
   }
 
   cat('Extract counts around candidate sites ... \n')
-
   sites_file <- tempfile(pattern = 'sites.', tmpdir = tmpdir, fileext = '.txt')
   data.table::fwrite(sites[,1:4], sites_file, sep = '\t', col.names = FALSE, scipen = 999)
 
@@ -294,8 +293,7 @@ read_bam_cuts <- function(bam_file,
 
   # Extract 5' end position and shift based on strand
   if(shift_ATAC){
-    cat(sprintf('Shifting ATAC-seq reads by %d and %d bp...\n',
-                shift_ATAC_bases[1], shift_ATAC_bases[2]))
+    cat('Shifting ATAC-seq reads ...\n')
     cuts <- GenomicRanges::resize(GenomicRanges::granges(reads), fix = 'start', 1)
     pos_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '+']), shift_ATAC_bases[1])
     neg_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '-']), shift_ATAC_bases[2])
