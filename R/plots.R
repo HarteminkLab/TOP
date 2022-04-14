@@ -142,7 +142,7 @@ plot_profile_strands <- function(cuts, sites, mlen=ncol(cuts)/2-200, title = '',
     axis(1, at = c(1, round(length(pos_profile)/4-mlen/2), round(length(pos_profile)/4+mlen/2), length(pos_profile)/2), labels = c('-100bp', '', '','100bp'))
     legend('topright',
            legend = c('Fwd profile of + strand sites', 'Rev profile of + strand sites'),
-           lty = 1, col = c('darkblue', 'darkred'), bty = 'n', lwd = 2, cex = 0.6)
+           lty = 1, col = c('darkblue', 'darkred'), bty = 'n', lwd = 2, cex = 0.7)
   }else if (strand == '-'){
     plot(neg_profile[1:(length(neg_profile)/2)], type = 'l', col = 'cyan', xaxt='n',
          xlab = 'position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, 1), main = title)
@@ -150,7 +150,7 @@ plot_profile_strands <- function(cuts, sites, mlen=ncol(cuts)/2-200, title = '',
     axis(1, at = c(1, round(length(pos_profile)/4-mlen/2), round(length(pos_profile)/4+mlen/2), length(pos_profile)/2), labels = c('-100bp', '', '','100bp'))
     legend('topright',
            legend = c('Fwd profile of - strand sites', 'Rev profile of - strand sites'),
-           lty = 1, col = c( 'cyan', 'purple'), bty = 'n', lwd = 2, cex = 0.6)
+           lty = 1, col = c( 'cyan', 'purple'), bty = 'n', lwd = 2, cex = 0.7)
   }else{
     plot(pos_profile[1:(length(pos_profile)/2)], type = 'l', col = 'darkblue', xaxt='n',
          xlab = 'position', ylab = 'Normalized cuts', lwd = 2, ylim = c(0, 1), main = title)
