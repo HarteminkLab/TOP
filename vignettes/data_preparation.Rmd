@@ -72,7 +72,7 @@ K562 cell type using the human genome assembly version hg38.
 Load TOP R package
 ```{r load-TOP-package, eval=FALSE, message=FALSE, warning=FALSE}
 library(Rsamtools)
-library(GenomicAlignments)
+# library(GenomicAlignments)
 library(TOP)
 ```
 
@@ -81,9 +81,6 @@ library(TOP)
 To scan for TF motif matches, 
 we use the [FIMO](https://meme-suite.org/meme/doc/fimo.html)
 software from the MEME suite.
-
-Download the CTCF motif file `MA0139.1.meme` (in MEME format)
-from [JASPAR](https://jaspar.genereg.net/matrix/MA0139.1/). 
 
 Download hg38 reference genome FASTA file and save it as `hg38.fa`.
 ```{bash download-fasta, eval=FALSE}
@@ -96,35 +93,30 @@ Generate the `chrom.sizes` file which will be needed later.
 index_fa('hg38.fa', chromsize_file='hg38.chrom.sizes')
 ```
 
-We use FIMO with the threshold `p-value < 1e-5` in most of our analyses. 
-You can set `thresh = "1e-4"` (FIMO's default threshold), if you need more motif matches.
-
-You can set option `max_strand=TRUE`, which will only report the match 
-for the strand with the higher score, if matches on both strands at a given 
-position satisfy the output threshold. 
-
-You can also set different background model in `bfile`, 
-for example, `bfile='--uniform--'` would use uniform nucleotide frequencies.
-
-Save output in a text file `MA0139.1_1e-5.fimo.txt`, 
-which will be used in the next step. 
-
+Download the CTCF motif file `MA0139.1.meme` (in MEME format)
+from [JASPAR](https://jaspar.genereg.net/matrix/MA0139.1/). 
 ```{bash download-motif, eval=FALSE}
 wget https://jaspar.genereg.net/api/v1/matrix/MA0139.1.meme
 ```
 
+We use FIMO with the threshold `p-value < 1e-5` in most of our analyses. 
+You can set `thresh = "1e-4"` (FIMO's default threshold), if you need more motif matches.
+
+You can also set different background model in `bfile`, 
+for example, `bfile='--uniform--'` would use uniform nucleotide frequencies.
+
+Save results in `MA0139.1_1e-5.fimo.txt` and `MA0062.1_1e-5.fimo.txt`, 
+which will be used in the next step. 
 ```{r get-motif-matches, eval=FALSE}
 fimo_motif_matches(motif_file='MA0139.1.meme', 
                    sequence_file='hg38.fa', 
                    thresh_pValue=1e-5, 
-                   max_strand=TRUE, 
-                   outname='MA0139.1_1e-5.fimo.txt',
-                   fimo_path='fimo')
+                   outname='MA0139.1_1e-5.fimo.txt')
 ```
 
 **Step 2: Get candidate TF binding sites**
 
-We take motif matches obtained from FIMO (`MA0139.1_1e-5.fimo.txt`) 
+We take motif matches obtained from FIMO 
 as candidate binding sites, and add 100 bp flanking regions on 
 both sides of the motifs, then filter candidate sites by FIMO p-value, and
 filter the candidate sites falling in ENCODE blacklist regions. 
@@ -136,10 +128,10 @@ wget https://www.encodeproject.org/files/ENCFF356LFX/@@download/ENCFF356LFX.bed.
 mv ENCFF356LFX.bed.gz blacklist.hg38.bed.gz
 ```
 
-Obtain the candidate sites and save to a text file (`MA0139.1_1e-5.candidate_sites.txt`)
+Obtain the candidate sites
 ```{r get-candidate-sites, eval=FALSE}
-# fimo_file: FIMO result .txt file.
-# thresh_pValue: FIMO p-value threshold (default: 1e-5).
+# fimo_file: FIMO result file.
+# thresh_pValue: FIMO p-value threshold.
 # blacklist_file: file with ENOCDE blacklist regions.
 sites <- process_candidate_sites(fimo_file='MA0139.1_1e-5.fimo.txt', 
                                  thresh_pValue=1e-5, 
@@ -173,39 +165,33 @@ sort_index_idxstats_bam('K562.ATAC.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 
 Next, we count the DNase or ATAC cuts along the genome, and save the genome counts 
 in BigWig files. 
-This step could take a long time, but it only needs to be done once. 
-The BigWig files will be used later for extracting the cuts 
-around the candidate sites.
+This step often takes a while especially for large BAM files, 
+but it only needs to be done once. 
+
+The resulting BigWig files will be 
+used later for extracting the count matrices
+around the candidate sites for different motifs. 
 
 We need the command line tools: 
 [`bedtools`](https://bedtools.readthedocs.io/en/latest/) 
-and `bedGraphToBigWig` from [UCSC binary utilities](http://hgdownload.soe.ucsc.edu/admin/exe/) 
+and `bedGraphToBigWig` from 
+[UCSC binary utilities](http://hgdownload.soe.ucsc.edu/admin/exe/) 
 for this step.
 
-You can shift ATAC-seq reads by setting `shift_ATAC=TRUE`. 
-This will shift the reads aligned to the + strand by +4 bp, and shift
-reads aligned to the - strand by -5 bp,
-as in [Buenrostro et al. 2013](https://doi.org/10.1038/nmeth.2688). 
-Yet, we found the shifting of ATAC-seq reads have little impact on the results, 
-mostly due to our binning approach being robust to 
-the small-scale positional shifts or digestion bias. 
+For ATAC-seq, when \code{shift_ATAC = TRUE}, reads
+were shifted so as to address offsets and align the signal across strands.
 
 ```{r count_genome_coverage, eval=FALSE}
 # bam_file: sorted BAM file.
 # chrom_size_file: file of genome sizes by chromosomes.
-# shift_ATAC: If TRUE, shift ATAC-sesq reads aligned to the + strand by +4 bp, 
-# and shift reads aligned to the - strand by -5 bp. 
-# outdir: directory for saving the BigWig files of genome counts.
+# shift_ATAC: If TRUE, shift ATAC-seq reads.
+# outdir: directory for saving the BigWig files of genome counts, same as outdir in get_sites_counts().
 # outname: prefix for the BigWig files, same as genomecount_name in get_sites_counts().
-# bedtools_path: Path to bedtools executable.
-# bedGraphToBigWig_path: path to UCSC bedGraphToBigWig executable.
 count_genome_cuts(bam_file='K562.ATAC.bam', 
                   chrom_size_file='hg38.chrom.sizes', 
                   shift_ATAC=TRUE,
                   outdir='processed_data',
-                  outname='K562.ATAC.bam',
-                  bedtools_path='bedtools',
-                  bedGraphToBigWig_path='bedGraphToBigWig')
+                  outname='K562.ATAC')
 ```
 
 **Step 4: Get DNase- or ATAC-seq count matrices around candidate sites, then normalize, bin and transform the counts**
@@ -218,14 +204,10 @@ extract read counts from the BigWig files generated earlier.
 # sites: data frame containing candidate sites.
 # genomecount_dir: directory for genome counts, same as outdir in count_genome_cuts().
 # genomecount_name: file prefix for genome counts, same as outname in count_genome_cuts().
-# bwtool_path: path to bwtool executable.
 sites_counts.mat <- get_sites_counts(sites,
-                                     bam_file='K562.ATAC.bam',
-                                     chrom_size_file='hg38.chrom.sizes', 
-                                     shift_ATAC=TRUE,
                                      genomecount_dir='processed_data',
                                      genomecount_name='K562.ATAC')
-
+saveRDS(sites_counts.mat, "processed_data/CTCF.K562.ATAC.counts.mat.rds")
 ```
 
 Normalize, bin and transform counts:
@@ -343,4 +325,11 @@ combined_data <- data.frame(sites, bins, chip_label = sites_chip_labels$chip_lab
 colnames(combined_data) <- c('chr','start','end','name','pwm.score','strand','p.value', 
                              paste0('bin', 1:ncol(bins)), 'chip_label')
 saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIPlabels.combined.data.rds')
+```
+
+We can plot the footprint profiles around the motif matches
+```{r plot-profile, eval=FALSE}
+bound_cuts_matrix <- sites_counts.mat[which(combined_data$chip_label == 1), ]
+mlen <- ncol(sites_counts.mat)/2-200
+plot_profile(bound_cuts_matrix, mlen, title='ATAC-seq profiles around CTCF binding sites')
 ```
