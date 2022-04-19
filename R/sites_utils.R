@@ -8,7 +8,12 @@
 #' @param outname Output file name.
 #' @param outdir Output directory.
 #' @param thresh_pValue FIMO option 'thresh' for p-value threshold.
-#' @param bfile FIMO option 'bfile' for background file or model.
+#' @param background Option for background model:
+#' 'default': use FIMO default background setting;
+#' 'motif': use the 0-order letter frequencies contained in the motif file;
+#' 'uniform': use uniform letter frequencies;
+#' 'file': use the file specified in 'background_file'.
+#' @param background_file Path to a file in Markov Background Model Format.
 #' @param skip_matched_sequence FIMO option 'skip_matched_sequence'.
 #' Turns off output of the sequence of motif matches.
 #' This speeds up processing considerably.
@@ -35,13 +40,16 @@ fimo_motif_matches <- function(motif_file,
                                outname='fimo.txt',
                                outdir=dirname(outname),
                                thresh_pValue=1e-4,
-                               bfile='--uniform--',
+                               background=c('default', 'motif', 'uniform', 'file'),
+                               background_file,
                                skip_matched_sequence=TRUE,
                                max_strand=FALSE,
                                max_stored_scores=100000,
                                options='',
-                               verbosity=1,
+                               verbosity=2,
                                fimo_path='fimo') {
+
+  background <- match.arg(background)
 
   if ( Sys.which(fimo_path) == '' ) {
     stop( 'fimo could not be executed. Please install fimo and set fimo_path.' )
@@ -59,12 +67,28 @@ fimo_motif_matches <- function(motif_file,
     skip_matched_sequence <- ''
   }
 
-  if(missing(bfile)){
-    bfile <- '--uniform--'
+  if(background == 'default'){
+    bfile <- ''
+  }else if(background == 'motif'){
+    bfile <- '--bfile --motif--'
+  }else if(background == 'uniform'){
+    bfile <- '--bfile --uniform--'
+  }else if(background == 'file'){
+    if(missing(background_file)){
+      stop('Please specify the path to the background file!')
+    }else if(!file.exists(background_file)){
+      stop(paste('Background file', background_file, 'cannot be found!'))
+    }else{
+      bfile <- paste('--bfile', background_file)
+    }
   }
 
   if(missing(max_stored_scores)){
     max_stored_scores <- 100000
+  }
+
+  if(!verbosity %in% c(1,2,3,4,5)){
+    stop('verbosity must be 1, 2, 3, 4, or 5!')
   }
 
   if(!dir.exists(outdir)){
@@ -72,7 +96,7 @@ fimo_motif_matches <- function(motif_file,
   }
 
   cmd <- paste('fimo --text',
-               '--bfile', bfile,
+               bfile,
                '--thresh', thresh_pValue,
                skip_matched_sequence,
                max_strand,

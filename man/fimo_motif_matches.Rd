@@ -10,12 +10,13 @@ fimo_motif_matches(
   outname = "fimo.txt",
   outdir = dirname(outname),
   thresh_pValue = 1e-04,
-  bfile = "--uniform--",
+  background = c("default", "motif", "uniform", "file"),
+  background_file,
   skip_matched_sequence = TRUE,
   max_strand = FALSE,
   max_stored_scores = 1e+05,
   options = "",
-  verbosity = 1,
+  verbosity = 2,
   fimo_path = "fimo"
 )
 }
@@ -30,7 +31,13 @@ fimo_motif_matches(
 
 \item{thresh_pValue}{FIMO option 'thresh' for p-value threshold.}
 
-\item{bfile}{FIMO option 'bfile' for background file or model.}
+\item{background}{Option for background model:
+'default': use FIMO default background setting;
+'motif': use the 0-order letter frequencies contained in the motif file;
+'uniform': use uniform letter frequencies;
+'file': use the file specified in 'background_file'.}
+
+\item{background_file}{Path to a file in Markov Background Model Format.}
 
 \item{skip_matched_sequence}{FIMO option 'skip_matched_sequence'.
 Turns off output of the sequence of motif matches.
