@@ -40,7 +40,7 @@ select_TOP_samples <- function(TOP_samples, thin = 1, n_samples = 1000) {
 #' @return A data frame of combined and averaged posterior samples.
 #' @export
 #' @examples
-#' TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
+#' # TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
 combine_TOP_samples <- function(TOP_samples_files,
                                 thin = 1,
                                 n_samples = 1000) {
