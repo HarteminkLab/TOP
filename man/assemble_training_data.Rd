@@ -74,19 +74,19 @@ using the function \code{assemble_partition_training_data}.
 # Assemble training data for the quantitative occupancy model,
 # use odd chromosomes for training, keep at most 50000 candidate sites for
 # each TF x cell type combination, and split training data into 10 partitions.
-assembled_training_data <- assemble_training_data(tf_cell_table,
-                                                  logistic_model = FALSE,
-                                                  chip_col = 'chip',
-                                                  training_chrs = paste0('chr', seq(1,21,2)),
-                                                  n_partitions=10,
-                                                  max_sites = 50000)
+# assembled_training_data <- assemble_training_data(tf_cell_table,
+                                                    logistic_model = FALSE,
+                                                    chip_col = 'chip',
+                                                    training_chrs = paste0('chr', seq(1,21,2)),
+                                                    n_partitions=10,
+                                                    max_sites = 50000)
 
 # Assemble training data for the logistic version of the model
-assembled_training_data <- assemble_training_data(tf_cell_table,
-                                                  logistic_model = TRUE,
-                                                  chip_col = 'chip_label',
-                                                  training_chrs = paste0('chr', seq(1,21,2)),
-                                                  n_partitions=10,
-                                                  max_sites = 50000)
+# assembled_training_data <- assemble_training_data(tf_cell_table,
+                                                    logistic_model = TRUE,
+                                                    chip_col = 'chip_label',
+                                                    training_chrs = paste0('chr', seq(1,21,2)),
+                                                    n_partitions=10,
+                                                    max_sites = 50000)
 
 }

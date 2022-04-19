@@ -51,7 +51,6 @@ This only applies when \code{logistic_model = FALSE}.}
 }
 \value{
 Returns a list with the following elements,
-
 \item{model}{TOP model name.}
 \item{level}{selected hierarchy level.}
 \item{coef}{posterior mean of regression coefficients.}
@@ -69,36 +68,36 @@ using TOP model trained from ChIP-seq read counts or binary labels.
 # Predict CTCF occupancy in K562 using the quantitative occupancy model:
 
 # Predict using the 'bottom' level model
-result <- predict_TOP(data, TOP_coef,
-                      tf_name = 'CTCF', cell_type = 'K562',
-                      level = 'bottom',
-                      logistic_model = FALSE,
-                      transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
+# result <- predict_TOP(data, TOP_coef,
+                        tf_name = 'CTCF', cell_type = 'K562',
+                        level = 'bottom',
+                        logistic_model = FALSE,
+                        transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
 
 # Predict using the 'best' model
 # Since CTCF in K562 cell type is included in training,
 # the 'best' model is the 'bottom' level model.
-result <- predict_TOP(data, TOP_coef,
-                      tf_name = 'CTCF', cell_type = 'K562', level = 'best',
-                      logistic_model = FALSE, transform = 'asinh')
+# result <- predict_TOP(data, TOP_coef,
+                        tf_name = 'CTCF', cell_type = 'K562', level = 'best',
+                        logistic_model = FALSE, transform = 'asinh')
 
 # We can use the 'middle' model to predict CTCF in K562
 # or other cell types or conditions
-result <- predict_TOP(data, TOP_coef,
-                      tf_name = 'CTCF', level = 'middle',
-                      logistic_model = FALSE, transform = 'asinh')
+# result <- predict_TOP(data, TOP_coef,
+                        tf_name = 'CTCF', level = 'middle',
+                        logistic_model = FALSE, transform = 'asinh')
 
 # Predict CTCF binding probability using the logistic version of the model:
 # No need to set the argument for 'transform' for the logistic model.
 
 # Predict using the 'bottom' level model
-result <- predict_TOP(data, TOP_coef,
-                      tf_name = 'CTCF', cell_type = 'K562',
-                      level = 'best',
-                      logistic_model = TRUE)
+# result <- predict_TOP(data, TOP_coef,
+                        tf_name = 'CTCF', cell_type = 'K562',
+                        level = 'best',
+                        logistic_model = TRUE)
 
 # Predict using the 'middle' level model
-result <- predict_TOP(data, TOP_coef,
-                      tf_name = 'CTCF', level = 'middle',
-                      logistic_model = TRUE)
+# result <- predict_TOP(data, TOP_coef,
+                        tf_name = 'CTCF', level = 'middle',
+                        logistic_model = TRUE)
 }

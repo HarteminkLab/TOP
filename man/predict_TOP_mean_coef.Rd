@@ -29,8 +29,8 @@ Predict TF occupancy using posterior mean of TOP regression
 coefficients.
 }
 \examples{
-predictions <- predict_TOP_mean_coef(data, # data frame of input data.
-                                     mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
-                                     transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
+# predictions <- predict_TOP_mean_coef(data, # data frame of input data.
+                                       mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
+                                       transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
 
 }
