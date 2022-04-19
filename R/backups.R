@@ -1,22 +1,4 @@
 
-
-# Adjust the candidate site windows (by 1bp) for motif matches on the - strand due to the shift of ATAC-seq reads
-adjust_ATACshift <- function(ATAC_counts_mat, sites){
-  cat('Adjust counts for motif matches on the - strand...\n')
-  pos_strand <- which(sites$strand == '+')
-  neg_strand <- which(sites$strand == '-')
-  fwd_cols <- 1:(ncol(ATAC_counts_mat)/2)
-  rev_cols <- (ncol(ATAC_counts_mat)/2+1):ncol(ATAC_counts_mat)
-  pos_strand_cols <- c(fwd_cols[1:(length(fwd_cols)-1)], rev_cols[1:(length(fwd_cols)-1)])
-  neg_strand_cols <- c(fwd_cols[2:length(fwd_cols)], rev_cols[2:length(rev_cols)])
-  pos_ATAC_counts_mat <- ATAC_counts_mat[pos_strand, pos_strand_cols]
-  neg_ATAC_counts_mat <- ATAC_counts_mat[neg_strand, neg_strand_cols]
-  adjusted_ATAC_counts_mat <- rbind(pos_ATAC_counts_mat, neg_ATAC_counts_mat)
-  m <- match(rownames(ATAC_counts_mat), rownames(adjusted_ATAC_counts_mat))
-  adjusted_ATAC_counts_mat <- adjusted_ATAC_counts_mat[m, ]
-  return(adjusted_ATAC_counts_mat)
-}
-
 # Count DNase-seq or ATAC-seq cuts along the genome (without using bedtools)
 # This is an alternative function to the count_genome_cuts(),
 # but without using \code{bedtools}.
@@ -24,6 +6,7 @@ adjust_ATACshift <- function(ATAC_counts_mat, sites){
 # for large BAM files.
 count_genome_cuts_nobedtools <- function(bam_file,
                                          chrom_size_file,
+                                         data_type=c('DNase', 'ATAC'),
                                          shift_ATAC = FALSE,
                                          shift_ATAC_bases=c(4L,-4L),
                                          outdir = dirname(bam_file),
@@ -34,7 +17,9 @@ count_genome_cuts_nobedtools <- function(bam_file,
   if ( Sys.which(bedGraphToBigWig_path) == '' )
     stop( 'bedGraphToBigWig could not be executed. Please install bedGraphToBigWig and set bedGraphToBigWig_path.' )
 
-  coverage.gr <- read_bam_cuts(bam_file, shift_ATAC, shift_ATAC_bases, return_type = 'coverage')
+  data_type <- match.arg(data_type)
+
+  coverage.gr <- read_bam_cuts(bam_file, data_type, shift_ATAC, shift_ATAC_bases, return_type = 'coverage')
   pos_coverage.gr <- coverage.gr$pos
   neg_coverage.gr <- coverage.gr$neg
 
@@ -147,10 +132,12 @@ read_bam_cuts_ATACreadpairs <- function(bam_file,
 
 # Read DNase or ATAC cuts or coverage of cuts from BAM file
 read_bam_cuts <- function(bam_file,
+                          data_type=c('DNase', 'ATAC'),
                           shift_ATAC = FALSE,
                           shift_ATAC_bases=c(4L,-4L),
                           return_type = c('cuts', 'coverage')){
 
+  data_type <- match.arg(data_type)
   return_type <- match.arg(return_type)
   cat('Reading genome cuts for', bam_file, '...\n')
 
@@ -158,7 +145,7 @@ read_bam_cuts <- function(bam_file,
   reads <- GenomicAlignments::readGAlignments(bam_file)
 
   # Extract 5' end position and shift based on strand
-  if(shift_ATAC){
+  if (data_type == 'ATAC' && shift_ATAC == TRUE) {
     cat('Shifting ATAC-seq reads ...\n')
     cuts <- GenomicRanges::resize(GenomicRanges::granges(reads), fix = 'start', 1)
     pos_cuts <- GenomicRanges::shift(GenomicRanges::granges(cuts[strand(cuts) == '+']), shift_ATAC_bases[1])
