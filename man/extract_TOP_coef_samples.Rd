@@ -2,7 +2,7 @@
 % Please edit documentation in R/postfit_coef_samples.R
 \name{extract_TOP_coef_samples}
 \alias{extract_TOP_coef_samples}
-\title{Extract alpha and beta coefficients from TOP posterior samples}
+\title{Extract regression coefficients from TOP posterior samples}
 \usage{
 extract_TOP_coef_samples(
   TOP_samples,
@@ -15,15 +15,15 @@ extract_TOP_coef_samples(
 )
 }
 \arguments{
-\item{TOP_samples}{TOP samples combined from all partitions using
-\code{combine_TOP_samples}.}
+\item{TOP_samples}{TOP samples combined from all partitions using the
+\code{combine_TOP_samples()} function.}
 
 \item{tf_cell_combos}{A table with the indices and names of TF and cell type
 combinations from the assembled training data. If missing,
 will extract from assembled_training_data.}
 
 \item{assembled_training_data}{Assembled training data as in the
-\code{assemble_training_data} function.}
+\code{assemble_training_data()} function.}
 
 \item{tf_name}{TF name.}
 
@@ -31,14 +31,14 @@ will extract from assembled_training_data.}
 
 \item{n_bins}{Number of DNase or ATAC bins in TOP model (default = 5).}
 
-\item{level}{The level in the TOP model (options: bottom, middle, or top),
-'bottom' level: TF- and cell-type- specific,
-'middle' level: TF-specific, cell-type generic,
-'top' level: TF-generic}
+\item{level}{The level in the TOP model (options: \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}).
+\sQuote{bottom} level: TF- and cell-type- specific;
+\sQuote{middle} level: TF-specific, cell-type generic;
+\sQuote{top} level: TF-generic}
 }
 \value{
-A data frame of posterior samples for TOP's alpha and beta coefficients.
+A data frame of posterior samples for TOP's regression coefficients.
 }
 \description{
-Extract alpha and beta coefficients from TOP posterior samples
+Extract regression coefficients from TOP posterior samples
 }

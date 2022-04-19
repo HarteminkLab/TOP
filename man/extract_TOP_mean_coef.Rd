@@ -2,7 +2,7 @@
 % Please edit documentation in R/postfit_coef_samples.R
 \name{extract_TOP_mean_coef}
 \alias{extract_TOP_mean_coef}
-\title{Extract the posterior mean coefficients for each level of TOP model}
+\title{Extract the posterior mean of regression coefficients for each level of TOP model}
 \usage{
 extract_TOP_mean_coef(
   TOP_samples,
@@ -12,12 +12,12 @@ extract_TOP_mean_coef(
 )
 }
 \arguments{
-\item{TOP_samples}{TOP samples combined from all partitions using
-\code{combine_TOP_samples}.}
+\item{TOP_samples}{TOP samples combined from all partitions using the
+\code{combine_TOP_samples()} function.}
 
 \item{tf_cell_combos}{A table with the indices and names of TF and cell type
 combinations from the assembled training data. If missing,
-will extract from assembled_training_data.}
+will extract from \code{assembled_training_data}.}
 
 \item{assembled_training_data}{Assembled training data as in the
 \code{assemble_training_data} function.}
@@ -25,9 +25,20 @@ will extract from assembled_training_data.}
 \item{n_bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
 }
 \value{
-A list of posterior mean coefficients at each level of TOP model.
+A list of posterior mean regression coefficients at each level of TOP model.
 }
 \description{
-Extract alpha and beta coefficients from TOP posterior samples,
-and return the mean of coefficients at each level of TOP model.
+Extract regression coefficients from TOP posterior samples,
+and return the posterior mean of coefficients at each level of TOP model.
+}
+\examples{
+\dontrun{
+TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples,
+                                       assembled_training_data = assembled_training_data)
+
+# or
+tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
+TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples,
+                                       tf_cell_combos = tf_cell_combos)
+}
 }

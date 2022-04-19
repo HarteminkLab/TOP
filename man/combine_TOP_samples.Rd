@@ -9,20 +9,23 @@ combine_TOP_samples(TOP_samples_files, thin = 1, n_samples = 1000)
 \arguments{
 \item{TOP_samples_files}{Files of TOP posterior samples from all partitions.}
 
-\item{thin}{thinning rate of extract the posterior samples,
+\item{thin}{Thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).}
 
-\item{n_samples}{Keep n_samples posterior samples (randomly choose),
-when the number of posterior samples is greater than \code{n_samples}.}
+\item{n_samples}{Keep \code{n} posterior samples (randomly choose),
+when the number of posterior samples is greater than \code{n}.}
 }
 \value{
 A data frame of combined and averaged posterior samples.
 }
 \description{
 Combine and take the average of TOP posterior samples
-from all partitions. Use \code{select_TOP_samples} to select
-posterior samples from each partition.
+from all partitions.
 }
 \examples{
-# TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
+\dontrun{
+# Randomly select 1000 posterior samples from each partition.
+# Then, combine and take the average of the posterior samples from all partitions.
+TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
+}
 }

@@ -8,8 +8,8 @@ combinations from the assembled training data}
 extract_tf_cell_combos(assembled_training_data)
 }
 \arguments{
-\item{assembled_training_data}{Assembled training data as in the
-\code{assemble_training_data} function}
+\item{assembled_training_data}{Assembled training data obtained from the
+\code{assemble_training_data()} function.}
 }
 \value{
 a data frame of the indices and names of TF x cell type combinations.
@@ -18,4 +18,9 @@ a data frame of the indices and names of TF x cell type combinations.
 Extract a table listing the indices and names of TF x cell type
 combinations from the assembled training data.
 This will be used to extract regression coefficients from the TOP fit result.
+}
+\examples{
+\dontrun{
+tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
+}
 }

@@ -1,46 +1,20 @@
-#' @title Select TOP posterior samples
-#' @description Select posterior samples and perform thinning and sampling
-#' of the posterior samples if needed.
-#' @param TOP_samples TOP posterior samples.
-#' @param thin Thinning rate of extract the posterior samples,
-#' must be a positive integer (default = 1, no thinning performed).
-#' @param n_samples Keep n_samples posterior samples (randomly choose),
-#' when the number of posterior samples is greater than \code{n_samples}.
-#' @return A data frame of posterior samples.
-#' @export
-#'
-select_TOP_samples <- function(TOP_samples, thin = 1, n_samples = 1000) {
-
-  # If samples are from multiple MCMC chains, combine samples from the chains
-  if ( is.list(TOP_samples) ){
-    TOP_samples <- as.data.frame(do.call(rbind, TOP_samples))
-  }
-
-  if (thin > 1) {
-    TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), by = thin), ]
-  }
-
-  if (nrow(TOP_samples) > n_samples) {
-    TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), length.out = n_samples),]
-  }
-
-  return(TOP_samples)
-
-}
 
 #' @title Combine and take the average of TOP posterior samples from all partitions
 #' @description Combine and take the average of TOP posterior samples
-#' from all partitions. Use \code{select_TOP_samples} to select
-#' posterior samples from each partition.
+#' from all partitions.
 #' @param TOP_samples_files Files of TOP posterior samples from all partitions.
-#' @param thin thinning rate of extract the posterior samples,
+#' @param thin Thinning rate of extract the posterior samples,
 #' must be a positive integer (default = 1, no thinning performed).
-#' @param n_samples Keep n_samples posterior samples (randomly choose),
-#' when the number of posterior samples is greater than \code{n_samples}.
+#' @param n_samples Keep \code{n} posterior samples (randomly choose),
+#' when the number of posterior samples is greater than \code{n}.
 #' @return A data frame of combined and averaged posterior samples.
 #' @export
 #' @examples
-#' # TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
+#' \dontrun{
+#' # Randomly select 1000 posterior samples from each partition.
+#' # Then, combine and take the average of the posterior samples from all partitions.
+#' TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
+#' }
 combine_TOP_samples <- function(TOP_samples_files,
                                 thin = 1,
                                 n_samples = 1000) {
@@ -62,89 +36,29 @@ combine_TOP_samples <- function(TOP_samples_files,
   return(combined_TOP_samples)
 }
 
-#' @title Extract alpha and beta coefficients from TOP posterior samples
-#'
-#' @param TOP_samples TOP samples combined from all partitions using
-#' \code{combine_TOP_samples}.
+#' @title Extract the posterior mean of regression coefficients for each level of TOP model
+#' @description Extract regression coefficients from TOP posterior samples,
+#' and return the posterior mean of coefficients at each level of TOP model.
+#' @param TOP_samples TOP samples combined from all partitions using the
+#' \code{combine_TOP_samples()} function.
 #' @param tf_cell_combos A table with the indices and names of TF and cell type
 #' combinations from the assembled training data. If missing,
-#' will extract from assembled_training_data.
-#' @param assembled_training_data Assembled training data as in the
-#' \code{assemble_training_data} function.
-#' @param tf_name TF name.
-#' @param cell_type Cell type.
-#' @param n_bins Number of DNase or ATAC bins in TOP model (default = 5).
-#' @param level The level in the TOP model (options: bottom, middle, or top),
-#' 'bottom' level: TF- and cell-type- specific,
-#' 'middle' level: TF-specific, cell-type generic,
-#' 'top' level: TF-generic
-#' @return A data frame of posterior samples for TOP's alpha and beta coefficients.
-#' @export
-#'
-extract_TOP_coef_samples <- function(TOP_samples,
-                                     tf_cell_combos,
-                                     assembled_training_data,
-                                     tf_name,
-                                     cell_type,
-                                     n_bins = 5,
-                                     level = c('bottom', 'middle', 'top')){
-
-  level <- match.arg(level)
-
-  if(missing(tf_cell_combos)){
-    if(!missing(assembled_training_data)){
-      tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
-    }else{
-      stop('Please provide tf_cell_combos or assembled_training_data!')
-    }
-  }
-
-  TOP_samples <- as.data.frame(TOP_samples)
-
-  if(level == 'bottom' && !missing(tf_name) && !missing(cell_type)){
-    tf_cell_combo <- tf_cell_combos[tf_cell_combos$tf_name == tf_name & tf_cell_combos$cell_type == cell_type,]
-    tf_id <- tf_cell_combo$tf_id[1]
-    cell_id <- tf_cell_combo$cell_id[1]
-
-    # alpha's and beta's are TF- and cell-type-specific model coefficients
-    # specific for each TF and cell type combination
-    data_id <- sprintf('[%s,%s]', tf_id, cell_id)
-    coef_names <- c(paste0('alpha', data_id), paste0('beta', 1:(1+n_bins), data_id))
-    TOP_coef_samples <- TOP_samples[, coef_names]
-
-  }else if( level == 'middle' && !missing(tf_name) ){
-    tf_id <- tf_cell_combos$tf_id[tf_cell_combos$tf_name == tf_name][1]
-
-    # Alpha and Beta's are TF specific, cell-type-generic model coefficients
-    data_id <- sprintf('[%s]', tf_id)
-    coef_names <- c(paste0('Alpha', data_id), paste0('Beta', 1:(1+n_bins), data_id))
-    TOP_coef_samples <- TOP_samples[, coef_names]
-
-  }else if(level == 'top'){
-    # A and B's are TF-generic model coefficients
-    coef_names <- c('A', paste0('B', 1:(1+n_bins)))
-    TOP_coef_samples <- TOP_samples[, coef_names]
-
-  }
-
-  return(TOP_coef_samples)
-
-}
-
-#' @title Extract the posterior mean coefficients for each level of TOP model
-#' @description Extract alpha and beta coefficients from TOP posterior samples,
-#' and return the mean of coefficients at each level of TOP model.
-#' @param TOP_samples TOP samples combined from all partitions using
-#' \code{combine_TOP_samples}.
-#' @param tf_cell_combos A table with the indices and names of TF and cell type
-#' combinations from the assembled training data. If missing,
-#' will extract from assembled_training_data.
+#' will extract from \code{assembled_training_data}.
 #' @param assembled_training_data Assembled training data as in the
 #' \code{assemble_training_data} function.
 #' @param n_bins Number of DNase or ATAC bins in TOP model (default = 5)
-#' @return A list of posterior mean coefficients at each level of TOP model.
+#' @return A list of posterior mean regression coefficients at each level of TOP model.
 #' @export
+#' @examples
+#' \dontrun{
+#' TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples,
+#'                                        assembled_training_data = assembled_training_data)
 #'
+#' # or
+#' tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
+#' TOP_mean_coef <- extract_TOP_mean_coef(TOP_samples,
+#'                                        tf_cell_combos = tf_cell_combos)
+#' }
 extract_TOP_mean_coef <- function(TOP_samples,
                                   tf_cell_combos,
                                   assembled_training_data,
@@ -203,16 +117,89 @@ extract_TOP_mean_coef <- function(TOP_samples,
   return(TOP_mean_coef)
 }
 
+#' @title Extract regression coefficients from TOP posterior samples
+#'
+#' @param TOP_samples TOP samples combined from all partitions using the
+#' \code{combine_TOP_samples()} function.
+#' @param tf_cell_combos A table with the indices and names of TF and cell type
+#' combinations from the assembled training data. If missing,
+#' will extract from assembled_training_data.
+#' @param assembled_training_data Assembled training data as in the
+#' \code{assemble_training_data()} function.
+#' @param tf_name TF name.
+#' @param cell_type Cell type.
+#' @param n_bins Number of DNase or ATAC bins in TOP model (default = 5).
+#' @param level The level in the TOP model (options: \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}).
+#' \sQuote{bottom} level: TF- and cell-type- specific;
+#' \sQuote{middle} level: TF-specific, cell-type generic;
+#' \sQuote{top} level: TF-generic
+#' @return A data frame of posterior samples for TOP's regression coefficients.
+#' @export
+extract_TOP_coef_samples <- function(TOP_samples,
+                                     tf_cell_combos,
+                                     assembled_training_data,
+                                     tf_name,
+                                     cell_type,
+                                     n_bins = 5,
+                                     level = c('bottom', 'middle', 'top')){
+
+  level <- match.arg(level)
+
+  if(missing(tf_cell_combos)){
+    if(!missing(assembled_training_data)){
+      tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
+    }else{
+      stop('Please provide tf_cell_combos or assembled_training_data!')
+    }
+  }
+
+  TOP_samples <- as.data.frame(TOP_samples)
+
+  if(level == 'bottom' && !missing(tf_name) && !missing(cell_type)){
+    tf_cell_combo <- tf_cell_combos[tf_cell_combos$tf_name == tf_name & tf_cell_combos$cell_type == cell_type,]
+    tf_id <- tf_cell_combo$tf_id[1]
+    cell_id <- tf_cell_combo$cell_id[1]
+
+    # alpha's and beta's are TF- and cell-type-specific model coefficients
+    # specific for each TF and cell type combination
+    data_id <- sprintf('[%s,%s]', tf_id, cell_id)
+    coef_names <- c(paste0('alpha', data_id), paste0('beta', 1:(1+n_bins), data_id))
+    TOP_coef_samples <- TOP_samples[, coef_names]
+
+  }else if( level == 'middle' && !missing(tf_name) ){
+    tf_id <- tf_cell_combos$tf_id[tf_cell_combos$tf_name == tf_name][1]
+
+    # Alpha and Beta's are TF specific, cell-type-generic model coefficients
+    data_id <- sprintf('[%s]', tf_id)
+    coef_names <- c(paste0('Alpha', data_id), paste0('Beta', 1:(1+n_bins), data_id))
+    TOP_coef_samples <- TOP_samples[, coef_names]
+
+  }else if(level == 'top'){
+    # A and B's are TF-generic model coefficients
+    coef_names <- c('A', paste0('B', 1:(1+n_bins)))
+    TOP_coef_samples <- TOP_samples[, coef_names]
+
+  }
+
+  return(TOP_coef_samples)
+
+}
+
+
 #' @title Extract a table listing the indices and names of TF and cell type
 #' combinations from the assembled training data
 #' @description Extract a table listing the indices and names of TF x cell type
 #' combinations from the assembled training data.
 #' This will be used to extract regression coefficients from the TOP fit result.
-#' @param assembled_training_data Assembled training data as in the
-#' \code{assemble_training_data} function
+#' @param assembled_training_data Assembled training data obtained from the
+#' \code{assemble_training_data()} function.
 #'
 #' @return a data frame of the indices and names of TF x cell type combinations.
 #' @export
+#' @examples
+#' \dontrun{
+#' tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
+#' }
 extract_tf_cell_combos <- function(assembled_training_data){
   cat('Extract the table of TF x cell combinations from assembled_training_data...\n')
   if(inherits(assembled_training_data, "list"))
@@ -228,4 +215,27 @@ extract_tf_cell_combos <- function(assembled_training_data){
 
   tf_cell_combos <- unique(assembled_training_data[, c('tf_id', 'cell_id', 'tf_name', 'cell_type')])
   return(tf_cell_combos)
+}
+
+
+# Select posterior samples and perform thinning and
+# keep n_samples posterior samples (randomly choose),
+# when the number of posterior samples is greater than n_samples.
+select_TOP_samples <- function(TOP_samples, thin = 1, n_samples = 1000) {
+
+  # If samples are from multiple MCMC chains, combine samples from the chains
+  if ( is.list(TOP_samples) ){
+    TOP_samples <- as.data.frame(do.call(rbind, TOP_samples))
+  }
+
+  if (thin > 1) {
+    TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), by = thin), ]
+  }
+
+  if (nrow(TOP_samples) > n_samples) {
+    TOP_samples <- TOP_samples[seq(from = 1, to = nrow(TOP_samples), length.out = n_samples),]
+  }
+
+  return(TOP_samples)
+
 }
