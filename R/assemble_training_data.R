@@ -52,20 +52,20 @@
 #' # Assemble training data for the quantitative occupancy model,
 #' # use odd chromosomes for training, keep at most 50000 candidate sites for
 #' # each TF x cell type combination, and split training data into 10 partitions.
-#' assembled_training_data <- assemble_training_data(tf_cell_table,
-#'                                                   logistic_model = FALSE,
-#'                                                   chip_col = 'chip',
-#'                                                   training_chrs = paste0('chr', seq(1,21,2)),
-#'                                                   n_partitions=10,
-#'                                                   max_sites = 50000)
+#' # assembled_training_data <- assemble_training_data(tf_cell_table,
+#'                                                     logistic_model = FALSE,
+#'                                                     chip_col = 'chip',
+#'                                                     training_chrs = paste0('chr', seq(1,21,2)),
+#'                                                     n_partitions=10,
+#'                                                     max_sites = 50000)
 #'
 #' # Assemble training data for the logistic version of the model
-#' assembled_training_data <- assemble_training_data(tf_cell_table,
-#'                                                   logistic_model = TRUE,
-#'                                                   chip_col = 'chip_label',
-#'                                                   training_chrs = paste0('chr', seq(1,21,2)),
-#'                                                   n_partitions=10,
-#'                                                   max_sites = 50000)
+#' # assembled_training_data <- assemble_training_data(tf_cell_table,
+#'                                                     logistic_model = TRUE,
+#'                                                     chip_col = 'chip_label',
+#'                                                     training_chrs = paste0('chr', seq(1,21,2)),
+#'                                                     n_partitions=10,
+#'                                                     max_sites = 50000)
 #'
 assemble_training_data <- function(tf_cell_table,
                                    logistic_model=FALSE,
@@ -125,33 +125,7 @@ assemble_training_data <- function(tf_cell_table,
   return(all_training_data)
 }
 
-#' @title Assemble TOP training data for all TF x cell type combinations
-#' in a selected partition
-#' @description Prepare the training data for fitting TOP models. It first loads
-#' the training data for each of the training TF x cell type combinations from
-#' \code{tf_cell_table}, then selects the candidate sites in training chromosomes,
-#' and splits the selected candidate sites into partitions (default: 10), and
-#' assembles training data for all TF x cell type combinations for a selected partition.
-#' @param tf_cell_table A data frame containing the information about
-#' the training TFs, cell types and paths of the training data.
-#' The first three columns should contain TF name, cell type,
-#' and file name containing the corresponding training data.
-#' @param logistic_model Logical; if TRUE, use the logistic version of TOP model.
-#' @param chip_col The column name of ChIP data in the combined data
-#' (default: \dQuote{chip}).
-#' @param training_chrs Chromosomes used for training the model
-#' Default: odd chromosomes.
-#' @param n_partitions Number of partitions to split the training data
-#' (default: 10).
-#' @param part An integer between 1 and \code{n_partitions} to specify the
-#' partition to assemble the training data for.
-#' @param max_sites Max number of candidate sites to keep in each partition
-#' (default: 5000). Randomly sample \code{max_sites} sites in each partition
-#' if the number of candidate sites in each partition exceeds \code{max_sites}.
-#' @param seed seed used when sampling sites.
-#' @return A data frame of the training data
-#' with all TF x cell type combinations in the selected partition.
-#'
+# Assemble TOP training data for all TF x cell type combinations in a selected partition.
 assemble_partition_training_data <- function(tf_cell_table,
                                              logistic_model=FALSE,
                                              chip_col='chip',
