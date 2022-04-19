@@ -23,5 +23,5 @@ A data frame of binned and transformed counts.
 }
 \description{
 Binning DNase or ATAC count matrix
-using \code{MILLIPEDE} binning and then take asinh or log2 transform
+using \code{MILLIPEDE} binning and then take \sQuote{sqrt} or \sQuote{log2} transform
 }

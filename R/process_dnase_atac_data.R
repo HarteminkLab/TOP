@@ -101,7 +101,8 @@ count_genome_cuts <- function(bam_file,
 
 #' @title Get count matrices around candidate binding sites
 #' @description Extract counts around candidate binding sites on both strands
-#' from the genome counts (BigWig files prepared using \code{count_genome_cuts}).
+#' from the genome counts data
+#' (BigWig files generated using \code{count_genome_cuts()}).
 #' It utilizes the \code{extract bed} function from the \code{bwtool} software
 #' to extract the read counts.
 #' Then combine the counts into one matrix, with the first half of the columns
@@ -110,11 +111,11 @@ count_genome_cuts <- function(bam_file,
 #' on the reverse strand.
 #' @param sites A data frame containing the candidate sites.
 #' @param genomecount_dir Directory for genome counts,
-#' the same as \code{outdir} in \code{count_genome_cuts}.
+#' the same as \code{outdir} in \code{count_genome_cuts()}.
 #' @param genomecount_name File prefix for genome counts,
-#' the same as \code{outname} in \code{count_genome_cuts}.
+#' the same as \code{outname} in \code{count_genome_cuts()}.
 #' @param tmpdir Temporary directory to save intermediate files.
-#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
+#' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
 #' @param bwtool_path Path to \code{bwtool} executable.
 #' @return A count matrix. The first half of the columns
 #' are the read counts on the forward strand, and the second half of the
@@ -415,7 +416,7 @@ normalize_counts <- function(counts,
 #' @title Bin and transform count matrix
 #'
 #' @description Binning DNase or ATAC count matrix
-#' using \code{MILLIPEDE} binning and then take asinh or log2 transform
+#' using \code{MILLIPEDE} binning and then take \sQuote{sqrt} or \sQuote{log2} transform
 #' @param counts DNase or ATAC-seq read counts matrix
 #' @param bin_method \code{MILLIPEDE} binning scheme (Default: \sQuote{M5}).
 #' @param transform Type of transformation for DNase or ATAC counts.

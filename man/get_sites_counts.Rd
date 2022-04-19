@@ -17,14 +17,14 @@ get_sites_counts(
 \item{sites}{A data frame containing the candidate sites.}
 
 \item{genomecount_dir}{Directory for genome counts,
-the same as \code{outdir} in \code{count_genome_cuts}.}
+the same as \code{outdir} in \code{count_genome_cuts()}.}
 
 \item{genomecount_name}{File prefix for genome counts,
-the same as \code{outname} in \code{count_genome_cuts}.}
+the same as \code{outname} in \code{count_genome_cuts()}.}
 
 \item{tmpdir}{Temporary directory to save intermediate files.}
 
-\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.#'}
+\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.}
 
 \item{bwtool_path}{Path to \code{bwtool} executable.}
 }
@@ -35,7 +35,8 @@ columns are the read counts on the reverse strand.
 }
 \description{
 Extract counts around candidate binding sites on both strands
-from the genome counts (BigWig files prepared using \code{count_genome_cuts}).
+from the genome counts data
+(BigWig files generated using \code{count_genome_cuts()}).
 It utilizes the \code{extract bed} function from the \code{bwtool} software
 to extract the read counts.
 Then combine the counts into one matrix, with the first half of the columns
