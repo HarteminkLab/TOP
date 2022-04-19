@@ -7,7 +7,7 @@
 #' @param outdir Output directory (default: save to the directory of the FASTA file).
 #' @export
 #' @examples
-#' index_fa('hg38.fa', chromsize_file='hg38.chrom.sizes')
+#' # index_fa('hg38.fa', chromsize_file='hg38.chrom.sizes')
 index_fa <- function(fa_file,
                      chromsize_file='chrom.sizes',
                      outdir=dirname(fa_file)){
@@ -33,10 +33,10 @@ index_fa <- function(fa_file,
 #' @export
 #' @examples
 #' # Sort, index the BAM file, and retrieve the idxstats.
-#' sort_index_idxstats_bam('example.bam', sort=TRUE, index=TRUE, idxstats=TRUE)
+#' # sort_index_idxstats_bam('example.bam', sort=TRUE, index=TRUE, idxstats=TRUE)
 #'
 #' # Index the BAM file, and retrieve the idxstats. Assuming the bam file is already sorted.
-#' sort_index_idxstats_bam('example.sorted.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
+#' # sort_index_idxstats_bam('example.sorted.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 sort_index_idxstats_bam <- function(bam_file,
                                     sorted_bam_file,
                                     sort=TRUE,
@@ -85,7 +85,7 @@ sort_index_idxstats_bam <- function(bam_file,
 #' @return The total number of mapped reads.
 #' @export
 #' @examples
-#' total_mapped_reads <- get_total_reads('sample.bam.idxstats.txt', select_chr = TRUE)
+#' # total_mapped_reads <- get_total_reads('sample.bam.idxstats.txt', select_chr = TRUE)
 get_total_reads <- function(idxstats_file, select_chr = TRUE, chrs = paste0('chr', c(1:22))) {
   count.df <- as.data.frame(data.table::fread(idxstats_file, sep = '\t'))
   names(count.df) <- c('chr', 'length', 'reads_mapped', 'reads_unmapped')

@@ -30,11 +30,11 @@
 #' @param fimo_path Path to FIMO command line executable.
 #' @export
 #' @examples
-#' fimo_motif_matches(motif_file='MA0139.1.meme',
-#'                    sequence_file='hg38.fa',
-#'                    thresh_pValue=1e-5,
-#'                    outname='MA0139.1_1e-5.fimo.txt',
-#'                    fimo_path='fimo')
+#' # fimo_motif_matches(motif_file='MA0139.1.meme',
+#'                      sequence_file='hg38.fa',
+#'                      thresh_pValue=1e-5,
+#'                      outname='MA0139.1_1e-5.fimo.txt',
+#'                      fimo_path='fimo')
 fimo_motif_matches <- function(motif_file,
                                sequence_file,
                                outname='fimo.txt',
@@ -170,15 +170,7 @@ process_candidate_sites <- function(fimo_file,
   return(sites)
 }
 
-#' @title Get candidate sites using FIMO motifs with flanking regions
-#' @description Get candidate sites from FIMO motif matches and
-#' add flanking regions.
-#' @param fimo_file FIMO result .txt file
-#' @param flank Flanking region (bp) around motif matches (default: 100)
-#' @return A data frame of candidate binding sites with flanking regions.
-#' @importFrom data.table fread
-#' @export
-#'
+# Get candidate sites using FIMO motifs with flanking regions
 flank_fimo_sites <- function(fimo_file, flank=100) {
 
   if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
@@ -218,15 +210,7 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
 
 }
 
-#' @title Filter candidate sites in blacklist regions
-#' @description Filter out candidate sites in ENCODE blacklist regions.
-#' @param sites A data frame of candidate binding sites
-#' @param blacklist_file ENCODE blacklist file
-#' @return A data frame of filtered candidate binding sites.
-#' @importFrom data.table fread
-#' @importFrom GenomicRanges makeGRangesFromDataFrame countOverlaps
-#' @export
-#'
+# Filter candidate sites in blacklist regions
 filter_blacklist <- function(sites, blacklist_file) {
 
   if( !file.exists(blacklist_file) ){
@@ -249,18 +233,7 @@ filter_blacklist <- function(sites, blacklist_file) {
 
 }
 
-#' @title Filter candidate sites by mapability
-#' @description Filter candidate sites by mapability threshold. It requires
-#' \code{bigWigAverageOverBed} tool from UCSC.
-#' @param sites A data frame of candidate binding sites with the first
-#' 6 columns the same as in the BED format.
-#' @param mapability_file ENCODE mapability bigWig file.
-#' @param thresh_mapability Mapability threshold (default: 0.8)
-#' @param bigWigAverageOverBed_path path of bigWigAverageOverBed executable
-#' @return A data frame of filtered candidate binding sites.
-#' @importFrom data.table fread fwrite
-#' @export
-#'
+# Filter candidate sites by mapability
 filter_mapability <- function(sites,
                               mapability_file,
                               thresh_mapability=0.8,

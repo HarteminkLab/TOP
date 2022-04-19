@@ -1,4 +1,3 @@
-# Functions for processing ChIP-seq data
 
 #' @title Count and normalize (and transform) ChIP-seq read coverage
 #' @description Count ChIP-seq read coverage for each bam file
@@ -14,7 +13,7 @@
 #' of the bam files).
 #' @param chrom_size_file Chromosome size file.
 #' @param ref_size Normalize to ChIP-seq reference library size
-#' (Default: 20 million)
+#' (Default: 2e7 for ChIP-seq)
 #' @param transform Type of transformation for the ChIP read counts.
 #' Options are 'none' (no transformation), 'asinh', 'log2', and 'sqrt'.
 #' @param bedtools_path Path to \code{bedtools} executable.
