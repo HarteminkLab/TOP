@@ -8,7 +8,7 @@ count_genome_cuts(
   bam_file,
   chrom_size_file,
   data_type = c("DNase", "ATAC"),
-  shift_ATAC = FALSE,
+  shift_ATAC = TRUE,
   shift_ATAC_bases = c(4L, -4L),
   outdir = dirname(bam_file),
   outname,
@@ -21,9 +21,9 @@ count_genome_cuts(
 
 \item{chrom_size_file}{File of genome sizes by chromosomes.}
 
-\item{data_type}{data type. Options: 'DNase' or 'ATAC'.}
+\item{data_type}{data type. Options: \sQuote{DNase} or \sQuote{ATAC}.}
 
-\item{shift_ATAC}{Logical. When \code{shift_ATAC = TRUE},
+\item{shift_ATAC}{Logical. When \code{shift_ATAC=TRUE} (and \code{data_type='ATAC'}),
 it shifts reads according to \code{shift_ATAC_bases}.}
 
 \item{shift_ATAC_bases}{Number of bases to shift on + and - strands.}
@@ -43,21 +43,20 @@ For ATAC-seq, when \code{shift_ATAC = TRUE}, reads
 were shifted so as to address offsets and align the signal across strands.
 }
 \examples{
-# count_genome_cuts(bam_file='K562.ATAC.bam',
-                    chrom_size_file='hg38.chrom.sizes',
-                    data_type='ATAC',
-                    shift_ATAC=TRUE,
-                    outdir='processed_data',
-                    outname='K562.ATAC.bam',
-                    bedtools_path='bedtools',
-                    bedGraphToBigWig_path='bedGraphToBigWig')
+\dontrun{
+# ATAC-seq data
+count_genome_cuts(bam_file='K562.ATAC.bam',
+                  chrom_size_file='hg38.chrom.sizes',
+                  data_type='ATAC',
+                  shift_ATAC=TRUE,
+                  outdir='processed_data',
+                  outname='K562.ATAC.bam')
 
-# count_genome_cuts(bam_file='K562.DNase.bam',
-                    chrom_size_file='hg38.chrom.sizes',
-                    data_type='DNase',
-                    outdir='processed_data',
-                    outname='K562.DNase.bam',
-                    bedtools_path='bedtools',
-                    bedGraphToBigWig_path='bedGraphToBigWig')
-
+# DNase-seq data
+count_genome_cuts(bam_file='K562.DNase.bam',
+                  chrom_size_file='hg38.chrom.sizes',
+                  data_type='DNase',
+                  outdir='processed_data',
+                  outname='K562.DNase.bam')
+}
 }

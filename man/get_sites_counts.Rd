@@ -42,10 +42,12 @@ and the second half of the columns representing the read counts
 on the reverse strand.
 }
 \examples{
+\dontrun{
 # Get ATAC-seq count matrices around candidate sites
-# sites_counts.mat <- get_sites_counts(sites,
-                                       genomecount_dir='processed_data',
-                                       genomecount_name='K562.ATAC',
-                                       bedGraphToBigWig_path='bedGraphToBigWig',
-                                       bwtool_path='bwtool')
+sites_counts.mat <- get_sites_counts(sites,
+                                     genomecount_dir='processed_data',
+                                     genomecount_name='K562.ATAC',
+                                     bedGraphToBigWig_path='bedGraphToBigWig',
+                                     bwtool_path='bwtool')
+}
 }

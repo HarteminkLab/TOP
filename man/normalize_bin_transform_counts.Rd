@@ -20,26 +20,27 @@ normalize_bin_transform_counts(
 \item{ref_size}{Scale to DNase-seq or ATAC-seq reference library size.
 (Default: 1e8 for DNase-seq and 5e7 for ATAC-seq).}
 
-\item{bin_method}{MILLIPEDE binning scheme (Default: \dQuote{M5}).}
+\item{bin_method}{\code{MILLIPEDE} binning scheme (Default: \sQuote{M5}).}
 
 \item{transform}{Type of transformation for DNase or ATAC counts.
-Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.}
+Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.}
 }
 \value{
 A data frame of normalized, binned and transformed counts.
 }
 \description{
 Normalize counts by library size,
-bin using MILLIPEDE binning method and then take asinh or log2 transform
+bin using \code{MILLIPEDE} binning method and then take \sQuote{asinh} or \sQuote{log2} transform.
 }
 \examples{
-
+\dontrun{
 # Normalize counts by scaling to a library size of 100 million reads,
 # and bin counts using MILLIPEDE M5 binning method, and then take
 # asinh transformation on the binned counts.
-# bins <- normalize_bin_transform_counts(count_matrix,
-                                         idxstats_file,
-                                         ref_size = 1e8,
-                                         bin_method = 'M5',
-                                         transform = 'asinh')
+bins <- normalize_bin_transform_counts(count_matrix,
+                                       idxstats_file,
+                                       ref_size = 1e8,
+                                       bin_method = 'M5',
+                                       transform = 'asinh')
+}
 }

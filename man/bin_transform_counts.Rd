@@ -13,15 +13,15 @@ bin_transform_counts(
 \arguments{
 \item{counts}{DNase or ATAC-seq read counts matrix}
 
-\item{bin_method}{MILLIPEDE binning scheme (Default: \dQuote{M5}).}
+\item{bin_method}{\code{MILLIPEDE} binning scheme (Default: \sQuote{M5}).}
 
 \item{transform}{Type of transformation for DNase or ATAC counts.
-Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.}
+Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.}
 }
 \value{
 A data frame of binned and transformed counts.
 }
 \description{
 Binning DNase or ATAC count matrix
-using MILLIPEDE binning and then take asinh or log2 transform
+using \code{MILLIPEDE} binning and then take asinh or log2 transform
 }

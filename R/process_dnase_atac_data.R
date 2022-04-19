@@ -6,8 +6,8 @@
 #' were shifted so as to address offsets and align the signal across strands.
 #' @param bam_file Sorted BAM file.
 #' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param data_type data type. Options: 'DNase' or 'ATAC'.
-#' @param shift_ATAC Logical. When \code{shift_ATAC = TRUE},
+#' @param data_type data type. Options: \sQuote{DNase} or \sQuote{ATAC}.
+#' @param shift_ATAC Logical. When \code{shift_ATAC=TRUE} (and \code{data_type='ATAC'}),
 #' it shifts reads according to \code{shift_ATAC_bases}.
 #' @param shift_ATAC_bases Number of bases to shift on + and - strands.
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
@@ -16,27 +16,26 @@
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
 #' @export
 #' @examples
-#' # count_genome_cuts(bam_file='K562.ATAC.bam',
-#'                     chrom_size_file='hg38.chrom.sizes',
-#'                     data_type='ATAC',
-#'                     shift_ATAC=TRUE,
-#'                     outdir='processed_data',
-#'                     outname='K562.ATAC.bam',
-#'                     bedtools_path='bedtools',
-#'                     bedGraphToBigWig_path='bedGraphToBigWig')
+#' \dontrun{
+#' # ATAC-seq data
+#' count_genome_cuts(bam_file='K562.ATAC.bam',
+#'                   chrom_size_file='hg38.chrom.sizes',
+#'                   data_type='ATAC',
+#'                   shift_ATAC=TRUE,
+#'                   outdir='processed_data',
+#'                   outname='K562.ATAC.bam')
 #'
-#' # count_genome_cuts(bam_file='K562.DNase.bam',
-#'                     chrom_size_file='hg38.chrom.sizes',
-#'                     data_type='DNase',
-#'                     outdir='processed_data',
-#'                     outname='K562.DNase.bam',
-#'                     bedtools_path='bedtools',
-#'                     bedGraphToBigWig_path='bedGraphToBigWig')
-#'
+#' # DNase-seq data
+#' count_genome_cuts(bam_file='K562.DNase.bam',
+#'                   chrom_size_file='hg38.chrom.sizes',
+#'                   data_type='DNase',
+#'                   outdir='processed_data',
+#'                   outname='K562.DNase.bam')
+#'}
 count_genome_cuts <- function(bam_file,
                               chrom_size_file,
                               data_type=c('DNase', 'ATAC'),
-                              shift_ATAC=FALSE,
+                              shift_ATAC=TRUE,
                               shift_ATAC_bases=c(4L,-4L),
                               outdir=dirname(bam_file),
                               outname,
@@ -120,12 +119,14 @@ count_genome_cuts <- function(bam_file,
 #' columns are the read counts on the reverse strand.
 #' @export
 #' @examples
+#' \dontrun{
 #' # Get ATAC-seq count matrices around candidate sites
-#' # sites_counts.mat <- get_sites_counts(sites,
-#'                                        genomecount_dir='processed_data',
-#'                                        genomecount_name='K562.ATAC',
-#'                                        bedGraphToBigWig_path='bedGraphToBigWig',
-#'                                        bwtool_path='bwtool')
+#' sites_counts.mat <- get_sites_counts(sites,
+#'                                      genomecount_dir='processed_data',
+#'                                      genomecount_name='K562.ATAC',
+#'                                      bedGraphToBigWig_path='bedGraphToBigWig',
+#'                                      bwtool_path='bwtool')
+#' }
 get_sites_counts <- function(sites,
                              genomecount_dir,
                              genomecount_name,
@@ -209,27 +210,30 @@ flip_neg_strand_counts <- function(sites,
   return(sites_counts.mat)
 }
 
-#' @title Perform MILLIPEDE binning on count matrix
-#' @description Perform binning using different MILLIPEDE binning schemes
+#' @title Perform \code{MILLIPEDE} binning on count matrix
+#' @description Perform binning using different \code{MILLIPEDE} binning schemes
 #' (M5, M24, M12, M3, M2, M1) on the input count matrix.
 #' @param counts DNase-seq or ATAC-seq read counts matrix,
 #' rows are candidate sites,
 #' columns are DNase or ATAC counts with 100bp flanks around motifs
 #' on the forward and reverse strands.
-#' @param bin_method MILLIPEDE binning scheme. Options:
-#' \dQuote{M5} (default), \dQuote{M24}, \dQuote{M12}, \dQuote{M3}, \dQuote{M2},
-#' and \dQuote{M1}.
+#' @param bin_method \code{MILLIPEDE} binning scheme. Options:
+#' \sQuote{M5} (default), \sQuote{M24}, \sQuote{M12}, \sQuote{M3}, \sQuote{M2},
+#' and \sQuote{M1}.
 #' @param combine_strands Method to combine counts on both strands from M24 bins
-#' to M12 bins: vertical' (default) or 'motif'.
+#' to M12 bins: \sQuote{vertical} (combine counts from both strands vertically)
+#' or \sQuote{motif} (combine counts from both strands with respect to
+#' motif match orientation).
 #' @return A list containing binning results (data frames) using different
 #' binning schemes.
 #' @export
 #' @examples
-#'
+#' \dontrun{
 #' # Perform MILLIPEDE binning with different binning schemes.
 #'
 #' # M5 binning
-#' # M5_bins <- millipede_binning(counts, bin_method = 'M5')
+#' M5_bins <- millipede_binning(counts, bin_method = 'M5')
+#' }
 millipede_binning <- function(counts,
                               bin_method = c('M5','M24','M12','M3','M2','M1'),
                               combine_strands=c('vertical', 'motif')) {
@@ -339,27 +343,27 @@ millipede_binning <- function(counts,
 #' @title Normalize, bin and transform counts
 #'
 #' @description Normalize counts by library size,
-#' bin using MILLIPEDE binning method and then take asinh or log2 transform
-#'
+#' bin using \code{MILLIPEDE} binning method and then take \sQuote{asinh} or \sQuote{log2} transform.
 #' @param count_matrix DNase or ATAC-seq read counts matrix.
 #' @param idxstats_file The \code{idxstats} file (generated by \code{samtools}).
 #' @param ref_size Scale to DNase-seq or ATAC-seq reference library size.
 #' (Default: 1e8 for DNase-seq and 5e7 for ATAC-seq).
-#' @param bin_method MILLIPEDE binning scheme (Default: \dQuote{M5}).
+#' @param bin_method \code{MILLIPEDE} binning scheme (Default: \sQuote{M5}).
 #' @param transform Type of transformation for DNase or ATAC counts.
-#' Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.
+#' Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.
 #' @return A data frame of normalized, binned and transformed counts.
 #' @export
 #' @examples
-#'
+#' \dontrun{
 #' # Normalize counts by scaling to a library size of 100 million reads,
 #' # and bin counts using MILLIPEDE M5 binning method, and then take
 #' # asinh transformation on the binned counts.
-#' # bins <- normalize_bin_transform_counts(count_matrix,
-#'                                          idxstats_file,
-#'                                          ref_size = 1e8,
-#'                                          bin_method = 'M5',
-#'                                          transform = 'asinh')
+#' bins <- normalize_bin_transform_counts(count_matrix,
+#'                                        idxstats_file,
+#'                                        ref_size = 1e8,
+#'                                        bin_method = 'M5',
+#'                                        transform = 'asinh')
+#' }
 normalize_bin_transform_counts <- function(count_matrix,
                                            idxstats_file,
                                            ref_size=1e8,
@@ -386,7 +390,7 @@ normalize_bin_transform_counts <- function(count_matrix,
 #' It first obtain the total mapped reads from the current sample, and
 #' then scales the read counts for the current data to a reference library size.
 #' @param counts DNase or ATAC-seq read counts matrix
-#' @param idxstats_file The \code{idxstats} file generated by samtools.
+#' @param idxstats_file The \code{idxstats} file generated by \code{samtools}.
 #' @param ref_size Normalize to reference library size.
 #' (Default: 1e8 for DNase-seq and 5e7 for ATAC-seq).
 #' @return A matrix of normalize read counts.
@@ -411,11 +415,11 @@ normalize_counts <- function(counts,
 #' @title Bin and transform count matrix
 #'
 #' @description Binning DNase or ATAC count matrix
-#' using MILLIPEDE binning and then take asinh or log2 transform
+#' using \code{MILLIPEDE} binning and then take asinh or log2 transform
 #' @param counts DNase or ATAC-seq read counts matrix
-#' @param bin_method MILLIPEDE binning scheme (Default: \dQuote{M5}).
+#' @param bin_method \code{MILLIPEDE} binning scheme (Default: \sQuote{M5}).
 #' @param transform Type of transformation for DNase or ATAC counts.
-#' Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.
+#' Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.
 #' @return A data frame of binned and transformed counts.
 #' @export
 bin_transform_counts <- function(counts,
@@ -450,7 +454,7 @@ bin_transform_counts <- function(counts,
 #' and normalize the read counts by scaling to the reference library size.
 #'
 #' @param counts_files DNase or ATAC-seq read counts matrix files.
-#' @param idxstats_files The idxstats files generated by \code{samtools}.
+#' @param idxstats_files The \code{idxstats} files generated by \code{samtools}.
 #' @param ref_size Scale to reference library size.
 #' (Default: 1e8 for DNase-seq and 5e7 for ATAC-seq).
 #' @return A matrix of merged and normalized counts.
@@ -487,12 +491,12 @@ merge_normalize_counts <- function(counts_files, idxstats_files, ref_size = 1e8)
 #' then bin and transform the merged counts.
 #'
 #' @param counts_files DNase or ATAC-seq read counts matrix files.
-#' @param idxstats_files The idxstats files generated by samtools.
+#' @param idxstats_files The \code{idxstats} files generated by samtools.
 #' @param ref_size Scale to DNase-seq or ATAC-seq reference library size.
 #' (Default: 1e8 for DNase-seq and 5e7 for ATAC-seq).
-#' @param bin_method MILLIPEDE binning scheme (default: \dQuote{M5}).
+#' @param bin_method \code{MILLIPEDE} binning scheme (default: \sQuote{M5}).
 #' @param transform Type of transformation for DNase or ATAC counts.
-#' Options: \dQuote{asinh}, \dQuote{log2}, \dQuote{sqrt}, \dQuote{none}.
+#' Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.
 #' @return A data frame of merged, normalized, binned, and transformed counts.
 #' @export
 merge_normalize_bin_transform_counts <- function(counts_files,

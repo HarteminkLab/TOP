@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{millipede_binning}
 \alias{millipede_binning}
-\title{Perform MILLIPEDE binning on count matrix}
+\title{Perform \code{MILLIPEDE} binning on count matrix}
 \usage{
 millipede_binning(
   counts,
@@ -16,25 +16,28 @@ rows are candidate sites,
 columns are DNase or ATAC counts with 100bp flanks around motifs
 on the forward and reverse strands.}
 
-\item{bin_method}{MILLIPEDE binning scheme. Options:
-\dQuote{M5} (default), \dQuote{M24}, \dQuote{M12}, \dQuote{M3}, \dQuote{M2},
-and \dQuote{M1}.}
+\item{bin_method}{\code{MILLIPEDE} binning scheme. Options:
+\sQuote{M5} (default), \sQuote{M24}, \sQuote{M12}, \sQuote{M3}, \sQuote{M2},
+and \sQuote{M1}.}
 
 \item{combine_strands}{Method to combine counts on both strands from M24 bins
-to M12 bins: vertical' (default) or 'motif'.}
+to M12 bins: \sQuote{vertical} (combine counts from both strands vertically)
+or \sQuote{motif} (combine counts from both strands with respect to
+motif match orientation).}
 }
 \value{
 A list containing binning results (data frames) using different
 binning schemes.
 }
 \description{
-Perform binning using different MILLIPEDE binning schemes
+Perform binning using different \code{MILLIPEDE} binning schemes
 (M5, M24, M12, M3, M2, M1) on the input count matrix.
 }
 \examples{
-
+\dontrun{
 # Perform MILLIPEDE binning with different binning schemes.
 
 # M5 binning
-# M5_bins <- millipede_binning(counts, bin_method = 'M5')
+M5_bins <- millipede_binning(counts, bin_method = 'M5')
+}
 }
