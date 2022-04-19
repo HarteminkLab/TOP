@@ -31,11 +31,11 @@
 #' and \sQuote{none}(no transformation).
 #' This only applies when \code{logistic_model = FALSE}.
 #' @return Returns a list with the following elements,
-#'
 #' \item{model}{TOP model name.}
 #' \item{level}{selected hierarchy level.}
 #' \item{coef}{posterior mean of regression coefficients.}
 #' \item{predictions}{a data frame with the data and predicted values.}
+#' @export
 #' @examples
 #' # 'data' is a data frame of input data,
 #' # with columns of PWM scores and five DNase (or ATAC) bins.
@@ -44,40 +44,38 @@
 #' # Predict CTCF occupancy in K562 using the quantitative occupancy model:
 #'
 #' # Predict using the 'bottom' level model
-#' result <- predict_TOP(data, TOP_coef,
-#'                       tf_name = 'CTCF', cell_type = 'K562',
-#'                       level = 'bottom',
-#'                       logistic_model = FALSE,
-#'                       transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
+#' # result <- predict_TOP(data, TOP_coef,
+#'                         tf_name = 'CTCF', cell_type = 'K562',
+#'                         level = 'bottom',
+#'                         logistic_model = FALSE,
+#'                         transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
 #'
 #' # Predict using the 'best' model
 #' # Since CTCF in K562 cell type is included in training,
 #' # the 'best' model is the 'bottom' level model.
-#' result <- predict_TOP(data, TOP_coef,
-#'                       tf_name = 'CTCF', cell_type = 'K562', level = 'best',
-#'                       logistic_model = FALSE, transform = 'asinh')
+#' # result <- predict_TOP(data, TOP_coef,
+#'                         tf_name = 'CTCF', cell_type = 'K562', level = 'best',
+#'                         logistic_model = FALSE, transform = 'asinh')
 #'
 #' # We can use the 'middle' model to predict CTCF in K562
 #' # or other cell types or conditions
-#' result <- predict_TOP(data, TOP_coef,
-#'                       tf_name = 'CTCF', level = 'middle',
-#'                       logistic_model = FALSE, transform = 'asinh')
+#' # result <- predict_TOP(data, TOP_coef,
+#'                         tf_name = 'CTCF', level = 'middle',
+#'                         logistic_model = FALSE, transform = 'asinh')
 #'
 #' # Predict CTCF binding probability using the logistic version of the model:
 #' # No need to set the argument for 'transform' for the logistic model.
 #'
 #' # Predict using the 'bottom' level model
-#' result <- predict_TOP(data, TOP_coef,
-#'                       tf_name = 'CTCF', cell_type = 'K562',
-#'                       level = 'best',
-#'                       logistic_model = TRUE)
+#' # result <- predict_TOP(data, TOP_coef,
+#'                         tf_name = 'CTCF', cell_type = 'K562',
+#'                         level = 'best',
+#'                         logistic_model = TRUE)
 #'
 #' # Predict using the 'middle' level model
-#' result <- predict_TOP(data, TOP_coef,
-#'                       tf_name = 'CTCF', level = 'middle',
-#'                       logistic_model = TRUE)
-#' @export
-#'
+#' # result <- predict_TOP(data, TOP_coef,
+#'                         tf_name = 'CTCF', level = 'middle',
+#'                         logistic_model = TRUE)
 predict_TOP <- function(data,
                         TOP_coef,
                         tf_name,
@@ -128,9 +126,9 @@ predict_TOP <- function(data,
 #'
 #' @export
 #' @examples
-#' predictions <- predict_TOP_mean_coef(data, # data frame of input data.
-#'                                      mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
-#'                                      transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
+#' # predictions <- predict_TOP_mean_coef(data, # data frame of input data.
+#'                                        mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
+#'                                        transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
 #'
 predict_TOP_mean_coef <- function(data,
                                   mean_coef,
@@ -181,8 +179,8 @@ predict_TOP_mean_coef <- function(data,
 #'
 #' @export
 #' @examples
-#' predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
-#'                                               mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+#' # predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
+#'                                                 mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
 #'
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
@@ -224,11 +222,11 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 #' @return A data frame of input data and predicted TF occupancy (posterior mean).
 #' @export
 #' @examples
-#' predictions <- predict_TOP_samples(data,
-#'                                    coef_samples = TOP_samples,
-#'                                    use_posterior_mean = FALSE,
-#'                                    sample_predictions = TRUE,
-#'                                    transform = "asinh")
+#' # predictions <- predict_TOP_samples(data,
+#'                                      coef_samples = TOP_samples,
+#'                                      use_posterior_mean = FALSE,
+#'                                      sample_predictions = TRUE,
+#'                                      transform = "asinh")
 #'
 predict_TOP_samples <- function(data,
                                 coef_samples,
@@ -379,12 +377,7 @@ select_model_coef_level <- function(TOP_mean_coef,
 }
 
 
-#' @title Select PWM and DNase (or ATAC) bin features from the input data
-#'
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param pwm_col name (prefix) of the PMW score column.
-#' @param bin_col name (prefix) of the DNase or ATAC bin columns.
-#' @param quiet Logical. If TRUE, disable messages.
+# Select PWM and DNase (or ATAC) bin features from the input data
 select_features <- function(data, pwm_col = 'pwm', bin_col = 'bin', quiet=FALSE){
   data <- as.data.frame(data)
   pwm_col <- grep(pwm_col, colnames(data), ignore.case = TRUE, value = TRUE)
