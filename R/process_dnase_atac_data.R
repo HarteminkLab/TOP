@@ -23,14 +23,14 @@
 #'                   data_type='ATAC',
 #'                   shift_ATAC=TRUE,
 #'                   outdir='processed_data',
-#'                   outname='K562.ATAC.bam')
+#'                   outname='K562.ATAC')
 #'
 #' # DNase-seq data
 #' count_genome_cuts(bam_file='K562.DNase.bam',
 #'                   chrom_size_file='hg38.chrom.sizes',
 #'                   data_type='DNase',
 #'                   outdir='processed_data',
-#'                   outname='K562.DNase.bam')
+#'                   outname='K562.DNase')
 #'}
 count_genome_cuts <- function(bam_file,
                               chrom_size_file,
@@ -109,8 +109,10 @@ count_genome_cuts <- function(bam_file,
 #' and the second half of the columns representing the read counts
 #' on the reverse strand.
 #' @param sites A data frame containing the candidate sites.
-#' @param genomecount_dir Directory for genome counts.
-#' @param genomecount_name File prefix for genome counts.
+#' @param genomecount_dir Directory for genome counts,
+#' the same as \code{outdir} in \code{count_genome_cuts}.
+#' @param genomecount_name File prefix for genome counts,
+#' the same as \code{outname} in \code{count_genome_cuts}.
 #' @param tmpdir Temporary directory to save intermediate files.
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.#'
 #' @param bwtool_path Path to \code{bwtool} executable.
@@ -123,9 +125,7 @@ count_genome_cuts <- function(bam_file,
 #' # Get ATAC-seq count matrices around candidate sites
 #' sites_counts.mat <- get_sites_counts(sites,
 #'                                      genomecount_dir='processed_data',
-#'                                      genomecount_name='K562.ATAC',
-#'                                      bedGraphToBigWig_path='bedGraphToBigWig',
-#'                                      bwtool_path='bwtool')
+#'                                      genomecount_name='K562.ATAC')
 #' }
 get_sites_counts <- function(sites,
                              genomecount_dir,

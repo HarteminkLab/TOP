@@ -50,13 +50,13 @@ count_genome_cuts(bam_file='K562.ATAC.bam',
                   data_type='ATAC',
                   shift_ATAC=TRUE,
                   outdir='processed_data',
-                  outname='K562.ATAC.bam')
+                  outname='K562.ATAC')
 
 # DNase-seq data
 count_genome_cuts(bam_file='K562.DNase.bam',
                   chrom_size_file='hg38.chrom.sizes',
                   data_type='DNase',
                   outdir='processed_data',
-                  outname='K562.DNase.bam')
+                  outname='K562.DNase')
 }
 }

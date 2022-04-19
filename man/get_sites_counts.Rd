@@ -16,9 +16,11 @@ get_sites_counts(
 \arguments{
 \item{sites}{A data frame containing the candidate sites.}
 
-\item{genomecount_dir}{Directory for genome counts.}
+\item{genomecount_dir}{Directory for genome counts,
+the same as \code{outdir} in \code{count_genome_cuts}.}
 
-\item{genomecount_name}{File prefix for genome counts.}
+\item{genomecount_name}{File prefix for genome counts,
+the same as \code{outname} in \code{count_genome_cuts}.}
 
 \item{tmpdir}{Temporary directory to save intermediate files.}
 
@@ -46,8 +48,6 @@ on the reverse strand.
 # Get ATAC-seq count matrices around candidate sites
 sites_counts.mat <- get_sites_counts(sites,
                                      genomecount_dir='processed_data',
-                                     genomecount_name='K562.ATAC',
-                                     bedGraphToBigWig_path='bedGraphToBigWig',
-                                     bwtool_path='bwtool')
+                                     genomecount_name='K562.ATAC')
 }
 }
