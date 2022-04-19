@@ -1,4 +1,3 @@
-# Functions for processing candidate binding sites
 
 #' @title Run FIMO to scan for motif matches
 #' @description Run FIMO to scan for motif matches along the genome.
@@ -7,17 +6,18 @@
 #' @param sequence_file FASTA sequence file.
 #' @param outname Output file name.
 #' @param outdir Output directory.
-#' @param thresh_pValue FIMO option 'thresh' for p-value threshold.
+#' @param thresh_pValue FIMO option \code{thresh} for p-value threshold.
 #' @param background Option for background model:
-#' 'default': use FIMO default background setting;
-#' 'motif': use the 0-order letter frequencies contained in the motif file;
-#' 'uniform': use uniform letter frequencies;
-#' 'file': use the file specified in 'background_file'.
+#' \sQuote{default}: use FIMO default background setting;
+#' \sQuote{motif}: use the 0-order letter frequencies contained in the motif file;
+#' \sQuote{uniform}: use uniform letter frequencies;
+#' \sQuote{file}: use the file specified in \code{background_file}.
 #' @param background_file Path to a file in Markov Background Model Format.
-#' @param skip_matched_sequence FIMO option 'skip_matched_sequence'.
+#' @param skip_matched_sequence FIMO option \code{skip_matched_sequence}.
 #' Turns off output of the sequence of motif matches.
 #' This speeds up processing considerably.
-#' @param max_strand FIMO option 'max_strand'. If matches on both strands at a
+#' @param max_strand FIMO option \code{max_strand}.
+#' If matches on both strands at a
 #' given position satisfy the output threshold,
 #' only report the match for the strand with the higher score.
 #' If the scores are tied, the matching strand is chosen at random.
@@ -30,11 +30,13 @@
 #' @param fimo_path Path to FIMO command line executable.
 #' @export
 #' @examples
-#' # fimo_motif_matches(motif_file='MA0139.1.meme',
-#'                      sequence_file='hg38.fa',
-#'                      thresh_pValue=1e-5,
-#'                      outname='MA0139.1_1e-5.fimo.txt',
-#'                      fimo_path='fimo')
+#' \dontrun{
+#' fimo_motif_matches(motif_file='motifID.meme',
+#'                    sequence_file='hg38.fa',
+#'                    thresh_pValue=1e-5,
+#'                    outname='motifID_1e-5.fimo.txt',
+#'                    fimo_path='fimo')
+#' }
 fimo_motif_matches <- function(motif_file,
                                sequence_file,
                                outname='fimo.txt',
@@ -117,7 +119,7 @@ fimo_motif_matches <- function(motif_file,
 #' @description Get candidate sites from FIMO motif matches and
 #' add flanking regions, and filter the candidate sites by different thresholds,
 #' and filter out sites in blacklist regions.
-#' @param fimo_file FIMO result .txt file
+#' @param fimo_file FIMO result \sQuote{.txt} file
 #' @param flank Flanking region (bp) around motif matches (default: 100)
 #' @param thresh_pValue FIMO p-value threshold (default: 1e-5)
 #' @param thresh_pwmscore FIMO PWM score threshold (default: 0)
@@ -131,7 +133,12 @@ fimo_motif_matches <- function(motif_file,
 #' @return A data frame of processed candidate binding sites
 #' passing the threshold filtering.
 #' @export
-#'
+#' @examples
+#' \dontrun{
+#' sites <- process_candidate_sites(fimo_file='fimo.txt',
+#'                                  thresh_pValue=1e-5,
+#'                                  blacklist_file='blacklist.hg38.bed.gz')
+#' }
 process_candidate_sites <- function(fimo_file,
                                     flank=100,
                                     thresh_pValue=1e-5,

@@ -16,7 +16,7 @@ process_candidate_sites(
 )
 }
 \arguments{
-\item{fimo_file}{FIMO result .txt file}
+\item{fimo_file}{FIMO result \sQuote{.txt} file}
 
 \item{flank}{Flanking region (bp) around motif matches (default: 100)}
 
@@ -42,4 +42,11 @@ passing the threshold filtering.
 Get candidate sites from FIMO motif matches and
 add flanking regions, and filter the candidate sites by different thresholds,
 and filter out sites in blacklist regions.
+}
+\examples{
+\dontrun{
+sites <- process_candidate_sites(fimo_file='fimo.txt',
+                                 thresh_pValue=1e-5,
+                                 blacklist_file='blacklist.hg38.bed.gz')
+}
 }
