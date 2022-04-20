@@ -33,7 +33,7 @@
 #' Options are: \sQuote{asinh}(asinh transformation),
 #' \sQuote{log2} (log2 transformation),
 #' \sQuote{sqrt} (square root transformation),
-#' and \sQuote{none}(no transformation).
+#' and \sQuote{none} (no transformation).
 #' This only applies when \code{logistic_model = FALSE}.
 #' @return Returns a list with the following elements,
 #' \item{model}{TOP model name.}
@@ -50,20 +50,22 @@
 #'                       tf_name = 'CTCF', cell_type = 'K562',
 #'                       level = 'bottom',
 #'                       logistic_model = FALSE,
-#'                       transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
+#'                       transform = 'asinh')
 #'
 #' # Predict using the 'best' model
 #' # Since CTCF in K562 cell type is included in training,
 #' # the 'best' model is the 'bottom' level model.
 #' result <- predict_TOP(data, TOP_coef,
 #'                       tf_name = 'CTCF', cell_type = 'K562', level = 'best',
-#'                       logistic_model = FALSE, transform = 'asinh')
+#'                       logistic_model = FALSE,
+#'                       transform = 'asinh')
 #'
 #' # We can use the 'middle' model to predict CTCF in K562
 #' # or other cell types or conditions
 #' result <- predict_TOP(data, TOP_coef,
 #'                       tf_name = 'CTCF', level = 'middle',
-#'                       logistic_model = FALSE, transform = 'asinh')
+#'                       logistic_model = FALSE,
+#'                       transform = 'asinh')
 #'
 #' # Predict CTCF binding probability using the logistic version of the model:
 #' # No need to set the argument for 'transform' for the logistic model.
@@ -131,11 +133,10 @@ predict_TOP <- function(data,
 #' @export
 #' @examples
 #' \dontrun{
-#' predictions <- predict_TOP_mean_coef(data, # data frame of input data.
-#'                                      mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
-#'                                      transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
+#' predictions <- predict_TOP_mean_coef(data,
+#'                                      mean_coef,
+#'                                      transform = 'asinh')
 #' }
-#'
 predict_TOP_mean_coef <- function(data,
                                   mean_coef,
                                   transform = c('asinh', 'log2', 'log', 'none')){
@@ -185,8 +186,8 @@ predict_TOP_mean_coef <- function(data,
 #' @export
 #' @examples
 #' \dontrun{
-#' predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
-#'                                               mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+#' predictions <- predict_TOP_logistic_mean_coef(data,
+#'                                               mean_coef)
 #' }
 #'
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){

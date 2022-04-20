@@ -23,8 +23,8 @@ coefficients trained from TOP logistic model.
 }
 \examples{
 \dontrun{
-predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
-                                              mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+predictions <- predict_TOP_logistic_mean_coef(data,
+                                              mean_coef)
 }
 
 }
