@@ -89,12 +89,11 @@ Alternatively, you may fit model for each of the 10
 the partitions on separate machines by specifying the partition to run.
 }
 \examples{
-
-We can train the TOP model after we got the training data assembled.
-Please read the data preparation tutorial to
-prepare the training data.
-
 \dontrun{
+# We can train the TOP model after we got the training data assembled.
+# Please read the data preparation tutorial to
+# prepare the training data.
+
 # Example to train TOP quantitative occupancy model:
 model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
 

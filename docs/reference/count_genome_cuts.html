@@ -20,7 +20,7 @@ were shifted so as to address offsets and align the signal across strands."><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@ were shifted so as to address offsets and align the signal across strands."><!--
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Count DNase-seq or ATAC-seq cuts along the genome</h1>
-    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/dnase_atac_utils.R" class="external-link"><code>R/dnase_atac_utils.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/process_dnase_atac_data.R" class="external-link"><code>R/process_dnase_atac_data.R</code></a></small>
     <div class="hidden name"><code>count_genome_cuts.Rd</code></div>
     </div>
 
@@ -78,7 +78,8 @@ were shifted so as to address offsets and align the signal across strands.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">count_genome_cuts</span><span class="op">(</span>
   <span class="va">bam_file</span>,
   <span class="va">chrom_size_file</span>,
-  shift_ATAC <span class="op">=</span> <span class="cn">FALSE</span>,
+  data_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DNase"</span>, <span class="st">"ATAC"</span><span class="op">)</span>,
+  shift_ATAC <span class="op">=</span> <span class="cn">TRUE</span>,
   shift_ATAC_bases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4L</span>, <span class="op">-</span><span class="fl">4L</span><span class="op">)</span>,
   outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">bam_file</span><span class="op">)</span>,
   <span class="va">outname</span>,
@@ -93,8 +94,10 @@ were shifted so as to address offsets and align the signal across strands.</p>
 <dd><p>Sorted BAM file.</p></dd>
 <dt>chrom_size_file</dt>
 <dd><p>File of genome sizes by chromosomes.</p></dd>
+<dt>data_type</dt>
+<dd><p>data type. Options: ‘DNase’ or ‘ATAC’.</p></dd>
 <dt>shift_ATAC</dt>
-<dd><p>Logical. When <code>shift_ATAC = TRUE</code>,
+<dd><p>Logical. When <code>shift_ATAC=TRUE</code> (and <code>data_type='ATAC'</code>),
 it shifts reads according to <code>shift_ATAC_bases</code>.</p></dd>
 <dt>shift_ATAC_bases</dt>
 <dd><p>Number of bases to shift on + and - strands.</p></dd>
@@ -110,14 +113,22 @@ it shifts reads according to <code>shift_ATAC_bases</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># ATAC-seq data</span></span>
+<span class="r-in"><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,</span>
 <span class="r-in">                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>,</span>
+<span class="r-in">                  data_type<span class="op">=</span><span class="st">'ATAC'</span>,</span>
 <span class="r-in">                  shift_ATAC<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span class="r-in">                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,</span>
-<span class="r-in">                  outname<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,</span>
-<span class="r-in">                  bedtools_path<span class="op">=</span><span class="st">'bedtools'</span>,</span>
-<span class="r-in">                  bedGraphToBigWig_path<span class="op">=</span><span class="st">'bedGraphToBigWig'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in count_genome_cuts(bam_file = "K562.ATAC.bam", chrom_size_file = "hg38.chrom.sizes",     shift_ATAC = TRUE, outdir = "processed_data", outname = "K562.ATAC.bam",     bedtools_path = "bedtools", bedGraphToBigWig_path = "bedGraphToBigWig"):</span> bedtools could not be executed. Please install bedtools and set bedtools_path.</span>
+<span class="r-in">                  outname<span class="op">=</span><span class="st">'K562.ATAC'</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># DNase-seq data</span></span>
+<span class="r-in"><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.DNase.bam'</span>,</span>
+<span class="r-in">                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>,</span>
+<span class="r-in">                  data_type<span class="op">=</span><span class="st">'DNase'</span>,</span>
+<span class="r-in">                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,</span>
+<span class="r-in">                  outname<span class="op">=</span><span class="st">'K562.DNase'</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>

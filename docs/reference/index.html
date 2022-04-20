@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -75,11 +75,6 @@
         </td>
         <td><p>Add ChIP-seq signals to the candidate sites</p></td>
       </tr><tr><td>
-          <p><code><a href="assemble_partition_training_data.html">assemble_partition_training_data()</a></code> </p>
-        </td>
-        <td><p>Assemble TOP training data for all TF x cell type combinations
-in a selected partition</p></td>
-      </tr><tr><td>
           <p><code><a href="assemble_training_data.html">assemble_training_data()</a></code> </p>
         </td>
         <td><p>Assemble TOP training data for all TF x cell type combinations,
@@ -103,24 +98,16 @@ then split training data into 10 partitions</p></td>
       </tr><tr><td>
           <p><code><a href="extract_TOP_coef_samples.html">extract_TOP_coef_samples()</a></code> </p>
         </td>
-        <td><p>Extract alpha and beta coefficients from TOP posterior samples</p></td>
+        <td><p>Extract regression coefficients from TOP posterior samples</p></td>
       </tr><tr><td>
           <p><code><a href="extract_TOP_mean_coef.html">extract_TOP_mean_coef()</a></code> </p>
         </td>
-        <td><p>Extract the posterior mean coefficients for each level of TOP model</p></td>
+        <td><p>Extract the posterior mean of regression coefficients for each level of TOP model</p></td>
       </tr><tr><td>
           <p><code><a href="extract_tf_cell_combos.html">extract_tf_cell_combos()</a></code> </p>
         </td>
         <td><p>Extract a table listing the indices and names of TF and cell type
 combinations from the assembled training data</p></td>
-      </tr><tr><td>
-          <p><code><a href="filter_blacklist.html">filter_blacklist()</a></code> </p>
-        </td>
-        <td><p>Filter candidate sites in blacklist regions</p></td>
-      </tr><tr><td>
-          <p><code><a href="filter_mapability.html">filter_mapability()</a></code> </p>
-        </td>
-        <td><p>Filter candidate sites by mapability</p></td>
       </tr><tr><td>
           <p><code><a href="fimo_motif_matches.html">fimo_motif_matches()</a></code> </p>
         </td>
@@ -129,18 +116,6 @@ combinations from the assembled training data</p></td>
           <p><code><a href="fit_TOP_M5_model.html">fit_TOP_M5_model()</a></code> </p>
         </td>
         <td><p>Fit TOP model with M5 bins</p></td>
-      </tr><tr><td>
-          <p><code><a href="fit_TOP_logistic_M5_model_jags.html">fit_TOP_logistic_M5_model_jags()</a></code> </p>
-        </td>
-        <td><p>Fit TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.</p></td>
-      </tr><tr><td>
-          <p><code><a href="fit_TOP_occupancy_M5_model_jags.html">fit_TOP_occupancy_M5_model_jags()</a></code> </p>
-        </td>
-        <td><p>Fit TOP quantitative occupancy model with M5 bins</p></td>
-      </tr><tr><td>
-          <p><code><a href="flank_fimo_sites.html">flank_fimo_sites()</a></code> </p>
-        </td>
-        <td><p>Get candidate sites using FIMO motifs with flanking regions</p></td>
       </tr><tr><td>
           <p><code><a href="get_sites_counts.html">get_sites_counts()</a></code> </p>
         </td>
@@ -152,7 +127,7 @@ combinations from the assembled training data</p></td>
       </tr><tr><td>
           <p><code><a href="index_fa.html">index_fa()</a></code> </p>
         </td>
-        <td><p>Index the FASTA file, and generate a “chrom.sizes” file</p></td>
+        <td><p>Index the FASTA file, and generate a ‘chrom.sizes’ file</p></td>
       </tr><tr><td>
           <p><code><a href="merge_normalize_bin_transform_counts.html">merge_normalize_bin_transform_counts()</a></code> </p>
         </td>
@@ -166,7 +141,7 @@ then normalize merged counts.</p></td>
       </tr><tr><td>
           <p><code><a href="millipede_binning.html">millipede_binning()</a></code> </p>
         </td>
-        <td><p>Perform MILLIPEDE binning on count matrix</p></td>
+        <td><p>Perform <code>MILLIPEDE</code> binning on count matrix</p></td>
       </tr><tr><td>
           <p><code><a href="normalize_bin_transform_counts.html">normalize_bin_transform_counts()</a></code> </p>
         </td>
@@ -208,29 +183,13 @@ then normalize merged counts.</p></td>
         </td>
         <td><p>Obtain and filter candidate sites from FIMO result</p></td>
       </tr><tr><td>
-          <p><code><a href="scatterplot.html">scatterplot()</a></code> </p>
-        </td>
-        <td><p>Simple x-y scatter plot</p></td>
-      </tr><tr><td>
           <p><code><a href="scatterplot_predictions.html">scatterplot_predictions()</a></code> </p>
         </td>
         <td><p>Scatter plot of measured and predicted occupancy</p></td>
       </tr><tr><td>
-          <p><code><a href="select_TOP_samples.html">select_TOP_samples()</a></code> </p>
-        </td>
-        <td><p>Select TOP posterior samples</p></td>
-      </tr><tr><td>
-          <p><code><a href="select_features.html">select_features()</a></code> </p>
-        </td>
-        <td><p>Select PWM and DNase (or ATAC) bin features from the input data</p></td>
-      </tr><tr><td>
-          <p><code><a href="select_model_coef_level.html">select_model_coef_level()</a></code> </p>
-        </td>
-        <td><p>Select regression coefficients by the TOP hierarchy level</p></td>
-      </tr><tr><td>
           <p><code><a href="sort_index_idxstats_bam.html">sort_index_idxstats_bam()</a></code> </p>
         </td>
-        <td><p>Sort, index the BAM file, and retrieve the idxstats.</p></td>
+        <td><p>Sort, index the BAM file, and retrieve the <code>idxstats</code>.</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

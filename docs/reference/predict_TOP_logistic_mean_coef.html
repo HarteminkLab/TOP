@@ -18,7 +18,7 @@ coefficients trained from TOP logistic model."><!-- mathjax --><script src="http
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -91,9 +91,10 @@ length(mean_coef) should be equal to 1+ncol(data).</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP_logistic_mean_coef</span><span class="op">(</span><span class="va">data</span>, <span class="co"># data frame of input data.</span></span>
-<span class="r-in">                                              <span class="va">mean_coef</span><span class="op">)</span>  <span class="co"># (selected) pretrained posterior mean of TOP regression coefficients</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.data.frame.default(data):</span> cannot coerce class ‘"function"’ to a data.frame</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP_logistic_mean_coef</span><span class="op">(</span><span class="va">data</span>,</span>
+<span class="r-in">                                              <span class="va">mean_coef</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

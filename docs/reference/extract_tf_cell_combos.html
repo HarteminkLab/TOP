@@ -21,7 +21,7 @@ This will be used to extract regression coefficients from the TOP fit result."><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@ This will be used to extract regression coefficients from the TOP fit result."><
     <div class="page-header">
     <h1>Extract a table listing the indices and names of TF and cell type
 combinations from the assembled training data</h1>
-    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/TOP_model_utils.R" class="external-link"><code>R/TOP_model_utils.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/postfit_coef_samples.R" class="external-link"><code>R/postfit_coef_samples.R</code></a></small>
     <div class="hidden name"><code>extract_tf_cell_combos.Rd</code></div>
     </div>
 
@@ -82,14 +82,21 @@ This will be used to extract regression coefficients from the TOP fit result.</p
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>assembled_training_data</dt>
-<dd><p>Assembled training data as in the
-<code>assemble_training_data</code> function</p></dd>
+<dd><p>Assembled training data obtained from the
+<code><a href="assemble_training_data.html">assemble_training_data()</a></code> function.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>a data frame of the indices and names of TF x cell type combinations.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="va">tf_cell_combos</span> <span class="op">&lt;-</span> <span class="fu">extract_tf_cell_combos</span><span class="op">(</span><span class="va">assembled_training_data</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

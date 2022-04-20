@@ -61,16 +61,17 @@ for each of the partitions
 using the function \code{assemble_partition_training_data()}.
 }
 \examples{
- tf_cell_table should have three columns with:
- TF names, cell types, and paths to the training data files, like:
- |   tf_name    |   cell_type   |        data_file         |
- |:------------:|:-------------:|:------------------------:|
- |     CTCF     |     K562      |   CTCF.K562.data.rds     |
- |     CTCF     |     A549      |   CTCF.A549.data.rds     |
- |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |
- |     ...      |     ...       |   ...                    |
-
 \dontrun{
+
+#  tf_cell_table should have three columns with:
+#  TF names, cell types, and paths to the training data files, like:
+#  |   tf_name    |   cell_type   |        data_file         |
+#  |:------------:|:-------------:|:------------------------:|
+#  |     CTCF     |     K562      |   CTCF.K562.data.rds     |
+#  |     CTCF     |     A549      |   CTCF.A549.data.rds     |
+#  |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |
+#  |     ...      |     ...       |   ...                    |
+
 # Assemble training data for the quantitative occupancy model,
 # use odd chromosomes for training, keep at most 50000 candidate sites for
 # each TF x cell type combination, and split training data into 10 partitions.

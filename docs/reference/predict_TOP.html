@@ -18,7 +18,7 @@ using TOP model trained from ChIP-seq read counts or binary labels."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -101,6 +101,11 @@ This is not needed (not used) when <code>level = 'middle'</code> or <code>level 
 Options: ‘best’, ‘bottom’, ‘middle’, or ‘top’.
 When <code>level = 'best'</code>, use the best (lowest available) level of the
 hierarchy for the TF x cell type combination.
+If the TF motif and cell type is available in the training data,
+then use the bottom level (TF- and cell-type-specific model).
+otherwise, if TF motif (but not cell type) is available in the training data,
+choose the middle level (TF-specific model) of that TF motif;
+otherwise, use the top level TF-generic model.
 When <code>level = 'bottom'</code>, use the bottom level (TF- and cell-type-specific model),
 if the TF motif and cell type is available in the training data.
 When <code>level = 'middle'</code>, use the middle level (TF-specific model) of that TF.
@@ -116,7 +121,7 @@ when preparing the input training data.
 Options are: ‘asinh’(asinh transformation),
 ‘log2’ (log2 transformation),
 ‘sqrt’ (square root transformation),
-and ‘none’(no transformation).
+and ‘none’ (no transformation).
 This only applies when <code>logistic_model = FALSE</code>.</p></dd>
 </dl></div>
     <div id="value">
@@ -134,10 +139,7 @@ This only applies when <code>logistic_model = FALSE</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># 'data' is a data frame of input data,</span></span>
-<span class="r-in"><span class="co"># with columns of PWM scores and five DNase (or ATAC) bins.</span></span>
-<span class="r-in"><span class="co"># 'TOP_coef' is pretrained posterior mean of TOP regression coefficients.</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="co"># Predict CTCF occupancy in K562 using the quantitative occupancy model:</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Predict using the 'bottom' level model</span></span>
@@ -145,39 +147,38 @@ This only applies when <code>logistic_model = FALSE</code>.</p></dd>
 <span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
 <span class="r-in">                      level <span class="op">=</span> <span class="st">'bottom'</span>,</span>
 <span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span> <span class="co"># We used 'asinh' transformation on the ChIP data when training the model.</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select_model_coef_level(TOP_coef, tf_name, cell_type, level):</span> object 'TOP_coef' not found</span>
+<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Predict using the 'best' model</span></span>
 <span class="r-in"><span class="co"># Since CTCF in K562 cell type is included in training,</span></span>
 <span class="r-in"><span class="co"># the 'best' model is the 'bottom' level model.</span></span>
 <span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
 <span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select_model_coef_level(TOP_coef, tf_name, cell_type, level):</span> object 'TOP_coef' not found</span>
+<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># We can use the 'middle' model to predict CTCF in K562</span></span>
 <span class="r-in"><span class="co"># or other cell types or conditions</span></span>
 <span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
 <span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>, transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select_model_coef_level(TOP_coef, tf_name, cell_type, level):</span> object 'TOP_coef' not found</span>
+<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Predict CTCF binding probability using the logistic version of the model:</span></span>
 <span class="r-in"><span class="co"># No need to set the argument for 'transform' for the logistic model.</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Predict using the 'bottom' level model</span></span>
 <span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
-<span class="r-in">                      level <span class="op">=</span> <span class="st">'best'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select_model_coef_level(TOP_coef, tf_name, cell_type, level):</span> object 'TOP_coef' not found</span>
+<span class="r-in">                     tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
+<span class="r-in">                     level <span class="op">=</span> <span class="st">'best'</span>,</span>
+<span class="r-in">                     logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Predict using the 'middle' level model</span></span>
 <span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select_model_coef_level(TOP_coef, tf_name, cell_type, level):</span> object 'TOP_coef' not found</span>
+<span class="r-in">                     tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span>
+<span class="r-in">                     logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>

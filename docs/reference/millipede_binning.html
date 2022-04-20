@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -60,13 +60,13 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform MILLIPEDE binning on count matrix</h1>
-    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/dnase_atac_utils.R" class="external-link"><code>R/dnase_atac_utils.R</code></a></small>
+    <h1>Perform <code>MILLIPEDE</code> binning on count matrix</h1>
+    <small class="dont-index">Source: <a href="https://github.com/kevinlkx/TOP/blob/HEAD/R/process_dnase_atac_data.R" class="external-link"><code>R/process_dnase_atac_data.R</code></a></small>
     <div class="hidden name"><code>millipede_binning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform binning using different MILLIPEDE binning schemes
+    <p>Perform binning using different <code>MILLIPEDE</code> binning schemes
 (M5, M24, M12, M3, M2, M1) on the input count matrix.</p>
     </div>
 
@@ -86,12 +86,14 @@ rows are candidate sites,
 columns are DNase or ATAC counts with 100bp flanks around motifs
 on the forward and reverse strands.</p></dd>
 <dt>bin_method</dt>
-<dd><p>MILLIPEDE binning scheme. Options:
-“M5” (default), “M24”, “M12”, “M3”, “M2”,
-and “M1”.</p></dd>
+<dd><p><code>MILLIPEDE</code> binning scheme. Options:
+‘M5’ (default), ‘M24’, ‘M12’, ‘M3’, ‘M2’,
+and ‘M1’.</p></dd>
 <dt>combine_strands</dt>
 <dd><p>Method to combine counts on both strands from M24 bins
-to M12 bins: vertical' (default) or 'motif'.</p></dd>
+to M12 bins: ‘vertical’ (combine counts from both strands vertically)
+or ‘motif’ (combine counts from both strands with respect to
+motif match orientation).</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -101,21 +103,12 @@ binning schemes.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="co"># Perform MILLIPEDE binning with different binning schemes.</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># M5 binning</span></span>
-<span class="r-in"> <span class="va">M5_bins</span> <span class="op">&lt;-</span> <span class="fu">millipede_binning</span><span class="op">(</span><span class="va">counts</span>, bin_method <span class="op">=</span> <span class="st">'M5'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.matrix(counts):</span> object 'counts' not found</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># M12 binning</span></span>
-<span class="r-in"> <span class="va">M12_bins</span> <span class="op">&lt;-</span> <span class="fu">millipede_binning</span><span class="op">(</span><span class="va">counts</span>, bin_method <span class="op">=</span> <span class="st">'M12'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.matrix(counts):</span> object 'counts' not found</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># M3 binning</span></span>
-<span class="r-in"> <span class="va">M3_bins</span> <span class="op">&lt;-</span> <span class="fu">millipede_binning</span><span class="op">(</span><span class="va">counts</span>, bin_method <span class="op">=</span> <span class="st">'M3'</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.matrix(counts):</span> object 'counts' not found</span>
-<span class="r-in"></span>
+<span class="r-in"><span class="va">M5_bins</span> <span class="op">&lt;-</span> <span class="fu">millipede_binning</span><span class="op">(</span><span class="va">counts</span>, bin_method <span class="op">=</span> <span class="st">'M5'</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>

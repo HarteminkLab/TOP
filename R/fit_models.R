@@ -50,12 +50,11 @@
 #' @return A list of posterior samples or \code{jagsfit} object for each partition.
 #' @export
 #' @examples
-#'
-#' We can train the TOP model after we got the training data assembled.
-#' Please read the data preparation tutorial to
-#' prepare the training data.
-#'
 #' \dontrun{
+#' # We can train the TOP model after we got the training data assembled.
+#' # Please read the data preparation tutorial to
+#' # prepare the training data.
+#'
 #' # Example to train TOP quantitative occupancy model:
 #' model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
 #'

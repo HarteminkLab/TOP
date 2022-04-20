@@ -5,7 +5,7 @@ then split training data into 10 partitions — assemble_training_data"><meta pr
 It splits training data into 10 partitions and
 assembles training data for all TF x cell type combinations
 for each of the partitions
-using the function assemble_partition_training_data."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+using the function assemble_partition_training_data()."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -23,7 +23,7 @@ using the function assemble_partition_training_data."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.5</span>
       </span>
     </div>
 
@@ -76,7 +76,7 @@ then split training data into 10 partitions</h1>
 It splits training data into 10 partitions and
 assembles training data for all TF x cell type combinations
 for each of the partitions
-using the function <code>assemble_partition_training_data</code>.</p>
+using the function <code>assemble_partition_training_data()</code>.</p>
     </div>
 
     <div id="ref-usage">
@@ -108,7 +108,7 @@ If <code>logistic_model = FALSE</code>, prepare assembled data for the
 quantitative occupancy model (default).</p></dd>
 <dt>chip_col</dt>
 <dd><p>The column name of ChIP data in the individual training data
-(default: “chip”).</p></dd>
+(default: ‘chip’).</p></dd>
 <dt>training_chrs</dt>
 <dd><p>Chromosomes used for training the model
 (default: odd chromosomes, chr1, chr3, ..., chr21)</p></dd>
@@ -135,9 +135,10 @@ training data with all TF x cell type combinations.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># 'tf_cell_table' should have three columns with:</span></span>
-<span class="r-in"><span class="co"># TF names, cell types, and paths to the training data files, like:</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">#  tf_cell_table should have three columns with:</span></span>
+<span class="r-in"><span class="co">#  TF names, cell types, and paths to the training data files, like:</span></span>
 <span class="r-in"><span class="co">#  |   tf_name    |   cell_type   |        data_file         |</span></span>
 <span class="r-in"><span class="co">#  |:------------:|:-------------:|:------------------------:|</span></span>
 <span class="r-in"><span class="co">#  |     CTCF     |     K562      |   CTCF.K562.data.rds     |</span></span>
@@ -154,7 +155,6 @@ training data with all TF x cell type combinations.</p>
 <span class="r-in">                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span>
 <span class="r-in">                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.data.frame(tf_cell_table):</span> object 'tf_cell_table' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Assemble training data for the logistic version of the model</span></span>
 <span class="r-in"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu">assemble_training_data</span><span class="op">(</span><span class="va">tf_cell_table</span>,</span>
@@ -163,7 +163,8 @@ training data with all TF x cell type combinations.</p>
 <span class="r-in">                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span>
 <span class="r-in">                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.data.frame(tf_cell_table):</span> object 'tf_cell_table' not found</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
