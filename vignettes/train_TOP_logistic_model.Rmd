@@ -90,14 +90,8 @@ Here, we fit TOP logistic models with ChIP-seq binary labels,
 to fit TOP quantitative occupancy models with ChIP-seq read counts, 
 please follow this [tutorial](train_TOP_model.htmll).
 
-We provided the TOP model files in JAGS code 
-in the `model` directory within the package. 
-```{r TOP-model-file, eval=FALSE}
-model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
-```
-
 The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 
-in parallel (using the `foreach` R package). 
+in parallel. 
 
 We can set the following parameters for Gibbs sampling: 
 
@@ -114,16 +108,12 @@ in the training data.
 
 ```{r fit-TOP-model, eval=FALSE}
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data, 
-                                    model_file = model_file,
                                     logistic_model = TRUE,
-                                    partitions = 1:10,
                                     n_iter = 5000, 
                                     n_burnin = 2000,
                                     n_chains = 3,
                                     n_thin = 2,
-                                    save = TRUE,
-                                    out_dir = 'TOP_logistic_fit',
-                                    quiet = TRUE)
+                                    out_dir = 'TOP_logistic_fit')
 ```
 
 This fits a TOP model on all 10 partitions in parallel on 10 CPU cores, 

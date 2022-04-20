@@ -64,7 +64,7 @@ This [page](data_preparation.html) shows the procedure to prepare the training d
 Basically, for each TF in each cell type, 
 we prepare training data for candidate binding sites:
 including: PWM scores of the motif matches, 
-DNase (or ATAC) counts in MILLIPEDE bins, 
+DNase (or ATAC) counts in 5 bins, 
 and measured TF occupancy (from ChIP-seq data).
 
 **Step 2: Assemble training data for all TF x cell type combinations**
@@ -106,16 +106,8 @@ please follow this [tutorial](train_TOP_logistic_model.htmll).
 We use the consensus Monte Carlo algorithm to run 
 Gibbs sampling on each of the 10 training data partitions separately in parallel.
 
-We provided the TOP model files in JAGS code 
-in the `model` directory within the package. 
-It is flexible (and easy) to modify the models, 
-e.g. use different priors, different bins, or other genomic features.  
-```{r TOP-model-file, eval=FALSE}
-model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
-```
-
 The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 
-in parallel (using the `foreach` R package). 
+in parallel. 
 
 We first perform "asinh" transform to the training ChIP-seq counts,
 then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.
@@ -136,17 +128,13 @@ in the training data.
 
 ```{r fit-TOP-model, eval=FALSE}
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data, 
-                                    model_file = model_file,
                                     logistic_model = FALSE,
                                     transform = 'asinh', 
-                                    partitions = 1:10,
                                     n_iter = 5000,
                                     n_burnin = 1000,
                                     n_chains = 3,
                                     n_thin = 2,
-                                    save = TRUE,
-                                    out_dir = 'TOP_fit',
-                                    quiet = TRUE)
+                                    out_dir = 'TOP_fit')
 ```
 
 This fits a TOP model on all 10 partitions in parallel on 10 CPU cores, 
