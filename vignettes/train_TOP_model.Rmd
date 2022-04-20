@@ -39,8 +39,8 @@ ChIP-seq experiments that have not been done.
 Load packages
 -------------
 
-You need to have R packages [R2jags][R2jags] 
-and [doParallel][doParallel] installed to train your own models, as 
+We need to have R packages [R2jags][R2jags] 
+and [doParallel][doParallel] installed to train TOP models, as 
 we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model 
 in the current implementation of the model. 
 

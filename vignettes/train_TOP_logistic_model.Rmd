@@ -18,14 +18,14 @@ Prepare training data
 ---------------------
 
 Similar to the steps in [Training TOP quantitative occupancy model](train_TOP_model.html),
-We need to prepare and assemble the training data containing all training 
+we need to prepare and assemble the training data containing all training 
 TF x cell type combinations. 
 
 Load packages
 -------------
 
-You need to have R packages [R2jags][R2jags] 
-and [doParallel][doParallel] installed to train your own models, as 
+We need to have R packages [R2jags][R2jags] 
+and [doParallel][doParallel] installed to train TOP models, as 
 we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model 
 in the current implementation of the model. 
 
