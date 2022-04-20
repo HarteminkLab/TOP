@@ -25,9 +25,6 @@
     <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_model.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_model_JAGS.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/authors.html</loc>
   </url>
   <url>
@@ -40,22 +37,7 @@
     <loc>https://kevinlkx.github.io/TOP/reference/add_chip_signals_to_sites.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/assemble_TOP_logistic_training_data.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/assemble_TOP_training_data.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/assemble_partition_training_data.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/assemble_training_data.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/bam_sort_index_stats.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/bin_dnase.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/bin_transform_counts.html</loc>
@@ -64,31 +46,7 @@
     <loc>https://kevinlkx.github.io/TOP/reference/combine_TOP_samples.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/combine_dnase_bins_chip_data.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/combine_dnase_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/combine_training_data.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/compute_mapability.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/count_dnase_genome_cuts.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/count_genome_coverage.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts_bedtools.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts_nobedtools.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/count_normalize_chip.html</loc>
@@ -103,46 +61,10 @@
     <loc>https://kevinlkx.github.io/TOP/reference/extract_tf_cell_combos.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/filter_blacklist.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/filter_mapability.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/fimo_motif_matches.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fimo_motif_scan.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_M5_model.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_M5_model_jags.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_jags.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_logistic_M5_model.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_logistic_M5_model_jags.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_model.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_occupancy_M5_model_jags.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/flank_fimo_sites.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/flip_rev_strand_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/get_dnase_sites_counts.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/get_sites_counts.html</loc>
@@ -157,28 +79,13 @@
     <loc>https://kevinlkx.github.io/TOP/reference/index_fa.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/load_TOP_samples.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/match_tagcount_sites.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_bin_transform_counts.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_dnase_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/millipede_bin_dnase.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/millipede_binning.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/normalize_bin_dnase.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/normalize_bin_transform_counts.html</loc>
@@ -190,9 +97,6 @@
     <loc>https://kevinlkx.github.io/TOP/reference/normalize_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/normalize_dnase.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/plot_profile.html</loc>
   </url>
   <url>
@@ -200,9 +104,6 @@
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/predict_TOP.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/predict_TOP_coef_mean.html</loc>
   </url>
   <url>
     <loc>https://kevinlkx.github.io/TOP/reference/predict_TOP_logistic_mean_coef.html</loc>
@@ -217,54 +118,9 @@
     <loc>https://kevinlkx.github.io/TOP/reference/process_candidate_sites.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/read_bam_cuts.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/read_bam_cuts_ATACreadpairs.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/readstats_total.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/rev_count_bwtool.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/rev_tagcount_bwtool.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/scatterplot.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/scatterplot_predictions.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/select_TOP_samples.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/select_features.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/select_model_coef_level.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/select_model_coef_mean.html</loc>
-  </url>
-  <url>
     <loc>https://kevinlkx.github.io/TOP/reference/sort_index_idxstats_bam.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/sort_merge_overlap_bedgraph.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/track_def_line.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/train_TOP_M5_model_jags.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/train_TOP_logistic_M5_model_jags.html</loc>
-  </url>
-  <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/train_TOP_model.html</loc>
   </url>
 </urlset>
