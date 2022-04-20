@@ -17,7 +17,7 @@ fit_TOP_M5_model(
   n_thin = max(1, floor((n_iter - n_burnin)/1000)),
   n_cores = length(partitions),
   save = TRUE,
-  outdir = "./TOP_samples",
+  outdir = "TOP_fit",
   return_type = c("samples", "jagsfit", "samplefiles"),
   quiet = FALSE
 )
@@ -29,7 +29,8 @@ fit_TOP_M5_model(
 files of all partitions. If \code{all_training_data} is missing,
 it will load the training data from \code{all_training_data_files}.}
 
-\item{model_file}{TOP model file written in \code{JAGS}.}
+\item{model_file}{TOP model file written in \code{JAGS}.
+By default, use the model file included in the TOP package.}
 
 \item{logistic_model}{Logical; whether to use the logistic version of TOP model.
 If \code{logistic_model = TRUE}, use the logistic version of TOP model.
@@ -76,8 +77,6 @@ or \sQuote{samplefiles} (file names of posterior samples).}
 Otherwise, only show progress bars.}
 }
 \value{
-A list of posterior samples for each of the partitions.
-
 A list of posterior samples or \code{jagsfit} object for each partition.
 }
 \description{
@@ -90,38 +89,28 @@ the partitions on separate machines by specifying the partition to run.
 }
 \examples{
 \dontrun{
-# We can train the TOP model after we got the training data assembled.
-# Please read the data preparation tutorial to
-# prepare the training data.
-
 # Example to train TOP quantitative occupancy model:
-model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
 
-# The example below first performs "asinh" transform to the ChIP-seq counts
+# The example below first performs 'asinh' transform to the ChIP-seq counts
 # in 'assembled_training_data', then runs Gibbs sampling
 # for each of the 10 partitions in parallel.
 # The following example runs 5000 iterations of Gibbs sampling in total,
 # including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
-# and save the posterior samples to the TOP_fit directory.
+# and save the posterior samples to the 'TOP_fit' directory.
 
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
-                                    model_file = model_file,
                                     logistic_model = FALSE,
                                     transform = 'asinh',
-                                    partitions = 1:10,
                                     n_iter = 5000,
                                     n_burnin = 1000,
                                     n_chains = 3,
                                     n_thin = 2,
-                                    save = TRUE,
-                                    out_dir = 'TOP_fit',
-                                    quiet = TRUE)
+                                    out_dir = 'TOP_fit')
 
 # We can also obtain the posterior samples separately for each partition,
-# For example, to obtain the posterior samples for partition 3 only:
+# For example, to obtain the posterior samples for partition #3 only:
 
 TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
-                                      model_file = model_file,
                                       logistic_model = FALSE,
                                       transform = 'asinh',
                                       partitions = 3,
@@ -129,25 +118,18 @@ TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
                                       n_burnin = 1000,
                                       n_chains = 3,
                                       n_thin = 2,
-                                      save = TRUE,
-                                      out_dir = 'TOP_fit',
-                                      quiet = TRUE)
+                                      out_dir = 'TOP_fit')
 
 
 # Example to train TOP logistic (binary) model:
-model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
 
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
-                                    model_file = model_file,
                                     logistic_model = TRUE,
-                                    partitions = 1:10,
                                     n_iter = 5000,
                                     n_burnin = 1000,
                                     n_chains = 3,
                                     n_thin = 2,
-                                    save = TRUE,
-                                    out_dir = 'TOP_fit',
-                                    quiet = TRUE)
+                                    out_dir = 'TOP_fit')
 
 }
 
