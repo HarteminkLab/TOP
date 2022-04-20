@@ -97,7 +97,6 @@ the partitions on separate machines by specifying the partition to run.
 # The following example runs 5000 iterations of Gibbs sampling in total,
 # including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
 # and save the posterior samples to the 'TOP_fit' directory.
-
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
                                     logistic_model = FALSE,
                                     transform = 'asinh',
@@ -109,7 +108,6 @@ all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
 
 # We can also obtain the posterior samples separately for each partition,
 # For example, to obtain the posterior samples for partition #3 only:
-
 TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
                                       logistic_model = FALSE,
                                       transform = 'asinh',
@@ -122,7 +120,6 @@ TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
 
 
 # Example to train TOP logistic (binary) model:
-
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
                                     logistic_model = TRUE,
                                     n_iter = 5000,
