@@ -21,6 +21,18 @@ Similar to the steps in [Training TOP quantitative occupancy model](train_TOP_mo
 We need to prepare and assemble the training data containing all training 
 TF x cell type combinations. 
 
+Load packages
+-------------
+
+You need to have R packages [R2jags][R2jags] 
+and [doParallel][doParallel] installed to train your own models, as 
+we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model 
+in the current implementation of the model. 
+
+```{r load-TOP-package, eval=FALSE}
+library(TOP)
+```
+
 **Step 1: Prepare training data for each TF in each cell type**
 
 Firstly, we need to prepare training data
@@ -63,10 +75,6 @@ We can choose the training chromosomes by specifying the chromosomes in
 `training_chrs`, for example using odd chromosomes as below.
 The chromosome names ("chr...") should match with those in the training data.
 
-```{r load-TOP-package, eval=FALSE}
-library(TOP)
-```
-
 ```{r assemble-TOP-logistic-training-data, eval=FALSE}
 assembled_training_data <- assemble_training_data(tf_cell_table,
                                                   logistic_model = TRUE, # use logistic model
@@ -81,15 +89,6 @@ Fit TOP logistic models using assembled training data
 Here, we fit TOP logistic models with ChIP-seq binary labels, 
 to fit TOP quantitative occupancy models with ChIP-seq read counts, 
 please follow this [tutorial](train_TOP_model.htmll).
-
-We fit TOP models using [JAGS](https://mcmc-jags.sourceforge.io), 
-and we uses the [R2jags](https://cran.r-project.org/web/packages/R2jags/) 
-R package to call JAGS from R.
-
-Please install `R2jags` if you need to train your own TOP models. 
-```{r load-R2jags, eval=FALSE}
-library(R2jags)
-```
 
 We provided the TOP model files in JAGS code 
 in the `model` directory within the package. 
@@ -123,7 +122,7 @@ all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
                                     n_chains = 3,
                                     n_thin = 2,
                                     save = TRUE,
-                                    out_dir='TOP_logistic_fit',
+                                    out_dir = 'TOP_logistic_fit',
                                     quiet = TRUE)
 ```
 
@@ -169,4 +168,6 @@ To make predictions for TF occupancy using new DNase- or ATAC-seq data
 using trained model coefficients,
 see this [page](predict_TF_occupancy_with_trained_model.html)
 
-
+[doParallel]: https://cran.r-project.org/web/packages/doParallel/index.html
+[R2jags]: https://cran.r-project.org/web/packages/R2jags/index.html
+[JAGS]: https://mcmc-jags.sourceforge.io

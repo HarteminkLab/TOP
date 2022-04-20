@@ -19,7 +19,7 @@ DNase- or ATAC-seq experiments.
 
 <img src="man/figures/schematic.png" width="90%" />
 
-## [TOP R package website](https://kevinlkx.github.io/TOP/)
+## [TOP R package website](https://kevinlkx.github.io/TOP)
 
 ### Install R package
 
@@ -36,32 +36,6 @@ After installing, check that it loads properly:
 ``` r
 library(TOP)
 ```
-
-Dependencies:
-
-In order to prepare input data using `TOP`, you will need to have the
-following R packages installed:
-[GenomicRanges](https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html),
-[Rsamtools](https://bioconductor.org/packages/release/bioc/html/Rsamtools.html),
-[data.table](https://cran.r-project.org/web/packages/data.table/index.html),
-[ggplot2](https://ggplot2.tidyverse.org), as well as the following
-command line tools:
-[bedtools](https://bedtools.readthedocs.io/en/latest/),
-[bwtool](https://github.com/CRG-Barcelona/bwtool/wiki), and
-[fimo](https://meme-suite.org/meme/doc/fimo.html) from [the MEME
-suite](https://meme-suite.org/meme/index.html) as well as
-[bedGraphToBigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html)
-and
-[bigWigAverageOverBed](https://genome.ucsc.edu/goldenpath/help/bigWig.html)
-from [UCSC binary utilities
-directory](http://hgdownload.soe.ucsc.edu/admin/exe/).
-
-Optional: you will need to have R packages
-[R2jags](https://cran.r-project.org/web/packages/R2jags/index.html) and
-[doParallel](https://cran.r-project.org/web/packages/doParallel/index.html)
-installed if you want to train your own models, as we use
-[JAGS](https://mcmc-jags.sourceforge.io) to run Gibbs sampling for the
-Bayesian hierarchical model in the current implementation of the model.
 
 ### Usage
 

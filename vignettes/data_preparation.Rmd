@@ -58,9 +58,20 @@ You can also include additional steps to correct DNase-seq or ATAC-seq bias.
 Yet, our binning approach (with M5 bins) should make TOP robust to 
 DNase-seq or ATAC-seq cleavage bias at base-pair resolution. 
 
-We recommend using [Snakemake](https://snakemake.readthedocs.io/en/stable/)
-to automate the whole procedure, especially when you have data for many TFs in 
+We recommend using [Snakemake][Snakemake] to automate the whole procedure,
+especially when you have data for many TFs in 
 many cell types or conditions.
+
+In order to prepare input data using `TOP` functions, 
+you will need to have the following R packages installed: 
+[GenomicRanges][GenomicRanges], [Rsamtools][Rsamtools], 
+[data.table][data.table], [ggplot2][ggplot2],
+as well as the following command line tools: 
+[bedtools][bedtools], [bwtool][bwtool], and [fimo][fimo] from [the MEME suite][MEME] 
+as well as
+[bedGraphToBigWig][bedGraphToBigWig] and [bigWigAverageOverBed][bigWigAverageOverBed]
+from [UCSC binary utilities directory][UCSC utilities].
+
 
 Example data preparation procedure
 -----------------------------------
@@ -71,8 +82,6 @@ K562 cell type using the human genome assembly version hg38.
 
 Load TOP R package
 ```{r load-TOP-package, eval=FALSE, message=FALSE, warning=FALSE}
-library(Rsamtools)
-# library(GenomicAlignments)
 library(TOP)
 ```
 
@@ -237,7 +246,9 @@ saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.
 ```
 
 ```{r load-combined-data, eval=TRUE, include=FALSE}
-combined_data <- readRDS(system.file("extdata", "CTCF.K562.ATAC.example.data.rds", package = "TOP"))
+combined_data <- readRDS(system.file("extdata", "CTCF.K562.ATAC.chip.example.data.rds", package = "TOP"))
+cols <- c('chr','start','end','name','pwm.score','strand','p.value', paste0('bin', 1:5))
+combined_data <- combined_data[cols]
 ```
 
 ```{r show-example-data}
@@ -332,3 +343,17 @@ We can plot the footprint profiles around the motif matches
 bound_sites_counts.mat <- sites_counts.mat[which(combined_data$chip_label == 1), ]
 plot_profile(bound_sites_counts.mat, title='ATAC-seq profiles around CTCF binding sites')
 ```
+
+[Snakemake]: https://snakemake.readthedocs.io/en/stable/
+[bedtools]: https://bedtools.readthedocs.io/en/latest/
+[bwtool]: https://github.com/CRG-Barcelona/bwtool/wiki
+[GenomicRanges]: https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html
+[Rsamtools]: https://bioconductor.org/packages/release/bioc/html/Rsamtools.html
+[data.table]: https://cran.r-project.org/web/packages/data.table/index.html
+[doParallel]: https://cran.r-project.org/web/packages/doParallel/index.html
+[ggplot2]: https://ggplot2.tidyverse.org
+[fimo]: https://meme-suite.org/meme/doc/fimo.html
+[bedGraphToBigWig]:https://genome.ucsc.edu/goldenpath/help/bigWig.html
+[bigWigAverageOverBed]:https://genome.ucsc.edu/goldenpath/help/bigWig.html
+[UCSC utilities]: http://hgdownload.soe.ucsc.edu/admin/exe/
+[MEME]:https://meme-suite.org/meme/index.html

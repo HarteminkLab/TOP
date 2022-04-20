@@ -25,19 +25,18 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.0.0)
 Imports:
+    GenomicRanges,
+    Rsamtools,
     data.table,
     R.utils,
     doParallel,
     foreach,
     ggplot2
-Remotes:
-    bioc::3.3/GenomicRanges,
-    bioc::3.3/GenomicAlignments,
-    bioc::3.3/Biostrings,
-    bioc::3.3/Rsamtools
 Suggests: 
-    rjags,
     R2jags,
-    coda
+    GenomicAlignments,
+    knitr, 
+    rmarkdown
+VignetteBuilder: knitr
