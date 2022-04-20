@@ -19,7 +19,7 @@ normalize_chip(
 \item{ref_size}{ChIP-Seq reference library size (Default: 20 million).}
 
 \item{transform}{Type of transformation for the ChIP read counts.
-Options are 'none' (no transformation), 'asinh', 'log2', and 'sqrt'.}
+Options are \sQuote{none} (no transformation), \sQuote{asinh}, \sQuote{log2}, and \sQuote{'sqrt'}.}
 }
 \value{
 A vector of transformed ChIP-seq counts.

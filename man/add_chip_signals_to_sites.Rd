@@ -30,6 +30,7 @@ A data frame of candidate sites and ChIP-seq signals.
 Add ChIP-seq signals to the candidate sites.
 It uses ChIP-seq signals (in BigWig format) from \code{chip_signal_file}.
 If \code{chip_peak_file} is not available, it will download the
-ChIP-seq signals from ENCODE database using
-the sample ID provided in \code{chip_signal_sampleID}.
+ChIP-seq signals from ENCODE database (using
+the sample ID provided in \code{chip_signal_sampleID},
+and save to the directory \code{chip_signal_dir}).
 }

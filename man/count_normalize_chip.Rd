@@ -19,10 +19,10 @@ count_normalize_chip(
 
 \item{chip_bam_files}{ChIP-seq bam files (may include multiple replicates).}
 
-\item{chip_idxstats_files}{ChIP-seq idxstats files
+\item{chip_idxstats_files}{ChIP-seq \code{idxstats} files
 (may include multiple replicates).
-(Default: use the corresponding '.idxstats.txt' files in the same directory
-of the bam files).}
+(Default: use the corresponding \code{.idxstats.txt} files in
+the same directory of the bam files).}
 
 \item{chrom_size_file}{Chromosome size file.}
 
@@ -30,7 +30,7 @@ of the bam files).}
 (Default: 2e7 for ChIP-seq)}
 
 \item{transform}{Type of transformation for the ChIP read counts.
-Options are 'none' (no transformation), 'asinh', 'log2', and 'sqrt'.}
+Options are \sQuote{none} (no transformation), \sQuote{asinh}, \sQuote{log2}, and \sQuote{'sqrt'}.}
 
 \item{bedtools_path}{Path to \code{bedtools} executable.}
 }
@@ -40,8 +40,16 @@ ChIP-seq read counts around each candidate site.
 }
 \description{
 Count ChIP-seq read coverage for each bam file
-using the \code{coverage} function from \code{bedtools},
+using the \code{coverage} function from \code{bedtools}.
 Then normalize the read counts
 by scaling to the reference ChIP-seq library size,
 and transform the ChIP-seq read counts.
+}
+\examples{
+\dontrun{
+sites_chip <- count_normalize_chip(sites,
+                                   chip_bam_files=c('ChIPseq.rep1.bam', 'ChIPseq.rep2.bam'),
+                                   chrom_size_file='hg38.chrom.sizes',
+                                   ref_size=2e7)
+}
 }

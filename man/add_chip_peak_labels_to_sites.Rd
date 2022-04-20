@@ -28,7 +28,12 @@ A data frame of candidate sites and binary ChIP-seq peak labels
 Add ChIP-seq peak labels to the candidate sites.
 It uses ChIP-seq peaks from \code{chip_peak_file} if available.
 If \code{chip_peak_file} is not available, it will download the
-ChIP-seq peaks from ENCODE database using
-the sample ID provided in \code{chip_peak_sampleID}, and
-(and save to the directory \code{chip_peak_dir}).
+ChIP-seq peaks from ENCODE database (using
+the sample ID provided in \code{chip_peak_sampleID},
+and save to the directory \code{chip_peak_dir}).
+}
+\examples{
+\dontrun{
+sites_chip_labels <- add_chip_peak_labels_to_sites(sites, chip_peak_file='ChIPseq.peaks.bed.gz')
+}
 }
