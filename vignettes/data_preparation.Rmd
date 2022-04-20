@@ -246,7 +246,7 @@ saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.combined.
 ```
 
 ```{r load-combined-data, eval=TRUE, include=FALSE}
-combined_data <- readRDS(system.file("extdata", "CTCF.K562.ATAC.chip.example.data.rds", package = "TOP"))
+combined_data <- readRDS(system.file("extdata/example_data", "CTCF.K562.ATAC.chip.example.data.rds", package = "TOP"))
 cols <- c('chr','start','end','name','pwm.score','strand','p.value', paste0('bin', 1:5))
 combined_data <- combined_data[cols]
 ```
@@ -307,7 +307,7 @@ saveRDS(combined_data, 'processed_data/CTCF_MA0139.1_1e-5.K562.ATAC.M5.ChIP.comb
 ```
 
 ```{r load-combined-data-with-chip, eval=TRUE, include=FALSE}
-combined_data <- readRDS(system.file("extdata", "CTCF.K562.ATAC.chip.example.data.rds", package = "TOP"))
+combined_data <- readRDS(system.file("extdata/example_data", "CTCF.K562.ATAC.chip.example.data.rds", package = "TOP"))
 ```
 
 ```{r}
