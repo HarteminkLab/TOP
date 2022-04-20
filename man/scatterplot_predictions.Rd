@@ -20,15 +20,15 @@ scatterplot_predictions(
 
 \item{y}{y-axis values of points in the plot (predicted).}
 
-\item{xlab}{a label for the x axis.}
+\item{xlab}{Label for the x axis.}
 
-\item{ylab}{a label for the y axis.}
+\item{ylab}{Label for the y axis.}
 
-\item{title}{a title for the plot.}
+\item{title}{Title for the plot.}
 
-\item{xlim}{range of x-axis values.}
+\item{xlim}{Range of x-axis values.}
 
-\item{ylim}{range of y-axis values.}
+\item{ylim}{Range of y-axis values.}
 
 \item{color}{The plotting color.}
 }
@@ -39,4 +39,13 @@ the scatter plot of measured and predicted occupancy.
 \description{
 Make a scatter plot of measured and predicted occupancy,
 with Pearson's correlation (R) between measured and predicted occupancy
+}
+\examples{
+
+\dontrun{
+scatterplot_predictions(x = asinh(chip),
+                        y = asinh(predicted),
+                        xlab = 'asinh(measured occupancy)',
+                        ylab = 'asinh(predicted occupancy)')
+}
 }

@@ -10,7 +10,7 @@
 #' @param all_training_data_files A vector of the assembled training data
 #' files of all partitions. If \code{all_training_data} is missing,
 #' it will load the training data from \code{all_training_data_files}.
-#' @param model_file TOP model file written in JAGS.
+#' @param model_file TOP model file written in \code{JAGS}.
 #' @param logistic_model Logical; whether to use the logistic version of TOP model.
 #' If \code{logistic_model = TRUE}, use the logistic version of TOP model.
 #' If \code{logistic_model = FALSE}, use the quantitative occupancy model (default).
@@ -51,55 +51,42 @@
 #' @export
 #' @examples
 #'
-#' # We can train the TOP model after we got the training data assembled.
-#' # Please read the data preparation tutorial to
-#' # prepare the 'assembled_training_data'.
+#' We can train the TOP model after we got the training data assembled.
+#' Please read the data preparation tutorial to
+#' prepare the training data.
 #'
+#' \dontrun{
 #' # Example to train TOP quantitative occupancy model:
-#' # model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
+#' model_file <- system.file("model", "TOP_M5_model.jags", package = "TOP")
 #'
 #' # The example below first performs "asinh" transform to the ChIP-seq counts
 #' # in 'assembled_training_data', then runs Gibbs sampling
 #' # for each of the 10 partitions in parallel.
-#'
 #' # The following example runs 5000 iterations of Gibbs sampling in total,
 #' # including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
-#' # and save the posterior samples to the \sQuote{TOP_fit} directory.
-#' # all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
-#'                                       model_file = model_file,
-#'                                       logistic_model = FALSE,
-#'                                       transform = 'asinh',
-#'                                       partitions = 1:10,
-#'                                       n_iter = 5000,
-#'                                       n_burnin = 1000,
-#'                                       n_chains = 3,
-#'                                       n_thin = 2,
-#'                                       save = TRUE,
-#'                                       out_dir = 'TOP_fit',
-#'                                       quiet = TRUE)
+#' # and save the posterior samples to the TOP_fit directory.
+#'
+#' all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+#'                                     model_file = model_file,
+#'                                     logistic_model = FALSE,
+#'                                     transform = 'asinh',
+#'                                     partitions = 1:10,
+#'                                     n_iter = 5000,
+#'                                     n_burnin = 1000,
+#'                                     n_chains = 3,
+#'                                     n_thin = 2,
+#'                                     save = TRUE,
+#'                                     out_dir = 'TOP_fit',
+#'                                     quiet = TRUE)
 #'
 #' # We can also obtain the posterior samples separately for each partition,
 #' # For example, to obtain the posterior samples for partition 3 only:
-#' # TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
-#'                                         model_file = model_file,
-#'                                         logistic_model = FALSE,
-#'                                         transform = 'asinh',
-#'                                         partitions = 3,
-#'                                         n_iter = 5000,
-#'                                         n_burnin = 1000,
-#'                                         n_chains = 3,
-#'                                         n_thin = 2,
-#'                                         save = TRUE,
-#'                                         out_dir = 'TOP_fit',
-#'                                         quiet = TRUE)
 #'
-#' # Example to train TOP logistic (binary) model:
-#' # model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
-#'
-#' # all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+#' TOP_samples_part3 <- fit_TOP_M5_model(assembled_training_data,
 #'                                       model_file = model_file,
-#'                                       logistic_model = TRUE,
-#'                                       partitions = 1:10,
+#'                                       logistic_model = FALSE,
+#'                                       transform = 'asinh',
+#'                                       partitions = 3,
 #'                                       n_iter = 5000,
 #'                                       n_burnin = 1000,
 #'                                       n_chains = 3,
@@ -107,6 +94,24 @@
 #'                                       save = TRUE,
 #'                                       out_dir = 'TOP_fit',
 #'                                       quiet = TRUE)
+#'
+#'
+#' # Example to train TOP logistic (binary) model:
+#' model_file <- system.file("model", "TOP_M5_logistic_model.jags", package = "TOP")
+#'
+#' all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
+#'                                     model_file = model_file,
+#'                                     logistic_model = TRUE,
+#'                                     partitions = 1:10,
+#'                                     n_iter = 5000,
+#'                                     n_burnin = 1000,
+#'                                     n_chains = 3,
+#'                                     n_thin = 2,
+#'                                     save = TRUE,
+#'                                     out_dir = 'TOP_fit',
+#'                                     quiet = TRUE)
+#'
+#' }
 #'
 fit_TOP_M5_model <- function(all_training_data,
                              all_training_data_files,

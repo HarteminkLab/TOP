@@ -4,17 +4,24 @@
 #' with Pearson's correlation (R) between measured and predicted occupancy
 #' @param x x-axis values of points in the plot (measured).
 #' @param y y-axis values of points in the plot (predicted).
-#' @param xlab a label for the x axis.
-#' @param ylab a label for the y axis.
-#' @param title a title for the plot.
-#' @param xlim range of x-axis values.
-#' @param ylim range of y-axis values.
+#' @param xlab Label for the x axis.
+#' @param ylab Label for the y axis.
+#' @param title Title for the plot.
+#' @param xlim Range of x-axis values.
+#' @param ylim Range of y-axis values.
 #' @param color The plotting color.
 #' @return A \code{ggplot} object for
 #' the scatter plot of measured and predicted occupancy.
 #' @import ggplot2
 #' @export
+#' @examples
 #'
+#' \dontrun{
+#' scatterplot_predictions(x = asinh(chip),
+#'                         y = asinh(predicted),
+#'                         xlab = 'asinh(measured occupancy)',
+#'                         ylab = 'asinh(predicted occupancy)')
+#' }
 scatterplot_predictions <- function(x, y,
                                     xlab = 'measured',
                                     ylab = 'predicted',
@@ -48,62 +55,15 @@ scatterplot_predictions <- function(x, y,
   return(p)
 }
 
-#' @title Simple x-y scatter plot
-#' @description Make a simple x-y scatter plot
-#' @param x x-axis values of points in the plot.
-#' @param y y-axis values of points in the plot.
-#' @param xlab a label for the x axis.
-#' @param ylab a label for the y axis.
-#' @param title a title for the plot.
-#' @param xlim range of x-axis values.
-#' @param ylim range of y-axis values.
-#' @param color The plotting color.
-#' @return A \code{ggplot} object.
-#' @import ggplot2
-#' @export
-#'
-scatterplot <- function(x, y,
-                        xlab = '',
-                        ylab = '',
-                        title = '',
-                        xlim = NULL,
-                        ylim = NULL,
-                        color = 'black'){
-
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop(
-      "Package \"ggplot2\" must be installed to use this function.",
-      call. = FALSE
-    )
-  }
-
-  df <- data.frame(x=x, y=y)
-
-  # Make a simple scatter plot
-  p <- ggplot(df, aes(x=x, y=y)) +
-    geom_point(shape=19,      # Use solid circles
-               alpha=0.3,     # opacity
-               color=color,
-               size=0.5) +
-    labs(x = xlab, y = ylab, title = title) +
-    theme_classic()
-
-  if(!is.null(xlim)){
-    p <- p + scale_x_continuous(breaks=seq(xlim[1],xlim[2],length.out = 5), limits = c(xlim[1],xlim[2]))
-  }
-
-  if(!is.null(ylim)){
-    p <- p + scale_y_continuous(breaks=seq(ylim[1],ylim[2],length.out = 5), limits = c(ylim[1],ylim[2]))
-  }
-
-  return(p)
-}
-
 #' @title Plot DNase or ATAC profiles
-#' @param cuts DNase or ATAC cuts
-#' @param mlen motif length
+#' @param cuts Matrix of DNase or ATAC cuts
+#' @param mlen Motif length
 #' @param title Title of the plot
 #' @export
+#' @examples
+#' \dontrun{
+#' plot_profile(cuts, title='Footprint profiles around binding sites')
+#' }
 plot_profile <- function(cuts, mlen=ncol(cuts)/2-200, title=''){
   profile <- colMeans(cuts)
   fwd_profile <- profile[1:(length(profile)/2)]
@@ -118,11 +78,15 @@ plot_profile <- function(cuts, mlen=ncol(cuts)/2-200, title=''){
 }
 
 #' @title Plot DNase or ATAC profiles by strands of motif matches
-#' @param cuts DNase or ATAC cuts
-#' @param sites candidate sites
-#' @param mlen motif length
+#' @param cuts Matrix of DNase or ATAC cuts
+#' @param sites Data frame of candidate sites
+#' @param mlen Motif length
 #' @param title Title of the plot
 #' @export
+#' @examples
+#' \dontrun{
+#' plot_profile_strands(cuts, sites, title='Footprint profiles around binding sites')
+#' }
 plot_profile_strands <- function(cuts, sites, mlen=ncol(cuts)/2-200, title = '', strand = c('both', '+', '-')){
   if(nrow(cuts) != nrow(sites)){
     stop("Number of sites do not match between cuts and sites!")

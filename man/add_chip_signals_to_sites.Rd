@@ -34,3 +34,8 @@ ChIP-seq signals from ENCODE database (using
 the sample ID provided in \code{chip_signal_sampleID},
 and save to the directory \code{chip_signal_dir}).
 }
+\examples{
+\dontrun{
+sites_chip_signals - add_chip_signals_to_sites(sites, chip_signal_file='ChIPseq.signals.bigWig')
+}
+}

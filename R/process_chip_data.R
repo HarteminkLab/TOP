@@ -198,6 +198,7 @@ add_chip_peak_labels_to_sites <- function(sites,
 #' @importFrom data.table fread fwrite
 #'
 #' @export
+#' @examples
 #' \dontrun{
 #' sites_chip_signals - add_chip_signals_to_sites(sites, chip_signal_file='ChIPseq.signals.bigWig')
 #' }

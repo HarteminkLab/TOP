@@ -7,12 +7,17 @@
 plot_profile(cuts, mlen = ncol(cuts)/2 - 200, title = "")
 }
 \arguments{
-\item{cuts}{DNase or ATAC cuts}
+\item{cuts}{Matrix of DNase or ATAC cuts}
 
-\item{mlen}{motif length}
+\item{mlen}{Motif length}
 
 \item{title}{Title of the plot}
 }
 \description{
 Plot DNase or ATAC profiles
+}
+\examples{
+\dontrun{
+plot_profile(cuts, title='Footprint profiles around binding sites')
+}
 }

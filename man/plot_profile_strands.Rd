@@ -13,14 +13,19 @@ plot_profile_strands(
 )
 }
 \arguments{
-\item{cuts}{DNase or ATAC cuts}
+\item{cuts}{Matrix of DNase or ATAC cuts}
 
-\item{sites}{candidate sites}
+\item{sites}{Data frame of candidate sites}
 
-\item{mlen}{motif length}
+\item{mlen}{Motif length}
 
 \item{title}{Title of the plot}
 }
 \description{
 Plot DNase or ATAC profiles by strands of motif matches
+}
+\examples{
+\dontrun{
+plot_profile_strands(cuts, sites, title='Footprint profiles around binding sites')
+}
 }
