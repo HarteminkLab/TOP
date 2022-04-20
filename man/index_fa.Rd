@@ -2,21 +2,23 @@
 % Please edit documentation in R/process_reads.R
 \name{index_fa}
 \alias{index_fa}
-\title{Index the FASTA file, and generate a \dQuote{chrom.sizes} file}
+\title{Index the FASTA file, and generate a \sQuote{chrom.sizes} file}
 \usage{
 index_fa(fa_file, chromsize_file = "chrom.sizes", outdir = dirname(fa_file))
 }
 \arguments{
 \item{fa_file}{FASTA file.}
 
-\item{chromsize_file}{Path of the output \dQuote{chrom.sizes} file.}
+\item{chromsize_file}{Path of the output \sQuote{chrom.sizes} file.}
 
 \item{outdir}{Output directory (default: save to the directory of the FASTA file).}
 }
 \description{
-Index the FASTA file, and generate a \dQuote{chrom.sizes} file
-with chromosomes and genome size of each chromosome.
+Index the FASTA file, and generate a \sQuote{chrom.sizes} file
+with chromosome numbers and the size of each chromosome.
 }
 \examples{
-# index_fa('hg38.fa', chromsize_file='hg38.chrom.sizes')
+\dontrun{
+index_fa('hg38.fa', chromsize_file='hg38.chrom.sizes')
+}
 }
