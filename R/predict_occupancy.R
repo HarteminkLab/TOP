@@ -15,6 +15,11 @@
 #' Options: \sQuote{best}, \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}.
 #' When \code{level = 'best'}, use the best (lowest available) level of the
 #' hierarchy for the TF x cell type combination.
+#' If the TF motif and cell type is available in the training data,
+#' then use the bottom level (TF- and cell-type-specific model).
+#' otherwise, if TF motif (but not cell type) is available in the training data,
+#' choose the middle level (TF-specific model) of that TF motif;
+#' otherwise, use the top level TF-generic model.
 #' When \code{level = 'bottom'}, use the bottom level (TF- and cell-type-specific model),
 #' if the TF motif and cell type is available in the training data.
 #' When \code{level = 'middle'}, use the middle level (TF-specific model) of that TF.
@@ -37,45 +42,44 @@
 #' \item{predictions}{a data frame with the data and predicted values.}
 #' @export
 #' @examples
-#' # 'data' is a data frame of input data,
-#' # with columns of PWM scores and five DNase (or ATAC) bins.
-#' # 'TOP_coef' is pretrained posterior mean of TOP regression coefficients.
-#'
+#' \dontrun{
 #' # Predict CTCF occupancy in K562 using the quantitative occupancy model:
 #'
 #' # Predict using the 'bottom' level model
-#' # result <- predict_TOP(data, TOP_coef,
-#'                         tf_name = 'CTCF', cell_type = 'K562',
-#'                         level = 'bottom',
-#'                         logistic_model = FALSE,
-#'                         transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', cell_type = 'K562',
+#'                       level = 'bottom',
+#'                       logistic_model = FALSE,
+#'                       transform = 'asinh') # We used 'asinh' transformation on the ChIP data when training the model.
 #'
 #' # Predict using the 'best' model
 #' # Since CTCF in K562 cell type is included in training,
 #' # the 'best' model is the 'bottom' level model.
-#' # result <- predict_TOP(data, TOP_coef,
-#'                         tf_name = 'CTCF', cell_type = 'K562', level = 'best',
-#'                         logistic_model = FALSE, transform = 'asinh')
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', cell_type = 'K562', level = 'best',
+#'                       logistic_model = FALSE, transform = 'asinh')
 #'
 #' # We can use the 'middle' model to predict CTCF in K562
 #' # or other cell types or conditions
-#' # result <- predict_TOP(data, TOP_coef,
-#'                         tf_name = 'CTCF', level = 'middle',
-#'                         logistic_model = FALSE, transform = 'asinh')
+#' result <- predict_TOP(data, TOP_coef,
+#'                       tf_name = 'CTCF', level = 'middle',
+#'                       logistic_model = FALSE, transform = 'asinh')
 #'
 #' # Predict CTCF binding probability using the logistic version of the model:
 #' # No need to set the argument for 'transform' for the logistic model.
 #'
 #' # Predict using the 'bottom' level model
-#' # result <- predict_TOP(data, TOP_coef,
-#'                         tf_name = 'CTCF', cell_type = 'K562',
-#'                         level = 'best',
-#'                         logistic_model = TRUE)
+#' result <- predict_TOP(data, TOP_coef,
+#'                      tf_name = 'CTCF', cell_type = 'K562',
+#'                      level = 'best',
+#'                      logistic_model = TRUE)
 #'
 #' # Predict using the 'middle' level model
-#' # result <- predict_TOP(data, TOP_coef,
-#'                         tf_name = 'CTCF', level = 'middle',
-#'                         logistic_model = TRUE)
+#' result <- predict_TOP(data, TOP_coef,
+#'                      tf_name = 'CTCF', level = 'middle',
+#'                      logistic_model = TRUE)
+#' }
+#'
 predict_TOP <- function(data,
                         TOP_coef,
                         tf_name,
@@ -126,9 +130,11 @@ predict_TOP <- function(data,
 #'
 #' @export
 #' @examples
-#' # predictions <- predict_TOP_mean_coef(data, # data frame of input data.
-#'                                        mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
-#'                                        transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
+#' \dontrun{
+#' predictions <- predict_TOP_mean_coef(data, # data frame of input data.
+#'                                      mean_coef, # (selected) pretrained posterior mean of TOP regression coefficients
+#'                                      transform = 'asinh') # We used 'asinh' transformation on ChIP counts when training the model
+#' }
 #'
 predict_TOP_mean_coef <- function(data,
                                   mean_coef,
@@ -176,11 +182,12 @@ predict_TOP_mean_coef <- function(data,
 #' length(mean_coef) should be equal to 1+ncol(data).
 #'
 #' @return A data frame of input data and predicted TF binding probability.
-#'
 #' @export
 #' @examples
-#' # predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
-#'                                                 mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+#' \dontrun{
+#' predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
+#'                                               mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+#' }
 #'
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
@@ -209,7 +216,6 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 #' @title Predict TF occupancy using posterior samples of regression coefficients
 #' @description Predict TF occupancy using posterior samples of TOP regression
 #' coefficients.
-#'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param coef_samples TOP posterior samples.
 #' @param use_posterior_mean Logical; if TRUE, uses the posterior mean of
@@ -222,12 +228,13 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 #' @return A data frame of input data and predicted TF occupancy (posterior mean).
 #' @export
 #' @examples
-#' # predictions <- predict_TOP_samples(data,
-#'                                      coef_samples = TOP_samples,
-#'                                      use_posterior_mean = FALSE,
-#'                                      sample_predictions = TRUE,
-#'                                      transform = "asinh")
-#'
+#' \dontrun{
+#' predictions <- predict_TOP_samples(data,
+#'                                    coef_samples = TOP_samples,
+#'                                    use_posterior_mean = FALSE,
+#'                                    sample_predictions = TRUE,
+#'                                    transform = "asinh")
+#' }
 predict_TOP_samples <- function(data,
                                 coef_samples,
                                 use_posterior_mean = FALSE,
@@ -280,22 +287,7 @@ predict_TOP_samples <- function(data,
 }
 
 
-#' @title Select regression coefficients by the TOP hierarchy level
-#'
-#' @param TOP_mean_coef Trained TOP posterior mean regression coefficients.
-#' @param tf_name specifies TF name.
-#' @param cell_type specifies the cell type.
-#' @param level Specific the TOP model hierarchy level to use.
-#' Options: 'best', 'bottom', 'middle', or 'top'.
-#' Default: 'best' -- choose the best model (lowest level of the hierarchy available):
-#' If the TF motif and cell type is available in the training data,
-#' then use the bottom level (TF- and cell-type-specific model).
-#' otherwise, if TF motif (but not cell type) is available in the training data,
-#' choose the middle level (TF-specific model) of that TF motif;
-#' otherwise, use the top level TF-generic model.
-#' @return A list containing the results, including selected hierarchy level,
-#' TOP model, regression coefficients (posterior mean).
-#' @export
+# Select regression coefficients by the TOP hierarchy level
 select_model_coef_level <- function(TOP_mean_coef,
                                     tf_name,
                                     cell_type,

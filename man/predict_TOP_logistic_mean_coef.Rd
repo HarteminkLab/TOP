@@ -22,7 +22,9 @@ Predict TF binding probability using posterior mean of the regression
 coefficients trained from TOP logistic model.
 }
 \examples{
-# predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
-                                                mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+\dontrun{
+predictions <- predict_TOP_logistic_mean_coef(data, # data frame of input data.
+                                              mean_coef)  # (selected) pretrained posterior mean of TOP regression coefficients
+}
 
 }
