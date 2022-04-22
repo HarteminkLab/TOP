@@ -5,13 +5,15 @@
 #'
 #' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
 #' @param TOP_coef A list containing the posterior mean of TOP regression coefficients.
-#' @param tf_name specifies the TF name to make predictions.
+#' @param tf_name Specifies the TF name to make predictions.
 #' It will find the model parameters trained for this TF.
 #' This is not needed (not used) when \code{level = 'top'}.
-#' @param cell_type specifies the cell type to make predictions.
+#' @param cell_type Specifies the cell type to make predictions.
 #' It will find the model parameters trained for this cell type.
 #' This is not needed (not used) when \code{level = 'middle'} or \code{level = 'top'}.
-#' @param level Specific the TOP model hierarchy level to use.
+#' @param use_model Use pretrained model if \code{TOP_coef} is not supplied.
+#' Options:  \sQuote{ATAC}, \sQuote{DukeDNase}, \sQuote{UwDNase}.
+#' @param level Specifies the TOP model level to use.
 #' Options: \sQuote{best}, \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}.
 #' When \code{level = 'best'}, use the best (lowest available) level of the
 #' hierarchy for the TF x cell type combination.
@@ -80,20 +82,67 @@
 #' result <- predict_TOP(data, TOP_coef,
 #'                      tf_name = 'CTCF', level = 'middle',
 #'                      logistic_model = TRUE)
+#'
+#' # If TOP_coef is not specified, it will use
+#' pretrained model included in the package.
+#'
+#' # Predict using pretrained ATAC quantitative occupancy model
+#' result <- predict_TOP(data,
+#'                       tf_name = 'CTCF', cell_type = 'K562',
+#'                       use_model = 'ATAC', level = 'best',
+#'                       logistic_model = FALSE,
+#'                       transform = 'asinh')
+#'
+#' # Predict using pretrained ATAC logistic model
+#' result <- predict_TOP(data,
+#'                       tf_name = 'CTCF', cell_type = 'K562',
+#'                       use_model = 'ATAC', level = 'best',
+#'                       logistic_model = TRUE)
 #' }
 #'
 predict_TOP <- function(data,
                         TOP_coef,
                         tf_name,
                         cell_type,
+                        use_model = c('ATAC', 'DukeDNase', 'UwDNase'),
                         level = c('best', 'bottom', 'middle', 'top'),
                         logistic_model = FALSE,
                         transform = c('asinh', 'log2', 'log', 'none')){
 
   level <- match.arg(level)
 
-  if (missing(TOP_coef)){
-    stop("Please provide TOP regression coefficients in 'TOP_coef'.")
+  if(missing(TOP_coef)){
+    use_model <- match.arg(use_model)
+    if(use_model == 'ATAC'){
+      cat('Use pretrained TOP ATAC model coefficients ...\n')
+      if(logistic_model){
+        TOP_coef <- readRDS(system.file("extdata/trained_model_coef/ATAC", "TOP_logistic_M5_posterior_mean_coef.rds", package = "TOP"))
+      }else{
+        TOP_coef <- readRDS(system.file("extdata/trained_model_coef/ATAC", "TOP_M5_posterior_mean_coef.rds", package = "TOP"))
+      }
+    }
+
+    if(use_model == 'DukeDNase'){
+      cat('Use pretrained TOP Duke DNase model coefficients ...\n')
+      if(logistic_model){
+        TOP_coef <- readRDS(system.file("extdata/trained_model_coef/DukeDnase", "TOP_logistic_M5_posterior_mean_coef.rds", package = "TOP"))
+      }else{
+        TOP_coef <- readRDS(system.file("extdata/trained_model_coef/DukeDnase", "TOP_M5_posterior_mean_coef.rds", package = "TOP"))
+      }
+    }
+
+    if(use_model == 'UwDNase'){
+      cat('Use pretrained TOP UW DNase model coefficients ...\n')
+      if(logistic_model){
+        TOP_coef <- readRDS(system.file("extdata/trained_model_coef/UwDnase", "TOP_logistic_M5_posterior_mean_coef.rds", package = "TOP"))
+      }else{
+        TOP_coef <- readRDS(system.file("extdata/trained_model_coef/UwDnase", "TOP_M5_posterior_mean_coef.rds", package = "TOP"))
+      }
+    }
+  }
+
+  if( !(class(TOP_coef) == 'list' && length(TOP_coef) == 3) && setequal(names(TOP_coef), c('top', 'middle', 'bottom'))){
+    stop('TOP_coef should be a list of length 3 (named as "top", "middle", "bottom")!')
   }
 
   selected_model <- select_model_coef_level(TOP_coef, tf_name, cell_type, level)
@@ -101,11 +150,11 @@ predict_TOP <- function(data,
     stop(sprintf("%s level cefficients are not available.\n", level))
   }
 
-  if (logistic_model == FALSE ) {
+  if (logistic_model) {
+    predictions <- predict_TOP_logistic_mean_coef(data, selected_model$coef)
+  }else{
     transform <- match.arg(transform)
     predictions <- predict_TOP_mean_coef(data, selected_model$coef, transform = transform)
-  }else if (logistic_model == TRUE){
-    predictions <- predict_TOP_logistic_mean_coef(data, selected_model$coef)
   }
 
   return(list(model = selected_model$model,

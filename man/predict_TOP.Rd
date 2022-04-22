@@ -9,6 +9,7 @@ predict_TOP(
   TOP_coef,
   tf_name,
   cell_type,
+  use_model = c("ATAC", "DukeDNase", "UwDNase"),
   level = c("best", "bottom", "middle", "top"),
   logistic_model = FALSE,
   transform = c("asinh", "log2", "log", "none")
@@ -19,15 +20,18 @@ predict_TOP(
 
 \item{TOP_coef}{A list containing the posterior mean of TOP regression coefficients.}
 
-\item{tf_name}{specifies the TF name to make predictions.
+\item{tf_name}{Specifies the TF name to make predictions.
 It will find the model parameters trained for this TF.
 This is not needed (not used) when \code{level = 'top'}.}
 
-\item{cell_type}{specifies the cell type to make predictions.
+\item{cell_type}{Specifies the cell type to make predictions.
 It will find the model parameters trained for this cell type.
 This is not needed (not used) when \code{level = 'middle'} or \code{level = 'top'}.}
 
-\item{level}{Specific the TOP model hierarchy level to use.
+\item{use_model}{Use pretrained model if \code{TOP_coef} is not supplied.
+Options:  \sQuote{ATAC}, \sQuote{DukeDNase}, \sQuote{UwDNase}.}
+
+\item{level}{Specifies the TOP model level to use.
 Options: \sQuote{best}, \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}.
 When \code{level = 'best'}, use the best (lowest available) level of the
 hierarchy for the TF x cell type combination.
@@ -104,6 +108,22 @@ result <- predict_TOP(data, TOP_coef,
 result <- predict_TOP(data, TOP_coef,
                      tf_name = 'CTCF', level = 'middle',
                      logistic_model = TRUE)
+
+# If TOP_coef is not specified, it will use
+pretrained model included in the package.
+
+# Predict using pretrained ATAC quantitative occupancy model
+result <- predict_TOP(data,
+                      tf_name = 'CTCF', cell_type = 'K562',
+                      use_model = 'ATAC', level = 'best',
+                      logistic_model = FALSE,
+                      transform = 'asinh')
+
+# Predict using pretrained ATAC logistic model
+result <- predict_TOP(data,
+                      tf_name = 'CTCF', cell_type = 'K562',
+                      use_model = 'ATAC', level = 'best',
+                      logistic_model = TRUE)
 }
 
 }
