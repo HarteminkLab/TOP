@@ -109,8 +109,8 @@ result <- predict_TOP(data, TOP_coef,
                      tf_name = 'CTCF', level = 'middle',
                      logistic_model = TRUE)
 
-# If TOP_coef is not specified, it will use
-pretrained model included in the package.
+# If TOP_coef is not specified, it will automatically use the
+# pretrained models included in the package.
 
 # Predict using pretrained ATAC quantitative occupancy model
 result <- predict_TOP(data,

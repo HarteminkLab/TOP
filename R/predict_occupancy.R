@@ -84,7 +84,7 @@
 #'                      logistic_model = TRUE)
 #'
 #' # If TOP_coef is not specified, it will automatically use the
-#' pretrained models included in the package.
+#' # pretrained models included in the package.
 #'
 #' # Predict using pretrained ATAC quantitative occupancy model
 #' result <- predict_TOP(data,
