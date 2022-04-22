@@ -94,7 +94,7 @@ included in the packge:
 TOP_coef <- readRDS(system.file("extdata/trained_model_coef/ATAC", "TOP_M5_posterior_mean_coef.rds", package = "TOP"))
 ```
 
-We can use the pretrained model included in the package
+We can then make predictions by setting `TOP_coef` to the specified model.
 ```{r predict-TOP-mean-coef-best-2, eval=TRUE}
 TOP_result <- predict_TOP(data, 
                           TOP_coef = TOP_coef, 
