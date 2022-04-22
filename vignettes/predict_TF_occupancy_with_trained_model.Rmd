@@ -43,9 +43,6 @@ data <- data[cols]
 head(data,3)
 ```
 
-Load pre-trained TOP models
---------------------------------
-
 Predict TF occupancy using pretrained TOP model
 ------------------------------------------------
 
