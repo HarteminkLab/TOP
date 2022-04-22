@@ -22,7 +22,7 @@ the partitions on separate machines by specifying the partition to run."><!-- ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
       </span>
     </div>
 
@@ -170,7 +170,6 @@ Otherwise, only show progress bars.</p></dd>
 <span class="r-in"><span class="co"># The following example runs 5000 iterations of Gibbs sampling in total,</span></span>
 <span class="r-in"><span class="co"># including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,</span></span>
 <span class="r-in"><span class="co"># and save the posterior samples to the 'TOP_fit' directory.</span></span>
-<span class="r-in"></span>
 <span class="r-in"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span>
 <span class="r-in">                                    logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span class="r-in">                                    transform <span class="op">=</span> <span class="st">'asinh'</span>,</span>
@@ -182,7 +181,6 @@ Otherwise, only show progress bars.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># We can also obtain the posterior samples separately for each partition,</span></span>
 <span class="r-in"><span class="co"># For example, to obtain the posterior samples for partition #3 only:</span></span>
-<span class="r-in"></span>
 <span class="r-in"><span class="va">TOP_samples_part3</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span>
 <span class="r-in">                                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span class="r-in">                                      transform <span class="op">=</span> <span class="st">'asinh'</span>,</span>
@@ -195,7 +193,6 @@ Otherwise, only show progress bars.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Example to train TOP logistic (binary) model:</span></span>
-<span class="r-in"></span>
 <span class="r-in"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span>
 <span class="r-in">                                    logistic_model <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span class="r-in">                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,</span>
