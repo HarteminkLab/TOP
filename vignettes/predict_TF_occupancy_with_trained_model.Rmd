@@ -18,7 +18,6 @@ Load TOP R package
 ---------------------
 ```{r load-TOP-package, eval=TRUE, message=FALSE, warning=FALSE}
 library(TOP)
-library(ggplot2)
 ```
 
 Load data
@@ -44,43 +43,62 @@ data <- data[cols]
 head(data,3)
 ```
 
-
 Load pre-trained TOP models
 --------------------------------
 
-We have trained models for DNase-seq and ATAC-seq using ENCODE data. 
-
-The pre-trained model parameters can be downloaded from 
-[here](https://users.cs.duke.edu/~amink/software/).
-
-Predict TF occupancy using trained TOP model
+Predict TF occupancy using pretrained TOP model
 ------------------------------------------------
 
-We can make predictions using the posterior mean of 
-pre-trained TOP model regression coefficients for ATAC-seq. 
+We can predict TF occupancy for a TF in a cell type using 
+the `predict_TOP()` function.
 
+We have trained TOP models for ATAC-seq and DNase-seq (Duke and UW) data using ENCODE data,
+and included pre-trained TOP model coefficients (posterior mean) within the package.
+
+If you want to use the pre-trained TOP model coefficients included in the package,
+you simply specify the model to use, by setting `use_model` equals "ATAC", 
+"DukeDNase", or "UwDNase". 
+
+For example, here we chose the pretrained "ATAC" model.
+
+We chose the "bottom" level regression coefficients 
+as we know that have CTCF ChIP data from K562 cell type in our training set. 
+```{r predict-TOP-use-pretrained-coef, eval=TRUE}
+TOP_result <- predict_TOP(data, 
+                          tf_name = 'CTCF', 
+                          cell_type = 'K562', 
+                          use_model = 'ATAC', 
+                          level = 'bottom', 
+                          logistic_model = FALSE, 
+                          transform = 'asinh')
+```
+
+Or, we can let the software to choose the "best" available level of coefficients 
+for the TF and cell type of interest. 
+In this case, it automatically selected the "bottom" level as the best level.
+```{r predict-TOP-mean-coef-best, eval=TRUE}
+TOP_result <- predict_TOP(data, 
+                          tf_name = 'CTCF', 
+                          cell_type = 'K562', 
+                          use_model = 'ATAC', 
+                          level = 'best', 
+                          logistic_model = FALSE, 
+                          transform = 'asinh')
+```
+
+If you want to use your own model, you can specify that by setting `TOP_coef` to 
+your TOP model coefficients. 
+Check [this](train_TOP_model.html) and [this](train_TOP_logistic_model.html) 
+tutorials to train your own models.
+
+For example, we can load TOP quantitative occupancy model for ATAC-seq data 
+included in the packge:
 ```{r load-TOP-posterior-mean-coef, eval=TRUE}
 TOP_coef <- readRDS(system.file("extdata/trained_model_coef/ATAC", "TOP_M5_posterior_mean_coef.rds", package = "TOP"))
 ```
 
-Now we can predict CTCF occupancy in K562 cell type using the `predict_TOP` function:
-
-We can choose the "bottom" level regression coefficients 
-as we have CTCF ChIP data from K562 cell type in our training set. 
-```{r predict-TOP-mean-coef-bottom, eval=TRUE}
-TOP_result <- predict_TOP(data, 
-                          TOP_coef = TOP_coef, 
-                          tf_name = 'CTCF', 
-                          cell_type = 'K562', 
-                          level = 'bottom', 
-                          logistic_model = FALSE,
-                          transform = 'asinh') 
-```
-
-Or, we can select the "best" available level of coefficients 
-for the TF and cell type of interest. 
-In this case, the "bottom" level is the best level.
-```{r predict-TOP-mean-coef-best, eval=TRUE}
+We can use the pretrained model included in the package
+```{r predict-TOP-mean-coef-best-2, eval=TRUE}
 TOP_result <- predict_TOP(data, 
                           TOP_coef = TOP_coef, 
                           tf_name = 'CTCF', 
@@ -89,6 +107,7 @@ TOP_result <- predict_TOP(data,
                           logistic_model = FALSE, 
                           transform = 'asinh')
 ```
+
 This result contains a list with the level of model, 
 regression coefficients (posterior mean) used to make predictions, 
 and predictions of TF occupancy. 
@@ -143,24 +162,18 @@ Predict TF binding probability using trained TOP logistic model
 ------------------------------------------------------------------
 
 We can also predict TF binding probability for these candidate sites using 
-pre-trained TOP logistic model.
+pre-trained TOP logistic model, by setting `logistic_model = TRUE`.
 
-Load pre-trained TOP logistic regression coefficients:
-```{r load-TOP-logistic-posterior-mean-coef, eval=TRUE}
-TOP_logistic_coef <- readRDS(system.file("extdata/trained_model_coef/ATAC", "TOP_logistic_M5_posterior_mean_coef.rds", package = "TOP"))
-```
-
-Predict CTCF binding probability in K562 using the "bottom" level logistic model:
+Predict CTCF binding probability in K562:
 ```{r predict-TOP-logistic-mean-coef, eval=TRUE}
 TOP_result <- predict_TOP(data, 
-                          TOP_coef = TOP_logistic_coef, 
                           tf_name = 'CTCF',
                           cell_type = 'K562',
-                          level = 'bottom',
+                          use_model = 'ATAC',
+                          level = 'best',
                           logistic_model = TRUE)
-predicted.prob <- TOP_result$predictions
+logistic_predicted <- TOP_result$predictions
 
-head(predicted.prob, 5)
+head(logistic_predicted, 5)
 ```
-
 
