@@ -42,3 +42,13 @@ A data frame of posterior samples for TOP's regression coefficients.
 \description{
 Extract regression coefficients from TOP posterior samples
 }
+\examples{
+\dontrun{
+TOP_coef_samples <- extract_TOP_coef_samples(TOP_samples,
+                                             assembled_training_data = assembled_training_data)
+# or
+tf_cell_combos <- extract_tf_cell_combos(assembled_training_data)
+TOP_coef_samples <- extract_TOP_coef_samples(TOP_samples,
+                                             tf_cell_combos = tf_cell_combos)
+}
+}

@@ -165,27 +165,7 @@ predict_TOP <- function(data,
 }
 
 
-#' @title Predict TF occupancy using posterior mean of regression coefficients
-#' @description Predict TF occupancy using posterior mean of TOP regression
-#' coefficients.
-#'
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param mean_coef A numeric vector. The posterior mean of trained regression
-#' coefficients, including the intercept and coefficients for PWM score and
-#' DNase (or ATAC) bins.
-#' length(mean_coef) should be equal to 1+ncol(data).
-#' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Options: asinh, log2, sqrt, none.
-#'
-#' @return A data frame of input data and predicted TF occupancy (posterior mean).
-#'
-#' @export
-#' @examples
-#' \dontrun{
-#' predictions <- predict_TOP_mean_coef(data,
-#'                                      mean_coef,
-#'                                      transform = 'asinh')
-#' }
+# Predict TF occupancy using posterior mean of regression coefficients
 predict_TOP_mean_coef <- function(data,
                                   mean_coef,
                                   transform = c('asinh', 'log2', 'log', 'none')){
@@ -221,24 +201,7 @@ predict_TOP_mean_coef <- function(data,
 
 }
 
-#' @title Predict TF binding probability by TOP logistic model
-#' @description Predict TF binding probability using posterior mean of the regression
-#' coefficients trained from TOP logistic model.
-#'
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param mean_coef A numeric vector. The posterior mean of trained regression
-#' coefficients, including the intercept and coefficients for PWM score and
-#' DNase (or ATAC) bins.
-#' length(mean_coef) should be equal to 1+ncol(data).
-#'
-#' @return A data frame of input data and predicted TF binding probability.
-#' @export
-#' @examples
-#' \dontrun{
-#' predictions <- predict_TOP_logistic_mean_coef(data,
-#'                                               mean_coef)
-#' }
-#'
+# Predict TF binding probability by TOP logistic model
 predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 
   features <- select_features(data)
@@ -263,28 +226,7 @@ predict_TOP_logistic_mean_coef <- function(data, mean_coef){
 }
 
 
-#' @title Predict TF occupancy using posterior samples of regression coefficients
-#' @description Predict TF occupancy using posterior samples of TOP regression
-#' coefficients.
-#' @param data A data frame containing motif PWM score and DNase (or ATAC) bins.
-#' @param coef_samples TOP posterior samples.
-#' @param use_posterior_mean Logical; if TRUE, uses the posterior mean of
-#' regression coefficients to make predictions.
-#' @param sample_predictions Logical; if TRUE, sample from posterior predictions
-#' and then take the mean of posterior prediction samples.
-#' @param transform Method used to transform ChIP-seq counts when training
-#' the TOP model. Options: asinh, log2, sqrt, none.
-#'
-#' @return A data frame of input data and predicted TF occupancy (posterior mean).
-#' @export
-#' @examples
-#' \dontrun{
-#' predictions <- predict_TOP_samples(data,
-#'                                    coef_samples = TOP_samples,
-#'                                    use_posterior_mean = FALSE,
-#'                                    sample_predictions = TRUE,
-#'                                    transform = "asinh")
-#' }
+# Predict TF occupancy using posterior samples of regression coefficients
 predict_TOP_samples <- function(data,
                                 coef_samples,
                                 use_posterior_mean = FALSE,
