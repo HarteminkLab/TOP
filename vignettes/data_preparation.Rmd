@@ -60,10 +60,11 @@ DNase-seq or ATAC-seq cleavage bias at base-pair resolution.
 
 We recommend using [Snakemake][Snakemake] to automate the whole procedure,
 especially when you have data for many TFs in 
-many cell types or conditions.
+many cell types or conditions. [Here][TOP-snakemake-pipeline]
+is for an example pipeline that we used in our paper. 
 
 In order to prepare input data using `TOP` functions, 
-you will need to have the following R packages installed: 
+please have the following R packages installed: 
 [GenomicRanges][GenomicRanges], [Rsamtools][Rsamtools], 
 [data.table][data.table], [ggplot2][ggplot2],
 as well as the following command line tools: 
@@ -345,6 +346,7 @@ plot_profile(bound_sites_counts.mat, title='ATAC-seq profiles around CTCF bindin
 ```
 
 [Snakemake]: https://snakemake.readthedocs.io/en/stable/
+[TOP-snakemake-pipeline]:https://github.com/kevinlkx/TOP_pipeline
 [bedtools]: https://bedtools.readthedocs.io/en/latest/
 [bwtool]: https://github.com/CRG-Barcelona/bwtool/wiki
 [GenomicRanges]: https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html
