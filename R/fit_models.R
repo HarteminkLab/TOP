@@ -1,11 +1,11 @@
 
-#' @title Fit TOP model with M5 bins
-#' @description Fit TOP model with M5 bins for selected partitions in parallel.
+#' @title Fits TOP model with M5 bins
+#' @description Fits TOP model with M5 bins.
 #' By default, it runs Gibbs sampling for all 10 partitions
 #' in parallel on 10 CPU cores, and returns a list of posterior samples
 #' for each of the 10 partitions.
 #' Alternatively, you may fit model for each of the 10
-#' the partitions on separate machines by specifying the partition to run.
+#' the partitions on separate machines by specifying which partition to run.
 #' @param all_training_data A list of the assembled training data of all partitions.
 #' @param all_training_data_files A vector of the assembled training data
 #' files of all partitions. If \code{all_training_data} is missing,
@@ -35,10 +35,10 @@
 #' No thinning will be performed if \code{n_thin = 1}.
 #' @param n_cores Number of cores to use in parallel
 #' (default: equal to the number of partitions, i.e. \code{length(partitions)}).
-#' @param save Logical, if TRUE, save posterior samples as \sQuote{.rds} files
+#' @param save Logical, if TRUE, saves posterior samples as \sQuote{.rds} files
 #' in \code{outdir}.
 #' @param outdir Directory to save TOP model posterior samples.
-#' @param return_type Specify the type of result to return.
+#' @param return_type Type of result to return.
 #' Options: \sQuote{samples}(posterior samples),
 #' \sQuote{jagsfit} (\code{jagsfit} object),
 #' or \sQuote{samplefiles} (file names of posterior samples).
@@ -58,7 +58,7 @@
 #' # for each of the 10 partitions in parallel.
 #' # The following example runs 5000 iterations of Gibbs sampling in total,
 #' # including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
-#' # and save the posterior samples to the 'TOP_fit' directory.
+#' # and saves the posterior samples to the 'TOP_fit' directory.
 #' all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
 #'                                     logistic_model = FALSE,
 #'                                     transform = 'asinh',
@@ -180,7 +180,7 @@ fit_TOP_M5_model <- function(all_training_data,
   return(TOP_samples)
 }
 
-# Fit TOP quantitative occupancy model with M5 bins and quantitative ChIP occupancy (read counts)
+# Fits TOP quantitative occupancy model with M5 bins and quantitative ChIP occupancy (read counts)
 # The R2jags package \code{\link[R2jags]{R2jags}} is required.
 fit_TOP_occupancy_M5_model_jags <- function(data,
                                             model_file,
@@ -253,7 +253,7 @@ fit_TOP_occupancy_M5_model_jags <- function(data,
 }
 
 
-# Fit TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.
+# Fits TOP logistic model with M5 DNase (or ATAC) bins and binary ChIP labels.
 # The R2jags package \code{\link[R2jags]{R2jags}} is required.
 fit_TOP_logistic_M5_model_jags <- function(data,
                                            model_file,

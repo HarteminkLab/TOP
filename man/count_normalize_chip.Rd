@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_chip_data.R
 \name{count_normalize_chip}
 \alias{count_normalize_chip}
-\title{Count and normalize (and transform) ChIP-seq read coverage}
+\title{Counts and normalizes (and transforms) ChIP-seq read coverage}
 \usage{
 count_normalize_chip(
   sites,
@@ -17,19 +17,19 @@ count_normalize_chip(
 \arguments{
 \item{sites}{A data frame containing the candidate sites.}
 
-\item{chip_bam_files}{ChIP-seq bam files (may include multiple replicates).}
+\item{chip_bam_files}{ChIP-seq BAM files (may include multiple replicates).}
 
 \item{chip_idxstats_files}{ChIP-seq \code{idxstats} files
 (may include multiple replicates).
-(Default: use the corresponding \code{.idxstats.txt} files in
-the same directory of the bam files).}
+(Default: uses the corresponding \code{.idxstats.txt} files in
+the same directory of the BAM files).}
 
 \item{chrom_size_file}{Chromosome size file.}
 
-\item{ref_size}{Normalize to ChIP-seq reference library size
-(Default: 2e7 for ChIP-seq)}
+\item{ref_size}{Scales to ChIP-seq reference library size
+(Default: 2e7)}
 
-\item{transform}{Type of transformation for the ChIP read counts.
+\item{transform}{Transformation for ChIP-seq read counts.
 Options are \sQuote{none} (no transformation), \sQuote{asinh}, \sQuote{log2}, and \sQuote{'sqrt'}.}
 
 \item{bedtools_path}{Path to \code{bedtools} executable.}
@@ -39,11 +39,11 @@ A data frame of candidate sites and normalized (and transformed)
 ChIP-seq read counts around each candidate site.
 }
 \description{
-Count ChIP-seq read coverage for each bam file
+Counts ChIP-seq read coverage for each BAM file
 using the \code{coverage} function from \code{bedtools}.
-Then normalize the read counts
+Then normalizes the read counts
 by scaling to the reference ChIP-seq library size,
-and transform the ChIP-seq read counts.
+and transforms the ChIP-seq read counts.
 }
 \examples{
 \dontrun{

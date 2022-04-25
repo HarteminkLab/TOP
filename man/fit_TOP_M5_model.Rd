@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_models.R
 \name{fit_TOP_M5_model}
 \alias{fit_TOP_M5_model}
-\title{Fit TOP model with M5 bins}
+\title{Fits TOP model with M5 bins}
 \usage{
 fit_TOP_M5_model(
   all_training_data,
@@ -63,12 +63,12 @@ No thinning will be performed if \code{n_thin = 1}.}
 \item{n_cores}{Number of cores to use in parallel
 (default: equal to the number of partitions, i.e. \code{length(partitions)}).}
 
-\item{save}{Logical, if TRUE, save posterior samples as \sQuote{.rds} files
+\item{save}{Logical, if TRUE, saves posterior samples as \sQuote{.rds} files
 in \code{outdir}.}
 
 \item{outdir}{Directory to save TOP model posterior samples.}
 
-\item{return_type}{Specify the type of result to return.
+\item{return_type}{Type of result to return.
 Options: \sQuote{samples}(posterior samples),
 \sQuote{jagsfit} (\code{jagsfit} object),
 or \sQuote{samplefiles} (file names of posterior samples).}
@@ -80,12 +80,12 @@ Otherwise, only show progress bars.}
 A list of posterior samples or \code{jagsfit} object for each partition.
 }
 \description{
-Fit TOP model with M5 bins for selected partitions in parallel.
+Fits TOP model with M5 bins.
 By default, it runs Gibbs sampling for all 10 partitions
 in parallel on 10 CPU cores, and returns a list of posterior samples
 for each of the 10 partitions.
 Alternatively, you may fit model for each of the 10
-the partitions on separate machines by specifying the partition to run.
+the partitions on separate machines by specifying which partition to run.
 }
 \examples{
 \dontrun{
@@ -96,7 +96,7 @@ the partitions on separate machines by specifying the partition to run.
 # for each of the 10 partitions in parallel.
 # The following example runs 5000 iterations of Gibbs sampling in total,
 # including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,
-# and save the posterior samples to the 'TOP_fit' directory.
+# and saves the posterior samples to the 'TOP_fit' directory.
 all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
                                     logistic_model = FALSE,
                                     transform = 'asinh',

@@ -2,7 +2,7 @@
 % Please edit documentation in R/postfit_coef_samples.R
 \name{extract_tf_cell_combos}
 \alias{extract_tf_cell_combos}
-\title{Extract a table listing the indices and names of TF and cell type
+\title{Creates a table listing the indices and names of TF and cell type
 combinations from the assembled training data}
 \usage{
 extract_tf_cell_combos(assembled_training_data)
@@ -12,10 +12,10 @@ extract_tf_cell_combos(assembled_training_data)
 \code{assemble_training_data()} function.}
 }
 \value{
-a data frame of the indices and names of TF x cell type combinations.
+A data frame of the indices and names of TF x cell type combinations.
 }
 \description{
-Extract a table listing the indices and names of TF x cell type
+Creates a table listing the indices and names of TF x cell type
 combinations from the assembled training data.
 This will be used to extract regression coefficients from the TOP fit result.
 }

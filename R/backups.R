@@ -1,5 +1,5 @@
 
-# Count DNase-seq or ATAC-seq cuts along the genome (without using bedtools)
+# Counts DNase-seq or ATAC-seq cuts along the genome (without using bedtools)
 # This is an alternative function to the count_genome_cuts(),
 # but without using \code{bedtools}.
 # This is often slower than count_genome_cuts() and may require more memory
@@ -62,7 +62,7 @@ count_genome_cuts_nobedtools <- function(bam_file,
 }
 
 
-# Read ATAC cuts for ATAC-seq paired-end reads
+# Reads ATAC cuts for ATAC-seq paired-end reads
 read_bam_cuts_ATACreadpairs <- function(bam_file,
                                         select_NFR_fragments = FALSE,
                                         shift_ATAC = FALSE,
@@ -130,7 +130,7 @@ read_bam_cuts_ATACreadpairs <- function(bam_file,
 }
 
 
-# Read DNase or ATAC cuts or coverage of cuts from BAM file
+# Reads DNase or ATAC cuts or coverage of cuts from BAM file
 read_bam_cuts <- function(bam_file,
                           data_type=c('DNase', 'ATAC'),
                           shift_ATAC = FALSE,

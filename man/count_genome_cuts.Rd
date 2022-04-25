@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{count_genome_cuts}
 \alias{count_genome_cuts}
-\title{Count DNase-seq or ATAC-seq cuts along the genome}
+\title{Counts DNase-seq or ATAC-seq cuts along the genome}
 \usage{
 count_genome_cuts(
   bam_file,
@@ -19,14 +19,15 @@ count_genome_cuts(
 \arguments{
 \item{bam_file}{Sorted BAM file.}
 
-\item{chrom_size_file}{File of genome sizes by chromosomes.}
+\item{chrom_size_file}{Chromosome size file.}
 
-\item{data_type}{data type. Options: \sQuote{DNase} or \sQuote{ATAC}.}
+\item{data_type}{Data type. Options: \sQuote{DNase} or \sQuote{ATAC}.}
 
 \item{shift_ATAC}{Logical. When \code{shift_ATAC=TRUE} (and \code{data_type='ATAC'}),
-it shifts reads according to \code{shift_ATAC_bases}.}
+shifts reads according to \code{shift_ATAC_bases}.}
 
-\item{shift_ATAC_bases}{Number of bases to shift on + and - strands.}
+\item{shift_ATAC_bases}{Number of bases to shift on + and - strands.
+Default: shifts reads on + strand by 4 bp and reads on - strand by -4 bp.}
 
 \item{outdir}{Output directory (default: use the directory of \code{bam_file}).}
 
@@ -37,10 +38,10 @@ it shifts reads according to \code{shift_ATAC_bases}.}
 \item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.}
 }
 \description{
-Count genomic cuts (5' end) from DNase-seq or
+Counts genomic cuts (5' end) from DNase-seq or
 ATAC-seq BAM alignment files using \code{bedtools}
-For ATAC-seq, when \code{shift_ATAC = TRUE}, reads
-were shifted so as to address offsets and align the signal across strands.
+For ATAC-seq, when \code{shift_ATAC = TRUE}, shifts reads
+so as to address offsets and align the signal across strands.
 }
 \examples{
 \dontrun{

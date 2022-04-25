@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_occupancy.R
 \name{predict_TOP}
 \alias{predict_TOP}
-\title{Predict quantitative TF occupancy or TF binding probability}
+\title{Predicts quantitative TF occupancy or TF binding probability}
 \usage{
 predict_TOP(
   data,
@@ -20,41 +20,41 @@ predict_TOP(
 
 \item{TOP_coef}{A list containing the posterior mean of TOP regression coefficients.}
 
-\item{tf_name}{Specifies the TF name to make predictions.
+\item{tf_name}{TF name to make predictions for.
 It will find the model parameters trained for this TF.
 This is not needed (not used) when \code{level = 'top'}.}
 
-\item{cell_type}{Specifies the cell type to make predictions.
+\item{cell_type}{Cell type to make predictions for.
 It will find the model parameters trained for this cell type.
 This is not needed (not used) when \code{level = 'middle'} or \code{level = 'top'}.}
 
-\item{use_model}{Use pretrained model if \code{TOP_coef} is not supplied.
+\item{use_model}{Uses pretrained model if \code{TOP_coef} is not supplied.
 Options:  \sQuote{ATAC}, \sQuote{DukeDNase}, \sQuote{UwDNase}.}
 
-\item{level}{Specifies the TOP model level to use.
+\item{level}{TOP model level to use.
 Options: \sQuote{best}, \sQuote{bottom}, \sQuote{middle}, or \sQuote{top}.
-When \code{level = 'best'}, use the best (lowest available) level of the
+When \code{level = 'best'}, uses the best (lowest available) level of the
 hierarchy for the TF x cell type combination.
 If the TF motif and cell type is available in the training data,
-then use the bottom level (TF- and cell-type-specific model).
+then uses the bottom level (TF- and cell-type-specific model).
 otherwise, if TF motif (but not cell type) is available in the training data,
-choose the middle level (TF-specific model) of that TF motif;
-otherwise, use the top level TF-generic model.
-When \code{level = 'bottom'}, use the bottom level (TF- and cell-type-specific model),
+chooses the middle level (TF-specific model) of that TF motif;
+otherwise, uses the top level TF-generic model.
+When \code{level = 'bottom'}, uses the bottom level (TF- and cell-type-specific model),
 if the TF motif and cell type is available in the training data.
-When \code{level = 'middle'}, use the middle level (TF-specific model) of that TF.
-When \code{level = 'top'}, use the top level TF-generic model.}
+When \code{level = 'middle'}, uses the middle level (TF-specific model) of that TF.
+When \code{level = 'top'}, uses the top level TF-generic model.}
 
 \item{logistic_model}{Logical. Whether to use the logistic version of TOP model.
 If \code{logistic_model = TRUE},
-use the logistic version of TOP model to predict TF binding probability.
-If \code{logistic_model = FALSE}, use the quantitative occupancy model (default).}
+uses the logistic version of TOP model to predict TF binding probability.
+If \code{logistic_model = FALSE}, uses the quantitative occupancy model (default).}
 
 \item{transform}{Type of transformation performed for ChIP-seq read counts
 when preparing the input training data.
 Options are: \sQuote{asinh}(asinh transformation),
 \sQuote{log2} (log2 transformation),
-\sQuote{sqrt} (square root transformation),
+\sQuote{sqrt} (sqrt transformation),
 and \sQuote{none} (no transformation).
 This only applies when \code{logistic_model = FALSE}.}
 }
@@ -66,21 +66,21 @@ Returns a list with the following elements,
 \item{predictions}{a data frame with the data and predicted values.}
 }
 \description{
-Predict quantitative TF occupancy or TF binding probability
+Predicts quantitative TF occupancy or TF binding probability
 using TOP model trained from ChIP-seq read counts or binary labels.
 }
 \examples{
 \dontrun{
-# Predict CTCF occupancy in K562 using the quantitative occupancy model:
+# Predicts CTCF occupancy in K562 using the quantitative occupancy model:
 
-# Predict using the 'bottom' level model
+# Predicts using the 'bottom' level model
 result <- predict_TOP(data, TOP_coef,
                       tf_name = 'CTCF', cell_type = 'K562',
                       level = 'bottom',
                       logistic_model = FALSE,
                       transform = 'asinh')
 
-# Predict using the 'best' model
+# Predicts using the 'best' model
 # Since CTCF in K562 cell type is included in training,
 # the 'best' model is the 'bottom' level model.
 result <- predict_TOP(data, TOP_coef,
@@ -95,16 +95,16 @@ result <- predict_TOP(data, TOP_coef,
                       logistic_model = FALSE,
                       transform = 'asinh')
 
-# Predict CTCF binding probability using the logistic version of the model:
+# Predicts CTCF binding probability using the logistic version of the model:
 # No need to set the argument for 'transform' for the logistic model.
 
-# Predict using the 'bottom' level model
+# Predicts using the 'bottom' level model
 result <- predict_TOP(data, TOP_coef,
                      tf_name = 'CTCF', cell_type = 'K562',
                      level = 'best',
                      logistic_model = TRUE)
 
-# Predict using the 'middle' level model
+# Predicts using the 'middle' level model
 result <- predict_TOP(data, TOP_coef,
                      tf_name = 'CTCF', level = 'middle',
                      logistic_model = TRUE)
@@ -112,14 +112,14 @@ result <- predict_TOP(data, TOP_coef,
 # If TOP_coef is not specified, it will automatically use the
 # pretrained models included in the package.
 
-# Predict using pretrained ATAC quantitative occupancy model
+# Predicts using pretrained ATAC quantitative occupancy model
 result <- predict_TOP(data,
                       tf_name = 'CTCF', cell_type = 'K562',
                       use_model = 'ATAC', level = 'best',
                       logistic_model = FALSE,
                       transform = 'asinh')
 
-# Predict using pretrained ATAC logistic model
+# Predicts using pretrained ATAC logistic model
 result <- predict_TOP(data,
                       tf_name = 'CTCF', cell_type = 'K562',
                       use_model = 'ATAC', level = 'best',

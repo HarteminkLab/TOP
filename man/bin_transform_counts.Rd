@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{bin_transform_counts}
 \alias{bin_transform_counts}
-\title{Bin and transform count matrix}
+\title{Bins and transforms count matrix}
 \usage{
 bin_transform_counts(
   counts,
@@ -22,6 +22,7 @@ Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.}
 A data frame of binned and transformed counts.
 }
 \description{
-Binning DNase or ATAC count matrix
-using \code{MILLIPEDE} binning and then take \sQuote{sqrt} or \sQuote{log2} transform
+Bins DNase or ATAC counts
+using \code{MILLIPEDE} binning and then
+take \sQuote{sqrt} or \sQuote{log2} transform
 }

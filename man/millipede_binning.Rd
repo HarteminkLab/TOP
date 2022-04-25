@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{millipede_binning}
 \alias{millipede_binning}
-\title{Perform \code{MILLIPEDE} binning on count matrix}
+\title{Performs \code{MILLIPEDE} binning on count matrix}
 \usage{
 millipede_binning(
   counts,
@@ -30,12 +30,12 @@ A list containing binning results (data frames) using different
 binning schemes.
 }
 \description{
-Perform binning using different \code{MILLIPEDE} binning schemes
+Performs binning using different \code{MILLIPEDE} binning schemes
 (M5, M24, M12, M3, M2, M1) on the input count matrix.
 }
 \examples{
 \dontrun{
-# Perform MILLIPEDE binning with different binning schemes.
+# Performs MILLIPEDE binning with different binning schemes.
 
 # M5 binning
 M5_bins <- millipede_binning(counts, bin_method = 'M5')

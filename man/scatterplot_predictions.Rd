@@ -37,8 +37,8 @@ A \code{ggplot} object for
 the scatter plot of measured and predicted occupancy.
 }
 \description{
-Make a scatter plot of measured and predicted occupancy,
-with Pearson's correlation (R) between measured and predicted occupancy
+Makes a scatter plot of measured and predicted occupancy,
+with Pearson's correlation (R) between measured and predicted occupancy.
 }
 \examples{
 

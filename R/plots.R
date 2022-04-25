@@ -1,7 +1,7 @@
 
 #' @title Scatter plot of measured and predicted occupancy
-#' @description Make a scatter plot of measured and predicted occupancy,
-#' with Pearson's correlation (R) between measured and predicted occupancy
+#' @description Makes a scatter plot of measured and predicted occupancy,
+#' with Pearson's correlation (R) between measured and predicted occupancy.
 #' @param x x-axis values of points in the plot (measured).
 #' @param y y-axis values of points in the plot (predicted).
 #' @param xlab Label for the x axis.
@@ -55,7 +55,7 @@ scatterplot_predictions <- function(x, y,
   return(p)
 }
 
-#' @title Plot DNase or ATAC profiles
+#' @title Plots DNase or ATAC profiles
 #' @param cuts Matrix of DNase or ATAC cuts
 #' @param mlen Motif length
 #' @param title Title of the plot
@@ -77,7 +77,7 @@ plot_profile <- function(cuts, mlen=ncol(cuts)/2-200, title=''){
   legend('topright', legend = c('Forward strand', 'Reverse strand'), lty = 1, col = c('darkblue', 'darkred'), bty = 'n', lwd = 2)
 }
 
-#' @title Plot DNase or ATAC profiles by strands of motif matches
+#' @title Plots DNase or ATAC profiles by strands of motif matches
 #' @param cuts Matrix of DNase or ATAC cuts
 #' @param sites Data frame of candidate sites
 #' @param mlen Motif length

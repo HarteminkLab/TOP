@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot_profile_strands}
 \alias{plot_profile_strands}
-\title{Plot DNase or ATAC profiles by strands of motif matches}
+\title{Plots DNase or ATAC profiles by strands of motif matches}
 \usage{
 plot_profile_strands(
   cuts,
@@ -22,7 +22,7 @@ plot_profile_strands(
 \item{title}{Title of the plot}
 }
 \description{
-Plot DNase or ATAC profiles by strands of motif matches
+Plots DNase or ATAC profiles by strands of motif matches
 }
 \examples{
 \dontrun{

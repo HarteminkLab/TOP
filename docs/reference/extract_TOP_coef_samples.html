@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
       </span>
     </div>
 
@@ -109,6 +109,18 @@ will extract from assembled_training_data.</p></dd>
     <p>A data frame of posterior samples for TOP's regression coefficients.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="va">TOP_coef_samples</span> <span class="op">&lt;-</span> <span class="fu">extract_TOP_coef_samples</span><span class="op">(</span><span class="va">TOP_samples</span>,</span>
+<span class="r-in">                                             assembled_training_data <span class="op">=</span> <span class="va">assembled_training_data</span><span class="op">)</span></span>
+<span class="r-in"><span class="co"># or</span></span>
+<span class="r-in"><span class="va">tf_cell_combos</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract_tf_cell_combos.html">extract_tf_cell_combos</a></span><span class="op">(</span><span class="va">assembled_training_data</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">TOP_coef_samples</span> <span class="op">&lt;-</span> <span class="fu">extract_TOP_coef_samples</span><span class="op">(</span><span class="va">TOP_samples</span>,</span>
+<span class="r-in">                                             tf_cell_combos <span class="op">=</span> <span class="va">tf_cell_combos</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

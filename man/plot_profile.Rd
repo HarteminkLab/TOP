@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot_profile}
 \alias{plot_profile}
-\title{Plot DNase or ATAC profiles}
+\title{Plots DNase or ATAC profiles}
 \usage{
 plot_profile(cuts, mlen = ncol(cuts)/2 - 200, title = "")
 }
@@ -14,7 +14,7 @@ plot_profile(cuts, mlen = ncol(cuts)/2 - 200, title = "")
 \item{title}{Title of the plot}
 }
 \description{
-Plot DNase or ATAC profiles
+Plots DNase or ATAC profiles
 }
 \examples{
 \dontrun{

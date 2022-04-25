@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{normalize_bin_transform_counts}
 \alias{normalize_bin_transform_counts}
-\title{Normalize, bin and transform counts}
+\title{Normalizes, bins and transforms counts}
 \usage{
 normalize_bin_transform_counts(
   count_matrix,
@@ -29,13 +29,13 @@ Options: \sQuote{asinh}, \sQuote{log2}, \sQuote{sqrt}, \sQuote{none}.}
 A data frame of normalized, binned and transformed counts.
 }
 \description{
-Normalize counts by library size,
+Normalizes counts by library size,
 bin using \code{MILLIPEDE} binning method and then take \sQuote{asinh} or \sQuote{log2} transform.
 }
 \examples{
 \dontrun{
-# Normalize counts by scaling to a library size of 100 million reads,
-# and bin counts using MILLIPEDE M5 binning method, and then take
+# Normalizes counts by scaling to a library size of 100 million reads,
+# and bin counts using MILLIPEDE M5 binning method, and then takes
 # asinh transformation on the binned counts.
 bins <- normalize_bin_transform_counts(count_matrix,
                                        idxstats_file,

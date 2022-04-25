@@ -1,15 +1,16 @@
 
-#' @title Count DNase-seq or ATAC-seq cuts along the genome
-#' @description Count genomic cuts (5' end) from DNase-seq or
+#' @title Counts DNase-seq or ATAC-seq cuts along the genome
+#' @description Counts genomic cuts (5' end) from DNase-seq or
 #' ATAC-seq BAM alignment files using \code{bedtools}
-#' For ATAC-seq, when \code{shift_ATAC = TRUE}, reads
-#' were shifted so as to address offsets and align the signal across strands.
+#' For ATAC-seq, when \code{shift_ATAC = TRUE}, shifts reads
+#' so as to address offsets and align the signal across strands.
 #' @param bam_file Sorted BAM file.
-#' @param chrom_size_file File of genome sizes by chromosomes.
-#' @param data_type data type. Options: \sQuote{DNase} or \sQuote{ATAC}.
+#' @param chrom_size_file Chromosome size file.
+#' @param data_type Data type. Options: \sQuote{DNase} or \sQuote{ATAC}.
 #' @param shift_ATAC Logical. When \code{shift_ATAC=TRUE} (and \code{data_type='ATAC'}),
-#' it shifts reads according to \code{shift_ATAC_bases}.
+#' shifts reads according to \code{shift_ATAC_bases}.
 #' @param shift_ATAC_bases Number of bases to shift on + and - strands.
+#' Default: shifts reads on + strand by 4 bp and reads on - strand by -4 bp.
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
 #' @param bedtools_path Path to \code{bedtools} executable.
@@ -99,13 +100,13 @@ count_genome_cuts <- function(bam_file,
 
 }
 
-#' @title Get count matrices around candidate binding sites
-#' @description Extract counts around candidate binding sites on both strands
+#' @title Extracts count matrices around candidate binding sites
+#' @description Extracts counts around candidate binding sites on both strands
 #' from the genome counts data
 #' (BigWig files generated using \code{count_genome_cuts()}).
 #' It utilizes the \code{extract bed} function from the \code{bwtool} software
-#' to extract the read counts.
-#' Then combine the counts into one matrix, with the first half of the columns
+#' to extract the read counts,
+#' then combines the counts into one matrix, with the first half of the columns
 #' representing the read counts on the forward strand,
 #' and the second half of the columns representing the read counts
 #' on the reverse strand.
@@ -123,7 +124,7 @@ count_genome_cuts <- function(bam_file,
 #' @export
 #' @examples
 #' \dontrun{
-#' # Get ATAC-seq count matrices around candidate sites
+#' # Extracts ATAC-seq count matrices around candidate sites
 #' sites_counts.mat <- get_sites_counts(sites,
 #'                                      genomecount_dir='processed_data',
 #'                                      genomecount_name='K562.ATAC')
@@ -165,14 +166,14 @@ get_sites_counts <- function(sites,
                genome_rev_count_file, rev_matrix_file, '-fill=0 -decimals=0 -tabs')
   if(.Platform$OS.type == 'windows') shell(cmd) else system(cmd)
 
-  # Flip the counts generated from bwtool for motifs on the reverse strand and combine counts on both strands
+  # Flips the counts generated from bwtool for motifs on the reverse strand and combine counts on both strands
   sites_counts.mat <- flip_neg_strand_counts(sites, fwd_matrix_file, rev_matrix_file)
 
   unlink(c(sites_file, fwd_matrix_file, rev_matrix_file))
   return(sites_counts.mat)
 }
 
-# Flip the counts for motif matches on the - strand
+# Flips the counts for motif matches on the - strand
 flip_neg_strand_counts <- function(sites,
                                    fwd_matrix_file,
                                    rev_matrix_file,
@@ -185,13 +186,13 @@ flip_neg_strand_counts <- function(sites,
     stop('Sites do not match!')
   }
 
-  # Extract the count values
+  # Extracts the count values
   fwd_count.m <- as.matrix(fwd_count[, -c(1:5)])
   colnames(fwd_count.m) <- paste0('F', c(1:ncol(fwd_count.m)))
   rev_count.m <- as.matrix(rev_count[, -c(1:5)])
   colnames(rev_count.m) <- paste0('R', c(1:ncol(rev_count.m)))
 
-  # For motifs match to the - strand, flip the fwd and rev counts, and reverse the counts
+  # For motifs match to the - strand, flips the fwd and rev counts, and reverse the counts
   sites_counts.l <- list(fwd = fwd_count.m, rev = rev_count.m)
   neg_strand <- which(sites$strand == '-')
   sites_counts.l$fwd[neg_strand, ] <- t(apply(rev_count.m[neg_strand, ], 1, rev))
@@ -201,7 +202,7 @@ flip_neg_strand_counts <- function(sites,
   rownames(sites_counts.mat) <- sites$name
 
   if(write_updated_matrix_files){
-    # write the updated the matrix counts files
+    # writes the updated the matrix counts files
     fwd_count <- cbind(sites[,c(1:3,6)], sites_counts.l$fwd)
     rev_count <- cbind(sites[,c(1:3,6)], sites_counts.l$rev)
     data.table::fwrite(fwd_count, fwd_matrix_file, sep = ' ', scipen = 999)
@@ -211,8 +212,8 @@ flip_neg_strand_counts <- function(sites,
   return(sites_counts.mat)
 }
 
-#' @title Perform \code{MILLIPEDE} binning on count matrix
-#' @description Perform binning using different \code{MILLIPEDE} binning schemes
+#' @title Performs \code{MILLIPEDE} binning on count matrix
+#' @description Performs binning using different \code{MILLIPEDE} binning schemes
 #' (M5, M24, M12, M3, M2, M1) on the input count matrix.
 #' @param counts DNase-seq or ATAC-seq read counts matrix,
 #' rows are candidate sites,
@@ -230,7 +231,7 @@ flip_neg_strand_counts <- function(sites,
 #' @export
 #' @examples
 #' \dontrun{
-#' # Perform MILLIPEDE binning with different binning schemes.
+#' # Performs MILLIPEDE binning with different binning schemes.
 #'
 #' # M5 binning
 #' M5_bins <- millipede_binning(counts, bin_method = 'M5')
@@ -341,9 +342,9 @@ millipede_binning <- function(counts,
 }
 
 
-#' @title Normalize, bin and transform counts
+#' @title Normalizes, bins and transforms counts
 #'
-#' @description Normalize counts by library size,
+#' @description Normalizes counts by library size,
 #' bin using \code{MILLIPEDE} binning method and then take \sQuote{asinh} or \sQuote{log2} transform.
 #' @param count_matrix DNase or ATAC-seq read counts matrix.
 #' @param idxstats_file The \code{idxstats} file (generated by \code{samtools}).
@@ -356,8 +357,8 @@ millipede_binning <- function(counts,
 #' @export
 #' @examples
 #' \dontrun{
-#' # Normalize counts by scaling to a library size of 100 million reads,
-#' # and bin counts using MILLIPEDE M5 binning method, and then take
+#' # Normalizes counts by scaling to a library size of 100 million reads,
+#' # and bin counts using MILLIPEDE M5 binning method, and then takes
 #' # asinh transformation on the binned counts.
 #' bins <- normalize_bin_transform_counts(count_matrix,
 #'                                        idxstats_file,
@@ -385,10 +386,10 @@ normalize_bin_transform_counts <- function(count_matrix,
 }
 
 
-#' @title Normalize read counts
+#' @title Normalizes read counts
 #'
-#' @description Normalize DNase or ATAC-seq read counts by library sizes.
-#' It first obtain the total mapped reads from the current sample, and
+#' @description Normalizes DNase or ATAC-seq read counts by library sizes.
+#' It first obtains the total mapped reads from the current sample, and
 #' then scales the read counts for the current data to a reference library size.
 #' @param counts DNase or ATAC-seq read counts matrix
 #' @param idxstats_file The \code{idxstats} file generated by \code{samtools}.
@@ -413,10 +414,11 @@ normalize_counts <- function(counts,
 }
 
 
-#' @title Bin and transform count matrix
+#' @title Bins and transforms count matrix
 #'
-#' @description Binning DNase or ATAC count matrix
-#' using \code{MILLIPEDE} binning and then take \sQuote{sqrt} or \sQuote{log2} transform
+#' @description Bins DNase or ATAC counts
+#' using \code{MILLIPEDE} binning and then
+#' take \sQuote{sqrt} or \sQuote{log2} transform
 #' @param counts DNase or ATAC-seq read counts matrix
 #' @param bin_method \code{MILLIPEDE} binning scheme (Default: \sQuote{M5}).
 #' @param transform Type of transformation for DNase or ATAC counts.
@@ -449,20 +451,20 @@ bin_transform_counts <- function(counts,
 }
 
 
-#' @title Merge DNase or ATAC-seq counts from multiple replicates,
-#' then normalize merged counts.
-#' @description Merge DNase or ATAC-seq read counts from multiple replicate samples,
-#' and normalize the read counts by scaling to the reference library size.
+#' @title Merges DNase or ATAC-seq counts from multiple replicates,
+#' then normalizes merged counts.
+#' @description Merges DNase or ATAC-seq read counts from multiple replicate samples,
+#' and normalizes the read counts by scaling to the reference library size.
 #'
 #' @param counts_files DNase or ATAC-seq read counts matrix files.
 #' @param idxstats_files The \code{idxstats} files generated by \code{samtools}.
-#' @param ref_size Scale to reference library size.
+#' @param ref_size Scales to reference library size.
 #' (Default: 1e8 for DNase-seq and 5e7 for ATAC-seq).
 #' @return A matrix of merged and normalized counts.
 #' @export
 merge_normalize_counts <- function(counts_files, idxstats_files, ref_size = 1e8){
 
-  ## Load raw counts and merge the replicates
+  ## Loads raw counts and merges the replicates
   for (i in 1:length(counts_files)) {
     count_matrix <- readRDS(counts_files[i])
     if ( i == 1 ) {
@@ -472,10 +474,10 @@ merge_normalize_counts <- function(counts_files, idxstats_files, ref_size = 1e8)
     }
   }
 
-  # Count total mapped reads
+  # Counts total mapped reads
   total_readsMapped <- sum(sapply(idxstats_files, get_total_reads, select_chr = TRUE))
 
-  # Normalize (scale) read counts
+  # Normalizes (scales) read counts
   cat('Normalize (scale) to', ref_size / 1e6, 'million reads. \n')
   scaling_factor <- ref_size / total_readsMapped
   normalized_countmatrix <- total_countmatrix * scaling_factor
@@ -484,12 +486,12 @@ merge_normalize_counts <- function(counts_files, idxstats_files, ref_size = 1e8)
 
 }
 
-#' @title Merge DNase or ATAC-seq counts from multiple replicates,
-#' then normalize, bin and transform the merged counts
-#' @description Merge DNase-seq or ATAC-seq read counts from
+#' @title Merges DNase or ATAC-seq counts from multiple replicates,
+#' then normalizes, bin and transform the merged counts
+#' @description Merges DNase-seq or ATAC-seq read counts from
 #' multiple replicate samples,
-#' normalize the read counts by scaling to the reference library size,
-#' then bin and transform the merged counts.
+#' normalizes the read counts by scaling to the reference library size,
+#' then bins and transforms the merged counts.
 #'
 #' @param counts_files DNase or ATAC-seq read counts matrix files.
 #' @param idxstats_files The \code{idxstats} files generated by samtools.
@@ -518,7 +520,7 @@ merge_normalize_bin_transform_counts <- function(counts_files,
 }
 
 
-# Convert bedGraph to BigWig format
+# Converts bedGraph to BigWig format
 bedGraphToBigWig <- function(bedgraph_file,
                              chrom_size_file,
                              bedGraphToBigWig_path='bedGraphToBigWig'){

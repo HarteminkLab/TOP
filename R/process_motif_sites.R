@@ -1,33 +1,31 @@
 
-#' @title Run FIMO to scan for motif matches
-#' @description Run FIMO to scan for motif matches along the genome.
-#' This is a wrapper function to run FIMO command line.
-#' @param motif_file Motif file.
-#' @param sequence_file FASTA sequence file.
+#' @title Runs \code{FIMO} to scan for motif matches
+#' @description Runs \code{FIMO} to scan for motif matches along the genome.
+#' @param motif_file Motif file in MEME format.
+#' @param sequence_file Genome sequence file in FASTA format.
 #' @param outname Output file name.
 #' @param outdir Output directory.
-#' @param thresh_pValue FIMO option \code{thresh} for p-value threshold.
+#' @param thresh_pValue \code{FIMO} option \code{thresh} for p-value threshold.
 #' @param background Option for background model:
-#' \sQuote{default}: use FIMO default background setting;
+#' \sQuote{default}: use \code{FIMO} default background setting;
 #' \sQuote{motif}: use the 0-order letter frequencies contained in the motif file;
 #' \sQuote{uniform}: use uniform letter frequencies;
 #' \sQuote{file}: use the file specified in \code{background_file}.
 #' @param background_file Path to a file in Markov Background Model Format.
-#' @param skip_matched_sequence FIMO option \code{skip_matched_sequence}.
+#' @param skip_matched_sequence \code{FIMO} option \code{skip_matched_sequence}.
 #' Turns off output of the sequence of motif matches.
 #' This speeds up processing considerably.
-#' @param max_strand FIMO option \code{max_strand}.
+#' @param max_strand \code{FIMO} option \code{max_strand}.
 #' If matches on both strands at a
 #' given position satisfy the output threshold,
 #' only report the match for the strand with the higher score.
 #' If the scores are tied, the matching strand is chosen at random.
 #' @param max_stored_scores The maximum number of stored matches.
-#' @param options Other options for FIMO.
-#' @param verbosity A number that regulates the verbosity level of the output
-#' information messages.
-#' If set to 1 (quiet) then it will only output error messages whereas the
+#' @param options Other options for \code{FIMO}.
+#' @param verbosity A number of the verbosity level (from 1 to 5).
+#' If set to 1 (quiet) then it will only output error messages, in contrast, the
 #' other extreme 5 (dump) outputs lots of mostly useless information.
-#' @param fimo_path Path to FIMO command line executable.
+#' @param fimo_path Path to \code{fimo} command line executable.
 #' @export
 #' @examples
 #' \dontrun{
@@ -115,14 +113,14 @@ fimo_motif_matches <- function(motif_file,
 }
 
 
-#' @title Obtain and filter candidate sites from FIMO result
-#' @description Get candidate sites from FIMO motif matches and
-#' add flanking regions, and filter the candidate sites by different thresholds,
-#' and filter out sites in blacklist regions.
-#' @param fimo_file FIMO result \sQuote{.txt} file
+#' @title Obtains and filters candidate sites from FIMO result
+#' @description Gets candidate sites from FIMO motif matches and
+#' add flanking regions, and filters the candidate sites by different thresholds,
+#' and filters out sites in blacklist regions.
+#' @param fimo_file \code{FIMO} result \sQuote{.txt} file
 #' @param flank Flanking region (bp) around motif matches (default: 100)
-#' @param thresh_pValue FIMO p-value threshold (default: 1e-5)
-#' @param thresh_pwmscore FIMO PWM score threshold (default: 0)
+#' @param thresh_pValue \code{FIMO} p-value threshold (default: 1e-5)
+#' @param thresh_pwmscore \code{FIMO} PWM score threshold (default: 0)
 #' @param blacklist_file Filename of the blacklist regions (default: NULL)
 #' @param mapability_file Filename of the mapability reference file
 # in bigWig format (default: NULL)
@@ -152,23 +150,23 @@ process_candidate_sites <- function(fimo_file,
     stop(paste(fimo_file, 'file does not exist or is empty!'))
   }
 
-  # Get candidate sites from FIMO motif matches and add flanking regions
+  # Gets candidate sites from FIMO motif matches and add flanking regions
   sites <- flank_fimo_sites(fimo_file, flank)
 
-  # Filter candidate sites by FIMO p-value
+  # Filters candidate sites by FIMO p-value
   sites <- sites[which(as.numeric(sites$p.value) < as.numeric(thresh_pValue)), ]
   cat('Select candidate sites with FIMO p-value <', thresh_pValue, '\n')
 
-  # Filter candidate sites by FIMO PWM score
+  # Filters candidate sites by FIMO PWM score
   sites <- sites[which(as.numeric(sites$pwm.score) > as.numeric(thresh_pwmscore)), ]
   cat('Select candidate sites with PWM score >', thresh_pwmscore, '\n')
 
-  # Filter candidate sites in ENCODE blacklist
+  # Filters candidate sites in ENCODE blacklist
   if(!is.null(blacklist_file)) {
     sites <- filter_blacklist(sites, blacklist_file)
   }
 
-  # Filter candidate sites by mapability
+  # Filters candidate sites by mapability
   if(!is.null(mapability_file)) {
     sites <- filter_mapability(sites, mapability_file,
                                thresh_mapability, bigWigAverageOverBed_path)
@@ -177,7 +175,7 @@ process_candidate_sites <- function(fimo_file,
   return(sites)
 }
 
-# Get candidate sites using FIMO motifs with flanking regions
+# Gets candidate sites using FIMO motifs with flanking regions
 flank_fimo_sites <- function(fimo_file, flank=100) {
 
   if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
@@ -187,7 +185,7 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
   cat('Load FIMO result... \n')
   fimo <- as.data.frame(fread(fimo_file, sep ='\t'))
 
-  # Sort sites
+  # Sorts sites
   chr_order <- paste0('chr', c(1:22, 'X','Y','M'))
   fimo <- fimo[fimo$sequence_name %in% chr_order,]
   fimo$sequence_name <- factor(fimo$sequence_name, chr_order, ordered=TRUE)
@@ -206,18 +204,18 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
   sites$start <- sites$start -1
   sites$end <- sites$end
 
-  # Expand flanking regions
+  # Expands flanking regions
   sites$start <- sites$start - flank
   sites$end <- sites$end + flank
 
-  # Filter out sites with start positions < 0 after flanking
+  # Filters out sites with start positions < 0 after flanking
   sites <- sites[sites$start >= 0, ]
 
   return(sites)
 
 }
 
-# Filter candidate sites in blacklist regions
+# Filters candidate sites in blacklist regions
 filter_blacklist <- function(sites, blacklist_file) {
 
   if( !file.exists(blacklist_file) ){
@@ -240,7 +238,7 @@ filter_blacklist <- function(sites, blacklist_file) {
 
 }
 
-# Filter candidate sites by mapability
+# Filters candidate sites by mapability
 filter_mapability <- function(sites,
                               mapability_file,
                               thresh_mapability=0.8,

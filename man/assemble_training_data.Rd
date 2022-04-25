@@ -2,7 +2,7 @@
 % Please edit documentation in R/assemble_training_data.R
 \name{assemble_training_data}
 \alias{assemble_training_data}
-\title{Assemble TOP training data for all TF x cell type combinations,
+\title{Assembles TOP training data for all TF x cell type combinations,
 then split training data into 10 partitions}
 \usage{
 assemble_training_data(
@@ -17,7 +17,7 @@ assemble_training_data(
 )
 }
 \arguments{
-\item{tf_cell_table}{a data frame listing all TF x cell type combinations
+\item{tf_cell_table}{A data frame listing all TF x cell type combinations
 and the training data for each combination.
 It should have at least three columns, with:
 TF names, cell types, and file names of the individual training data for
@@ -46,7 +46,7 @@ randomly select \code{max_sites} candidate sites for
 each TF x cell type combination, if the number of candidate sites
 exceeds \code{max_sites}.}
 
-\item{seed}{Set seed when sampling sites.}
+\item{seed}{A number for the seed used when sampling sites.}
 }
 \value{
 A list of data frames (default: 10),
@@ -54,11 +54,10 @@ each containing one partition of the
 training data with all TF x cell type combinations.
 }
 \description{
-Prepare the training data for fitting TOP models.
+Prepares the training data for fitting TOP models.
 It splits training data into 10 partitions and
 assembles training data for all TF x cell type combinations
-for each of the partitions
-using the function \code{assemble_partition_training_data()}.
+for each of the partitions.
 }
 \examples{
 \dontrun{
@@ -72,9 +71,9 @@ using the function \code{assemble_partition_training_data()}.
 #  |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |
 #  |     ...      |     ...       |   ...                    |
 
-# Assemble training data for the quantitative occupancy model,
-# use odd chromosomes for training, keep at most 50000 candidate sites for
-# each TF x cell type combination, and split training data into 10 partitions.
+# Assembles training data for the quantitative occupancy model,
+# uses odd chromosomes for training, keeps at most 50000 candidate sites for
+# each TF x cell type combination, and splits training data into 10 partitions.
 assembled_training_data <- assemble_training_data(tf_cell_table,
                                                   logistic_model = FALSE,
                                                   chip_col = 'chip',
@@ -82,7 +81,7 @@ assembled_training_data <- assemble_training_data(tf_cell_table,
                                                   n_partitions=10,
                                                   max_sites = 50000)
 
-# Assemble training data for the logistic version of the model
+# Assembles training data for the logistic version of the model
 assembled_training_data <- assemble_training_data(tf_cell_table,
                                                   logistic_model = TRUE,
                                                   chip_col = 'chip_label',

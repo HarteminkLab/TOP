@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_reads.R
 \name{sort_index_idxstats_bam}
 \alias{sort_index_idxstats_bam}
-\title{Sort, index the BAM file, and retrieve the \code{idxstats}.}
+\title{Sorts, indexes the BAM file, and retrieves the \code{idxstats}.}
 \usage{
 sort_index_idxstats_bam(
   bam_file,
@@ -17,24 +17,24 @@ sort_index_idxstats_bam(
 
 \item{sorted_bam_file}{Output file name for sorted BAM file if \code{sort=TRUE}.}
 
-\item{sort}{Logical. If TRUE, sort the BAM file.}
+\item{sort}{Logical. If TRUE, sorts the BAM file.}
 
-\item{index}{Logical. If TRUE, index the BAM file.}
+\item{index}{Logical. If TRUE, indexes the BAM file.}
 
-\item{idxstats}{Logical. If TRUE, retrieve \code{idxstats} summary of
-the number of mapped reads on every chromosome.}
+\item{idxstats}{Logical. If TRUE, retrieves \code{idxstats} summary of
+the number of mapped reads in each chromosome.}
 }
 \description{
-Sort and index the BAM file, and
-retrieve the \code{idxstats} (summary of
+Sorts and indexes the BAM file, and
+retrieves the \code{idxstats} (summary of
 the number of mapped reads on every chromosome) using \code{Rsamtools} package.
 }
 \examples{
 \dontrun{
-# Sort, index the BAM file, and retrieve the idxstats.
+# Sorts, indexes the BAM file, and retrieves the idxstats.
 sort_index_idxstats_bam('example.bam', sort=TRUE, index=TRUE, idxstats=TRUE)
 
-# Index the BAM file, and retrieve the idxstats. Assuming the bam file is already sorted.
+# Indexes the BAM file, and retrieves the idxstats, using sorted BAM file.
 sort_index_idxstats_bam('example.sorted.bam', sort=FALSE, index=TRUE, idxstats=TRUE)
 }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{normalize_counts}
 \alias{normalize_counts}
-\title{Normalize read counts}
+\title{Normalizes read counts}
 \usage{
 normalize_counts(counts, idxstats_file, ref_size = 1e+08)
 }
@@ -18,7 +18,7 @@ normalize_counts(counts, idxstats_file, ref_size = 1e+08)
 A matrix of normalize read counts.
 }
 \description{
-Normalize DNase or ATAC-seq read counts by library sizes.
-It first obtain the total mapped reads from the current sample, and
+Normalizes DNase or ATAC-seq read counts by library sizes.
+It first obtains the total mapped reads from the current sample, and
 then scales the read counts for the current data to a reference library size.
 }

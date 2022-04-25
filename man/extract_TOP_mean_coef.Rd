@@ -2,7 +2,7 @@
 % Please edit documentation in R/postfit_coef_samples.R
 \name{extract_TOP_mean_coef}
 \alias{extract_TOP_mean_coef}
-\title{Extract the posterior mean of regression coefficients for each level of TOP model}
+\title{Extracts the posterior mean of regression coefficients for each level of TOP model}
 \usage{
 extract_TOP_mean_coef(
   TOP_samples,
@@ -17,7 +17,7 @@ extract_TOP_mean_coef(
 
 \item{tf_cell_combos}{A table with the indices and names of TF and cell type
 combinations from the assembled training data. If missing,
-will extract from \code{assembled_training_data}.}
+will create the table usi9ng \code{assembled_training_data}.}
 
 \item{assembled_training_data}{Assembled training data as in the
 \code{assemble_training_data} function.}
@@ -25,11 +25,11 @@ will extract from \code{assembled_training_data}.}
 \item{n_bins}{Number of DNase or ATAC bins in TOP model (default = 5)}
 }
 \value{
-A list of posterior mean regression coefficients at each level of TOP model.
+A list of posterior mean regression coefficients for each level of TOP model.
 }
 \description{
-Extract regression coefficients from TOP posterior samples,
-and return the posterior mean of coefficients at each level of TOP model.
+Extracts regression coefficients from TOP posterior samples,
+and returns the posterior mean of coefficients for each level of TOP model.
 }
 \examples{
 \dontrun{

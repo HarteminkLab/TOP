@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_dnase_atac_data.R
 \name{get_sites_counts}
 \alias{get_sites_counts}
-\title{Get count matrices around candidate binding sites}
+\title{Extracts count matrices around candidate binding sites}
 \usage{
 get_sites_counts(
   sites,
@@ -34,19 +34,19 @@ are the read counts on the forward strand, and the second half of the
 columns are the read counts on the reverse strand.
 }
 \description{
-Extract counts around candidate binding sites on both strands
+Extracts counts around candidate binding sites on both strands
 from the genome counts data
 (BigWig files generated using \code{count_genome_cuts()}).
 It utilizes the \code{extract bed} function from the \code{bwtool} software
-to extract the read counts.
-Then combine the counts into one matrix, with the first half of the columns
+to extract the read counts,
+then combines the counts into one matrix, with the first half of the columns
 representing the read counts on the forward strand,
 and the second half of the columns representing the read counts
 on the reverse strand.
 }
 \examples{
 \dontrun{
-# Get ATAC-seq count matrices around candidate sites
+# Extracts ATAC-seq count matrices around candidate sites
 sites_counts.mat <- get_sites_counts(sites,
                                      genomecount_dir='processed_data',
                                      genomecount_name='K562.ATAC')

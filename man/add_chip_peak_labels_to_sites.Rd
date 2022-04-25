@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_chip_data.R
 \name{add_chip_peak_labels_to_sites}
 \alias{add_chip_peak_labels_to_sites}
-\title{Add ChIP-seq peak labels to the candidate sites}
+\title{Adds ChIP-seq peak labels to the candidate sites}
 \usage{
 add_chip_peak_labels_to_sites(
   sites,
@@ -25,7 +25,7 @@ A data frame of candidate sites and binary ChIP-seq peak labels
 (bound: 1, unbound: 0).
 }
 \description{
-Add ChIP-seq peak labels to the candidate sites.
+Adds ChIP-seq peak labels to the candidate sites.
 It uses ChIP-seq peaks from \code{chip_peak_file} if available.
 If \code{chip_peak_file} is not available, it will download the
 ChIP-seq peaks from ENCODE database (using

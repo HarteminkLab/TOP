@@ -2,7 +2,7 @@
 % Please edit documentation in R/postfit_coef_samples.R
 \name{extract_TOP_coef_samples}
 \alias{extract_TOP_coef_samples}
-\title{Extract regression coefficients from TOP posterior samples}
+\title{Extracts regression coefficients from TOP posterior samples}
 \usage{
 extract_TOP_coef_samples(
   TOP_samples,
@@ -20,7 +20,7 @@ extract_TOP_coef_samples(
 
 \item{tf_cell_combos}{A table with the indices and names of TF and cell type
 combinations from the assembled training data. If missing,
-will extract from assembled_training_data.}
+will create the table using \code{assembled_training_data}.}
 
 \item{assembled_training_data}{Assembled training data as in the
 \code{assemble_training_data()} function.}
@@ -40,7 +40,7 @@ will extract from assembled_training_data.}
 A data frame of posterior samples for TOP's regression coefficients.
 }
 \description{
-Extract regression coefficients from TOP posterior samples
+Extracts regression coefficients from TOP posterior samples
 }
 \examples{
 \dontrun{

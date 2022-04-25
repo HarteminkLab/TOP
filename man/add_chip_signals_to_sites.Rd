@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_chip_data.R
 \name{add_chip_signals_to_sites}
 \alias{add_chip_signals_to_sites}
-\title{Add ChIP-seq signals to the candidate sites}
+\title{Adds ChIP-seq signals to the candidate sites}
 \usage{
 add_chip_signals_to_sites(
   sites,
@@ -27,7 +27,7 @@ add_chip_signals_to_sites(
 A data frame of candidate sites and ChIP-seq signals.
 }
 \description{
-Add ChIP-seq signals to the candidate sites.
+Adds ChIP-seq signals to the candidate sites.
 It uses ChIP-seq signals (in BigWig format) from \code{chip_signal_file}.
 If \code{chip_peak_file} is not available, it will download the
 ChIP-seq signals from ENCODE database (using

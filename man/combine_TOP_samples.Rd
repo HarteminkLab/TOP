@@ -2,7 +2,7 @@
 % Please edit documentation in R/postfit_coef_samples.R
 \name{combine_TOP_samples}
 \alias{combine_TOP_samples}
-\title{Combine and take the average of TOP posterior samples from all partitions}
+\title{Combines and takes the average of TOP posterior samples from all partitions}
 \usage{
 combine_TOP_samples(TOP_samples_files, thin = 1, n_samples = 1000)
 }
@@ -12,20 +12,20 @@ combine_TOP_samples(TOP_samples_files, thin = 1, n_samples = 1000)
 \item{thin}{Thinning rate of extract the posterior samples,
 must be a positive integer (default = 1, no thinning performed).}
 
-\item{n_samples}{Keep \code{n} posterior samples (randomly choose),
+\item{n_samples}{Keeps \code{n} posterior samples (randomly choose),
 when the number of posterior samples is greater than \code{n}.}
 }
 \value{
 A data frame of combined and averaged posterior samples.
 }
 \description{
-Combine and take the average of TOP posterior samples
+Combines and takes the average of TOP posterior samples
 from all partitions.
 }
 \examples{
 \dontrun{
-# Randomly select 1000 posterior samples from each partition.
-# Then, combine and take the average of the posterior samples from all partitions.
+# Randomly selects 1000 posterior samples from each partition.
+# Then, combines and takes the average of the posterior samples from all partitions.
 TOP_samples <- combine_TOP_samples(TOP_samples_files, n_samples = 1000)
 }
 }

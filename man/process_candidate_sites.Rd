@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_motif_sites.R
 \name{process_candidate_sites}
 \alias{process_candidate_sites}
-\title{Obtain and filter candidate sites from FIMO result}
+\title{Obtains and filters candidate sites from FIMO result}
 \usage{
 process_candidate_sites(
   fimo_file,
@@ -16,13 +16,13 @@ process_candidate_sites(
 )
 }
 \arguments{
-\item{fimo_file}{FIMO result \sQuote{.txt} file}
+\item{fimo_file}{\code{FIMO} result \sQuote{.txt} file}
 
 \item{flank}{Flanking region (bp) around motif matches (default: 100)}
 
-\item{thresh_pValue}{FIMO p-value threshold (default: 1e-5)}
+\item{thresh_pValue}{\code{FIMO} p-value threshold (default: 1e-5)}
 
-\item{thresh_pwmscore}{FIMO PWM score threshold (default: 0)}
+\item{thresh_pwmscore}{\code{FIMO} PWM score threshold (default: 0)}
 
 \item{blacklist_file}{Filename of the blacklist regions (default: NULL)}
 
@@ -39,9 +39,9 @@ A data frame of processed candidate binding sites
 passing the threshold filtering.
 }
 \description{
-Get candidate sites from FIMO motif matches and
-add flanking regions, and filter the candidate sites by different thresholds,
-and filter out sites in blacklist regions.
+Gets candidate sites from FIMO motif matches and
+add flanking regions, and filters the candidate sites by different thresholds,
+and filters out sites in blacklist regions.
 }
 \examples{
 \dontrun{

@@ -1,13 +1,12 @@
 
-#' @title Assemble TOP training data for all TF x cell type combinations,
+#' @title Assembles TOP training data for all TF x cell type combinations,
 #' then split training data into 10 partitions
-#' @description Prepare the training data for fitting TOP models.
+#' @description Prepares the training data for fitting TOP models.
 #' It splits training data into 10 partitions and
 #' assembles training data for all TF x cell type combinations
-#' for each of the partitions
-#' using the function \code{assemble_partition_training_data()}.
+#' for each of the partitions.
 #'
-#' @param tf_cell_table a data frame listing all TF x cell type combinations
+#' @param tf_cell_table A data frame listing all TF x cell type combinations
 #' and the training data for each combination.
 #' It should have at least three columns, with:
 #' TF names, cell types, and file names of the individual training data for
@@ -29,7 +28,7 @@
 #' randomly select \code{max_sites} candidate sites for
 #' each TF x cell type combination, if the number of candidate sites
 #' exceeds \code{max_sites}.
-#' @param seed Set seed when sampling sites.
+#' @param seed A number for the seed used when sampling sites.
 #' @return A list of data frames (default: 10),
 #' each containing one partition of the
 #' training data with all TF x cell type combinations.
@@ -50,9 +49,9 @@
 #' #  |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |
 #' #  |     ...      |     ...       |   ...                    |
 #'
-#' # Assemble training data for the quantitative occupancy model,
-#' # use odd chromosomes for training, keep at most 50000 candidate sites for
-#' # each TF x cell type combination, and split training data into 10 partitions.
+#' # Assembles training data for the quantitative occupancy model,
+#' # uses odd chromosomes for training, keeps at most 50000 candidate sites for
+#' # each TF x cell type combination, and splits training data into 10 partitions.
 #' assembled_training_data <- assemble_training_data(tf_cell_table,
 #'                                                   logistic_model = FALSE,
 #'                                                   chip_col = 'chip',
@@ -60,7 +59,7 @@
 #'                                                   n_partitions=10,
 #'                                                   max_sites = 50000)
 #'
-#' # Assemble training data for the logistic version of the model
+#' # Assembles training data for the logistic version of the model
 #' assembled_training_data <- assemble_training_data(tf_cell_table,
 #'                                                   logistic_model = TRUE,
 #'                                                   chip_col = 'chip_label',
