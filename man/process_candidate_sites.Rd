@@ -29,7 +29,8 @@ process_candidate_sites(
 \item{mapability_file}{Filename of the mapability reference file}
 
 \item{thresh_mapability}{Mapability threshold (default: 0.8,
-candidate sites need to be mapable at least 80\% positions).}
+candidate sites need to be mapable at least 80\% positions).
+This is only used when the \code{mapability_file} is available.}
 
 \item{bigWigAverageOverBed_path}{Path to bigWigAverageOverBed executable
 (only needed when filtering mapability).}

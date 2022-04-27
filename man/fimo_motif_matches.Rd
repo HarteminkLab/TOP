@@ -9,7 +9,7 @@ fimo_motif_matches(
   sequence_file,
   outname = "fimo.txt",
   outdir = dirname(outname),
-  thresh_pValue = 1e-04,
+  thresh_pValue = 1e-05,
   background = c("default", "motif", "uniform", "file"),
   background_file,
   skip_matched_sequence = TRUE,
@@ -32,10 +32,10 @@ fimo_motif_matches(
 \item{thresh_pValue}{\code{FIMO} option \code{thresh} for p-value threshold.}
 
 \item{background}{Option for background model:
-\sQuote{default}: use \code{FIMO} default background setting;
-\sQuote{motif}: use the 0-order letter frequencies contained in the motif file;
-\sQuote{uniform}: use uniform letter frequencies;
-\sQuote{file}: use the file specified in \code{background_file}.}
+\sQuote{default}: uses \code{FIMO} default background setting;
+\sQuote{motif}: uses the 0-order letter frequencies contained in the motif file;
+\sQuote{uniform}: uses uniform letter frequencies;
+\sQuote{file}: uses the file specified in \code{background_file}.}
 
 \item{background_file}{Path to a file in Markov Background Model Format.}
 

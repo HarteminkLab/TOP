@@ -7,10 +7,10 @@
 #' @param outdir Output directory.
 #' @param thresh_pValue \code{FIMO} option \code{thresh} for p-value threshold.
 #' @param background Option for background model:
-#' \sQuote{default}: use \code{FIMO} default background setting;
-#' \sQuote{motif}: use the 0-order letter frequencies contained in the motif file;
-#' \sQuote{uniform}: use uniform letter frequencies;
-#' \sQuote{file}: use the file specified in \code{background_file}.
+#' \sQuote{default}: uses \code{FIMO} default background setting;
+#' \sQuote{motif}: uses the 0-order letter frequencies contained in the motif file;
+#' \sQuote{uniform}: uses uniform letter frequencies;
+#' \sQuote{file}: uses the file specified in \code{background_file}.
 #' @param background_file Path to a file in Markov Background Model Format.
 #' @param skip_matched_sequence \code{FIMO} option \code{skip_matched_sequence}.
 #' Turns off output of the sequence of motif matches.
@@ -39,7 +39,7 @@ fimo_motif_matches <- function(motif_file,
                                sequence_file,
                                outname='fimo.txt',
                                outdir=dirname(outname),
-                               thresh_pValue=1e-4,
+                               thresh_pValue=1e-5,
                                background=c('default', 'motif', 'uniform', 'file'),
                                background_file,
                                skip_matched_sequence=TRUE,
@@ -126,6 +126,7 @@ fimo_motif_matches <- function(motif_file,
 # in bigWig format (default: NULL)
 #' @param thresh_mapability Mapability threshold (default: 0.8,
 #' candidate sites need to be mapable at least 80% positions).
+#' This is only used when the \code{mapability_file} is available.
 #' @param bigWigAverageOverBed_path Path to bigWigAverageOverBed executable
 #' (only needed when filtering mapability).
 #' @return A data frame of processed candidate binding sites
@@ -157,7 +158,7 @@ process_candidate_sites <- function(fimo_file,
   sites <- sites[which(as.numeric(sites$p.value) < as.numeric(thresh_pValue)), ]
   cat('Select candidate sites with FIMO p-value <', thresh_pValue, '\n')
 
-  # Filters candidate sites by FIMO PWM score
+  # Filters candidate sites by PWM score
   sites <- sites[which(as.numeric(sites$pwm.score) > as.numeric(thresh_pwmscore)), ]
   cat('Select candidate sites with PWM score >', thresh_pwmscore, '\n')
 
