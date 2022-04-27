@@ -1,117 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kevinlkx.github.io/TOP/404.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/404.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/LICENSE-text.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/LICENSE.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/data_preparation.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/articles/data_preparation.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/index.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/predict_TF_occupancy_with_trained_model.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/articles/predict_TF_occupancy_with_trained_model.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_logistic_model.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/articles/train_TOP_logistic_model.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/articles/train_TOP_model.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/articles/train_TOP_model.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/authors.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/authors.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/index.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/index.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/add_chip_peak_labels_to_sites.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/add_chip_peak_labels_to_sites.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/add_chip_signals_to_sites.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/add_chip_signals_to_sites.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/assemble_training_data.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/assemble_training_data.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/bin_transform_counts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/bin_transform_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/combine_TOP_samples.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/combine_TOP_samples.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/count_genome_cuts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/count_genome_cuts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/count_normalize_chip.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/count_normalize_chip.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/extract_TOP_coef_samples.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/extract_TOP_coef_samples.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/extract_TOP_mean_coef.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/extract_TOP_mean_coef.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/extract_tf_cell_combos.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/extract_tf_cell_combos.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fimo_motif_matches.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/fimo_motif_matches.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/fit_TOP_M5_model.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/fit_TOP_M5_model.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/get_sites_counts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/get_sites_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/get_total_reads.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/get_total_reads.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/index.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/index_fa.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/index_fa.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_bin_transform_counts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/merge_normalize_bin_transform_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/merge_normalize_counts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/merge_normalize_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/millipede_binning.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/millipede_binning.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/normalize_bin_transform_counts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/normalize_bin_transform_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/normalize_chip.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/normalize_chip.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/normalize_counts.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/normalize_counts.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/plot_profile.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/plot_profile.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/plot_profile_strands.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/plot_profile_strands.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/predict_TOP.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/predict_TOP.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/process_candidate_sites.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/process_candidate_sites.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/scatterplot_predictions.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/scatterplot_predictions.html</loc>
   </url>
   <url>
-    <loc>https://kevinlkx.github.io/TOP/reference/sort_index_idxstats_bam.html</loc>
+    <loc>https://HarteminkLab.github.io/TOP/reference/sort_index_idxstats_bam.html</loc>
   </url>
 </urlset>
