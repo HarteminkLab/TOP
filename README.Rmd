@@ -44,7 +44,7 @@ from [GitHub][github] with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("kevinlkx/TOP")
+devtools::install_github("HarteminkLab/TOP")
 ```
 
 After installing, check that it loads properly:

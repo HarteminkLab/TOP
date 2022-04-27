@@ -28,7 +28,7 @@ You can install the development version of `TOP` from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("kevinlkx/TOP")
+devtools::install_github("HarteminkLab/TOP")
 ```
 
 After installing, check that it loads properly:
