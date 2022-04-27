@@ -19,12 +19,12 @@ DNase- or ATAC-seq experiments.
 
 <img src="man/figures/schematic.png" width="90%" />
 
-## [TOP R package website](https://kevinlkx.github.io/TOP)
+## [TOP R package website](https://HarteminkLab.github.io/TOP)
 
 ### Install R package
 
 You can install the development version of `TOP` from
-[GitHub](https://github.com/kevinlkx/TOP) with:
+[GitHub](https://github.com/HarteminkLab/TOP) with:
 
 ``` r
 # install.packages("devtools")
@@ -40,8 +40,8 @@ library(TOP)
 ### Usage
 
 Please follow the
-[tutorials](https://kevinlkx.github.io/TOP/articles/index.html) to learn
-how to use the package.
+[tutorials](https://HarteminkLab.github.io/TOP/articles/index.html) to
+learn how to use the package.
 
 ## ## Citing this work
 

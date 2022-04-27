@@ -69,9 +69,9 @@ efficient comparisons across conditions." *bioRxiv*, bioRxiv:2020.06.28.171587.
 All source code and software in this repository are made available
 under the terms of the [MIT license][mit-license].
 
-[top-webiste]: https://kevinlkx.github.io/TOP
-[github]: https://github.com/kevinlkx/TOP
+[top-webiste]: https://HarteminkLab.github.io/TOP
+[github]: https://github.com/HarteminkLab/TOP
 [mit-license]: https://opensource.org/licenses/mit-license.html
-[tutorials]: https://kevinlkx.github.io/TOP/articles/index.html
+[tutorials]: https://HarteminkLab.github.io/TOP/articles/index.html
 
 

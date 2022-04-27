@@ -1,6 +1,6 @@
 Package: TOP
 Title: Predict transcription factor occupancy using DNase- or ATAC-seq data 
-Version: 0.12.1
+Version: 0.13.0
 Authors@R: c(
   person("Kaixuan", "Luo", role = c("aut", "cre"), email = "kevinlkx@gmail.com"),
   person("Jianling", "Zhong", role = "aut", email = "jianlingzh@gmail.com"),
@@ -18,8 +18,8 @@ Description: Transcription factor (TF) occupancy profiler (TOP)
     TF binding probability for TFs across cell types or conditions 
     using DNase- or ATAC- seq data
     without requring new ChIP data.
-URL: https://github.com/kevinlkx/TOP
-BugReports: https://github.com/kevinlkx/TOP/issues
+URL: https://github.com/HarteminkLab/TOP
+BugReports: https://github.com/HarteminkLab/TOP/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
