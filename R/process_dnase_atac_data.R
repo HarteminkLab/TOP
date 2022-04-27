@@ -125,9 +125,9 @@ count_genome_cuts <- function(bam_file,
 #' @examples
 #' \dontrun{
 #' # Extracts ATAC-seq count matrices around candidate sites
-#' sites_counts.mat <- get_sites_counts(sites,
-#'                                      genomecount_dir='processed_data',
-#'                                      genomecount_name='K562.ATAC')
+#' count_matrix <- get_sites_counts(sites,
+#'                                  genomecount_dir='processed_data',
+#'                                  genomecount_name='K562.ATAC')
 #' }
 get_sites_counts <- function(sites,
                              genomecount_dir,
