@@ -1,15 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Transcription factor Occupancy Profiler (TOP)
+# Transcription factor Occupancy Profiler (`TOP`)
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-Transcription factor Occupancy Profiler (TOP) fits a Bayesian
-hierarchical model using transcription factor (TF) motifs, DNase- or
-ATAC-seq data, as well as ChIP-seq data (only required in training) from
-multiple TFs across multiple cell types.
+TOP fits a Bayesian hierarchical model using transcription factor (TF)
+motifs, DNase- or ATAC-seq data, as well as ChIP-seq data (only required
+in training) from multiple TFs across multiple cell types.
 
 It can be used to predict the quantitative occupancy or binding
 probability for many TFs using data from a single DNase- or ATAC-seq
@@ -19,9 +18,15 @@ DNase- or ATAC-seq experiments.
 
 <img src="man/figures/schematic.png" width="90%" />
 
-## [TOP R package website](https://HarteminkLab.github.io/TOP)
+## TOP websites
 
-### Install R package
+-   [TOP R package website](https://HarteminkLab.github.io/TOP)
+-   [TOP paper resources
+    website](https://harteminklab.github.io/TOP-paper-resources): a
+    companion website for the `TOP` package, which contains the data
+    resources and data processing pipelines for the `TOP` paper.
+
+## Install TOP R package
 
 You can install the development version of `TOP` from
 [GitHub](https://github.com/HarteminkLab/TOP) with:
@@ -37,13 +42,13 @@ After installing, check that it loads properly:
 library(TOP)
 ```
 
-### Usage
+## Tutorials
 
 Please follow the
 [tutorials](https://HarteminkLab.github.io/TOP/articles/index.html) to
 learn how to use the package.
 
-## ## Citing this work
+## Citing the `TOP` paper
 
 -   Luo, K., Zhong, J., Safi, A., Hong, L., Tewari, A., Song, L., Reddy,
     T., Ma, L., Crawford, G., & Hartemink, A. (2020) “Quantitative

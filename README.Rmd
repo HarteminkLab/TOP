@@ -13,13 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-Transcription factor Occupancy Profiler (TOP)
+Transcription factor Occupancy Profiler (`TOP`)
 =================================================
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-Transcription factor Occupancy Profiler (TOP) fits a Bayesian hierarchical model 
+TOP fits a Bayesian hierarchical model 
 using transcription factor (TF) motifs, DNase- or ATAC-seq data,
 as well as ChIP-seq data (only required in training) 
 from multiple TFs across multiple cell types. 
@@ -34,11 +34,17 @@ across multiple cell types or conditions using DNase- or ATAC-seq experiments.
 knitr::include_graphics("man/figures/schematic.png")
 ```
 
-[TOP R package website][top-webiste] 
---------------------------------------------------------
+TOP websites
+------------
 
-### Install R package
+  * [TOP R package website][top-webiste]
+  * [TOP paper resources website][top-resources-website]: 
+  a companion website for the `TOP` package, which 
+  contains the data resources and data processing pipelines for the `TOP` paper.
 
+
+Install TOP R package
+---------------------
 You can install the development version of `TOP`
 from [GitHub][github] with:
 
@@ -52,24 +58,24 @@ After installing, check that it loads properly:
 library(TOP)
 ```
 
-### Usage
-
+Tutorials
+---------
 Please follow the [tutorials][tutorials] to learn how to use the package. 
 
-## Citing this work
--------------------
-
+Citing the `TOP` paper
+----------------------
 * Luo, K., Zhong, J., Safi, A., Hong, L., Tewari, A., Song, L., Reddy, T., Ma, L., 
 Crawford, G., & Hartemink, A. (2020) "Quantitative occupancy of myriad 
 transcription factors from one DNase experiment enables 
 efficient comparisons across conditions." *bioRxiv*, bioRxiv:2020.06.28.171587.
 
-## License
-
+License
+---------
 All source code and software in this repository are made available
 under the terms of the [MIT license][mit-license].
 
 [top-webiste]: https://HarteminkLab.github.io/TOP
+[top-resources-website]: https://harteminklab.github.io/TOP-paper-resources
 [github]: https://github.com/HarteminkLab/TOP
 [mit-license]: https://opensource.org/licenses/mit-license.html
 [tutorials]: https://HarteminkLab.github.io/TOP/articles/index.html
