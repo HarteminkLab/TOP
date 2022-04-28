@@ -14,10 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+Similar to the tutorial [Training TOP quantitative occupancy model](train_TOP_model.html),
+here we show an example procedure to train TOP logistic (binary) model.
+
 Prepare training data
 ---------------------
 
-Similar to the steps in [Training TOP quantitative occupancy model](train_TOP_model.html),
+Similar to the steps in the 
+tutorial [Training TOP quantitative occupancy model](train_TOP_model.html),
 we need to prepare and assemble the training data containing all training 
 TF x cell type combinations. 
 
@@ -26,8 +30,7 @@ Load packages
 
 We need to have R packages [R2jags][R2jags] 
 and [doParallel][doParallel] installed to train TOP models, as 
-we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model 
-in the current implementation of the model. 
+we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model. 
 
 ```{r load-TOP-package, eval=FALSE}
 library(TOP)
@@ -44,9 +47,9 @@ For each TF in each cell type,
 we prepare training data for candidate binding sites:
 including: 
 
-- PWM scores of the motif matches
-- DNase (or ATAC) counts in MILLIPEDE bins
-- *binary ChIP labels* (from ChIP-seq peaks).
+  - PWM scores of the motif matches.
+  - DNase (or ATAC) counts in MILLIPEDE bins.
+  - *binary ChIP labels* (from ChIP-seq peaks).
 
 You can follow this [procedure](data_preparation.html) to prepare the training data.
 
@@ -86,9 +89,9 @@ assembled_training_data <- assemble_training_data(tf_cell_table,
 Fit TOP logistic models using assembled training data
 --------------------------------------------------------
 
-Here, we fit TOP logistic models with ChIP-seq binary labels, 
-to fit TOP quantitative occupancy models with ChIP-seq read counts, 
-please follow this [tutorial](train_TOP_model.htmll).
+Here, we fit TOP logistic models with ChIP-seq binary labels.
+To fit TOP quantitative occupancy models with ChIP-seq read counts, 
+please see this [tutorial](train_TOP_model.htmll).
 
 The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 
 in parallel. 
@@ -151,13 +154,17 @@ saveRDS(TOP_samples, 'TOP_logistic_fit/TOP_logistic_M5_combined_posterior_sample
 saveRDS(TOP_mean_coef, 'TOP_logistic_fit/TOP_logistic_M5_posterior_mean_coef.rds')
 ```
 
-We will provide pre-trained models using ENCODE data
-[here](https://users.cs.duke.edu/~amink/software/).
+We have included pre-trained model parameters using ENCODE data within this package, 
+and also on our companion [resources website][top-resources-website]. 
+We will also train new models when new data become available, 
+and update the model parameters on our companion site.
 
 To make predictions for TF occupancy using new DNase- or ATAC-seq data 
-using trained model coefficients,
-see this [page](predict_TF_occupancy_with_trained_model.html)
+using pretrained model coefficients,
+please see [this tutorial](predict_TF_occupancy_with_trained_model.html).
+
 
 [doParallel]: https://cran.r-project.org/web/packages/doParallel/index.html
 [R2jags]: https://cran.r-project.org/web/packages/R2jags/index.html
 [JAGS]: https://mcmc-jags.sourceforge.io
+[top-resources-website]: https://harteminklab.github.io/TOP-paper-resources

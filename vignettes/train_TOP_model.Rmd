@@ -17,14 +17,14 @@ knitr::opts_chunk$set(
 TOP jointly fits a Bayesian hierarchical model using available training data 
 from many TFs in many cell types. 
 
-Training TOP entailed two basic steps, as illustrated in the figure below: 
+Training TOP entails two basic steps, as illustrated in the figure below: 
 
 ```{r TOP-diagram, echo=FALSE, out.width = '90%'}
 knitr::include_graphics("../man/figures/schematic.png")
 ```
 
-First, following the site-centric strategy, we used motif matches to 
-enumerate candidate binding sites, and extracted DNase- and/or 
+First, following the site-centric strategy, we use motif matches to 
+enumerate candidate binding sites, and extract DNase- and/or 
 ATAC-seq and ChIP data centered on each site for training. 
 
 Second, we fit our Bayesian hierarchical regression model on 
@@ -40,9 +40,8 @@ Load packages
 -------------
 
 We need to have R packages [R2jags][R2jags] 
-and [doParallel][doParallel] installed to train TOP models, as 
-we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model 
-in the current implementation of the model. 
+and [doParallel][doParallel] installed in order to train TOP models, as 
+we use [JAGS][JAGS] to run Gibbs sampling for the Bayesian hierarchical model. 
 
 ```{r load-TOP-package, eval=FALSE}
 library(TOP)
@@ -101,16 +100,13 @@ Fit TOP quantitative occupancy models using assembled training data
 
 Here, we fit TOP quantitative occupancy models with ChIP-seq read counts. 
 To fit TOP logistic models with ChIP-seq binary labels, 
-please follow this [tutorial](train_TOP_logistic_model.htmll).
+please see this [tutorial](train_TOP_logistic_model.htmll).
 
 We use the consensus Monte Carlo algorithm to run 
 Gibbs sampling on each of the 10 training data partitions separately in parallel.
 
-The `fit_TOP_model()` function below runs Gibbs sampling for each of the 10 partitions 
-in parallel. 
-
-We first perform "asinh" transform to the training ChIP-seq counts,
-then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.
+We first perform the "asinh" transform to the training ChIP-seq counts,
+then fit the TOP model to training data in each of the 10 partitions.
 
 Set the following parameters for Gibbs sampling: 
 
@@ -119,9 +115,12 @@ Set the following parameters for Gibbs sampling:
 - n_chains: number of Markov chains.
 - n_thin: thinning rate, must be a positive integer.
 
-The following example runs 5000 iterations of Gibbs sampling in total, 
+The following example fits a TOP model on all 10 partitions in parallel 
+using 10 CPU cores. It runs 5000 iterations of Gibbs sampling in total, 
 including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2, 
-and save the posterior samples to the `TOP_fit` directory. 
+and save the posterior samples to the `TOP_fit` directory. It
+returns a list of posterior samples of the coefficients 
+for each of the 10 partitions.
 
 It could take a long time if we have many TFs and many cell types
 in the training data.
@@ -137,18 +136,12 @@ all_TOP_samples <- fit_TOP_M5_model(assembled_training_data,
                                     out_dir = 'TOP_fit')
 ```
 
-This fits a TOP model on all 10 partitions in parallel on 10 CPU cores, 
-and returns a list of posterior samples of the coefficients 
-for each of the 10 partitions.
-It requires a compute node/machine with 10 cores and 
-may require a big memory if you have training data from 
-many TFs and cell types. 
-Alternatively, if you have limited computing resource, 
+If you have limited computing resource, 
 you may fit model for each of the 10
 the partitions on separate machines, by
-specifying the partition to run. 
+specifying which partition to run. 
 For example, setting argument `partitions=3` 
-will fit TOP model for training data in the 3rd partition.  
+will fit TOP model to the training data in the 3rd partition.  
 
 Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients
 ----------------------------------------------------------------------------------------------------------------
@@ -172,15 +165,17 @@ saveRDS(TOP_samples, 'TOP_fit/TOP_M5_combined_posterior_samples.rds')
 saveRDS(TOP_mean_coef, 'TOP_fit/TOP_M5_posterior_mean_coef.rds')
 ```
 
-We will provide pre-trained models using ENCODE data
-[here](https://users.cs.duke.edu/~amink/software/).
+We have included pre-trained model parameters using ENCODE data within this package, 
+and also on our companion [resources website][top-resources-website]. 
+We will also train new models when new data become available, 
+and update the model parameters on our companion site.
 
 To make predictions for TF occupancy using new DNase- or ATAC-seq data 
-using trained model coefficients,
-please follow this tutorial 
-["Predict TF occupancy using trained TOP model"](predict_TF_occupancy_with_trained_model.html).
+using pretrained model coefficients,
+please see [this tutorial](predict_TF_occupancy_with_trained_model.html).
 
 
 [doParallel]: https://cran.r-project.org/web/packages/doParallel/index.html
 [R2jags]: https://cran.r-project.org/web/packages/R2jags/index.html
 [JAGS]: https://mcmc-jags.sourceforge.io
+[top-resources-website]: https://harteminklab.github.io/TOP-paper-resources
