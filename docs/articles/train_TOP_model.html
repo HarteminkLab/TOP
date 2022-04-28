@@ -95,15 +95,15 @@
     
     
 <p>TOP jointly fits a Bayesian hierarchical model using available training data from many TFs in many cell types.</p>
-<p>Training TOP entailed two basic steps, as illustrated in the figure below:</p>
+<p>Training TOP entails two basic steps, as illustrated in the figure below:</p>
 <p><img src="../reference/figures/schematic.png" width="90%"></p>
-<p>First, following the site-centric strategy, we used motif matches to enumerate candidate binding sites, and extracted DNase- and/or ATAC-seq and ChIP data centered on each site for training.</p>
+<p>First, following the site-centric strategy, we use motif matches to enumerate candidate binding sites, and extract DNase- and/or ATAC-seq and ChIP data centered on each site for training.</p>
 <p>Second, we fit our Bayesian hierarchical regression model on spatially-binned DNase- and/or ATAC-seq data.</p>
 <p>Once TOP is trained, we can use it to predict occupancy for cell types or conditions for which we have DNase- or ATAC-seq data, generating TF occupancy estimates for ChIP-seq experiments that have not been done.</p>
 <div class="section level2">
 <h2 id="load-packages">Load packages<a class="anchor" aria-label="anchor" href="#load-packages"></a>
 </h2>
-<p>We need to have R packages <a href="https://cran.r-project.org/web/packages/R2jags/index.html" class="external-link">R2jags</a> and <a href="https://cran.r-project.org/web/packages/doParallel/index.html" class="external-link">doParallel</a> installed to train TOP models, as we use <a href="https://mcmc-jags.sourceforge.io" class="external-link">JAGS</a> to run Gibbs sampling for the Bayesian hierarchical model in the current implementation of the model.</p>
+<p>We need to have R packages <a href="https://cran.r-project.org/web/packages/R2jags/index.html" class="external-link">R2jags</a> and <a href="https://cran.r-project.org/web/packages/doParallel/index.html" class="external-link">doParallel</a> installed in order to train TOP models, as we use <a href="https://mcmc-jags.sourceforge.io" class="external-link">JAGS</a> to run Gibbs sampling for the Bayesian hierarchical model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HarteminkLab/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
 </div>
@@ -165,10 +165,9 @@
 <div class="section level2">
 <h2 id="fit-top-quantitative-occupancy-models-using-assembled-training-data">Fit TOP quantitative occupancy models using assembled training data<a class="anchor" aria-label="anchor" href="#fit-top-quantitative-occupancy-models-using-assembled-training-data"></a>
 </h2>
-<p>Here, we fit TOP quantitative occupancy models with ChIP-seq read counts. To fit TOP logistic models with ChIP-seq binary labels, please follow this <a href="train_TOP_logistic_model.htmll">tutorial</a>.</p>
+<p>Here, we fit TOP quantitative occupancy models with ChIP-seq read counts. To fit TOP logistic models with ChIP-seq binary labels, please see this <a href="train_TOP_logistic_model.htmll">tutorial</a>.</p>
 <p>We use the consensus Monte Carlo algorithm to run Gibbs sampling on each of the 10 training data partitions separately in parallel.</p>
-<p>The <code>fit_TOP_model()</code> function below runs Gibbs sampling for each of the 10 partitions in parallel.</p>
-<p>We first perform “asinh” transform to the training ChIP-seq counts, then fit the TOP quantitative occupancy model for each of the 10 partitions in parallel.</p>
+<p>We first perform the “asinh” transform to the training ChIP-seq counts, then fit the TOP model to training data in each of the 10 partitions.</p>
 <p>Set the following parameters for Gibbs sampling:</p>
 <ul>
 <li>n_iter: number of total iterations per chain (including burn-in iterations).</li>
@@ -176,7 +175,7 @@
 <li>n_chains: number of Markov chains.</li>
 <li>n_thin: thinning rate, must be a positive integer.</li>
 </ul>
-<p>The following example runs 5000 iterations of Gibbs sampling in total, including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2, and save the posterior samples to the <code>TOP_fit</code> directory.</p>
+<p>The following example fits a TOP model on all 10 partitions in parallel using 10 CPU cores. It runs 5000 iterations of Gibbs sampling in total, including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2, and save the posterior samples to the <code>TOP_fit</code> directory. It returns a list of posterior samples of the coefficients for each of the 10 partitions.</p>
 <p>It could take a long time if we have many TFs and many cell types in the training data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_M5_model.html">fit_TOP_M5_model</a></span><span class="op">(</span><span class="va">assembled_training_data</span>, 
@@ -187,7 +186,7 @@
                                     n_chains <span class="op">=</span> <span class="fl">3</span>,
                                     n_thin <span class="op">=</span> <span class="fl">2</span>,
                                     out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></code></pre></div>
-<p>This fits a TOP model on all 10 partitions in parallel on 10 CPU cores, and returns a list of posterior samples of the coefficients for each of the 10 partitions. It requires a compute node/machine with 10 cores and may require a big memory if you have training data from many TFs and cell types. Alternatively, if you have limited computing resource, you may fit model for each of the 10 the partitions on separate machines, by specifying the partition to run. For example, setting argument <code>partitions=3</code> will fit TOP model for training data in the 3rd partition.</p>
+<p>If you have limited computing resource, you may fit model for each of the 10 the partitions on separate machines, by specifying which partition to run. For example, setting argument <code>partitions=3</code> will fit TOP model to the training data in the 3rd partition.</p>
 </div>
 <div class="section level2">
 <h2 id="combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients">Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients<a class="anchor" aria-label="anchor" href="#combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients"></a>
@@ -204,8 +203,8 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="st">'TOP_fit/TOP_M5_combined_posterior_samples.rds'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span>, <span class="st">'TOP_fit/TOP_M5_posterior_mean_coef.rds'</span><span class="op">)</span></code></pre></div>
-<p>We will provide pre-trained models using ENCODE data <a href="https://users.cs.duke.edu/~amink/software/" class="external-link">here</a>.</p>
-<p>To make predictions for TF occupancy using new DNase- or ATAC-seq data using trained model coefficients, please follow this tutorial <a href="predict_TF_occupancy_with_trained_model.html">“Predict TF occupancy using trained TOP model”</a>.</p>
+<p>We have included pre-trained model parameters using ENCODE data within this package, and also on our companion <a href="https://harteminklab.github.io/TOP-paper-resources" class="external-link">resources website</a>. We will also train new models when new data become available, and update the model parameters on our companion site.</p>
+<p>To make predictions for TF occupancy using new DNase- or ATAC-seq data using pretrained model coefficients, please see <a href="predict_TF_occupancy_with_trained_model.html">this tutorial</a>.</p>
 </div>
   </div>
 
