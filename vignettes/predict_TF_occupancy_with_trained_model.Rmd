@@ -112,9 +112,6 @@ TOP_result <- predict_TOP(data,
 This result contains a list with the level of model, 
 regression coefficients (posterior mean) used to make predictions, 
 and predicted TF occupancy. 
-```{r}
-names(TOP_result)
-```
 
 The prediction result contains the training data together with predicted 
 TF occupancy for each candidate site:
