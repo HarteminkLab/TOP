@@ -6,7 +6,7 @@ articles:
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_logistic_model: train_TOP_logistic_model.html
   train_TOP_model: train_TOP_model.html
-last_built: 2022-04-28T03:22Z
+last_built: 2022-08-30T16:50Z
 urls:
   reference: https://HarteminkLab.github.io/TOP/reference
   article: https://HarteminkLab.github.io/TOP/articles
