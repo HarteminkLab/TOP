@@ -78,6 +78,7 @@ and filters out sites in blacklist regions.</p>
 <span>  flank <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  thresh_pValue <span class="op">=</span> <span class="fl">1e-05</span>,</span>
 <span>  thresh_pwmscore <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  chr_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span>, <span class="st">"M"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  blacklist_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mapability_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  thresh_mapability <span class="op">=</span> <span class="fl">0.8</span>,</span>
@@ -101,6 +102,11 @@ and filters out sites in blacklist regions.</p>
 
 <dt>thresh_pwmscore</dt>
 <dd><p><code>FIMO</code> PWM score threshold (default: 0)</p></dd>
+
+
+<dt>chr_order</dt>
+<dd><p>Chromosomes to include (default: 'chr1', ..., 'chr22', 'chrX', 'chrY', 'chrM').
+Please change this accordingly if you use non-human data.</p></dd>
 
 
 <dt>blacklist_file</dt>
