@@ -25,7 +25,7 @@ process_candidate_sites(
 
 \item{thresh_pwmscore}{\code{FIMO} PWM score threshold (default: 0)}
 
-\item{chr_order}{Chromosomes to include, default ('chr1, ..., chr22, chrX, chrY, chrM').
+\item{chr_order}{Chromosomes to include (default: 'chr1', ..., 'chr22', 'chrX', 'chrY', 'chrM').
 Please change this accordingly if you use non-human data.}
 
 \item{blacklist_file}{Filename of the blacklist regions (default: NULL)}

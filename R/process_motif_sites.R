@@ -123,7 +123,7 @@ fimo_motif_matches <- function(motif_file,
 #' @param flank Flanking region (bp) around motif matches (default: 100)
 #' @param thresh_pValue \code{FIMO} p-value threshold (default: 1e-5)
 #' @param thresh_pwmscore \code{FIMO} PWM score threshold (default: 0)
-#' @param chr_order Chromosomes to include, default ('chr1, ..., chr22, chrX, chrY, chrM').
+#' @param chr_order Chromosomes to include (default: 'chr1', ..., 'chr22', 'chrX', 'chrY', 'chrM').
 #' Please change this accordingly if you use non-human data.
 #' @param blacklist_file Filename of the blacklist regions (default: NULL)
 #' @param mapability_file Filename of the mapability reference file
