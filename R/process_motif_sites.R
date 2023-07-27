@@ -123,6 +123,8 @@ fimo_motif_matches <- function(motif_file,
 #' @param flank Flanking region (bp) around motif matches (default: 100)
 #' @param thresh_pValue \code{FIMO} p-value threshold (default: 1e-5)
 #' @param thresh_pwmscore \code{FIMO} PWM score threshold (default: 0)
+#' @param chr_order Chromosomes to include, default ('chr1, ..., chr22, chrX, chrY, chrM').
+#' Please change this accordingly if you use non-human data.
 #' @param blacklist_file Filename of the blacklist regions (default: NULL)
 #' @param mapability_file Filename of the mapability reference file
 # in bigWig format (default: NULL)
@@ -144,6 +146,7 @@ process_candidate_sites <- function(fimo_file,
                                     flank=100,
                                     thresh_pValue=1e-5,
                                     thresh_pwmscore=0,
+                                    chr_order = paste0('chr', c(1:22, 'X','Y','M')),
                                     blacklist_file=NULL,
                                     mapability_file=NULL,
                                     thresh_mapability=0.8,
@@ -154,7 +157,7 @@ process_candidate_sites <- function(fimo_file,
   }
 
   # Gets candidate sites from FIMO motif matches and add flanking regions
-  sites <- flank_fimo_sites(fimo_file, flank)
+  sites <- flank_fimo_sites(fimo_file, flank, chr_order)
 
   # Filters candidate sites by FIMO p-value
   sites <- sites[which(as.numeric(sites$p.value) < as.numeric(thresh_pValue)), ]
@@ -179,7 +182,7 @@ process_candidate_sites <- function(fimo_file,
 }
 
 # Gets candidate sites using FIMO motifs with flanking regions
-flank_fimo_sites <- function(fimo_file, flank=100) {
+flank_fimo_sites <- function(fimo_file, flank=100, chr_order = paste0('chr', c(1:22, 'X','Y','M'))) {
 
   if( !file.exists(fimo_file) || file.size(fimo_file) == 0 ){
     stop(paste(fimo_file, 'file does not exist or is empty!'))
@@ -189,7 +192,6 @@ flank_fimo_sites <- function(fimo_file, flank=100) {
   fimo <- as.data.frame(fread(fimo_file, sep ='\t'))
 
   # Sorts sites
-  chr_order <- paste0('chr', c(1:22, 'X','Y','M'))
   fimo <- fimo[fimo$sequence_name %in% chr_order,]
   fimo$sequence_name <- factor(fimo$sequence_name, chr_order, ordered=TRUE)
   fimo <- fimo[order(fimo$sequence_name, fimo$start, fimo$stop),]
