@@ -32,7 +32,8 @@ the same directory of the BAM files).}
 \item{transform}{Transformation for ChIP-seq read counts.
 Options are \sQuote{none} (no transformation), \sQuote{asinh}, \sQuote{log2}, and \sQuote{'sqrt'}.}
 
-\item{bedtools_path}{Path to \code{bedtools} executable.}
+\item{bedtools_path}{Path to \code{bedtools} executable.
+(default: 'bedtools')}
 }
 \value{
 A data frame of candidate sites and normalized (and transformed)

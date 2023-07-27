@@ -57,7 +57,8 @@ If the scores are tied, the matching strand is chosen at random.}
 If set to 1 (quiet) then it will only output error messages, in contrast, the
 other extreme 5 (dump) outputs lots of mostly useless information.}
 
-\item{fimo_path}{Path to \code{fimo} command line executable.}
+\item{fimo_path}{Path to \code{fimo} command line executable.
+(default: 'fimo')}
 }
 \description{
 Runs \code{FIMO} to scan for motif matches along the genome.

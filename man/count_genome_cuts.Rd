@@ -33,9 +33,11 @@ Default: shifts reads on + strand by 4 bp and reads on - strand by -4 bp.}
 
 \item{outname}{Output prefix (default: use the prefix of \code{bam_file}).}
 
-\item{bedtools_path}{Path to \code{bedtools} executable.}
+\item{bedtools_path}{Path to \code{bedtools} executable.'
+(default: 'bedtools')}
 
-\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.}
+\item{bedGraphToBigWig_path}{Path to UCSC \code{bedGraphToBigWig} executable.
+(default: 'bedGraphToBigWig')}
 }
 \description{
 Counts genomic cuts (5' end) from DNase-seq or
