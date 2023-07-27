@@ -1,12 +1,12 @@
-pandoc: 2.14.0.3
-pkgdown: 2.0.2
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   data_preparation: data_preparation.html
   predict_TF_occupancy_with_trained_model: predict_TF_occupancy_with_trained_model.html
   train_TOP_logistic_model: train_TOP_logistic_model.html
   train_TOP_model: train_TOP_model.html
-last_built: 2022-08-30T16:50Z
+last_built: 2023-07-27T15:15Z
 urls:
   reference: https://HarteminkLab.github.io/TOP/reference
   article: https://HarteminkLab.github.io/TOP/articles

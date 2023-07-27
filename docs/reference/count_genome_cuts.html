@@ -20,7 +20,7 @@ so as to address offsets and align the signal across strands."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -75,61 +75,80 @@ so as to address offsets and align the signal across strands.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">count_genome_cuts</span><span class="op">(</span>
-  <span class="va">bam_file</span>,
-  <span class="va">chrom_size_file</span>,
-  data_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DNase"</span>, <span class="st">"ATAC"</span><span class="op">)</span>,
-  shift_ATAC <span class="op">=</span> <span class="cn">TRUE</span>,
-  shift_ATAC_bases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4L</span>, <span class="op">-</span><span class="fl">4L</span><span class="op">)</span>,
-  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">bam_file</span><span class="op">)</span>,
-  <span class="va">outname</span>,
-  bedtools_path <span class="op">=</span> <span class="st">"bedtools"</span>,
-  bedGraphToBigWig_path <span class="op">=</span> <span class="st">"bedGraphToBigWig"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">count_genome_cuts</span><span class="op">(</span></span>
+<span>  <span class="va">bam_file</span>,</span>
+<span>  <span class="va">chrom_size_file</span>,</span>
+<span>  data_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DNase"</span>, <span class="st">"ATAC"</span><span class="op">)</span>,</span>
+<span>  shift_ATAC <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  shift_ATAC_bases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4L</span>, <span class="op">-</span><span class="fl">4L</span><span class="op">)</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">bam_file</span><span class="op">)</span>,</span>
+<span>  <span class="va">outname</span>,</span>
+<span>  bedtools_path <span class="op">=</span> <span class="st">"bedtools"</span>,</span>
+<span>  bedGraphToBigWig_path <span class="op">=</span> <span class="st">"bedGraphToBigWig"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>bam_file</dt>
 <dd><p>Sorted BAM file.</p></dd>
+
+
 <dt>chrom_size_file</dt>
 <dd><p>Chromosome size file.</p></dd>
+
+
 <dt>data_type</dt>
 <dd><p>Data type. Options: ‘DNase’ or ‘ATAC’.</p></dd>
+
+
 <dt>shift_ATAC</dt>
 <dd><p>Logical. When <code>shift_ATAC=TRUE</code> (and <code>data_type='ATAC'</code>),
 shifts reads according to <code>shift_ATAC_bases</code>.</p></dd>
+
+
 <dt>shift_ATAC_bases</dt>
 <dd><p>Number of bases to shift on + and - strands.
 Default: shifts reads on + strand by 4 bp and reads on - strand by -4 bp.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>Output directory (default: use the directory of <code>bam_file</code>).</p></dd>
+
+
 <dt>outname</dt>
 <dd><p>Output prefix (default: use the prefix of <code>bam_file</code>).</p></dd>
+
+
 <dt>bedtools_path</dt>
-<dd><p>Path to <code>bedtools</code> executable.</p></dd>
+<dd><p>Path to <code>bedtools</code> executable.'
+(default: 'bedtools')</p></dd>
+
+
 <dt>bedGraphToBigWig_path</dt>
-<dd><p>Path to UCSC <code>bedGraphToBigWig</code> executable.</p></dd>
+<dd><p>Path to UCSC <code>bedGraphToBigWig</code> executable.
+(default: 'bedGraphToBigWig')</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># ATAC-seq data</span></span>
-<span class="r-in"><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,</span>
-<span class="r-in">                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>,</span>
-<span class="r-in">                  data_type<span class="op">=</span><span class="st">'ATAC'</span>,</span>
-<span class="r-in">                  shift_ATAC<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span class="r-in">                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,</span>
-<span class="r-in">                  outname<span class="op">=</span><span class="st">'K562.ATAC'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># DNase-seq data</span></span>
-<span class="r-in"><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.DNase.bam'</span>,</span>
-<span class="r-in">                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>,</span>
-<span class="r-in">                  data_type<span class="op">=</span><span class="st">'DNase'</span>,</span>
-<span class="r-in">                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,</span>
-<span class="r-in">                  outname<span class="op">=</span><span class="st">'K562.DNase'</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># ATAC-seq data</span></span></span>
+<span class="r-in"><span><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.ATAC.bam'</span>,</span></span>
+<span class="r-in"><span>                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>,</span></span>
+<span class="r-in"><span>                  data_type<span class="op">=</span><span class="st">'ATAC'</span>,</span></span>
+<span class="r-in"><span>                  shift_ATAC<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,</span></span>
+<span class="r-in"><span>                  outname<span class="op">=</span><span class="st">'K562.ATAC'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># DNase-seq data</span></span></span>
+<span class="r-in"><span><span class="fu">count_genome_cuts</span><span class="op">(</span>bam_file<span class="op">=</span><span class="st">'K562.DNase.bam'</span>,</span></span>
+<span class="r-in"><span>                  chrom_size_file<span class="op">=</span><span class="st">'hg38.chrom.sizes'</span>,</span></span>
+<span class="r-in"><span>                  data_type<span class="op">=</span><span class="st">'DNase'</span>,</span></span>
+<span class="r-in"><span>                  outdir<span class="op">=</span><span class="st">'processed_data'</span>,</span></span>
+<span class="r-in"><span>                  outname<span class="op">=</span><span class="st">'K562.DNase'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -144,7 +163,7 @@ Default: shifts reads on + strand by 4 bp and reads on - strand by -4 bp.</p></d
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

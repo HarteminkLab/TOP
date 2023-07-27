@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -94,28 +94,50 @@
 
     
     
-<p>TOP jointly fits a Bayesian hierarchical model using available training data from many TFs in many cell types.</p>
-<p>Training TOP entails two basic steps, as illustrated in the figure below:</p>
+<p>TOP jointly fits a Bayesian hierarchical model using available
+training data from many TFs in many cell types.</p>
+<p>Training TOP entails two basic steps, as illustrated in the figure
+below:</p>
 <p><img src="../reference/figures/schematic.png" width="90%"></p>
-<p>First, following the site-centric strategy, we use motif matches to enumerate candidate binding sites, and extract DNase- and/or ATAC-seq and ChIP data centered on each site for training.</p>
-<p>Second, we fit our Bayesian hierarchical regression model on spatially-binned DNase- and/or ATAC-seq data.</p>
-<p>Once TOP is trained, we can use it to predict occupancy for cell types or conditions for which we have DNase- or ATAC-seq data, generating TF occupancy estimates for ChIP-seq experiments that have not been done.</p>
+<p>First, following the site-centric strategy, we use motif matches to
+enumerate candidate binding sites, and extract DNase- and/or ATAC-seq
+and ChIP data centered on each site for training.</p>
+<p>Second, we fit our Bayesian hierarchical regression model on
+spatially-binned DNase- and/or ATAC-seq data.</p>
+<p>Once TOP is trained, we can use it to predict occupancy for cell
+types or conditions for which we have DNase- or ATAC-seq data,
+generating TF occupancy estimates for ChIP-seq experiments that have not
+been done.</p>
 <div class="section level2">
 <h2 id="load-packages">Load packages<a class="anchor" aria-label="anchor" href="#load-packages"></a>
 </h2>
-<p>We need to have R packages <a href="https://cran.r-project.org/web/packages/R2jags/index.html" class="external-link">R2jags</a> and <a href="https://cran.r-project.org/web/packages/doParallel/index.html" class="external-link">doParallel</a> installed in order to train TOP models, as we use <a href="https://mcmc-jags.sourceforge.io" class="external-link">JAGS</a> to run Gibbs sampling for the Bayesian hierarchical model.</p>
+<p>We need to have R packages <a href="https://cran.r-project.org/web/packages/R2jags/index.html" class="external-link">R2jags</a>
+and <a href="https://cran.r-project.org/web/packages/doParallel/index.html" class="external-link">doParallel</a>
+installed in order to train TOP models, as we use <a href="https://mcmc-jags.sourceforge.io" class="external-link">JAGS</a> to run Gibbs sampling
+for the Bayesian hierarchical model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HarteminkLab/TOP" class="external-link">TOP</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HarteminkLab/TOP" class="external-link">TOP</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="prepare-training-data">Prepare training data<a class="anchor" aria-label="anchor" href="#prepare-training-data"></a>
 </h2>
-<p>As we learn the parameters from many TFs in many cell types together, it takes some efforts to prepare the training data.</p>
-<p><strong>Step 1: Prepare training data for each TF in each cell type</strong></p>
-<p>Firstly, we need to prepare training data for each training TF x cell type combination, and save the training data files (as <code>.rds</code> files in the <code>data_file</code> column in the table below).</p>
-<p>This <a href="data_preparation.html">page</a> shows the procedure to prepare the training data. Basically, for each TF in each cell type, we prepare training data for candidate binding sites: including: PWM scores of the motif matches, DNase (or ATAC) counts in 5 bins, and measured TF occupancy (from ChIP-seq data).</p>
-<p><strong>Step 2: Assemble training data for all TF x cell type combinations</strong></p>
-<p>We create a table (data frame) listing all training TF x cell type combinations. The table should have three columns: TF names, cell types, and paths to the training data files, like:</p>
+<p>As we learn the parameters from many TFs in many cell types together,
+it takes some efforts to prepare the training data.</p>
+<p><strong>Step 1: Prepare training data for each TF in each cell
+type</strong></p>
+<p>Firstly, we need to prepare training data for each training TF x cell
+type combination, and save the training data files (as <code>.rds</code>
+files in the <code>data_file</code> column in the table below).</p>
+<p>This <a href="data_preparation.html">page</a> shows the procedure to
+prepare the training data. Basically, for each TF in each cell type, we
+prepare training data for candidate binding sites: including: PWM scores
+of the motif matches, DNase (or ATAC) counts in 5 bins, and measured TF
+occupancy (from ChIP-seq data).</p>
+<p><strong>Step 2: Assemble training data for all TF x cell type
+combinations</strong></p>
+<p>We create a table (data frame) listing all training TF x cell type
+combinations. The table should have three columns: TF names, cell types,
+and paths to the training data files, like:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="center">tf_name</th>
@@ -155,56 +177,88 @@
 </tr>
 </tbody>
 </table>
-<p>In the example below, we split the training data randomly into 10 equal partitions, so that we could run Gibbs sampling on these partitions separately in parallel to reduce the running time.</p>
-<p>We choose the training chromosomes by specifying the chromosomes in <code>training_chrs</code>, for example using odd chromosomes as below. The chromosome names (“chr…”) should match with those in the training data.</p>
+<p>In the example below, we split the training data randomly into 10
+equal partitions, so that we could run Gibbs sampling on these
+partitions separately in parallel to reduce the running time.</p>
+<p>We choose the training chromosomes by specifying the chromosomes in
+<code>training_chrs</code>, for example using odd chromosomes as below.
+The chromosome names (“chr…”) should match with those in the training
+data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assemble_training_data.html">assemble_training_data</a></span><span class="op">(</span><span class="va">tf_cell_table</span>,
-                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
-                                                  n_partitions <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assemble_training_data.html">assemble_training_data</a></span><span class="op">(</span><span class="va">tf_cell_table</span>,</span>
+<span>                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                                                  n_partitions <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="fit-top-quantitative-occupancy-models-using-assembled-training-data">Fit TOP quantitative occupancy models using assembled training data<a class="anchor" aria-label="anchor" href="#fit-top-quantitative-occupancy-models-using-assembled-training-data"></a>
+<h2 id="fit-top-quantitative-occupancy-models-using-assembled-training-data">Fit TOP quantitative occupancy models using assembled training
+data<a class="anchor" aria-label="anchor" href="#fit-top-quantitative-occupancy-models-using-assembled-training-data"></a>
 </h2>
-<p>Here, we fit TOP quantitative occupancy models with ChIP-seq read counts. To fit TOP logistic models with ChIP-seq binary labels, please see this <a href="train_TOP_logistic_model.htmll">tutorial</a>.</p>
-<p>We use the consensus Monte Carlo algorithm to run Gibbs sampling on each of the 10 training data partitions separately in parallel.</p>
-<p>We first perform the “asinh” transform to the training ChIP-seq counts, then fit the TOP model to training data in each of the 10 partitions.</p>
+<p>Here, we fit TOP quantitative occupancy models with ChIP-seq read
+counts. To fit TOP logistic models with ChIP-seq binary labels, please
+see this <a href="train_TOP_logistic_model.htmll">tutorial</a>.</p>
+<p>We use the consensus Monte Carlo algorithm to run Gibbs sampling on
+each of the 10 training data partitions separately in parallel.</p>
+<p>We first perform the “asinh” transform to the training ChIP-seq
+counts, then fit the TOP model to training data in each of the 10
+partitions.</p>
 <p>Set the following parameters for Gibbs sampling:</p>
 <ul>
-<li>n_iter: number of total iterations per chain (including burn-in iterations).</li>
-<li>n_burnin: number of burn-in iterations, i.e. number of iterations to discard at the beginning.</li>
+<li>n_iter: number of total iterations per chain (including burn-in
+iterations).</li>
+<li>n_burnin: number of burn-in iterations, i.e. number of iterations to
+discard at the beginning.</li>
 <li>n_chains: number of Markov chains.</li>
 <li>n_thin: thinning rate, must be a positive integer.</li>
 </ul>
-<p>The following example fits a TOP model on all 10 partitions in parallel using 10 CPU cores. It runs 5000 iterations of Gibbs sampling in total, including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2, and save the posterior samples to the <code>TOP_fit</code> directory. It returns a list of posterior samples of the coefficients for each of the 10 partitions.</p>
-<p>It could take a long time if we have many TFs and many cell types in the training data.</p>
+<p>The following example fits a TOP model on all 10 partitions in
+parallel using 10 CPU cores. It runs 5000 iterations of Gibbs sampling
+in total, including 1000 burn-ins, with 3 Markov chains, at a thinning
+rate of 2, and save the posterior samples to the <code>TOP_fit</code>
+directory. It returns a list of posterior samples of the coefficients
+for each of the 10 partitions.</p>
+<p>It could take a long time if we have many TFs and many cell types in
+the training data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_M5_model.html">fit_TOP_M5_model</a></span><span class="op">(</span><span class="va">assembled_training_data</span>, 
-                                    logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
-                                    transform <span class="op">=</span> <span class="st">'asinh'</span>, 
-                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,
-                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,
-                                    n_chains <span class="op">=</span> <span class="fl">3</span>,
-                                    n_thin <span class="op">=</span> <span class="fl">2</span>,
-                                    out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></code></pre></div>
-<p>If you have limited computing resource, you may fit model for each of the 10 the partitions on separate machines, by specifying which partition to run. For example, setting argument <code>partitions=3</code> will fit TOP model to the training data in the 3rd partition.</p>
+<code class="sourceCode R"><span><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_TOP_M5_model.html">fit_TOP_M5_model</a></span><span class="op">(</span><span class="va">assembled_training_data</span>, </span>
+<span>                                    logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                                    transform <span class="op">=</span> <span class="st">'asinh'</span>, </span>
+<span>                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>                                    n_chains <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                                    n_thin <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                    out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span></code></pre></div>
+<p>If you have limited computing resource, you may fit model for each of
+the 10 the partitions on separate machines, by specifying which
+partition to run. For example, setting argument
+<code>partitions=3</code> will fit TOP model to the training data in the
+3rd partition.</p>
 </div>
 <div class="section level2">
-<h2 id="combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients">Combine TOP posterior samples from all partitions and extract the posterior mean of the regression coefficients<a class="anchor" aria-label="anchor" href="#combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients"></a>
+<h2 id="combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients">Combine TOP posterior samples from all partitions and extract the
+posterior mean of the regression coefficients<a class="anchor" aria-label="anchor" href="#combine-top-posterior-samples-from-all-partitions-and-extract-the-posterior-mean-of-the-regression-coefficients"></a>
 </h2>
-<p>After we finished Gibbs sampling for all 10 partitions, we select and combine the posterior samples from all the partitions.</p>
+<p>After we finished Gibbs sampling for all 10 partitions, we select and
+combine the posterior samples from all the partitions.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combine_TOP_samples.html">combine_TOP_samples</a></span><span class="op">(</span><span class="va">all_TOP_samples</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">TOP_samples</span><span class="op">)</span></code></pre></div>
-<p>We can extract posterior mean of the coefficients for all three levels.</p>
+<code class="sourceCode R"><span><span class="va">TOP_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/combine_TOP_samples.html">combine_TOP_samples</a></span><span class="op">(</span><span class="va">all_TOP_samples</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">TOP_samples</span><span class="op">)</span></span></code></pre></div>
+<p>We can extract posterior mean of the coefficients for all three
+levels.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, 
-                         assembled_training_data <span class="op">=</span> <span class="va">assembled_training_data</span><span class="op">)</span></code></pre></div>
-<p>Save the posterior samples and posterior mean coefficients for predictions.</p>
+<code class="sourceCode R"><span><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_TOP_mean_coef.html">extract_TOP_mean_coef</a></span><span class="op">(</span><span class="va">TOP_samples</span>, </span>
+<span>                         assembled_training_data <span class="op">=</span> <span class="va">assembled_training_data</span><span class="op">)</span></span></code></pre></div>
+<p>Save the posterior samples and posterior mean coefficients for
+predictions.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="st">'TOP_fit/TOP_M5_combined_posterior_samples.rds'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span>, <span class="st">'TOP_fit/TOP_M5_posterior_mean_coef.rds'</span><span class="op">)</span></code></pre></div>
-<p>We have included pre-trained model parameters using ENCODE data within this package, and also on our companion <a href="https://harteminklab.github.io/TOP-paper-resources" class="external-link">resources website</a>. We will also train new models when new data become available, and update the model parameters on our companion site.</p>
-<p>To make predictions for TF occupancy using new DNase- or ATAC-seq data using pretrained model coefficients, please see <a href="predict_TF_occupancy_with_trained_model.html">this tutorial</a>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_samples</span>, <span class="st">'TOP_fit/TOP_M5_combined_posterior_samples.rds'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">TOP_mean_coef</span>, <span class="st">'TOP_fit/TOP_M5_posterior_mean_coef.rds'</span><span class="op">)</span></span></code></pre></div>
+<p>We have included pre-trained model parameters using ENCODE data
+within this package, and also on our companion <a href="https://harteminklab.github.io/TOP-paper-resources" class="external-link">resources
+website</a>. We will also train new models when new data become
+available, and update the model parameters on our companion site.</p>
+<p>To make predictions for TF occupancy using new DNase- or ATAC-seq
+data using pretrained model coefficients, please see <a href="predict_TF_occupancy_with_trained_model.html">this
+tutorial</a>.</p>
 </div>
   </div>
 
@@ -225,7 +279,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

@@ -18,7 +18,7 @@ using TOP model trained from ChIP-seq read counts or binary labels."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -71,35 +71,45 @@ using TOP model trained from ChIP-seq read counts or binary labels.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">predict_TOP</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">TOP_coef</span>,
-  <span class="va">tf_name</span>,
-  <span class="va">cell_type</span>,
-  use_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATAC"</span>, <span class="st">"DukeDNase"</span>, <span class="st">"UwDNase"</span><span class="op">)</span>,
-  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"bottom"</span>, <span class="st">"middle"</span>, <span class="st">"top"</span><span class="op">)</span>,
-  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"log"</span>, <span class="st">"none"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict_TOP</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">TOP_coef</span>,</span>
+<span>  <span class="va">tf_name</span>,</span>
+<span>  <span class="va">cell_type</span>,</span>
+<span>  use_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATAC"</span>, <span class="st">"DukeDNase"</span>, <span class="st">"UwDNase"</span><span class="op">)</span>,</span>
+<span>  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"best"</span>, <span class="st">"bottom"</span>, <span class="st">"middle"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
+<span>  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"log"</span>, <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A data frame containing motif PWM score and DNase (or ATAC) bins.</p></dd>
+
+
 <dt>TOP_coef</dt>
 <dd><p>A list containing the posterior mean of TOP regression coefficients.</p></dd>
+
+
 <dt>tf_name</dt>
 <dd><p>TF name to make predictions for.
 It will find the model parameters trained for this TF.
 This is not needed (not used) when <code>level = 'top'</code>.</p></dd>
+
+
 <dt>cell_type</dt>
 <dd><p>Cell type to make predictions for.
 It will find the model parameters trained for this cell type.
 This is not needed (not used) when <code>level = 'middle'</code> or <code>level = 'top'</code>.</p></dd>
+
+
 <dt>use_model</dt>
 <dd><p>Uses pretrained model if <code>TOP_coef</code> is not supplied.
 Options:  ‘ATAC’, ‘DukeDNase’, ‘UwDNase’.</p></dd>
+
+
 <dt>level</dt>
 <dd><p>TOP model level to use.
 Options: ‘best’, ‘bottom’, ‘middle’, or ‘top’.
@@ -114,11 +124,15 @@ When <code>level = 'bottom'</code>, uses the bottom level (TF- and cell-type-spe
 if the TF motif and cell type is available in the training data.
 When <code>level = 'middle'</code>, uses the middle level (TF-specific model) of that TF.
 When <code>level = 'top'</code>, uses the top level TF-generic model.</p></dd>
+
+
 <dt>logistic_model</dt>
 <dd><p>Logical. Whether to use the logistic version of TOP model.
 If <code>logistic_model = TRUE</code>,
 uses the logistic version of TOP model to predict TF binding probability.
 If <code>logistic_model = FALSE</code>, uses the quantitative occupancy model (default).</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>Type of transformation performed for ChIP-seq read counts
 when preparing the input training data.
@@ -127,78 +141,85 @@ Options are: ‘asinh’(asinh transformation),
 ‘sqrt’ (sqrt transformation),
 and ‘none’ (no transformation).
 This only applies when <code>logistic_model = FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a list with the following elements,</p>
+    
+
+<p>Returns a list with the following elements,</p>
 <dl><dt>model</dt>
 <dd><p>TOP model name.</p></dd>
+
 <dt>level</dt>
 <dd><p>selected hierarchy level.</p></dd>
+
 <dt>coef</dt>
 <dd><p>posterior mean of regression coefficients.</p></dd>
+
 <dt>predictions</dt>
 <dd><p>a data frame with the data and predicted values.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Predicts CTCF occupancy in K562 using the quantitative occupancy model:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts using the 'bottom' level model</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
-<span class="r-in">                      level <span class="op">=</span> <span class="st">'bottom'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts using the 'best' model</span></span>
-<span class="r-in"><span class="co"># Since CTCF in K562 cell type is included in training,</span></span>
-<span class="r-in"><span class="co"># the 'best' model is the 'bottom' level model.</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can use the 'middle' model to predict CTCF in K562</span></span>
-<span class="r-in"><span class="co"># or other cell types or conditions</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts CTCF binding probability using the logistic version of the model:</span></span>
-<span class="r-in"><span class="co"># No need to set the argument for 'transform' for the logistic model.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts using the 'bottom' level model</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                     tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
-<span class="r-in">                     level <span class="op">=</span> <span class="st">'best'</span>,</span>
-<span class="r-in">                     logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts using the 'middle' level model</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span>
-<span class="r-in">                     tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span>
-<span class="r-in">                     logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If TOP_coef is not specified, it will automatically use the</span></span>
-<span class="r-in"><span class="co"># pretrained models included in the package.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts using pretrained ATAC quantitative occupancy model</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
-<span class="r-in">                      use_model <span class="op">=</span> <span class="st">'ATAC'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predicts using pretrained ATAC logistic model</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>,</span>
-<span class="r-in">                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span>
-<span class="r-in">                      use_model <span class="op">=</span> <span class="st">'ATAC'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span>
-<span class="r-in">                      logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Predicts CTCF occupancy in K562 using the quantitative occupancy model:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts using the 'bottom' level model</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span></span>
+<span class="r-in"><span>                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span></span>
+<span class="r-in"><span>                      level <span class="op">=</span> <span class="st">'bottom'</span>,</span></span>
+<span class="r-in"><span>                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts using the 'best' model</span></span></span>
+<span class="r-in"><span><span class="co"># Since CTCF in K562 cell type is included in training,</span></span></span>
+<span class="r-in"><span><span class="co"># the 'best' model is the 'bottom' level model.</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span></span>
+<span class="r-in"><span>                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span></span>
+<span class="r-in"><span>                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can use the 'middle' model to predict CTCF in K562</span></span></span>
+<span class="r-in"><span><span class="co"># or other cell types or conditions</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span></span>
+<span class="r-in"><span>                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span></span>
+<span class="r-in"><span>                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts CTCF binding probability using the logistic version of the model:</span></span></span>
+<span class="r-in"><span><span class="co"># No need to set the argument for 'transform' for the logistic model.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts using the 'bottom' level model</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span></span>
+<span class="r-in"><span>                     tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span></span>
+<span class="r-in"><span>                     level <span class="op">=</span> <span class="st">'best'</span>,</span></span>
+<span class="r-in"><span>                     logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts using the 'middle' level model</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>, <span class="va">TOP_coef</span>,</span></span>
+<span class="r-in"><span>                     tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, level <span class="op">=</span> <span class="st">'middle'</span>,</span></span>
+<span class="r-in"><span>                     logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If TOP_coef is not specified, it will automatically use the</span></span></span>
+<span class="r-in"><span><span class="co"># pretrained models included in the package.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts using pretrained ATAC quantitative occupancy model</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>,</span></span>
+<span class="r-in"><span>                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span></span>
+<span class="r-in"><span>                      use_model <span class="op">=</span> <span class="st">'ATAC'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span></span>
+<span class="r-in"><span>                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                      transform <span class="op">=</span> <span class="st">'asinh'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predicts using pretrained ATAC logistic model</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">predict_TOP</span><span class="op">(</span><span class="va">data</span>,</span></span>
+<span class="r-in"><span>                      tf_name <span class="op">=</span> <span class="st">'CTCF'</span>, cell_type <span class="op">=</span> <span class="st">'K562'</span>,</span></span>
+<span class="r-in"><span>                      use_model <span class="op">=</span> <span class="st">'ATAC'</span>, level <span class="op">=</span> <span class="st">'best'</span>,</span></span>
+<span class="r-in"><span>                      logistic_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -213,7 +234,7 @@ This only applies when <code>logistic_model = FALSE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

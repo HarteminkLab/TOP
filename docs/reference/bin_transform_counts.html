@@ -19,7 +19,7 @@ take &amp;#8216;sqrt&amp;#8217; or &amp;#8216;log2&amp;#8217; transform"><!-- ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -73,26 +73,33 @@ take ‘sqrt’ or ‘log2’ transform</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bin_transform_counts</span><span class="op">(</span>
-  <span class="va">counts</span>,
-  bin_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M5"</span>, <span class="st">"M24"</span>, <span class="st">"M12"</span>, <span class="st">"M3"</span>, <span class="st">"M2"</span>, <span class="st">"M1"</span><span class="op">)</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bin_transform_counts</span><span class="op">(</span></span>
+<span>  <span class="va">counts</span>,</span>
+<span>  bin_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M5"</span>, <span class="st">"M24"</span>, <span class="st">"M12"</span>, <span class="st">"M3"</span>, <span class="st">"M2"</span>, <span class="st">"M1"</span><span class="op">)</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>counts</dt>
 <dd><p>DNase or ATAC-seq read counts matrix</p></dd>
+
+
 <dt>bin_method</dt>
 <dd><p><code>MILLIPEDE</code> binning scheme (Default: ‘M5’).</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>Type of transformation for DNase or ATAC counts.
 Options: ‘asinh’, ‘log2’, ‘sqrt’, ‘none’.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame of binned and transformed counts.</p>
+    
+
+<p>A data frame of binned and transformed counts.</p>
     </div>
 
   </div>
@@ -107,7 +114,7 @@ Options: ‘asinh’, ‘log2’, ‘sqrt’, ‘none’.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ and returns the posterior mean of coefficients for each level of TOP model."><!-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -71,12 +71,12 @@ and returns the posterior mean of coefficients for each level of TOP model.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extract_TOP_mean_coef</span><span class="op">(</span>
-  <span class="va">TOP_samples</span>,
-  <span class="va">tf_cell_combos</span>,
-  <span class="va">assembled_training_data</span>,
-  n_bins <span class="op">=</span> <span class="fl">5</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_TOP_mean_coef</span><span class="op">(</span></span>
+<span>  <span class="va">TOP_samples</span>,</span>
+<span>  <span class="va">tf_cell_combos</span>,</span>
+<span>  <span class="va">assembled_training_data</span>,</span>
+<span>  n_bins <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,32 +84,41 @@ and returns the posterior mean of coefficients for each level of TOP model.</p>
     <dl><dt>TOP_samples</dt>
 <dd><p>TOP samples combined from all partitions using the
 <code><a href="combine_TOP_samples.html">combine_TOP_samples()</a></code> function.</p></dd>
+
+
 <dt>tf_cell_combos</dt>
 <dd><p>A table with the indices and names of TF and cell type
 combinations from the assembled training data. If missing,
 will create the table usi9ng <code>assembled_training_data</code>.</p></dd>
+
+
 <dt>assembled_training_data</dt>
 <dd><p>Assembled training data as in the
 <code>assemble_training_data</code> function.</p></dd>
+
+
 <dt>n_bins</dt>
 <dd><p>Number of DNase or ATAC bins in TOP model (default = 5)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of posterior mean regression coefficients for each level of TOP model.</p>
+    
+
+<p>A list of posterior mean regression coefficients for each level of TOP model.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu">extract_TOP_mean_coef</span><span class="op">(</span><span class="va">TOP_samples</span>,</span>
-<span class="r-in">                                       assembled_training_data <span class="op">=</span> <span class="va">assembled_training_data</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># or</span></span>
-<span class="r-in"><span class="va">tf_cell_combos</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract_tf_cell_combos.html">extract_tf_cell_combos</a></span><span class="op">(</span><span class="va">assembled_training_data</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu">extract_TOP_mean_coef</span><span class="op">(</span><span class="va">TOP_samples</span>,</span>
-<span class="r-in">                                       tf_cell_combos <span class="op">=</span> <span class="va">tf_cell_combos</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu">extract_TOP_mean_coef</span><span class="op">(</span><span class="va">TOP_samples</span>,</span></span>
+<span class="r-in"><span>                                       assembled_training_data <span class="op">=</span> <span class="va">assembled_training_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># or</span></span></span>
+<span class="r-in"><span><span class="va">tf_cell_combos</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract_tf_cell_combos.html">extract_tf_cell_combos</a></span><span class="op">(</span><span class="va">assembled_training_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">TOP_mean_coef</span> <span class="op">&lt;-</span> <span class="fu">extract_TOP_mean_coef</span><span class="op">(</span><span class="va">TOP_samples</span>,</span></span>
+<span class="r-in"><span>                                       tf_cell_combos <span class="op">=</span> <span class="va">tf_cell_combos</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +133,7 @@ will create the table usi9ng <code>assembled_training_data</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

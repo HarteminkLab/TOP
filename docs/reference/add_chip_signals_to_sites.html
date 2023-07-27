@@ -22,7 +22,7 @@ and save to the directory chip_signal_dir)."><!-- mathjax --><script src="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -79,38 +79,49 @@ and save to the directory <code>chip_signal_dir</code>).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">add_chip_signals_to_sites</span><span class="op">(</span>
-  <span class="va">sites</span>,
-  chip_signal_file <span class="op">=</span> <span class="cn">NULL</span>,
-  chip_signal_sampleID <span class="op">=</span> <span class="cn">NULL</span>,
-  chip_signal_dir <span class="op">=</span> <span class="st">"./"</span>,
-  bigWigAverageOverBed_path <span class="op">=</span> <span class="st">"bigWigAverageOverBed"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_chip_signals_to_sites</span><span class="op">(</span></span>
+<span>  <span class="va">sites</span>,</span>
+<span>  chip_signal_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chip_signal_sampleID <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chip_signal_dir <span class="op">=</span> <span class="st">"./"</span>,</span>
+<span>  bigWigAverageOverBed_path <span class="op">=</span> <span class="st">"bigWigAverageOverBed"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>sites</dt>
 <dd><p>A data frame containing the candidate sites</p></dd>
+
+
 <dt>chip_signal_file</dt>
 <dd><p>ChIP-seq signal file (BigWig format).</p></dd>
+
+
 <dt>chip_signal_sampleID</dt>
 <dd><p>ENCODE sample ID of ChIP-seq signals (BigWig format).</p></dd>
+
+
 <dt>chip_signal_dir</dt>
 <dd><p>Directory to save the downloaded ChIP-seq signals.</p></dd>
+
+
 <dt>bigWigAverageOverBed_path</dt>
 <dd><p>Path to <code>bigWigAverageOverBed</code> executable.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame of candidate sites and ChIP-seq signals.</p>
+    
+
+<p>A data frame of candidate sites and ChIP-seq signals.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">sites_chip_signals</span> <span class="op">-</span> <span class="fu">add_chip_signals_to_sites</span><span class="op">(</span><span class="va">sites</span>, chip_signal_file<span class="op">=</span><span class="st">'ChIPseq.signals.bigWig'</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">sites_chip_signals</span> <span class="op">-</span> <span class="fu">add_chip_signals_to_sites</span><span class="op">(</span><span class="va">sites</span>, chip_signal_file<span class="op">=</span><span class="st">'ChIPseq.signals.bigWig'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -125,7 +136,7 @@ and save to the directory <code>chip_signal_dir</code>).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

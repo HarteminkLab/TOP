@@ -22,7 +22,7 @@ for each of the partitions."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -78,16 +78,16 @@ for each of the partitions.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">assemble_training_data</span><span class="op">(</span>
-  <span class="va">tf_cell_table</span>,
-  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
-  chip_col <span class="op">=</span> <span class="st">"chip"</span>,
-  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
-  n_partitions <span class="op">=</span> <span class="fl">10</span>,
-  n_cores <span class="op">=</span> <span class="va">n_partitions</span>,
-  max_sites <span class="op">=</span> <span class="fl">50000</span>,
-  seed <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">assemble_training_data</span><span class="op">(</span></span>
+<span>  <span class="va">tf_cell_table</span>,</span>
+<span>  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  chip_col <span class="op">=</span> <span class="st">"chip"</span>,</span>
+<span>  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  n_partitions <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  n_cores <span class="op">=</span> <span class="va">n_partitions</span>,</span>
+<span>  max_sites <span class="op">=</span> <span class="fl">50000</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -99,71 +99,88 @@ It should have at least three columns, with:
 TF names, cell types, and file names of the individual training data for
 each TF x cell type combination. The individual training data
 should be in .rds or text (.txt, or .csv) format.</p></dd>
+
+
 <dt>logistic_model</dt>
 <dd><p>Logical. If <code>logistic_model = TRUE</code>,
 prepare assembled data for the logistic version of TOP model.
 If <code>logistic_model = FALSE</code>, prepare assembled data for the
 quantitative occupancy model (default).</p></dd>
+
+
 <dt>chip_col</dt>
 <dd><p>The column name of ChIP data in the individual training data
 (default: ‘chip’).</p></dd>
+
+
 <dt>training_chrs</dt>
 <dd><p>Chromosomes used for training the model
 (default: odd chromosomes, chr1, chr3, ..., chr21)</p></dd>
+
+
 <dt>n_partitions</dt>
 <dd><p>Number of partitions to split the training data (default: 10).</p></dd>
+
+
 <dt>n_cores</dt>
 <dd><p>Number of cores to run in parallel
 (default: equal to <code>n_partitions</code>).</p></dd>
+
+
 <dt>max_sites</dt>
 <dd><p>Max number of candidate sites to keep for
 each TF x cell type combination (default: 50000). To reduce computation time,
 randomly select <code>max_sites</code> candidate sites for
 each TF x cell type combination, if the number of candidate sites
 exceeds <code>max_sites</code>.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>A number for the seed used when sampling sites.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of data frames (default: 10),
+    
+
+<p>A list of data frames (default: 10),
 each containing one partition of the
 training data with all TF x cell type combinations.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#  tf_cell_table should have three columns with:</span></span>
-<span class="r-in"><span class="co">#  TF names, cell types, and paths to the training data files, like:</span></span>
-<span class="r-in"><span class="co">#  |   tf_name    |   cell_type   |        data_file         |</span></span>
-<span class="r-in"><span class="co">#  |:------------:|:-------------:|:------------------------:|</span></span>
-<span class="r-in"><span class="co">#  |     CTCF     |     K562      |   CTCF.K562.data.rds     |</span></span>
-<span class="r-in"><span class="co">#  |     CTCF     |     A549      |   CTCF.A549.data.rds     |</span></span>
-<span class="r-in"><span class="co">#  |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |</span></span>
-<span class="r-in"><span class="co">#  |     ...      |     ...       |   ...                    |</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Assembles training data for the quantitative occupancy model,</span></span>
-<span class="r-in"><span class="co"># uses odd chromosomes for training, keeps at most 50000 candidate sites for</span></span>
-<span class="r-in"><span class="co"># each TF x cell type combination, and splits training data into 10 partitions.</span></span>
-<span class="r-in"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu">assemble_training_data</span><span class="op">(</span><span class="va">tf_cell_table</span>,</span>
-<span class="r-in">                                                  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                                                  chip_col <span class="op">=</span> <span class="st">'chip'</span>,</span>
-<span class="r-in">                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span>
-<span class="r-in">                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Assembles training data for the logistic version of the model</span></span>
-<span class="r-in"><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu">assemble_training_data</span><span class="op">(</span><span class="va">tf_cell_table</span>,</span>
-<span class="r-in">                                                  logistic_model <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                                                  chip_col <span class="op">=</span> <span class="st">'chip_label'</span>,</span>
-<span class="r-in">                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span>
-<span class="r-in">                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#  tf_cell_table should have three columns with:</span></span></span>
+<span class="r-in"><span><span class="co">#  TF names, cell types, and paths to the training data files, like:</span></span></span>
+<span class="r-in"><span><span class="co">#  |   tf_name    |   cell_type   |        data_file         |</span></span></span>
+<span class="r-in"><span><span class="co">#  |:------------:|:-------------:|:------------------------:|</span></span></span>
+<span class="r-in"><span><span class="co">#  |     CTCF     |     K562      |   CTCF.K562.data.rds     |</span></span></span>
+<span class="r-in"><span><span class="co">#  |     CTCF     |     A549      |   CTCF.A549.data.rds     |</span></span></span>
+<span class="r-in"><span><span class="co">#  |     CTCF     |    GM12878    |   CTCF.GM12878.data.rds  |</span></span></span>
+<span class="r-in"><span><span class="co">#  |     ...      |     ...       |   ...                    |</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Assembles training data for the quantitative occupancy model,</span></span></span>
+<span class="r-in"><span><span class="co"># uses odd chromosomes for training, keeps at most 50000 candidate sites for</span></span></span>
+<span class="r-in"><span><span class="co"># each TF x cell type combination, and splits training data into 10 partitions.</span></span></span>
+<span class="r-in"><span><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu">assemble_training_data</span><span class="op">(</span><span class="va">tf_cell_table</span>,</span></span>
+<span class="r-in"><span>                                                  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                                                  chip_col <span class="op">=</span> <span class="st">'chip'</span>,</span></span>
+<span class="r-in"><span>                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Assembles training data for the logistic version of the model</span></span></span>
+<span class="r-in"><span><span class="va">assembled_training_data</span> <span class="op">&lt;-</span> <span class="fu">assemble_training_data</span><span class="op">(</span><span class="va">tf_cell_table</span>,</span></span>
+<span class="r-in"><span>                                                  logistic_model <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                                                  chip_col <span class="op">=</span> <span class="st">'chip_label'</span>,</span></span>
+<span class="r-in"><span>                                                  training_chrs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'chr'</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">21</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                  n_partitions<span class="op">=</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                                                  max_sites <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -178,7 +195,7 @@ training data with all TF x cell type combinations.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

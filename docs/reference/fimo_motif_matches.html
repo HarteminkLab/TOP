@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -69,74 +69,100 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fimo_motif_matches</span><span class="op">(</span>
-  <span class="va">motif_file</span>,
-  <span class="va">sequence_file</span>,
-  outname <span class="op">=</span> <span class="st">"fimo.txt"</span>,
-  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">outname</span><span class="op">)</span>,
-  thresh_pValue <span class="op">=</span> <span class="fl">1e-05</span>,
-  background <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"motif"</span>, <span class="st">"uniform"</span>, <span class="st">"file"</span><span class="op">)</span>,
-  <span class="va">background_file</span>,
-  skip_matched_sequence <span class="op">=</span> <span class="cn">TRUE</span>,
-  max_strand <span class="op">=</span> <span class="cn">FALSE</span>,
-  max_stored_scores <span class="op">=</span> <span class="fl">1e+05</span>,
-  options <span class="op">=</span> <span class="st">""</span>,
-  verbosity <span class="op">=</span> <span class="fl">2</span>,
-  fimo_path <span class="op">=</span> <span class="st">"fimo"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fimo_motif_matches</span><span class="op">(</span></span>
+<span>  <span class="va">motif_file</span>,</span>
+<span>  <span class="va">sequence_file</span>,</span>
+<span>  outname <span class="op">=</span> <span class="st">"fimo.txt"</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">outname</span><span class="op">)</span>,</span>
+<span>  thresh_pValue <span class="op">=</span> <span class="fl">1e-05</span>,</span>
+<span>  background <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"motif"</span>, <span class="st">"uniform"</span>, <span class="st">"file"</span><span class="op">)</span>,</span>
+<span>  <span class="va">background_file</span>,</span>
+<span>  skip_matched_sequence <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  max_strand <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  max_stored_scores <span class="op">=</span> <span class="fl">1e+05</span>,</span>
+<span>  options <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  verbosity <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  fimo_path <span class="op">=</span> <span class="st">"fimo"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>motif_file</dt>
 <dd><p>Motif file in MEME format.</p></dd>
+
+
 <dt>sequence_file</dt>
 <dd><p>Genome sequence file in FASTA format.</p></dd>
+
+
 <dt>outname</dt>
 <dd><p>Output file name.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>Output directory.</p></dd>
+
+
 <dt>thresh_pValue</dt>
 <dd><p><code>FIMO</code> option <code>thresh</code> for p-value threshold.</p></dd>
+
+
 <dt>background</dt>
 <dd><p>Option for background model:
 ‘default’: uses <code>FIMO</code> default background setting;
 ‘motif’: uses the 0-order letter frequencies contained in the motif file;
 ‘uniform’: uses uniform letter frequencies;
 ‘file’: uses the file specified in <code>background_file</code>.</p></dd>
+
+
 <dt>background_file</dt>
 <dd><p>Path to a file in Markov Background Model Format.</p></dd>
+
+
 <dt>skip_matched_sequence</dt>
 <dd><p><code>FIMO</code> option <code>skip_matched_sequence</code>.
 Turns off output of the sequence of motif matches.
 This speeds up processing considerably.</p></dd>
+
+
 <dt>max_strand</dt>
 <dd><p><code>FIMO</code> option <code>max_strand</code>.
 If matches on both strands at a
 given position satisfy the output threshold,
 only report the match for the strand with the higher score.
 If the scores are tied, the matching strand is chosen at random.</p></dd>
+
+
 <dt>max_stored_scores</dt>
 <dd><p>The maximum number of stored matches.</p></dd>
+
+
 <dt>options</dt>
 <dd><p>Other options for <code>FIMO</code>.</p></dd>
+
+
 <dt>verbosity</dt>
 <dd><p>A number of the verbosity level (from 1 to 5).
 If set to 1 (quiet) then it will only output error messages, in contrast, the
 other extreme 5 (dump) outputs lots of mostly useless information.</p></dd>
+
+
 <dt>fimo_path</dt>
-<dd><p>Path to <code>fimo</code> command line executable.</p></dd>
+<dd><p>Path to <code>fimo</code> command line executable.
+(default: 'fimo')</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">fimo_motif_matches</span><span class="op">(</span>motif_file<span class="op">=</span><span class="st">'motifID.meme'</span>,</span>
-<span class="r-in">                   sequence_file<span class="op">=</span><span class="st">'hg38.fa'</span>,</span>
-<span class="r-in">                   thresh_pValue<span class="op">=</span><span class="fl">1e-5</span>,</span>
-<span class="r-in">                   outname<span class="op">=</span><span class="st">'motifID_1e-5.fimo.txt'</span>,</span>
-<span class="r-in">                   fimo_path<span class="op">=</span><span class="st">'fimo'</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">fimo_motif_matches</span><span class="op">(</span>motif_file<span class="op">=</span><span class="st">'motifID.meme'</span>,</span></span>
+<span class="r-in"><span>                   sequence_file<span class="op">=</span><span class="st">'hg38.fa'</span>,</span></span>
+<span class="r-in"><span>                   thresh_pValue<span class="op">=</span><span class="fl">1e-5</span>,</span></span>
+<span class="r-in"><span>                   outname<span class="op">=</span><span class="st">'motifID_1e-5.fimo.txt'</span>,</span></span>
+<span class="r-in"><span>                   fimo_path<span class="op">=</span><span class="st">'fimo'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -151,7 +177,7 @@ other extreme 5 (dump) outputs lots of mostly useless information.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

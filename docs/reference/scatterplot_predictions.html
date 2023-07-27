@@ -18,7 +18,7 @@ with Pearson's correlation (R) between measured and predicted occupancy."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -71,52 +71,69 @@ with Pearson's correlation (R) between measured and predicted occupancy.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">scatterplot_predictions</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">y</span>,
-  xlab <span class="op">=</span> <span class="st">"measured"</span>,
-  ylab <span class="op">=</span> <span class="st">"predicted"</span>,
-  title <span class="op">=</span> <span class="st">""</span>,
-  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,
-  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,
-  color <span class="op">=</span> <span class="st">"black"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scatterplot_predictions</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"measured"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"predicted"</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"black"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>x-axis values of points in the plot (measured).</p></dd>
+
+
 <dt>y</dt>
 <dd><p>y-axis values of points in the plot (predicted).</p></dd>
+
+
 <dt>xlab</dt>
 <dd><p>Label for the x axis.</p></dd>
+
+
 <dt>ylab</dt>
 <dd><p>Label for the y axis.</p></dd>
+
+
 <dt>title</dt>
 <dd><p>Title for the plot.</p></dd>
+
+
 <dt>xlim</dt>
 <dd><p>Range of x-axis values.</p></dd>
+
+
 <dt>ylim</dt>
 <dd><p>Range of y-axis values.</p></dd>
+
+
 <dt>color</dt>
 <dd><p>The plotting color.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>ggplot</code> object for
+    
+
+<p>A <code>ggplot</code> object for
 the scatter plot of measured and predicted occupancy.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">scatterplot_predictions</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">chip</span><span class="op">)</span>,</span>
-<span class="r-in">                        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">predicted</span><span class="op">)</span>,</span>
-<span class="r-in">                        xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,</span>
-<span class="r-in">                        ylab <span class="op">=</span> <span class="st">'asinh(predicted occupancy)'</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">scatterplot_predictions</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">chip</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Hyperbolic.html" class="external-link">asinh</a></span><span class="op">(</span><span class="va">predicted</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                        xlab <span class="op">=</span> <span class="st">'asinh(measured occupancy)'</span>,</span></span>
+<span class="r-in"><span>                        ylab <span class="op">=</span> <span class="st">'asinh(predicted occupancy)'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -131,7 +148,7 @@ the scatter plot of measured and predicted occupancy.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

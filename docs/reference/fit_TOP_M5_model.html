@@ -22,7 +22,7 @@ the partitions on separate machines by specifying which partition to run."><!-- 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TOP</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -79,40 +79,48 @@ the partitions on separate machines by specifying which partition to run.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fit_TOP_M5_model</span><span class="op">(</span>
-  <span class="va">all_training_data</span>,
-  <span class="va">all_training_data_files</span>,
-  <span class="va">model_file</span>,
-  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span>,
-  partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
-  n_iter <span class="op">=</span> <span class="fl">2000</span>,
-  n_burnin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_iter</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,
-  n_chains <span class="op">=</span> <span class="fl">3</span>,
-  n_thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_iter</span> <span class="op">-</span> <span class="va">n_burnin</span><span class="op">)</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,
-  n_cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">partitions</span><span class="op">)</span>,
-  save <span class="op">=</span> <span class="cn">TRUE</span>,
-  outdir <span class="op">=</span> <span class="st">"TOP_fit"</span>,
-  return_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"samples"</span>, <span class="st">"jagsfit"</span>, <span class="st">"samplefiles"</span><span class="op">)</span>,
-  quiet <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fit_TOP_M5_model</span><span class="op">(</span></span>
+<span>  <span class="va">all_training_data</span>,</span>
+<span>  <span class="va">all_training_data_files</span>,</span>
+<span>  <span class="va">model_file</span>,</span>
+<span>  logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asinh"</span>, <span class="st">"log2"</span>, <span class="st">"sqrt"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  partitions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span>
+<span>  n_iter <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  n_burnin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_iter</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>  n_chains <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  n_thin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_iter</span> <span class="op">-</span> <span class="va">n_burnin</span><span class="op">)</span><span class="op">/</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  n_cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">partitions</span><span class="op">)</span>,</span>
+<span>  save <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="st">"TOP_fit"</span>,</span>
+<span>  return_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"samples"</span>, <span class="st">"jagsfit"</span>, <span class="st">"samplefiles"</span><span class="op">)</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>all_training_data</dt>
 <dd><p>A list of the assembled training data of all partitions.</p></dd>
+
+
 <dt>all_training_data_files</dt>
 <dd><p>A vector of the assembled training data
 files of all partitions. If <code>all_training_data</code> is missing,
 it will load the training data from <code>all_training_data_files</code>.</p></dd>
+
+
 <dt>model_file</dt>
 <dd><p>TOP model file written in <code>JAGS</code>.
 By default, use the model file included in the TOP package.</p></dd>
+
+
 <dt>logistic_model</dt>
 <dd><p>Logical; whether to use the logistic version of TOP model.
 If <code>logistic_model = TRUE</code>, use the logistic version of TOP model.
 If <code>logistic_model = FALSE</code>, use the quantitative occupancy model (default).</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>Type of transformation for ChIP-seq read counts.
 Options are: ‘asinh’(asinh transformation),
@@ -120,89 +128,112 @@ Options are: ‘asinh’(asinh transformation),
 ‘sqrt’ (square root transformation),
 and ‘none’(no transformation).
 This only applies when <code>logistic_model = FALSE</code>.</p></dd>
+
+
 <dt>partitions</dt>
 <dd><p>A vector of selected partition(s) to run.
 Default: all 10 partitions. If you specify a few partitions,
 it will only fit models to data in those selected partitions.</p></dd>
+
+
 <dt>n_iter</dt>
 <dd><p>Number of total iterations per chain, including burn-in iterations.</p></dd>
+
+
 <dt>n_burnin</dt>
 <dd><p>Length of burn-in iterations,
 i.e. number of samples to discard at the beginning.
 Default is <code>n_iter/2</code>, discarding the first half of the samples.</p></dd>
+
+
 <dt>n_chains</dt>
 <dd><p>Number of Markov chains (default: 3).</p></dd>
+
+
 <dt>n_thin</dt>
 <dd><p>Thinning rate, must be a positive integer.
 Default is <code>max(1, floor(n_chains * (n_iter-n_burnin) / 1000))</code>
 which will only thin if there are at least 2000 simulations.
 No thinning will be performed if <code>n_thin = 1</code>.</p></dd>
+
+
 <dt>n_cores</dt>
 <dd><p>Number of cores to use in parallel
 (default: equal to the number of partitions, i.e. <code>length(partitions)</code>).</p></dd>
+
+
 <dt>save</dt>
 <dd><p>Logical, if TRUE, saves posterior samples as ‘.rds’ files
 in <code>outdir</code>.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p>Directory to save TOP model posterior samples.</p></dd>
+
+
 <dt>return_type</dt>
 <dd><p>Type of result to return.
 Options: ‘samples’(posterior samples),
 ‘jagsfit’ (<code>jagsfit</code> object),
 or ‘samplefiles’ (file names of posterior samples).</p></dd>
+
+
 <dt>quiet</dt>
 <dd><p>Logical, if TRUE, suppress model fitting messages.
 Otherwise, only show progress bars.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of posterior samples or <code>jagsfit</code> object for each partition.</p>
+    
+
+<p>A list of posterior samples or <code>jagsfit</code> object for each partition.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Example to train TOP quantitative occupancy model:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># The example below first performs 'asinh' transform to the ChIP-seq counts</span></span>
-<span class="r-in"><span class="co"># in 'assembled_training_data', then runs Gibbs sampling</span></span>
-<span class="r-in"><span class="co"># for each of the 10 partitions in parallel.</span></span>
-<span class="r-in"><span class="co"># The following example runs 5000 iterations of Gibbs sampling in total,</span></span>
-<span class="r-in"><span class="co"># including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,</span></span>
-<span class="r-in"><span class="co"># and saves the posterior samples to the 'TOP_fit' directory.</span></span>
-<span class="r-in"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span>
-<span class="r-in">                                    logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                                    transform <span class="op">=</span> <span class="st">'asinh'</span>,</span>
-<span class="r-in">                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span class="r-in">                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span class="r-in">                                    n_chains <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">                                    n_thin <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">                                    out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can also obtain the posterior samples separately for each partition,</span></span>
-<span class="r-in"><span class="co"># For example, to obtain the posterior samples for partition #3 only:</span></span>
-<span class="r-in"><span class="va">TOP_samples_part3</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span>
-<span class="r-in">                                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                                      transform <span class="op">=</span> <span class="st">'asinh'</span>,</span>
-<span class="r-in">                                      partitions <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">                                      n_iter <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span class="r-in">                                      n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span class="r-in">                                      n_chains <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">                                      n_thin <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">                                      out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Example to train TOP logistic (binary) model:</span></span>
-<span class="r-in"><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span>
-<span class="r-in">                                    logistic_model <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span class="r-in">                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span class="r-in">                                    n_chains <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">                                    n_thin <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">                                    out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Example to train TOP quantitative occupancy model:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The example below first performs 'asinh' transform to the ChIP-seq counts</span></span></span>
+<span class="r-in"><span><span class="co"># in 'assembled_training_data', then runs Gibbs sampling</span></span></span>
+<span class="r-in"><span><span class="co"># for each of the 10 partitions in parallel.</span></span></span>
+<span class="r-in"><span><span class="co"># The following example runs 5000 iterations of Gibbs sampling in total,</span></span></span>
+<span class="r-in"><span><span class="co"># including 1000 burn-ins, with 3 Markov chains, at a thinning rate of 2,</span></span></span>
+<span class="r-in"><span><span class="co"># and saves the posterior samples to the 'TOP_fit' directory.</span></span></span>
+<span class="r-in"><span><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span></span>
+<span class="r-in"><span>                                    logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                                    transform <span class="op">=</span> <span class="st">'asinh'</span>,</span></span>
+<span class="r-in"><span>                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,</span></span>
+<span class="r-in"><span>                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                                    n_chains <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                                    n_thin <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>                                    out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can also obtain the posterior samples separately for each partition,</span></span></span>
+<span class="r-in"><span><span class="co"># For example, to obtain the posterior samples for partition #3 only:</span></span></span>
+<span class="r-in"><span><span class="va">TOP_samples_part3</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span></span>
+<span class="r-in"><span>                                      logistic_model <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                                      transform <span class="op">=</span> <span class="st">'asinh'</span>,</span></span>
+<span class="r-in"><span>                                      partitions <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                                      n_iter <span class="op">=</span> <span class="fl">5000</span>,</span></span>
+<span class="r-in"><span>                                      n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                                      n_chains <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                                      n_thin <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>                                      out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example to train TOP logistic (binary) model:</span></span></span>
+<span class="r-in"><span><span class="va">all_TOP_samples</span> <span class="op">&lt;-</span> <span class="fu">fit_TOP_M5_model</span><span class="op">(</span><span class="va">assembled_training_data</span>,</span></span>
+<span class="r-in"><span>                                    logistic_model <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                                    n_iter <span class="op">=</span> <span class="fl">5000</span>,</span></span>
+<span class="r-in"><span>                                    n_burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                                    n_chains <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                                    n_thin <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>                                    out_dir <span class="op">=</span> <span class="st">'TOP_fit'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -217,7 +248,7 @@ Otherwise, only show progress bars.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
