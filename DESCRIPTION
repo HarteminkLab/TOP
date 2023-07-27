@@ -37,7 +37,6 @@ Imports:
 Suggests: 
     R2jags,
     GenomicAlignments,
-    Rsamtools,
     knitr, 
     rmarkdown
 VignetteBuilder: knitr
