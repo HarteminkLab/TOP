@@ -20,11 +20,12 @@ DNase- or ATAC-seq experiments.
 
 ## TOP websites
 
--   [TOP R package website](https://HarteminkLab.github.io/TOP)
--   [TOP paper resources
-    website](https://harteminklab.github.io/TOP-paper-resources): a
-    companion website for the `TOP` package, which contains the data
-    resources and data processing pipelines for the `TOP` paper.
+- [TOP R package website](https://HarteminkLab.github.io/TOP)
+- [TOP paper resources
+  website](https://harteminklab.github.io/TOP-paper-resources): a
+  companion website for the `TOP` package, which contains pretrained TOP
+  model parameters and precomputed TF occupancy predictions in *human*,
+  and data processing pipelines for the `TOP` paper.
 
 ## Install TOP R package
 
@@ -50,11 +51,11 @@ learn how to use the package.
 
 ## Reference
 
--   Luo K, Zhong J, Safi A, Hong LK, Tewari AK, Song L, Reddy TE, Ma L,
-    Crawford GE, Hartemink AJ. Profiling the quantitative occupancy of
-    myriad transcription factors across conditions by modeling chromatin
-    accessibility data. Genome Res. 2022 Jun;32(6):1183-1198. doi:
-    10.1101/gr.272203.120.
+- Luo K, Zhong J, Safi A, Hong LK, Tewari AK, Song L, Reddy TE, Ma L,
+  Crawford GE, Hartemink AJ. Profiling the quantitative occupancy of
+  myriad transcription factors across conditions by modeling chromatin
+  accessibility data. Genome Res. 2022 Jun;32(6):1183-1198. doi:
+  10.1101/gr.272203.120.
 
 ## License
 

@@ -40,7 +40,9 @@ TOP websites
   * [TOP R package website][top-webiste]
   * [TOP paper resources website][top-resources-website]: 
   a companion website for the `TOP` package, which 
-  contains the data resources and data processing pipelines for the `TOP` paper.
+  contains pretrained TOP model parameters and 
+  precomputed TF occupancy predictions in *human*,
+  and data processing pipelines for the `TOP` paper.
 
 
 Install TOP R package
