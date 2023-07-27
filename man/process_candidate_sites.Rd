@@ -9,6 +9,7 @@ process_candidate_sites(
   flank = 100,
   thresh_pValue = 1e-05,
   thresh_pwmscore = 0,
+  chr_order = paste0("chr", c(1:22, "X", "Y", "M")),
   blacklist_file = NULL,
   mapability_file = NULL,
   thresh_mapability = 0.8,
@@ -23,6 +24,9 @@ process_candidate_sites(
 \item{thresh_pValue}{\code{FIMO} p-value threshold (default: 1e-5)}
 
 \item{thresh_pwmscore}{\code{FIMO} PWM score threshold (default: 0)}
+
+\item{chr_order}{Chromosomes to include, default ('chr1, ..., chr22, chrX, chrY, chrM').
+Please change this accordingly if you use non-human data.}
 
 \item{blacklist_file}{Filename of the blacklist regions (default: NULL)}
 
