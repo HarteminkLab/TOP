@@ -13,8 +13,10 @@
 #' Default: shifts reads on + strand by 4 bp and reads on - strand by -4 bp.
 #' @param outdir Output directory (default: use the directory of \code{bam_file}).
 #' @param outname Output prefix (default: use the prefix of \code{bam_file}).
-#' @param bedtools_path Path to \code{bedtools} executable.
+#' @param bedtools_path Path to \code{bedtools} executable.'
+#' (default: 'bedtools')
 #' @param bedGraphToBigWig_path Path to UCSC \code{bedGraphToBigWig} executable.
+#' (default: 'bedGraphToBigWig')
 #' @export
 #' @examples
 #' \dontrun{

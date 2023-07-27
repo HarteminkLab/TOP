@@ -17,6 +17,7 @@
 #' @param transform Transformation for ChIP-seq read counts.
 #' Options are \sQuote{none} (no transformation), \sQuote{asinh}, \sQuote{log2}, and \sQuote{'sqrt'}.
 #' @param bedtools_path Path to \code{bedtools} executable.
+#' (default: 'bedtools')
 #' @return A data frame of candidate sites and normalized (and transformed)
 #' ChIP-seq read counts around each candidate site.
 #' @importFrom data.table fread fwrite

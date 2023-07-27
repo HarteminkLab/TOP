@@ -26,7 +26,7 @@
 #' If set to 1 (quiet) then it will only output error messages, in contrast, the
 #' other extreme 5 (dump) outputs lots of mostly useless information.
 #' @param fimo_path Path to \code{fimo} command line executable.
-#' (default: `fimo')
+#' (default: 'fimo')
 #' @export
 #' @examples
 #' \dontrun{
