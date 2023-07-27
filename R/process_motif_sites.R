@@ -26,6 +26,7 @@
 #' If set to 1 (quiet) then it will only output error messages, in contrast, the
 #' other extreme 5 (dump) outputs lots of mostly useless information.
 #' @param fimo_path Path to \code{fimo} command line executable.
+#' (default: `fimo')
 #' @export
 #' @examples
 #' \dontrun{
@@ -95,7 +96,8 @@ fimo_motif_matches <- function(motif_file,
     dir.create(outdir, recursive = TRUE)
   }
 
-  cmd <- paste('fimo --text',
+  cmd <- paste(fimo_path,
+               '--text',
                bfile,
                '--thresh', thresh_pValue,
                skip_matched_sequence,

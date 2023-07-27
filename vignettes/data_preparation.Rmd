@@ -115,11 +115,14 @@ if you need more motif matches.
 
 Save results in `MA0139.1_1e-5.fimo.txt`, 
 which will be used in the next step. 
+
+Please set `fimo_path` to your command line path to \code{fimo} executable.
 ```{r get-motif-matches, eval=FALSE}
 fimo_motif_matches(motif_file='MA0139.1.meme', 
                    sequence_file='hg38.fa', 
                    thresh_pValue=1e-5, 
-                   outname='MA0139.1_1e-5.fimo.txt')
+                   outname='MA0139.1_1e-5.fimo.txt',
+                   fimo_path='fimo')
 ```
 
 Step 2: Get candidate TF binding sites
